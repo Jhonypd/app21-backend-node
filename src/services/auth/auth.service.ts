@@ -1,5 +1,4 @@
 import { prismaClient } from "../../lib/prisma";
-import { supabaseServer } from "../../lib/supabase";
 
 interface LoginProps {
 	email: string;
@@ -21,8 +20,10 @@ interface Response {
 	Resultado: any;
 }
 
+const JWT_SECRET = process.env.JWT_SECRET as string
+
 export const login = async ({ email, senha }: LoginProps): Promise<Response> => {
-	const supabase = await supabaseServer();
+	const usuario = await prismaClient.pessoa.findUnique({ where: { email } });
 
 	// tenta autenticar
 	const { data, error } = await supabase.auth.signInWithPassword({

@@ -1,9 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
   provider = "prisma-client-js"
   output   = "../src/lib/generated/prisma"
@@ -15,17 +9,16 @@ datasource db {
 }
 
 model Pessoa {
-  id           String   @id
-  nome         String
-  email        String?
-  auth_id      String   @unique
-  inativo      Boolean  @default(false)
-  data_criacao DateTime @default(now())
-
-  equipesMembro    MembroEquipe[]
-  salasCriadas     Sala[]             @relation("SalasCriadasPorPessoa")
-  participacoes    ParticipanteSala[]
+  id               String             @id @default(uuid())
+  nome             String
+  email            String?            @unique
+  senha            String
+  inativo          Boolean            @default(false)
+  data_criacao     DateTime           @default(now())
   historiasCriadas Historia[]         @relation("HistoriasCriadasPorPessoa")
+  equipesMembro    MembroEquipe[]
+  participacoes    ParticipanteSala[]
+  salasCriadas     Sala[]             @relation("SalasCriadasPorPessoa")
   votos            Voto[]
 }
 
@@ -42,9 +35,8 @@ model MembroEquipe {
   pessoa_id    String
   equipe_id    String
   proprietario Boolean @default(false)
-
-  pessoa Pessoa @relation(fields: [pessoa_id], references: [id], onDelete: Restrict)
-  equipe Equipe @relation(fields: [equipe_id], references: [id], onDelete: Restrict)
+  equipe       Equipe  @relation(fields: [equipe_id], references: [id])
+  pessoa       Pessoa  @relation(fields: [pessoa_id], references: [id])
 
   @@unique([pessoa_id, equipe_id])
 }
@@ -55,24 +47,22 @@ model Projeto {
   equipe_id  String
   inativo    Boolean @default(false)
   gerente_id String?
-
-  equipe Equipe @relation(fields: [equipe_id], references: [id], onDelete: Restrict)
+  equipe     Equipe  @relation(fields: [equipe_id], references: [id])
 }
 
 model Sala {
-  id             String   @id @default(uuid())
+  id             String             @id @default(uuid())
   codigo         Int
   titulo         String
   criado_por     String
   senha          String?
-  inativo        Boolean  @default(false)
-  data_criacao   DateTime @default(now())
-  data_alteracao DateTime @updatedAt()
-
-  proprietario  Pessoa             @relation("SalasCriadasPorPessoa", fields: [criado_por], references: [id], onDelete: Restrict)
-  participantes ParticipanteSala[]
-  historias     Historia[]
-  votos         Voto[]
+  inativo        Boolean            @default(false)
+  data_criacao   DateTime           @default(now())
+  data_alteracao DateTime           @updatedAt
+  historias      Historia[]
+  participantes  ParticipanteSala[]
+  proprietario   Pessoa             @relation("SalasCriadasPorPessoa", fields: [criado_por], references: [id])
+  votos          Voto[]
 }
 
 model ParticipanteSala {
@@ -80,9 +70,8 @@ model ParticipanteSala {
   sala_id    String
   pessoa_id  String
   adicionado DateTime @default(now())
-
-  pessoa Pessoa @relation(fields: [pessoa_id], references: [id], onDelete: Restrict)
-  sala   Sala   @relation(fields: [sala_id], references: [id], onDelete: Restrict)
+  pessoa     Pessoa   @relation(fields: [pessoa_id], references: [id])
+  sala       Sala     @relation(fields: [sala_id], references: [id])
 
   @@unique([sala_id, pessoa_id])
   @@index([sala_id])
@@ -96,12 +85,11 @@ model Historia {
   sala_id        String
   criado_por     String
   data_criacao   DateTime @default(now())
-  data_alteracao DateTime @updatedAt()
+  data_alteracao DateTime @updatedAt
   finalizada     Boolean  @default(false)
-
-  sala    Sala   @relation(fields: [sala_id], references: [id], onDelete: Restrict)
-  criador Pessoa @relation("HistoriasCriadasPorPessoa", fields: [criado_por], references: [id], onDelete: Restrict)
-  votos   Voto[]
+  criador        Pessoa   @relation("HistoriasCriadasPorPessoa", fields: [criado_por], references: [id])
+  sala           Sala     @relation(fields: [sala_id], references: [id])
+  votos          Voto[]
 }
 
 model Voto {
@@ -111,10 +99,9 @@ model Voto {
   historia_id String
   valor       Int
   data_voto   DateTime @default(now())
-
-  pessoa   Pessoa   @relation(fields: [pessoa_id], references: [id], onDelete: Restrict)
-  sala     Sala     @relation(fields: [sala_id], references: [id], onDelete: Restrict)
-  historia Historia @relation(fields: [historia_id], references: [id], onDelete: Restrict)
+  historia    Historia @relation(fields: [historia_id], references: [id])
+  pessoa      Pessoa   @relation(fields: [pessoa_id], references: [id])
+  sala        Sala     @relation(fields: [sala_id], references: [id])
 
   @@unique([sala_id, historia_id, pessoa_id])
   @@index([sala_id])

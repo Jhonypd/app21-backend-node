@@ -124,7 +124,7 @@ exports.Prisma.PessoaScalarFieldEnum = {
   id: 'id',
   nome: 'nome',
   email: 'email',
-  auth_id: 'auth_id',
+  senha: 'senha',
   inativo: 'inativo',
   data_criacao: 'data_criacao'
 };

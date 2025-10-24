@@ -1,3 +1,14 @@
 {
-	"cSpell.words": ["Operacao", "supabase", "SUPABASE", "Unico", "usuario"]
+	"cSpell.words": [
+		"Codigo",
+		"criacao",
+		"Operacao",
+		"participacoes",
+		"proprietario",
+		"refreshtoken",
+		"supabase",
+		"SUPABASE",
+		"Unico",
+		"usuario"
+	]
 }

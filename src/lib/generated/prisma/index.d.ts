@@ -1498,18 +1498,18 @@ export namespace Prisma {
    */
 
   export type PessoaCountOutputType = {
-    equipesMembro: number
-    salasCriadas: number
-    participacoes: number
     historiasCriadas: number
+    equipesMembro: number
+    participacoes: number
+    salasCriadas: number
     votos: number
   }
 
   export type PessoaCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    equipesMembro?: boolean | PessoaCountOutputTypeCountEquipesMembroArgs
-    salasCriadas?: boolean | PessoaCountOutputTypeCountSalasCriadasArgs
-    participacoes?: boolean | PessoaCountOutputTypeCountParticipacoesArgs
     historiasCriadas?: boolean | PessoaCountOutputTypeCountHistoriasCriadasArgs
+    equipesMembro?: boolean | PessoaCountOutputTypeCountEquipesMembroArgs
+    participacoes?: boolean | PessoaCountOutputTypeCountParticipacoesArgs
+    salasCriadas?: boolean | PessoaCountOutputTypeCountSalasCriadasArgs
     votos?: boolean | PessoaCountOutputTypeCountVotosArgs
   }
 
@@ -1527,15 +1527,15 @@ export namespace Prisma {
   /**
    * PessoaCountOutputType without action
    */
-  export type PessoaCountOutputTypeCountEquipesMembroArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    where?: MembroEquipeWhereInput
+  export type PessoaCountOutputTypeCountHistoriasCriadasArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: HistoriaWhereInput
   }
 
   /**
    * PessoaCountOutputType without action
    */
-  export type PessoaCountOutputTypeCountSalasCriadasArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    where?: SalaWhereInput
+  export type PessoaCountOutputTypeCountEquipesMembroArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: MembroEquipeWhereInput
   }
 
   /**
@@ -1548,8 +1548,8 @@ export namespace Prisma {
   /**
    * PessoaCountOutputType without action
    */
-  export type PessoaCountOutputTypeCountHistoriasCriadasArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    where?: HistoriaWhereInput
+  export type PessoaCountOutputTypeCountSalasCriadasArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: SalaWhereInput
   }
 
   /**
@@ -1605,14 +1605,14 @@ export namespace Prisma {
    */
 
   export type SalaCountOutputType = {
-    participantes: number
     historias: number
+    participantes: number
     votos: number
   }
 
   export type SalaCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    participantes?: boolean | SalaCountOutputTypeCountParticipantesArgs
     historias?: boolean | SalaCountOutputTypeCountHistoriasArgs
+    participantes?: boolean | SalaCountOutputTypeCountParticipantesArgs
     votos?: boolean | SalaCountOutputTypeCountVotosArgs
   }
 
@@ -1630,15 +1630,15 @@ export namespace Prisma {
   /**
    * SalaCountOutputType without action
    */
-  export type SalaCountOutputTypeCountParticipantesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    where?: ParticipanteSalaWhereInput
+  export type SalaCountOutputTypeCountHistoriasArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: HistoriaWhereInput
   }
 
   /**
    * SalaCountOutputType without action
    */
-  export type SalaCountOutputTypeCountHistoriasArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    where?: HistoriaWhereInput
+  export type SalaCountOutputTypeCountParticipantesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: ParticipanteSalaWhereInput
   }
 
   /**
@@ -1698,7 +1698,7 @@ export namespace Prisma {
     id: string | null
     nome: string | null
     email: string | null
-    auth_id: string | null
+    senha: string | null
     inativo: boolean | null
     data_criacao: Date | null
   }
@@ -1707,7 +1707,7 @@ export namespace Prisma {
     id: string | null
     nome: string | null
     email: string | null
-    auth_id: string | null
+    senha: string | null
     inativo: boolean | null
     data_criacao: Date | null
   }
@@ -1716,7 +1716,7 @@ export namespace Prisma {
     id: number
     nome: number
     email: number
-    auth_id: number
+    senha: number
     inativo: number
     data_criacao: number
     _all: number
@@ -1727,7 +1727,7 @@ export namespace Prisma {
     id?: true
     nome?: true
     email?: true
-    auth_id?: true
+    senha?: true
     inativo?: true
     data_criacao?: true
   }
@@ -1736,7 +1736,7 @@ export namespace Prisma {
     id?: true
     nome?: true
     email?: true
-    auth_id?: true
+    senha?: true
     inativo?: true
     data_criacao?: true
   }
@@ -1745,7 +1745,7 @@ export namespace Prisma {
     id?: true
     nome?: true
     email?: true
-    auth_id?: true
+    senha?: true
     inativo?: true
     data_criacao?: true
     _all?: true
@@ -1827,7 +1827,7 @@ export namespace Prisma {
     id: string
     nome: string
     email: string | null
-    auth_id: string
+    senha: string | null
     inativo: boolean
     data_criacao: Date
     _count: PessoaCountAggregateOutputType | null
@@ -1853,13 +1853,13 @@ export namespace Prisma {
     id?: boolean
     nome?: boolean
     email?: boolean
-    auth_id?: boolean
+    senha?: boolean
     inativo?: boolean
     data_criacao?: boolean
-    equipesMembro?: boolean | Pessoa$equipesMembroArgs<ExtArgs>
-    salasCriadas?: boolean | Pessoa$salasCriadasArgs<ExtArgs>
-    participacoes?: boolean | Pessoa$participacoesArgs<ExtArgs>
     historiasCriadas?: boolean | Pessoa$historiasCriadasArgs<ExtArgs>
+    equipesMembro?: boolean | Pessoa$equipesMembroArgs<ExtArgs>
+    participacoes?: boolean | Pessoa$participacoesArgs<ExtArgs>
+    salasCriadas?: boolean | Pessoa$salasCriadasArgs<ExtArgs>
     votos?: boolean | Pessoa$votosArgs<ExtArgs>
     _count?: boolean | PessoaCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["pessoa"]>
@@ -1868,7 +1868,7 @@ export namespace Prisma {
     id?: boolean
     nome?: boolean
     email?: boolean
-    auth_id?: boolean
+    senha?: boolean
     inativo?: boolean
     data_criacao?: boolean
   }, ExtArgs["result"]["pessoa"]>
@@ -1877,7 +1877,7 @@ export namespace Prisma {
     id?: boolean
     nome?: boolean
     email?: boolean
-    auth_id?: boolean
+    senha?: boolean
     inativo?: boolean
     data_criacao?: boolean
   }, ExtArgs["result"]["pessoa"]>
@@ -1886,17 +1886,17 @@ export namespace Prisma {
     id?: boolean
     nome?: boolean
     email?: boolean
-    auth_id?: boolean
+    senha?: boolean
     inativo?: boolean
     data_criacao?: boolean
   }
 
-  export type PessoaOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "nome" | "email" | "auth_id" | "inativo" | "data_criacao", ExtArgs["result"]["pessoa"]>
+  export type PessoaOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "nome" | "email" | "senha" | "inativo" | "data_criacao", ExtArgs["result"]["pessoa"]>
   export type PessoaInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    equipesMembro?: boolean | Pessoa$equipesMembroArgs<ExtArgs>
-    salasCriadas?: boolean | Pessoa$salasCriadasArgs<ExtArgs>
-    participacoes?: boolean | Pessoa$participacoesArgs<ExtArgs>
     historiasCriadas?: boolean | Pessoa$historiasCriadasArgs<ExtArgs>
+    equipesMembro?: boolean | Pessoa$equipesMembroArgs<ExtArgs>
+    participacoes?: boolean | Pessoa$participacoesArgs<ExtArgs>
+    salasCriadas?: boolean | Pessoa$salasCriadasArgs<ExtArgs>
     votos?: boolean | Pessoa$votosArgs<ExtArgs>
     _count?: boolean | PessoaCountOutputTypeDefaultArgs<ExtArgs>
   }
@@ -1906,17 +1906,17 @@ export namespace Prisma {
   export type $PessoaPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "Pessoa"
     objects: {
-      equipesMembro: Prisma.$MembroEquipePayload<ExtArgs>[]
-      salasCriadas: Prisma.$SalaPayload<ExtArgs>[]
-      participacoes: Prisma.$ParticipanteSalaPayload<ExtArgs>[]
       historiasCriadas: Prisma.$HistoriaPayload<ExtArgs>[]
+      equipesMembro: Prisma.$MembroEquipePayload<ExtArgs>[]
+      participacoes: Prisma.$ParticipanteSalaPayload<ExtArgs>[]
+      salasCriadas: Prisma.$SalaPayload<ExtArgs>[]
       votos: Prisma.$VotoPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
       nome: string
       email: string | null
-      auth_id: string
+      senha: string | null
       inativo: boolean
       data_criacao: Date
     }, ExtArgs["result"]["pessoa"]>
@@ -2313,10 +2313,10 @@ export namespace Prisma {
    */
   export interface Prisma__PessoaClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
-    equipesMembro<T extends Pessoa$equipesMembroArgs<ExtArgs> = {}>(args?: Subset<T, Pessoa$equipesMembroArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$MembroEquipePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
-    salasCriadas<T extends Pessoa$salasCriadasArgs<ExtArgs> = {}>(args?: Subset<T, Pessoa$salasCriadasArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SalaPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
-    participacoes<T extends Pessoa$participacoesArgs<ExtArgs> = {}>(args?: Subset<T, Pessoa$participacoesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ParticipanteSalaPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     historiasCriadas<T extends Pessoa$historiasCriadasArgs<ExtArgs> = {}>(args?: Subset<T, Pessoa$historiasCriadasArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$HistoriaPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    equipesMembro<T extends Pessoa$equipesMembroArgs<ExtArgs> = {}>(args?: Subset<T, Pessoa$equipesMembroArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$MembroEquipePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    participacoes<T extends Pessoa$participacoesArgs<ExtArgs> = {}>(args?: Subset<T, Pessoa$participacoesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ParticipanteSalaPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    salasCriadas<T extends Pessoa$salasCriadasArgs<ExtArgs> = {}>(args?: Subset<T, Pessoa$salasCriadasArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SalaPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     votos<T extends Pessoa$votosArgs<ExtArgs> = {}>(args?: Subset<T, Pessoa$votosArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$VotoPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
@@ -2350,7 +2350,7 @@ export namespace Prisma {
     readonly id: FieldRef<"Pessoa", 'String'>
     readonly nome: FieldRef<"Pessoa", 'String'>
     readonly email: FieldRef<"Pessoa", 'String'>
-    readonly auth_id: FieldRef<"Pessoa", 'String'>
+    readonly senha: FieldRef<"Pessoa", 'String'>
     readonly inativo: FieldRef<"Pessoa", 'Boolean'>
     readonly data_criacao: FieldRef<"Pessoa", 'DateTime'>
   }
@@ -2741,6 +2741,30 @@ export namespace Prisma {
   }
 
   /**
+   * Pessoa.historiasCriadas
+   */
+  export type Pessoa$historiasCriadasArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Historia
+     */
+    select?: HistoriaSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Historia
+     */
+    omit?: HistoriaOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: HistoriaInclude<ExtArgs> | null
+    where?: HistoriaWhereInput
+    orderBy?: HistoriaOrderByWithRelationInput | HistoriaOrderByWithRelationInput[]
+    cursor?: HistoriaWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: HistoriaScalarFieldEnum | HistoriaScalarFieldEnum[]
+  }
+
+  /**
    * Pessoa.equipesMembro
    */
   export type Pessoa$equipesMembroArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -2762,30 +2786,6 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: MembroEquipeScalarFieldEnum | MembroEquipeScalarFieldEnum[]
-  }
-
-  /**
-   * Pessoa.salasCriadas
-   */
-  export type Pessoa$salasCriadasArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Sala
-     */
-    select?: SalaSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the Sala
-     */
-    omit?: SalaOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: SalaInclude<ExtArgs> | null
-    where?: SalaWhereInput
-    orderBy?: SalaOrderByWithRelationInput | SalaOrderByWithRelationInput[]
-    cursor?: SalaWhereUniqueInput
-    take?: number
-    skip?: number
-    distinct?: SalaScalarFieldEnum | SalaScalarFieldEnum[]
   }
 
   /**
@@ -2813,27 +2813,27 @@ export namespace Prisma {
   }
 
   /**
-   * Pessoa.historiasCriadas
+   * Pessoa.salasCriadas
    */
-  export type Pessoa$historiasCriadasArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+  export type Pessoa$salasCriadasArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     /**
-     * Select specific fields to fetch from the Historia
+     * Select specific fields to fetch from the Sala
      */
-    select?: HistoriaSelect<ExtArgs> | null
+    select?: SalaSelect<ExtArgs> | null
     /**
-     * Omit specific fields from the Historia
+     * Omit specific fields from the Sala
      */
-    omit?: HistoriaOmit<ExtArgs> | null
+    omit?: SalaOmit<ExtArgs> | null
     /**
      * Choose, which related nodes to fetch as well
      */
-    include?: HistoriaInclude<ExtArgs> | null
-    where?: HistoriaWhereInput
-    orderBy?: HistoriaOrderByWithRelationInput | HistoriaOrderByWithRelationInput[]
-    cursor?: HistoriaWhereUniqueInput
+    include?: SalaInclude<ExtArgs> | null
+    where?: SalaWhereInput
+    orderBy?: SalaOrderByWithRelationInput | SalaOrderByWithRelationInput[]
+    cursor?: SalaWhereUniqueInput
     take?: number
     skip?: number
-    distinct?: HistoriaScalarFieldEnum | HistoriaScalarFieldEnum[]
+    distinct?: SalaScalarFieldEnum | SalaScalarFieldEnum[]
   }
 
   /**
@@ -4107,8 +4107,8 @@ export namespace Prisma {
     pessoa_id?: boolean
     equipe_id?: boolean
     proprietario?: boolean
-    pessoa?: boolean | PessoaDefaultArgs<ExtArgs>
     equipe?: boolean | EquipeDefaultArgs<ExtArgs>
+    pessoa?: boolean | PessoaDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["membroEquipe"]>
 
   export type MembroEquipeSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
@@ -4116,8 +4116,8 @@ export namespace Prisma {
     pessoa_id?: boolean
     equipe_id?: boolean
     proprietario?: boolean
-    pessoa?: boolean | PessoaDefaultArgs<ExtArgs>
     equipe?: boolean | EquipeDefaultArgs<ExtArgs>
+    pessoa?: boolean | PessoaDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["membroEquipe"]>
 
   export type MembroEquipeSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
@@ -4125,8 +4125,8 @@ export namespace Prisma {
     pessoa_id?: boolean
     equipe_id?: boolean
     proprietario?: boolean
-    pessoa?: boolean | PessoaDefaultArgs<ExtArgs>
     equipe?: boolean | EquipeDefaultArgs<ExtArgs>
+    pessoa?: boolean | PessoaDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["membroEquipe"]>
 
   export type MembroEquipeSelectScalar = {
@@ -4138,23 +4138,23 @@ export namespace Prisma {
 
   export type MembroEquipeOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "pessoa_id" | "equipe_id" | "proprietario", ExtArgs["result"]["membroEquipe"]>
   export type MembroEquipeInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    pessoa?: boolean | PessoaDefaultArgs<ExtArgs>
     equipe?: boolean | EquipeDefaultArgs<ExtArgs>
+    pessoa?: boolean | PessoaDefaultArgs<ExtArgs>
   }
   export type MembroEquipeIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    pessoa?: boolean | PessoaDefaultArgs<ExtArgs>
     equipe?: boolean | EquipeDefaultArgs<ExtArgs>
+    pessoa?: boolean | PessoaDefaultArgs<ExtArgs>
   }
   export type MembroEquipeIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    pessoa?: boolean | PessoaDefaultArgs<ExtArgs>
     equipe?: boolean | EquipeDefaultArgs<ExtArgs>
+    pessoa?: boolean | PessoaDefaultArgs<ExtArgs>
   }
 
   export type $MembroEquipePayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "MembroEquipe"
     objects: {
-      pessoa: Prisma.$PessoaPayload<ExtArgs>
       equipe: Prisma.$EquipePayload<ExtArgs>
+      pessoa: Prisma.$PessoaPayload<ExtArgs>
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -4555,8 +4555,8 @@ export namespace Prisma {
    */
   export interface Prisma__MembroEquipeClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
-    pessoa<T extends PessoaDefaultArgs<ExtArgs> = {}>(args?: Subset<T, PessoaDefaultArgs<ExtArgs>>): Prisma__PessoaClient<$Result.GetResult<Prisma.$PessoaPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
     equipe<T extends EquipeDefaultArgs<ExtArgs> = {}>(args?: Subset<T, EquipeDefaultArgs<ExtArgs>>): Prisma__EquipeClient<$Result.GetResult<Prisma.$EquipePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    pessoa<T extends PessoaDefaultArgs<ExtArgs> = {}>(args?: Subset<T, PessoaDefaultArgs<ExtArgs>>): Prisma__PessoaClient<$Result.GetResult<Prisma.$PessoaPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -6284,9 +6284,9 @@ export namespace Prisma {
     inativo?: boolean
     data_criacao?: boolean
     data_alteracao?: boolean
-    proprietario?: boolean | PessoaDefaultArgs<ExtArgs>
-    participantes?: boolean | Sala$participantesArgs<ExtArgs>
     historias?: boolean | Sala$historiasArgs<ExtArgs>
+    participantes?: boolean | Sala$participantesArgs<ExtArgs>
+    proprietario?: boolean | PessoaDefaultArgs<ExtArgs>
     votos?: boolean | Sala$votosArgs<ExtArgs>
     _count?: boolean | SalaCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["sala"]>
@@ -6328,9 +6328,9 @@ export namespace Prisma {
 
   export type SalaOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "codigo" | "titulo" | "criado_por" | "senha" | "inativo" | "data_criacao" | "data_alteracao", ExtArgs["result"]["sala"]>
   export type SalaInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    proprietario?: boolean | PessoaDefaultArgs<ExtArgs>
-    participantes?: boolean | Sala$participantesArgs<ExtArgs>
     historias?: boolean | Sala$historiasArgs<ExtArgs>
+    participantes?: boolean | Sala$participantesArgs<ExtArgs>
+    proprietario?: boolean | PessoaDefaultArgs<ExtArgs>
     votos?: boolean | Sala$votosArgs<ExtArgs>
     _count?: boolean | SalaCountOutputTypeDefaultArgs<ExtArgs>
   }
@@ -6344,9 +6344,9 @@ export namespace Prisma {
   export type $SalaPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "Sala"
     objects: {
-      proprietario: Prisma.$PessoaPayload<ExtArgs>
-      participantes: Prisma.$ParticipanteSalaPayload<ExtArgs>[]
       historias: Prisma.$HistoriaPayload<ExtArgs>[]
+      participantes: Prisma.$ParticipanteSalaPayload<ExtArgs>[]
+      proprietario: Prisma.$PessoaPayload<ExtArgs>
       votos: Prisma.$VotoPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
@@ -6752,9 +6752,9 @@ export namespace Prisma {
    */
   export interface Prisma__SalaClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
-    proprietario<T extends PessoaDefaultArgs<ExtArgs> = {}>(args?: Subset<T, PessoaDefaultArgs<ExtArgs>>): Prisma__PessoaClient<$Result.GetResult<Prisma.$PessoaPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
-    participantes<T extends Sala$participantesArgs<ExtArgs> = {}>(args?: Subset<T, Sala$participantesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ParticipanteSalaPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     historias<T extends Sala$historiasArgs<ExtArgs> = {}>(args?: Subset<T, Sala$historiasArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$HistoriaPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    participantes<T extends Sala$participantesArgs<ExtArgs> = {}>(args?: Subset<T, Sala$participantesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ParticipanteSalaPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    proprietario<T extends PessoaDefaultArgs<ExtArgs> = {}>(args?: Subset<T, PessoaDefaultArgs<ExtArgs>>): Prisma__PessoaClient<$Result.GetResult<Prisma.$PessoaPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
     votos<T extends Sala$votosArgs<ExtArgs> = {}>(args?: Subset<T, Sala$votosArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$VotoPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
@@ -7189,30 +7189,6 @@ export namespace Prisma {
   }
 
   /**
-   * Sala.participantes
-   */
-  export type Sala$participantesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the ParticipanteSala
-     */
-    select?: ParticipanteSalaSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the ParticipanteSala
-     */
-    omit?: ParticipanteSalaOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: ParticipanteSalaInclude<ExtArgs> | null
-    where?: ParticipanteSalaWhereInput
-    orderBy?: ParticipanteSalaOrderByWithRelationInput | ParticipanteSalaOrderByWithRelationInput[]
-    cursor?: ParticipanteSalaWhereUniqueInput
-    take?: number
-    skip?: number
-    distinct?: ParticipanteSalaScalarFieldEnum | ParticipanteSalaScalarFieldEnum[]
-  }
-
-  /**
    * Sala.historias
    */
   export type Sala$historiasArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -7234,6 +7210,30 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: HistoriaScalarFieldEnum | HistoriaScalarFieldEnum[]
+  }
+
+  /**
+   * Sala.participantes
+   */
+  export type Sala$participantesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ParticipanteSala
+     */
+    select?: ParticipanteSalaSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ParticipanteSala
+     */
+    omit?: ParticipanteSalaOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ParticipanteSalaInclude<ExtArgs> | null
+    where?: ParticipanteSalaWhereInput
+    orderBy?: ParticipanteSalaOrderByWithRelationInput | ParticipanteSalaOrderByWithRelationInput[]
+    cursor?: ParticipanteSalaWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: ParticipanteSalaScalarFieldEnum | ParticipanteSalaScalarFieldEnum[]
   }
 
   /**
@@ -8520,8 +8520,8 @@ export namespace Prisma {
     data_criacao?: boolean
     data_alteracao?: boolean
     finalizada?: boolean
-    sala?: boolean | SalaDefaultArgs<ExtArgs>
     criador?: boolean | PessoaDefaultArgs<ExtArgs>
+    sala?: boolean | SalaDefaultArgs<ExtArgs>
     votos?: boolean | Historia$votosArgs<ExtArgs>
     _count?: boolean | HistoriaCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["historia"]>
@@ -8535,8 +8535,8 @@ export namespace Prisma {
     data_criacao?: boolean
     data_alteracao?: boolean
     finalizada?: boolean
-    sala?: boolean | SalaDefaultArgs<ExtArgs>
     criador?: boolean | PessoaDefaultArgs<ExtArgs>
+    sala?: boolean | SalaDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["historia"]>
 
   export type HistoriaSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
@@ -8548,8 +8548,8 @@ export namespace Prisma {
     data_criacao?: boolean
     data_alteracao?: boolean
     finalizada?: boolean
-    sala?: boolean | SalaDefaultArgs<ExtArgs>
     criador?: boolean | PessoaDefaultArgs<ExtArgs>
+    sala?: boolean | SalaDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["historia"]>
 
   export type HistoriaSelectScalar = {
@@ -8565,25 +8565,25 @@ export namespace Prisma {
 
   export type HistoriaOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "titulo" | "descricao" | "sala_id" | "criado_por" | "data_criacao" | "data_alteracao" | "finalizada", ExtArgs["result"]["historia"]>
   export type HistoriaInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    sala?: boolean | SalaDefaultArgs<ExtArgs>
     criador?: boolean | PessoaDefaultArgs<ExtArgs>
+    sala?: boolean | SalaDefaultArgs<ExtArgs>
     votos?: boolean | Historia$votosArgs<ExtArgs>
     _count?: boolean | HistoriaCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type HistoriaIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    sala?: boolean | SalaDefaultArgs<ExtArgs>
     criador?: boolean | PessoaDefaultArgs<ExtArgs>
+    sala?: boolean | SalaDefaultArgs<ExtArgs>
   }
   export type HistoriaIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    sala?: boolean | SalaDefaultArgs<ExtArgs>
     criador?: boolean | PessoaDefaultArgs<ExtArgs>
+    sala?: boolean | SalaDefaultArgs<ExtArgs>
   }
 
   export type $HistoriaPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "Historia"
     objects: {
-      sala: Prisma.$SalaPayload<ExtArgs>
       criador: Prisma.$PessoaPayload<ExtArgs>
+      sala: Prisma.$SalaPayload<ExtArgs>
       votos: Prisma.$VotoPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
@@ -8989,8 +8989,8 @@ export namespace Prisma {
    */
   export interface Prisma__HistoriaClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
-    sala<T extends SalaDefaultArgs<ExtArgs> = {}>(args?: Subset<T, SalaDefaultArgs<ExtArgs>>): Prisma__SalaClient<$Result.GetResult<Prisma.$SalaPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
     criador<T extends PessoaDefaultArgs<ExtArgs> = {}>(args?: Subset<T, PessoaDefaultArgs<ExtArgs>>): Prisma__PessoaClient<$Result.GetResult<Prisma.$PessoaPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    sala<T extends SalaDefaultArgs<ExtArgs> = {}>(args?: Subset<T, SalaDefaultArgs<ExtArgs>>): Prisma__SalaClient<$Result.GetResult<Prisma.$SalaPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
     votos<T extends Historia$votosArgs<ExtArgs> = {}>(args?: Subset<T, Historia$votosArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$VotoPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
@@ -9673,9 +9673,9 @@ export namespace Prisma {
     historia_id?: boolean
     valor?: boolean
     data_voto?: boolean
+    historia?: boolean | HistoriaDefaultArgs<ExtArgs>
     pessoa?: boolean | PessoaDefaultArgs<ExtArgs>
     sala?: boolean | SalaDefaultArgs<ExtArgs>
-    historia?: boolean | HistoriaDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["voto"]>
 
   export type VotoSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
@@ -9685,9 +9685,9 @@ export namespace Prisma {
     historia_id?: boolean
     valor?: boolean
     data_voto?: boolean
+    historia?: boolean | HistoriaDefaultArgs<ExtArgs>
     pessoa?: boolean | PessoaDefaultArgs<ExtArgs>
     sala?: boolean | SalaDefaultArgs<ExtArgs>
-    historia?: boolean | HistoriaDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["voto"]>
 
   export type VotoSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
@@ -9697,9 +9697,9 @@ export namespace Prisma {
     historia_id?: boolean
     valor?: boolean
     data_voto?: boolean
+    historia?: boolean | HistoriaDefaultArgs<ExtArgs>
     pessoa?: boolean | PessoaDefaultArgs<ExtArgs>
     sala?: boolean | SalaDefaultArgs<ExtArgs>
-    historia?: boolean | HistoriaDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["voto"]>
 
   export type VotoSelectScalar = {
@@ -9713,27 +9713,27 @@ export namespace Prisma {
 
   export type VotoOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "pessoa_id" | "sala_id" | "historia_id" | "valor" | "data_voto", ExtArgs["result"]["voto"]>
   export type VotoInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    historia?: boolean | HistoriaDefaultArgs<ExtArgs>
     pessoa?: boolean | PessoaDefaultArgs<ExtArgs>
     sala?: boolean | SalaDefaultArgs<ExtArgs>
-    historia?: boolean | HistoriaDefaultArgs<ExtArgs>
   }
   export type VotoIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    historia?: boolean | HistoriaDefaultArgs<ExtArgs>
     pessoa?: boolean | PessoaDefaultArgs<ExtArgs>
     sala?: boolean | SalaDefaultArgs<ExtArgs>
-    historia?: boolean | HistoriaDefaultArgs<ExtArgs>
   }
   export type VotoIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    historia?: boolean | HistoriaDefaultArgs<ExtArgs>
     pessoa?: boolean | PessoaDefaultArgs<ExtArgs>
     sala?: boolean | SalaDefaultArgs<ExtArgs>
-    historia?: boolean | HistoriaDefaultArgs<ExtArgs>
   }
 
   export type $VotoPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "Voto"
     objects: {
+      historia: Prisma.$HistoriaPayload<ExtArgs>
       pessoa: Prisma.$PessoaPayload<ExtArgs>
       sala: Prisma.$SalaPayload<ExtArgs>
-      historia: Prisma.$HistoriaPayload<ExtArgs>
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -10136,9 +10136,9 @@ export namespace Prisma {
    */
   export interface Prisma__VotoClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
+    historia<T extends HistoriaDefaultArgs<ExtArgs> = {}>(args?: Subset<T, HistoriaDefaultArgs<ExtArgs>>): Prisma__HistoriaClient<$Result.GetResult<Prisma.$HistoriaPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
     pessoa<T extends PessoaDefaultArgs<ExtArgs> = {}>(args?: Subset<T, PessoaDefaultArgs<ExtArgs>>): Prisma__PessoaClient<$Result.GetResult<Prisma.$PessoaPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
     sala<T extends SalaDefaultArgs<ExtArgs> = {}>(args?: Subset<T, SalaDefaultArgs<ExtArgs>>): Prisma__SalaClient<$Result.GetResult<Prisma.$SalaPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
-    historia<T extends HistoriaDefaultArgs<ExtArgs> = {}>(args?: Subset<T, HistoriaDefaultArgs<ExtArgs>>): Prisma__HistoriaClient<$Result.GetResult<Prisma.$HistoriaPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -10606,7 +10606,7 @@ export namespace Prisma {
     id: 'id',
     nome: 'nome',
     email: 'email',
-    auth_id: 'auth_id',
+    senha: 'senha',
     inativo: 'inativo',
     data_criacao: 'data_criacao'
   };
@@ -10796,13 +10796,13 @@ export namespace Prisma {
     id?: StringFilter<"Pessoa"> | string
     nome?: StringFilter<"Pessoa"> | string
     email?: StringNullableFilter<"Pessoa"> | string | null
-    auth_id?: StringFilter<"Pessoa"> | string
+    senha?: StringNullableFilter<"Pessoa"> | string | null
     inativo?: BoolFilter<"Pessoa"> | boolean
     data_criacao?: DateTimeFilter<"Pessoa"> | Date | string
-    equipesMembro?: MembroEquipeListRelationFilter
-    salasCriadas?: SalaListRelationFilter
-    participacoes?: ParticipanteSalaListRelationFilter
     historiasCriadas?: HistoriaListRelationFilter
+    equipesMembro?: MembroEquipeListRelationFilter
+    participacoes?: ParticipanteSalaListRelationFilter
+    salasCriadas?: SalaListRelationFilter
     votos?: VotoListRelationFilter
   }
 
@@ -10810,38 +10810,38 @@ export namespace Prisma {
     id?: SortOrder
     nome?: SortOrder
     email?: SortOrderInput | SortOrder
-    auth_id?: SortOrder
+    senha?: SortOrderInput | SortOrder
     inativo?: SortOrder
     data_criacao?: SortOrder
-    equipesMembro?: MembroEquipeOrderByRelationAggregateInput
-    salasCriadas?: SalaOrderByRelationAggregateInput
-    participacoes?: ParticipanteSalaOrderByRelationAggregateInput
     historiasCriadas?: HistoriaOrderByRelationAggregateInput
+    equipesMembro?: MembroEquipeOrderByRelationAggregateInput
+    participacoes?: ParticipanteSalaOrderByRelationAggregateInput
+    salasCriadas?: SalaOrderByRelationAggregateInput
     votos?: VotoOrderByRelationAggregateInput
   }
 
   export type PessoaWhereUniqueInput = Prisma.AtLeast<{
     id?: string
-    auth_id?: string
+    email?: string
     AND?: PessoaWhereInput | PessoaWhereInput[]
     OR?: PessoaWhereInput[]
     NOT?: PessoaWhereInput | PessoaWhereInput[]
     nome?: StringFilter<"Pessoa"> | string
-    email?: StringNullableFilter<"Pessoa"> | string | null
+    senha?: StringNullableFilter<"Pessoa"> | string | null
     inativo?: BoolFilter<"Pessoa"> | boolean
     data_criacao?: DateTimeFilter<"Pessoa"> | Date | string
-    equipesMembro?: MembroEquipeListRelationFilter
-    salasCriadas?: SalaListRelationFilter
-    participacoes?: ParticipanteSalaListRelationFilter
     historiasCriadas?: HistoriaListRelationFilter
+    equipesMembro?: MembroEquipeListRelationFilter
+    participacoes?: ParticipanteSalaListRelationFilter
+    salasCriadas?: SalaListRelationFilter
     votos?: VotoListRelationFilter
-  }, "id" | "auth_id">
+  }, "id" | "email">
 
   export type PessoaOrderByWithAggregationInput = {
     id?: SortOrder
     nome?: SortOrder
     email?: SortOrderInput | SortOrder
-    auth_id?: SortOrder
+    senha?: SortOrderInput | SortOrder
     inativo?: SortOrder
     data_criacao?: SortOrder
     _count?: PessoaCountOrderByAggregateInput
@@ -10856,7 +10856,7 @@ export namespace Prisma {
     id?: StringWithAggregatesFilter<"Pessoa"> | string
     nome?: StringWithAggregatesFilter<"Pessoa"> | string
     email?: StringNullableWithAggregatesFilter<"Pessoa"> | string | null
-    auth_id?: StringWithAggregatesFilter<"Pessoa"> | string
+    senha?: StringNullableWithAggregatesFilter<"Pessoa"> | string | null
     inativo?: BoolWithAggregatesFilter<"Pessoa"> | boolean
     data_criacao?: DateTimeWithAggregatesFilter<"Pessoa"> | Date | string
   }
@@ -10917,8 +10917,8 @@ export namespace Prisma {
     pessoa_id?: StringFilter<"MembroEquipe"> | string
     equipe_id?: StringFilter<"MembroEquipe"> | string
     proprietario?: BoolFilter<"MembroEquipe"> | boolean
-    pessoa?: XOR<PessoaScalarRelationFilter, PessoaWhereInput>
     equipe?: XOR<EquipeScalarRelationFilter, EquipeWhereInput>
+    pessoa?: XOR<PessoaScalarRelationFilter, PessoaWhereInput>
   }
 
   export type MembroEquipeOrderByWithRelationInput = {
@@ -10926,8 +10926,8 @@ export namespace Prisma {
     pessoa_id?: SortOrder
     equipe_id?: SortOrder
     proprietario?: SortOrder
-    pessoa?: PessoaOrderByWithRelationInput
     equipe?: EquipeOrderByWithRelationInput
+    pessoa?: PessoaOrderByWithRelationInput
   }
 
   export type MembroEquipeWhereUniqueInput = Prisma.AtLeast<{
@@ -10939,8 +10939,8 @@ export namespace Prisma {
     pessoa_id?: StringFilter<"MembroEquipe"> | string
     equipe_id?: StringFilter<"MembroEquipe"> | string
     proprietario?: BoolFilter<"MembroEquipe"> | boolean
-    pessoa?: XOR<PessoaScalarRelationFilter, PessoaWhereInput>
     equipe?: XOR<EquipeScalarRelationFilter, EquipeWhereInput>
+    pessoa?: XOR<PessoaScalarRelationFilter, PessoaWhereInput>
   }, "id" | "pessoa_id_equipe_id">
 
   export type MembroEquipeOrderByWithAggregationInput = {
@@ -11030,9 +11030,9 @@ export namespace Prisma {
     inativo?: BoolFilter<"Sala"> | boolean
     data_criacao?: DateTimeFilter<"Sala"> | Date | string
     data_alteracao?: DateTimeFilter<"Sala"> | Date | string
-    proprietario?: XOR<PessoaScalarRelationFilter, PessoaWhereInput>
-    participantes?: ParticipanteSalaListRelationFilter
     historias?: HistoriaListRelationFilter
+    participantes?: ParticipanteSalaListRelationFilter
+    proprietario?: XOR<PessoaScalarRelationFilter, PessoaWhereInput>
     votos?: VotoListRelationFilter
   }
 
@@ -11045,9 +11045,9 @@ export namespace Prisma {
     inativo?: SortOrder
     data_criacao?: SortOrder
     data_alteracao?: SortOrder
-    proprietario?: PessoaOrderByWithRelationInput
-    participantes?: ParticipanteSalaOrderByRelationAggregateInput
     historias?: HistoriaOrderByRelationAggregateInput
+    participantes?: ParticipanteSalaOrderByRelationAggregateInput
+    proprietario?: PessoaOrderByWithRelationInput
     votos?: VotoOrderByRelationAggregateInput
   }
 
@@ -11063,9 +11063,9 @@ export namespace Prisma {
     inativo?: BoolFilter<"Sala"> | boolean
     data_criacao?: DateTimeFilter<"Sala"> | Date | string
     data_alteracao?: DateTimeFilter<"Sala"> | Date | string
-    proprietario?: XOR<PessoaScalarRelationFilter, PessoaWhereInput>
-    participantes?: ParticipanteSalaListRelationFilter
     historias?: HistoriaListRelationFilter
+    participantes?: ParticipanteSalaListRelationFilter
+    proprietario?: XOR<PessoaScalarRelationFilter, PessoaWhereInput>
     votos?: VotoListRelationFilter
   }, "id">
 
@@ -11165,8 +11165,8 @@ export namespace Prisma {
     data_criacao?: DateTimeFilter<"Historia"> | Date | string
     data_alteracao?: DateTimeFilter<"Historia"> | Date | string
     finalizada?: BoolFilter<"Historia"> | boolean
-    sala?: XOR<SalaScalarRelationFilter, SalaWhereInput>
     criador?: XOR<PessoaScalarRelationFilter, PessoaWhereInput>
+    sala?: XOR<SalaScalarRelationFilter, SalaWhereInput>
     votos?: VotoListRelationFilter
   }
 
@@ -11179,8 +11179,8 @@ export namespace Prisma {
     data_criacao?: SortOrder
     data_alteracao?: SortOrder
     finalizada?: SortOrder
-    sala?: SalaOrderByWithRelationInput
     criador?: PessoaOrderByWithRelationInput
+    sala?: SalaOrderByWithRelationInput
     votos?: VotoOrderByRelationAggregateInput
   }
 
@@ -11196,8 +11196,8 @@ export namespace Prisma {
     data_criacao?: DateTimeFilter<"Historia"> | Date | string
     data_alteracao?: DateTimeFilter<"Historia"> | Date | string
     finalizada?: BoolFilter<"Historia"> | boolean
-    sala?: XOR<SalaScalarRelationFilter, SalaWhereInput>
     criador?: XOR<PessoaScalarRelationFilter, PessoaWhereInput>
+    sala?: XOR<SalaScalarRelationFilter, SalaWhereInput>
     votos?: VotoListRelationFilter
   }, "id">
 
@@ -11239,9 +11239,9 @@ export namespace Prisma {
     historia_id?: StringFilter<"Voto"> | string
     valor?: IntFilter<"Voto"> | number
     data_voto?: DateTimeFilter<"Voto"> | Date | string
+    historia?: XOR<HistoriaScalarRelationFilter, HistoriaWhereInput>
     pessoa?: XOR<PessoaScalarRelationFilter, PessoaWhereInput>
     sala?: XOR<SalaScalarRelationFilter, SalaWhereInput>
-    historia?: XOR<HistoriaScalarRelationFilter, HistoriaWhereInput>
   }
 
   export type VotoOrderByWithRelationInput = {
@@ -11251,9 +11251,9 @@ export namespace Prisma {
     historia_id?: SortOrder
     valor?: SortOrder
     data_voto?: SortOrder
+    historia?: HistoriaOrderByWithRelationInput
     pessoa?: PessoaOrderByWithRelationInput
     sala?: SalaOrderByWithRelationInput
-    historia?: HistoriaOrderByWithRelationInput
   }
 
   export type VotoWhereUniqueInput = Prisma.AtLeast<{
@@ -11267,9 +11267,9 @@ export namespace Prisma {
     historia_id?: StringFilter<"Voto"> | string
     valor?: IntFilter<"Voto"> | number
     data_voto?: DateTimeFilter<"Voto"> | Date | string
+    historia?: XOR<HistoriaScalarRelationFilter, HistoriaWhereInput>
     pessoa?: XOR<PessoaScalarRelationFilter, PessoaWhereInput>
     sala?: XOR<SalaScalarRelationFilter, SalaWhereInput>
-    historia?: XOR<HistoriaScalarRelationFilter, HistoriaWhereInput>
   }, "id" | "sala_id_historia_id_pessoa_id">
 
   export type VotoOrderByWithAggregationInput = {
@@ -11299,30 +11299,30 @@ export namespace Prisma {
   }
 
   export type PessoaCreateInput = {
-    id: string
+    id?: string
     nome: string
     email?: string | null
-    auth_id: string
+    senha?: string | null
     inativo?: boolean
     data_criacao?: Date | string
-    equipesMembro?: MembroEquipeCreateNestedManyWithoutPessoaInput
-    salasCriadas?: SalaCreateNestedManyWithoutProprietarioInput
-    participacoes?: ParticipanteSalaCreateNestedManyWithoutPessoaInput
     historiasCriadas?: HistoriaCreateNestedManyWithoutCriadorInput
+    equipesMembro?: MembroEquipeCreateNestedManyWithoutPessoaInput
+    participacoes?: ParticipanteSalaCreateNestedManyWithoutPessoaInput
+    salasCriadas?: SalaCreateNestedManyWithoutProprietarioInput
     votos?: VotoCreateNestedManyWithoutPessoaInput
   }
 
   export type PessoaUncheckedCreateInput = {
-    id: string
+    id?: string
     nome: string
     email?: string | null
-    auth_id: string
+    senha?: string | null
     inativo?: boolean
     data_criacao?: Date | string
-    equipesMembro?: MembroEquipeUncheckedCreateNestedManyWithoutPessoaInput
-    salasCriadas?: SalaUncheckedCreateNestedManyWithoutProprietarioInput
-    participacoes?: ParticipanteSalaUncheckedCreateNestedManyWithoutPessoaInput
     historiasCriadas?: HistoriaUncheckedCreateNestedManyWithoutCriadorInput
+    equipesMembro?: MembroEquipeUncheckedCreateNestedManyWithoutPessoaInput
+    participacoes?: ParticipanteSalaUncheckedCreateNestedManyWithoutPessoaInput
+    salasCriadas?: SalaUncheckedCreateNestedManyWithoutProprietarioInput
     votos?: VotoUncheckedCreateNestedManyWithoutPessoaInput
   }
 
@@ -11330,13 +11330,13 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     nome?: StringFieldUpdateOperationsInput | string
     email?: NullableStringFieldUpdateOperationsInput | string | null
-    auth_id?: StringFieldUpdateOperationsInput | string
+    senha?: NullableStringFieldUpdateOperationsInput | string | null
     inativo?: BoolFieldUpdateOperationsInput | boolean
     data_criacao?: DateTimeFieldUpdateOperationsInput | Date | string
-    equipesMembro?: MembroEquipeUpdateManyWithoutPessoaNestedInput
-    salasCriadas?: SalaUpdateManyWithoutProprietarioNestedInput
-    participacoes?: ParticipanteSalaUpdateManyWithoutPessoaNestedInput
     historiasCriadas?: HistoriaUpdateManyWithoutCriadorNestedInput
+    equipesMembro?: MembroEquipeUpdateManyWithoutPessoaNestedInput
+    participacoes?: ParticipanteSalaUpdateManyWithoutPessoaNestedInput
+    salasCriadas?: SalaUpdateManyWithoutProprietarioNestedInput
     votos?: VotoUpdateManyWithoutPessoaNestedInput
   }
 
@@ -11344,21 +11344,21 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     nome?: StringFieldUpdateOperationsInput | string
     email?: NullableStringFieldUpdateOperationsInput | string | null
-    auth_id?: StringFieldUpdateOperationsInput | string
+    senha?: NullableStringFieldUpdateOperationsInput | string | null
     inativo?: BoolFieldUpdateOperationsInput | boolean
     data_criacao?: DateTimeFieldUpdateOperationsInput | Date | string
-    equipesMembro?: MembroEquipeUncheckedUpdateManyWithoutPessoaNestedInput
-    salasCriadas?: SalaUncheckedUpdateManyWithoutProprietarioNestedInput
-    participacoes?: ParticipanteSalaUncheckedUpdateManyWithoutPessoaNestedInput
     historiasCriadas?: HistoriaUncheckedUpdateManyWithoutCriadorNestedInput
+    equipesMembro?: MembroEquipeUncheckedUpdateManyWithoutPessoaNestedInput
+    participacoes?: ParticipanteSalaUncheckedUpdateManyWithoutPessoaNestedInput
+    salasCriadas?: SalaUncheckedUpdateManyWithoutProprietarioNestedInput
     votos?: VotoUncheckedUpdateManyWithoutPessoaNestedInput
   }
 
   export type PessoaCreateManyInput = {
-    id: string
+    id?: string
     nome: string
     email?: string | null
-    auth_id: string
+    senha?: string | null
     inativo?: boolean
     data_criacao?: Date | string
   }
@@ -11367,7 +11367,7 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     nome?: StringFieldUpdateOperationsInput | string
     email?: NullableStringFieldUpdateOperationsInput | string | null
-    auth_id?: StringFieldUpdateOperationsInput | string
+    senha?: NullableStringFieldUpdateOperationsInput | string | null
     inativo?: BoolFieldUpdateOperationsInput | boolean
     data_criacao?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -11376,7 +11376,7 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     nome?: StringFieldUpdateOperationsInput | string
     email?: NullableStringFieldUpdateOperationsInput | string | null
-    auth_id?: StringFieldUpdateOperationsInput | string
+    senha?: NullableStringFieldUpdateOperationsInput | string | null
     inativo?: BoolFieldUpdateOperationsInput | boolean
     data_criacao?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -11434,8 +11434,8 @@ export namespace Prisma {
   export type MembroEquipeCreateInput = {
     id?: string
     proprietario?: boolean
-    pessoa: PessoaCreateNestedOneWithoutEquipesMembroInput
     equipe: EquipeCreateNestedOneWithoutMembrosInput
+    pessoa: PessoaCreateNestedOneWithoutEquipesMembroInput
   }
 
   export type MembroEquipeUncheckedCreateInput = {
@@ -11448,8 +11448,8 @@ export namespace Prisma {
   export type MembroEquipeUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
     proprietario?: BoolFieldUpdateOperationsInput | boolean
-    pessoa?: PessoaUpdateOneRequiredWithoutEquipesMembroNestedInput
     equipe?: EquipeUpdateOneRequiredWithoutMembrosNestedInput
+    pessoa?: PessoaUpdateOneRequiredWithoutEquipesMembroNestedInput
   }
 
   export type MembroEquipeUncheckedUpdateInput = {
@@ -11541,9 +11541,9 @@ export namespace Prisma {
     inativo?: boolean
     data_criacao?: Date | string
     data_alteracao?: Date | string
-    proprietario: PessoaCreateNestedOneWithoutSalasCriadasInput
-    participantes?: ParticipanteSalaCreateNestedManyWithoutSalaInput
     historias?: HistoriaCreateNestedManyWithoutSalaInput
+    participantes?: ParticipanteSalaCreateNestedManyWithoutSalaInput
+    proprietario: PessoaCreateNestedOneWithoutSalasCriadasInput
     votos?: VotoCreateNestedManyWithoutSalaInput
   }
 
@@ -11556,8 +11556,8 @@ export namespace Prisma {
     inativo?: boolean
     data_criacao?: Date | string
     data_alteracao?: Date | string
-    participantes?: ParticipanteSalaUncheckedCreateNestedManyWithoutSalaInput
     historias?: HistoriaUncheckedCreateNestedManyWithoutSalaInput
+    participantes?: ParticipanteSalaUncheckedCreateNestedManyWithoutSalaInput
     votos?: VotoUncheckedCreateNestedManyWithoutSalaInput
   }
 
@@ -11569,9 +11569,9 @@ export namespace Prisma {
     inativo?: BoolFieldUpdateOperationsInput | boolean
     data_criacao?: DateTimeFieldUpdateOperationsInput | Date | string
     data_alteracao?: DateTimeFieldUpdateOperationsInput | Date | string
-    proprietario?: PessoaUpdateOneRequiredWithoutSalasCriadasNestedInput
-    participantes?: ParticipanteSalaUpdateManyWithoutSalaNestedInput
     historias?: HistoriaUpdateManyWithoutSalaNestedInput
+    participantes?: ParticipanteSalaUpdateManyWithoutSalaNestedInput
+    proprietario?: PessoaUpdateOneRequiredWithoutSalasCriadasNestedInput
     votos?: VotoUpdateManyWithoutSalaNestedInput
   }
 
@@ -11584,8 +11584,8 @@ export namespace Prisma {
     inativo?: BoolFieldUpdateOperationsInput | boolean
     data_criacao?: DateTimeFieldUpdateOperationsInput | Date | string
     data_alteracao?: DateTimeFieldUpdateOperationsInput | Date | string
-    participantes?: ParticipanteSalaUncheckedUpdateManyWithoutSalaNestedInput
     historias?: HistoriaUncheckedUpdateManyWithoutSalaNestedInput
+    participantes?: ParticipanteSalaUncheckedUpdateManyWithoutSalaNestedInput
     votos?: VotoUncheckedUpdateManyWithoutSalaNestedInput
   }
 
@@ -11675,8 +11675,8 @@ export namespace Prisma {
     data_criacao?: Date | string
     data_alteracao?: Date | string
     finalizada?: boolean
-    sala: SalaCreateNestedOneWithoutHistoriasInput
     criador: PessoaCreateNestedOneWithoutHistoriasCriadasInput
+    sala: SalaCreateNestedOneWithoutHistoriasInput
     votos?: VotoCreateNestedManyWithoutHistoriaInput
   }
 
@@ -11699,8 +11699,8 @@ export namespace Prisma {
     data_criacao?: DateTimeFieldUpdateOperationsInput | Date | string
     data_alteracao?: DateTimeFieldUpdateOperationsInput | Date | string
     finalizada?: BoolFieldUpdateOperationsInput | boolean
-    sala?: SalaUpdateOneRequiredWithoutHistoriasNestedInput
     criador?: PessoaUpdateOneRequiredWithoutHistoriasCriadasNestedInput
+    sala?: SalaUpdateOneRequiredWithoutHistoriasNestedInput
     votos?: VotoUpdateManyWithoutHistoriaNestedInput
   }
 
@@ -11751,9 +11751,9 @@ export namespace Prisma {
     id?: string
     valor: number
     data_voto?: Date | string
+    historia: HistoriaCreateNestedOneWithoutVotosInput
     pessoa: PessoaCreateNestedOneWithoutVotosInput
     sala: SalaCreateNestedOneWithoutVotosInput
-    historia: HistoriaCreateNestedOneWithoutVotosInput
   }
 
   export type VotoUncheckedCreateInput = {
@@ -11769,9 +11769,9 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     valor?: IntFieldUpdateOperationsInput | number
     data_voto?: DateTimeFieldUpdateOperationsInput | Date | string
+    historia?: HistoriaUpdateOneRequiredWithoutVotosNestedInput
     pessoa?: PessoaUpdateOneRequiredWithoutVotosNestedInput
     sala?: SalaUpdateOneRequiredWithoutVotosNestedInput
-    historia?: HistoriaUpdateOneRequiredWithoutVotosNestedInput
   }
 
   export type VotoUncheckedUpdateInput = {
@@ -11853,16 +11853,16 @@ export namespace Prisma {
     not?: NestedDateTimeFilter<$PrismaModel> | Date | string
   }
 
+  export type HistoriaListRelationFilter = {
+    every?: HistoriaWhereInput
+    some?: HistoriaWhereInput
+    none?: HistoriaWhereInput
+  }
+
   export type MembroEquipeListRelationFilter = {
     every?: MembroEquipeWhereInput
     some?: MembroEquipeWhereInput
     none?: MembroEquipeWhereInput
-  }
-
-  export type SalaListRelationFilter = {
-    every?: SalaWhereInput
-    some?: SalaWhereInput
-    none?: SalaWhereInput
   }
 
   export type ParticipanteSalaListRelationFilter = {
@@ -11871,10 +11871,10 @@ export namespace Prisma {
     none?: ParticipanteSalaWhereInput
   }
 
-  export type HistoriaListRelationFilter = {
-    every?: HistoriaWhereInput
-    some?: HistoriaWhereInput
-    none?: HistoriaWhereInput
+  export type SalaListRelationFilter = {
+    every?: SalaWhereInput
+    some?: SalaWhereInput
+    none?: SalaWhereInput
   }
 
   export type VotoListRelationFilter = {
@@ -11888,11 +11888,11 @@ export namespace Prisma {
     nulls?: NullsOrder
   }
 
-  export type MembroEquipeOrderByRelationAggregateInput = {
+  export type HistoriaOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
-  export type SalaOrderByRelationAggregateInput = {
+  export type MembroEquipeOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
@@ -11900,7 +11900,7 @@ export namespace Prisma {
     _count?: SortOrder
   }
 
-  export type HistoriaOrderByRelationAggregateInput = {
+  export type SalaOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
@@ -11912,7 +11912,7 @@ export namespace Prisma {
     id?: SortOrder
     nome?: SortOrder
     email?: SortOrder
-    auth_id?: SortOrder
+    senha?: SortOrder
     inativo?: SortOrder
     data_criacao?: SortOrder
   }
@@ -11921,7 +11921,7 @@ export namespace Prisma {
     id?: SortOrder
     nome?: SortOrder
     email?: SortOrder
-    auth_id?: SortOrder
+    senha?: SortOrder
     inativo?: SortOrder
     data_criacao?: SortOrder
   }
@@ -11930,7 +11930,7 @@ export namespace Prisma {
     id?: SortOrder
     nome?: SortOrder
     email?: SortOrder
-    auth_id?: SortOrder
+    senha?: SortOrder
     inativo?: SortOrder
     data_criacao?: SortOrder
   }
@@ -12021,14 +12021,14 @@ export namespace Prisma {
     inativo?: SortOrder
   }
 
-  export type PessoaScalarRelationFilter = {
-    is?: PessoaWhereInput
-    isNot?: PessoaWhereInput
-  }
-
   export type EquipeScalarRelationFilter = {
     is?: EquipeWhereInput
     isNot?: EquipeWhereInput
+  }
+
+  export type PessoaScalarRelationFilter = {
+    is?: PessoaWhereInput
+    isNot?: PessoaWhereInput
   }
 
   export type MembroEquipePessoa_idEquipe_idCompoundUniqueInput = {
@@ -12259,18 +12259,18 @@ export namespace Prisma {
     valor?: SortOrder
   }
 
+  export type HistoriaCreateNestedManyWithoutCriadorInput = {
+    create?: XOR<HistoriaCreateWithoutCriadorInput, HistoriaUncheckedCreateWithoutCriadorInput> | HistoriaCreateWithoutCriadorInput[] | HistoriaUncheckedCreateWithoutCriadorInput[]
+    connectOrCreate?: HistoriaCreateOrConnectWithoutCriadorInput | HistoriaCreateOrConnectWithoutCriadorInput[]
+    createMany?: HistoriaCreateManyCriadorInputEnvelope
+    connect?: HistoriaWhereUniqueInput | HistoriaWhereUniqueInput[]
+  }
+
   export type MembroEquipeCreateNestedManyWithoutPessoaInput = {
     create?: XOR<MembroEquipeCreateWithoutPessoaInput, MembroEquipeUncheckedCreateWithoutPessoaInput> | MembroEquipeCreateWithoutPessoaInput[] | MembroEquipeUncheckedCreateWithoutPessoaInput[]
     connectOrCreate?: MembroEquipeCreateOrConnectWithoutPessoaInput | MembroEquipeCreateOrConnectWithoutPessoaInput[]
     createMany?: MembroEquipeCreateManyPessoaInputEnvelope
     connect?: MembroEquipeWhereUniqueInput | MembroEquipeWhereUniqueInput[]
-  }
-
-  export type SalaCreateNestedManyWithoutProprietarioInput = {
-    create?: XOR<SalaCreateWithoutProprietarioInput, SalaUncheckedCreateWithoutProprietarioInput> | SalaCreateWithoutProprietarioInput[] | SalaUncheckedCreateWithoutProprietarioInput[]
-    connectOrCreate?: SalaCreateOrConnectWithoutProprietarioInput | SalaCreateOrConnectWithoutProprietarioInput[]
-    createMany?: SalaCreateManyProprietarioInputEnvelope
-    connect?: SalaWhereUniqueInput | SalaWhereUniqueInput[]
   }
 
   export type ParticipanteSalaCreateNestedManyWithoutPessoaInput = {
@@ -12280,11 +12280,11 @@ export namespace Prisma {
     connect?: ParticipanteSalaWhereUniqueInput | ParticipanteSalaWhereUniqueInput[]
   }
 
-  export type HistoriaCreateNestedManyWithoutCriadorInput = {
-    create?: XOR<HistoriaCreateWithoutCriadorInput, HistoriaUncheckedCreateWithoutCriadorInput> | HistoriaCreateWithoutCriadorInput[] | HistoriaUncheckedCreateWithoutCriadorInput[]
-    connectOrCreate?: HistoriaCreateOrConnectWithoutCriadorInput | HistoriaCreateOrConnectWithoutCriadorInput[]
-    createMany?: HistoriaCreateManyCriadorInputEnvelope
-    connect?: HistoriaWhereUniqueInput | HistoriaWhereUniqueInput[]
+  export type SalaCreateNestedManyWithoutProprietarioInput = {
+    create?: XOR<SalaCreateWithoutProprietarioInput, SalaUncheckedCreateWithoutProprietarioInput> | SalaCreateWithoutProprietarioInput[] | SalaUncheckedCreateWithoutProprietarioInput[]
+    connectOrCreate?: SalaCreateOrConnectWithoutProprietarioInput | SalaCreateOrConnectWithoutProprietarioInput[]
+    createMany?: SalaCreateManyProprietarioInputEnvelope
+    connect?: SalaWhereUniqueInput | SalaWhereUniqueInput[]
   }
 
   export type VotoCreateNestedManyWithoutPessoaInput = {
@@ -12294,18 +12294,18 @@ export namespace Prisma {
     connect?: VotoWhereUniqueInput | VotoWhereUniqueInput[]
   }
 
+  export type HistoriaUncheckedCreateNestedManyWithoutCriadorInput = {
+    create?: XOR<HistoriaCreateWithoutCriadorInput, HistoriaUncheckedCreateWithoutCriadorInput> | HistoriaCreateWithoutCriadorInput[] | HistoriaUncheckedCreateWithoutCriadorInput[]
+    connectOrCreate?: HistoriaCreateOrConnectWithoutCriadorInput | HistoriaCreateOrConnectWithoutCriadorInput[]
+    createMany?: HistoriaCreateManyCriadorInputEnvelope
+    connect?: HistoriaWhereUniqueInput | HistoriaWhereUniqueInput[]
+  }
+
   export type MembroEquipeUncheckedCreateNestedManyWithoutPessoaInput = {
     create?: XOR<MembroEquipeCreateWithoutPessoaInput, MembroEquipeUncheckedCreateWithoutPessoaInput> | MembroEquipeCreateWithoutPessoaInput[] | MembroEquipeUncheckedCreateWithoutPessoaInput[]
     connectOrCreate?: MembroEquipeCreateOrConnectWithoutPessoaInput | MembroEquipeCreateOrConnectWithoutPessoaInput[]
     createMany?: MembroEquipeCreateManyPessoaInputEnvelope
     connect?: MembroEquipeWhereUniqueInput | MembroEquipeWhereUniqueInput[]
-  }
-
-  export type SalaUncheckedCreateNestedManyWithoutProprietarioInput = {
-    create?: XOR<SalaCreateWithoutProprietarioInput, SalaUncheckedCreateWithoutProprietarioInput> | SalaCreateWithoutProprietarioInput[] | SalaUncheckedCreateWithoutProprietarioInput[]
-    connectOrCreate?: SalaCreateOrConnectWithoutProprietarioInput | SalaCreateOrConnectWithoutProprietarioInput[]
-    createMany?: SalaCreateManyProprietarioInputEnvelope
-    connect?: SalaWhereUniqueInput | SalaWhereUniqueInput[]
   }
 
   export type ParticipanteSalaUncheckedCreateNestedManyWithoutPessoaInput = {
@@ -12315,11 +12315,11 @@ export namespace Prisma {
     connect?: ParticipanteSalaWhereUniqueInput | ParticipanteSalaWhereUniqueInput[]
   }
 
-  export type HistoriaUncheckedCreateNestedManyWithoutCriadorInput = {
-    create?: XOR<HistoriaCreateWithoutCriadorInput, HistoriaUncheckedCreateWithoutCriadorInput> | HistoriaCreateWithoutCriadorInput[] | HistoriaUncheckedCreateWithoutCriadorInput[]
-    connectOrCreate?: HistoriaCreateOrConnectWithoutCriadorInput | HistoriaCreateOrConnectWithoutCriadorInput[]
-    createMany?: HistoriaCreateManyCriadorInputEnvelope
-    connect?: HistoriaWhereUniqueInput | HistoriaWhereUniqueInput[]
+  export type SalaUncheckedCreateNestedManyWithoutProprietarioInput = {
+    create?: XOR<SalaCreateWithoutProprietarioInput, SalaUncheckedCreateWithoutProprietarioInput> | SalaCreateWithoutProprietarioInput[] | SalaUncheckedCreateWithoutProprietarioInput[]
+    connectOrCreate?: SalaCreateOrConnectWithoutProprietarioInput | SalaCreateOrConnectWithoutProprietarioInput[]
+    createMany?: SalaCreateManyProprietarioInputEnvelope
+    connect?: SalaWhereUniqueInput | SalaWhereUniqueInput[]
   }
 
   export type VotoUncheckedCreateNestedManyWithoutPessoaInput = {
@@ -12345,6 +12345,20 @@ export namespace Prisma {
     set?: Date | string
   }
 
+  export type HistoriaUpdateManyWithoutCriadorNestedInput = {
+    create?: XOR<HistoriaCreateWithoutCriadorInput, HistoriaUncheckedCreateWithoutCriadorInput> | HistoriaCreateWithoutCriadorInput[] | HistoriaUncheckedCreateWithoutCriadorInput[]
+    connectOrCreate?: HistoriaCreateOrConnectWithoutCriadorInput | HistoriaCreateOrConnectWithoutCriadorInput[]
+    upsert?: HistoriaUpsertWithWhereUniqueWithoutCriadorInput | HistoriaUpsertWithWhereUniqueWithoutCriadorInput[]
+    createMany?: HistoriaCreateManyCriadorInputEnvelope
+    set?: HistoriaWhereUniqueInput | HistoriaWhereUniqueInput[]
+    disconnect?: HistoriaWhereUniqueInput | HistoriaWhereUniqueInput[]
+    delete?: HistoriaWhereUniqueInput | HistoriaWhereUniqueInput[]
+    connect?: HistoriaWhereUniqueInput | HistoriaWhereUniqueInput[]
+    update?: HistoriaUpdateWithWhereUniqueWithoutCriadorInput | HistoriaUpdateWithWhereUniqueWithoutCriadorInput[]
+    updateMany?: HistoriaUpdateManyWithWhereWithoutCriadorInput | HistoriaUpdateManyWithWhereWithoutCriadorInput[]
+    deleteMany?: HistoriaScalarWhereInput | HistoriaScalarWhereInput[]
+  }
+
   export type MembroEquipeUpdateManyWithoutPessoaNestedInput = {
     create?: XOR<MembroEquipeCreateWithoutPessoaInput, MembroEquipeUncheckedCreateWithoutPessoaInput> | MembroEquipeCreateWithoutPessoaInput[] | MembroEquipeUncheckedCreateWithoutPessoaInput[]
     connectOrCreate?: MembroEquipeCreateOrConnectWithoutPessoaInput | MembroEquipeCreateOrConnectWithoutPessoaInput[]
@@ -12357,20 +12371,6 @@ export namespace Prisma {
     update?: MembroEquipeUpdateWithWhereUniqueWithoutPessoaInput | MembroEquipeUpdateWithWhereUniqueWithoutPessoaInput[]
     updateMany?: MembroEquipeUpdateManyWithWhereWithoutPessoaInput | MembroEquipeUpdateManyWithWhereWithoutPessoaInput[]
     deleteMany?: MembroEquipeScalarWhereInput | MembroEquipeScalarWhereInput[]
-  }
-
-  export type SalaUpdateManyWithoutProprietarioNestedInput = {
-    create?: XOR<SalaCreateWithoutProprietarioInput, SalaUncheckedCreateWithoutProprietarioInput> | SalaCreateWithoutProprietarioInput[] | SalaUncheckedCreateWithoutProprietarioInput[]
-    connectOrCreate?: SalaCreateOrConnectWithoutProprietarioInput | SalaCreateOrConnectWithoutProprietarioInput[]
-    upsert?: SalaUpsertWithWhereUniqueWithoutProprietarioInput | SalaUpsertWithWhereUniqueWithoutProprietarioInput[]
-    createMany?: SalaCreateManyProprietarioInputEnvelope
-    set?: SalaWhereUniqueInput | SalaWhereUniqueInput[]
-    disconnect?: SalaWhereUniqueInput | SalaWhereUniqueInput[]
-    delete?: SalaWhereUniqueInput | SalaWhereUniqueInput[]
-    connect?: SalaWhereUniqueInput | SalaWhereUniqueInput[]
-    update?: SalaUpdateWithWhereUniqueWithoutProprietarioInput | SalaUpdateWithWhereUniqueWithoutProprietarioInput[]
-    updateMany?: SalaUpdateManyWithWhereWithoutProprietarioInput | SalaUpdateManyWithWhereWithoutProprietarioInput[]
-    deleteMany?: SalaScalarWhereInput | SalaScalarWhereInput[]
   }
 
   export type ParticipanteSalaUpdateManyWithoutPessoaNestedInput = {
@@ -12387,18 +12387,18 @@ export namespace Prisma {
     deleteMany?: ParticipanteSalaScalarWhereInput | ParticipanteSalaScalarWhereInput[]
   }
 
-  export type HistoriaUpdateManyWithoutCriadorNestedInput = {
-    create?: XOR<HistoriaCreateWithoutCriadorInput, HistoriaUncheckedCreateWithoutCriadorInput> | HistoriaCreateWithoutCriadorInput[] | HistoriaUncheckedCreateWithoutCriadorInput[]
-    connectOrCreate?: HistoriaCreateOrConnectWithoutCriadorInput | HistoriaCreateOrConnectWithoutCriadorInput[]
-    upsert?: HistoriaUpsertWithWhereUniqueWithoutCriadorInput | HistoriaUpsertWithWhereUniqueWithoutCriadorInput[]
-    createMany?: HistoriaCreateManyCriadorInputEnvelope
-    set?: HistoriaWhereUniqueInput | HistoriaWhereUniqueInput[]
-    disconnect?: HistoriaWhereUniqueInput | HistoriaWhereUniqueInput[]
-    delete?: HistoriaWhereUniqueInput | HistoriaWhereUniqueInput[]
-    connect?: HistoriaWhereUniqueInput | HistoriaWhereUniqueInput[]
-    update?: HistoriaUpdateWithWhereUniqueWithoutCriadorInput | HistoriaUpdateWithWhereUniqueWithoutCriadorInput[]
-    updateMany?: HistoriaUpdateManyWithWhereWithoutCriadorInput | HistoriaUpdateManyWithWhereWithoutCriadorInput[]
-    deleteMany?: HistoriaScalarWhereInput | HistoriaScalarWhereInput[]
+  export type SalaUpdateManyWithoutProprietarioNestedInput = {
+    create?: XOR<SalaCreateWithoutProprietarioInput, SalaUncheckedCreateWithoutProprietarioInput> | SalaCreateWithoutProprietarioInput[] | SalaUncheckedCreateWithoutProprietarioInput[]
+    connectOrCreate?: SalaCreateOrConnectWithoutProprietarioInput | SalaCreateOrConnectWithoutProprietarioInput[]
+    upsert?: SalaUpsertWithWhereUniqueWithoutProprietarioInput | SalaUpsertWithWhereUniqueWithoutProprietarioInput[]
+    createMany?: SalaCreateManyProprietarioInputEnvelope
+    set?: SalaWhereUniqueInput | SalaWhereUniqueInput[]
+    disconnect?: SalaWhereUniqueInput | SalaWhereUniqueInput[]
+    delete?: SalaWhereUniqueInput | SalaWhereUniqueInput[]
+    connect?: SalaWhereUniqueInput | SalaWhereUniqueInput[]
+    update?: SalaUpdateWithWhereUniqueWithoutProprietarioInput | SalaUpdateWithWhereUniqueWithoutProprietarioInput[]
+    updateMany?: SalaUpdateManyWithWhereWithoutProprietarioInput | SalaUpdateManyWithWhereWithoutProprietarioInput[]
+    deleteMany?: SalaScalarWhereInput | SalaScalarWhereInput[]
   }
 
   export type VotoUpdateManyWithoutPessoaNestedInput = {
@@ -12415,6 +12415,20 @@ export namespace Prisma {
     deleteMany?: VotoScalarWhereInput | VotoScalarWhereInput[]
   }
 
+  export type HistoriaUncheckedUpdateManyWithoutCriadorNestedInput = {
+    create?: XOR<HistoriaCreateWithoutCriadorInput, HistoriaUncheckedCreateWithoutCriadorInput> | HistoriaCreateWithoutCriadorInput[] | HistoriaUncheckedCreateWithoutCriadorInput[]
+    connectOrCreate?: HistoriaCreateOrConnectWithoutCriadorInput | HistoriaCreateOrConnectWithoutCriadorInput[]
+    upsert?: HistoriaUpsertWithWhereUniqueWithoutCriadorInput | HistoriaUpsertWithWhereUniqueWithoutCriadorInput[]
+    createMany?: HistoriaCreateManyCriadorInputEnvelope
+    set?: HistoriaWhereUniqueInput | HistoriaWhereUniqueInput[]
+    disconnect?: HistoriaWhereUniqueInput | HistoriaWhereUniqueInput[]
+    delete?: HistoriaWhereUniqueInput | HistoriaWhereUniqueInput[]
+    connect?: HistoriaWhereUniqueInput | HistoriaWhereUniqueInput[]
+    update?: HistoriaUpdateWithWhereUniqueWithoutCriadorInput | HistoriaUpdateWithWhereUniqueWithoutCriadorInput[]
+    updateMany?: HistoriaUpdateManyWithWhereWithoutCriadorInput | HistoriaUpdateManyWithWhereWithoutCriadorInput[]
+    deleteMany?: HistoriaScalarWhereInput | HistoriaScalarWhereInput[]
+  }
+
   export type MembroEquipeUncheckedUpdateManyWithoutPessoaNestedInput = {
     create?: XOR<MembroEquipeCreateWithoutPessoaInput, MembroEquipeUncheckedCreateWithoutPessoaInput> | MembroEquipeCreateWithoutPessoaInput[] | MembroEquipeUncheckedCreateWithoutPessoaInput[]
     connectOrCreate?: MembroEquipeCreateOrConnectWithoutPessoaInput | MembroEquipeCreateOrConnectWithoutPessoaInput[]
@@ -12427,20 +12441,6 @@ export namespace Prisma {
     update?: MembroEquipeUpdateWithWhereUniqueWithoutPessoaInput | MembroEquipeUpdateWithWhereUniqueWithoutPessoaInput[]
     updateMany?: MembroEquipeUpdateManyWithWhereWithoutPessoaInput | MembroEquipeUpdateManyWithWhereWithoutPessoaInput[]
     deleteMany?: MembroEquipeScalarWhereInput | MembroEquipeScalarWhereInput[]
-  }
-
-  export type SalaUncheckedUpdateManyWithoutProprietarioNestedInput = {
-    create?: XOR<SalaCreateWithoutProprietarioInput, SalaUncheckedCreateWithoutProprietarioInput> | SalaCreateWithoutProprietarioInput[] | SalaUncheckedCreateWithoutProprietarioInput[]
-    connectOrCreate?: SalaCreateOrConnectWithoutProprietarioInput | SalaCreateOrConnectWithoutProprietarioInput[]
-    upsert?: SalaUpsertWithWhereUniqueWithoutProprietarioInput | SalaUpsertWithWhereUniqueWithoutProprietarioInput[]
-    createMany?: SalaCreateManyProprietarioInputEnvelope
-    set?: SalaWhereUniqueInput | SalaWhereUniqueInput[]
-    disconnect?: SalaWhereUniqueInput | SalaWhereUniqueInput[]
-    delete?: SalaWhereUniqueInput | SalaWhereUniqueInput[]
-    connect?: SalaWhereUniqueInput | SalaWhereUniqueInput[]
-    update?: SalaUpdateWithWhereUniqueWithoutProprietarioInput | SalaUpdateWithWhereUniqueWithoutProprietarioInput[]
-    updateMany?: SalaUpdateManyWithWhereWithoutProprietarioInput | SalaUpdateManyWithWhereWithoutProprietarioInput[]
-    deleteMany?: SalaScalarWhereInput | SalaScalarWhereInput[]
   }
 
   export type ParticipanteSalaUncheckedUpdateManyWithoutPessoaNestedInput = {
@@ -12457,18 +12457,18 @@ export namespace Prisma {
     deleteMany?: ParticipanteSalaScalarWhereInput | ParticipanteSalaScalarWhereInput[]
   }
 
-  export type HistoriaUncheckedUpdateManyWithoutCriadorNestedInput = {
-    create?: XOR<HistoriaCreateWithoutCriadorInput, HistoriaUncheckedCreateWithoutCriadorInput> | HistoriaCreateWithoutCriadorInput[] | HistoriaUncheckedCreateWithoutCriadorInput[]
-    connectOrCreate?: HistoriaCreateOrConnectWithoutCriadorInput | HistoriaCreateOrConnectWithoutCriadorInput[]
-    upsert?: HistoriaUpsertWithWhereUniqueWithoutCriadorInput | HistoriaUpsertWithWhereUniqueWithoutCriadorInput[]
-    createMany?: HistoriaCreateManyCriadorInputEnvelope
-    set?: HistoriaWhereUniqueInput | HistoriaWhereUniqueInput[]
-    disconnect?: HistoriaWhereUniqueInput | HistoriaWhereUniqueInput[]
-    delete?: HistoriaWhereUniqueInput | HistoriaWhereUniqueInput[]
-    connect?: HistoriaWhereUniqueInput | HistoriaWhereUniqueInput[]
-    update?: HistoriaUpdateWithWhereUniqueWithoutCriadorInput | HistoriaUpdateWithWhereUniqueWithoutCriadorInput[]
-    updateMany?: HistoriaUpdateManyWithWhereWithoutCriadorInput | HistoriaUpdateManyWithWhereWithoutCriadorInput[]
-    deleteMany?: HistoriaScalarWhereInput | HistoriaScalarWhereInput[]
+  export type SalaUncheckedUpdateManyWithoutProprietarioNestedInput = {
+    create?: XOR<SalaCreateWithoutProprietarioInput, SalaUncheckedCreateWithoutProprietarioInput> | SalaCreateWithoutProprietarioInput[] | SalaUncheckedCreateWithoutProprietarioInput[]
+    connectOrCreate?: SalaCreateOrConnectWithoutProprietarioInput | SalaCreateOrConnectWithoutProprietarioInput[]
+    upsert?: SalaUpsertWithWhereUniqueWithoutProprietarioInput | SalaUpsertWithWhereUniqueWithoutProprietarioInput[]
+    createMany?: SalaCreateManyProprietarioInputEnvelope
+    set?: SalaWhereUniqueInput | SalaWhereUniqueInput[]
+    disconnect?: SalaWhereUniqueInput | SalaWhereUniqueInput[]
+    delete?: SalaWhereUniqueInput | SalaWhereUniqueInput[]
+    connect?: SalaWhereUniqueInput | SalaWhereUniqueInput[]
+    update?: SalaUpdateWithWhereUniqueWithoutProprietarioInput | SalaUpdateWithWhereUniqueWithoutProprietarioInput[]
+    updateMany?: SalaUpdateManyWithWhereWithoutProprietarioInput | SalaUpdateManyWithWhereWithoutProprietarioInput[]
+    deleteMany?: SalaScalarWhereInput | SalaScalarWhereInput[]
   }
 
   export type VotoUncheckedUpdateManyWithoutPessoaNestedInput = {
@@ -12569,24 +12569,16 @@ export namespace Prisma {
     deleteMany?: ProjetoScalarWhereInput | ProjetoScalarWhereInput[]
   }
 
-  export type PessoaCreateNestedOneWithoutEquipesMembroInput = {
-    create?: XOR<PessoaCreateWithoutEquipesMembroInput, PessoaUncheckedCreateWithoutEquipesMembroInput>
-    connectOrCreate?: PessoaCreateOrConnectWithoutEquipesMembroInput
-    connect?: PessoaWhereUniqueInput
-  }
-
   export type EquipeCreateNestedOneWithoutMembrosInput = {
     create?: XOR<EquipeCreateWithoutMembrosInput, EquipeUncheckedCreateWithoutMembrosInput>
     connectOrCreate?: EquipeCreateOrConnectWithoutMembrosInput
     connect?: EquipeWhereUniqueInput
   }
 
-  export type PessoaUpdateOneRequiredWithoutEquipesMembroNestedInput = {
+  export type PessoaCreateNestedOneWithoutEquipesMembroInput = {
     create?: XOR<PessoaCreateWithoutEquipesMembroInput, PessoaUncheckedCreateWithoutEquipesMembroInput>
     connectOrCreate?: PessoaCreateOrConnectWithoutEquipesMembroInput
-    upsert?: PessoaUpsertWithoutEquipesMembroInput
     connect?: PessoaWhereUniqueInput
-    update?: XOR<XOR<PessoaUpdateToOneWithWhereWithoutEquipesMembroInput, PessoaUpdateWithoutEquipesMembroInput>, PessoaUncheckedUpdateWithoutEquipesMembroInput>
   }
 
   export type EquipeUpdateOneRequiredWithoutMembrosNestedInput = {
@@ -12595,6 +12587,14 @@ export namespace Prisma {
     upsert?: EquipeUpsertWithoutMembrosInput
     connect?: EquipeWhereUniqueInput
     update?: XOR<XOR<EquipeUpdateToOneWithWhereWithoutMembrosInput, EquipeUpdateWithoutMembrosInput>, EquipeUncheckedUpdateWithoutMembrosInput>
+  }
+
+  export type PessoaUpdateOneRequiredWithoutEquipesMembroNestedInput = {
+    create?: XOR<PessoaCreateWithoutEquipesMembroInput, PessoaUncheckedCreateWithoutEquipesMembroInput>
+    connectOrCreate?: PessoaCreateOrConnectWithoutEquipesMembroInput
+    upsert?: PessoaUpsertWithoutEquipesMembroInput
+    connect?: PessoaWhereUniqueInput
+    update?: XOR<XOR<PessoaUpdateToOneWithWhereWithoutEquipesMembroInput, PessoaUpdateWithoutEquipesMembroInput>, PessoaUncheckedUpdateWithoutEquipesMembroInput>
   }
 
   export type EquipeCreateNestedOneWithoutProjetosInput = {
@@ -12611,10 +12611,11 @@ export namespace Prisma {
     update?: XOR<XOR<EquipeUpdateToOneWithWhereWithoutProjetosInput, EquipeUpdateWithoutProjetosInput>, EquipeUncheckedUpdateWithoutProjetosInput>
   }
 
-  export type PessoaCreateNestedOneWithoutSalasCriadasInput = {
-    create?: XOR<PessoaCreateWithoutSalasCriadasInput, PessoaUncheckedCreateWithoutSalasCriadasInput>
-    connectOrCreate?: PessoaCreateOrConnectWithoutSalasCriadasInput
-    connect?: PessoaWhereUniqueInput
+  export type HistoriaCreateNestedManyWithoutSalaInput = {
+    create?: XOR<HistoriaCreateWithoutSalaInput, HistoriaUncheckedCreateWithoutSalaInput> | HistoriaCreateWithoutSalaInput[] | HistoriaUncheckedCreateWithoutSalaInput[]
+    connectOrCreate?: HistoriaCreateOrConnectWithoutSalaInput | HistoriaCreateOrConnectWithoutSalaInput[]
+    createMany?: HistoriaCreateManySalaInputEnvelope
+    connect?: HistoriaWhereUniqueInput | HistoriaWhereUniqueInput[]
   }
 
   export type ParticipanteSalaCreateNestedManyWithoutSalaInput = {
@@ -12624,11 +12625,10 @@ export namespace Prisma {
     connect?: ParticipanteSalaWhereUniqueInput | ParticipanteSalaWhereUniqueInput[]
   }
 
-  export type HistoriaCreateNestedManyWithoutSalaInput = {
-    create?: XOR<HistoriaCreateWithoutSalaInput, HistoriaUncheckedCreateWithoutSalaInput> | HistoriaCreateWithoutSalaInput[] | HistoriaUncheckedCreateWithoutSalaInput[]
-    connectOrCreate?: HistoriaCreateOrConnectWithoutSalaInput | HistoriaCreateOrConnectWithoutSalaInput[]
-    createMany?: HistoriaCreateManySalaInputEnvelope
-    connect?: HistoriaWhereUniqueInput | HistoriaWhereUniqueInput[]
+  export type PessoaCreateNestedOneWithoutSalasCriadasInput = {
+    create?: XOR<PessoaCreateWithoutSalasCriadasInput, PessoaUncheckedCreateWithoutSalasCriadasInput>
+    connectOrCreate?: PessoaCreateOrConnectWithoutSalasCriadasInput
+    connect?: PessoaWhereUniqueInput
   }
 
   export type VotoCreateNestedManyWithoutSalaInput = {
@@ -12638,18 +12638,18 @@ export namespace Prisma {
     connect?: VotoWhereUniqueInput | VotoWhereUniqueInput[]
   }
 
-  export type ParticipanteSalaUncheckedCreateNestedManyWithoutSalaInput = {
-    create?: XOR<ParticipanteSalaCreateWithoutSalaInput, ParticipanteSalaUncheckedCreateWithoutSalaInput> | ParticipanteSalaCreateWithoutSalaInput[] | ParticipanteSalaUncheckedCreateWithoutSalaInput[]
-    connectOrCreate?: ParticipanteSalaCreateOrConnectWithoutSalaInput | ParticipanteSalaCreateOrConnectWithoutSalaInput[]
-    createMany?: ParticipanteSalaCreateManySalaInputEnvelope
-    connect?: ParticipanteSalaWhereUniqueInput | ParticipanteSalaWhereUniqueInput[]
-  }
-
   export type HistoriaUncheckedCreateNestedManyWithoutSalaInput = {
     create?: XOR<HistoriaCreateWithoutSalaInput, HistoriaUncheckedCreateWithoutSalaInput> | HistoriaCreateWithoutSalaInput[] | HistoriaUncheckedCreateWithoutSalaInput[]
     connectOrCreate?: HistoriaCreateOrConnectWithoutSalaInput | HistoriaCreateOrConnectWithoutSalaInput[]
     createMany?: HistoriaCreateManySalaInputEnvelope
     connect?: HistoriaWhereUniqueInput | HistoriaWhereUniqueInput[]
+  }
+
+  export type ParticipanteSalaUncheckedCreateNestedManyWithoutSalaInput = {
+    create?: XOR<ParticipanteSalaCreateWithoutSalaInput, ParticipanteSalaUncheckedCreateWithoutSalaInput> | ParticipanteSalaCreateWithoutSalaInput[] | ParticipanteSalaUncheckedCreateWithoutSalaInput[]
+    connectOrCreate?: ParticipanteSalaCreateOrConnectWithoutSalaInput | ParticipanteSalaCreateOrConnectWithoutSalaInput[]
+    createMany?: ParticipanteSalaCreateManySalaInputEnvelope
+    connect?: ParticipanteSalaWhereUniqueInput | ParticipanteSalaWhereUniqueInput[]
   }
 
   export type VotoUncheckedCreateNestedManyWithoutSalaInput = {
@@ -12667,12 +12667,18 @@ export namespace Prisma {
     divide?: number
   }
 
-  export type PessoaUpdateOneRequiredWithoutSalasCriadasNestedInput = {
-    create?: XOR<PessoaCreateWithoutSalasCriadasInput, PessoaUncheckedCreateWithoutSalasCriadasInput>
-    connectOrCreate?: PessoaCreateOrConnectWithoutSalasCriadasInput
-    upsert?: PessoaUpsertWithoutSalasCriadasInput
-    connect?: PessoaWhereUniqueInput
-    update?: XOR<XOR<PessoaUpdateToOneWithWhereWithoutSalasCriadasInput, PessoaUpdateWithoutSalasCriadasInput>, PessoaUncheckedUpdateWithoutSalasCriadasInput>
+  export type HistoriaUpdateManyWithoutSalaNestedInput = {
+    create?: XOR<HistoriaCreateWithoutSalaInput, HistoriaUncheckedCreateWithoutSalaInput> | HistoriaCreateWithoutSalaInput[] | HistoriaUncheckedCreateWithoutSalaInput[]
+    connectOrCreate?: HistoriaCreateOrConnectWithoutSalaInput | HistoriaCreateOrConnectWithoutSalaInput[]
+    upsert?: HistoriaUpsertWithWhereUniqueWithoutSalaInput | HistoriaUpsertWithWhereUniqueWithoutSalaInput[]
+    createMany?: HistoriaCreateManySalaInputEnvelope
+    set?: HistoriaWhereUniqueInput | HistoriaWhereUniqueInput[]
+    disconnect?: HistoriaWhereUniqueInput | HistoriaWhereUniqueInput[]
+    delete?: HistoriaWhereUniqueInput | HistoriaWhereUniqueInput[]
+    connect?: HistoriaWhereUniqueInput | HistoriaWhereUniqueInput[]
+    update?: HistoriaUpdateWithWhereUniqueWithoutSalaInput | HistoriaUpdateWithWhereUniqueWithoutSalaInput[]
+    updateMany?: HistoriaUpdateManyWithWhereWithoutSalaInput | HistoriaUpdateManyWithWhereWithoutSalaInput[]
+    deleteMany?: HistoriaScalarWhereInput | HistoriaScalarWhereInput[]
   }
 
   export type ParticipanteSalaUpdateManyWithoutSalaNestedInput = {
@@ -12689,18 +12695,12 @@ export namespace Prisma {
     deleteMany?: ParticipanteSalaScalarWhereInput | ParticipanteSalaScalarWhereInput[]
   }
 
-  export type HistoriaUpdateManyWithoutSalaNestedInput = {
-    create?: XOR<HistoriaCreateWithoutSalaInput, HistoriaUncheckedCreateWithoutSalaInput> | HistoriaCreateWithoutSalaInput[] | HistoriaUncheckedCreateWithoutSalaInput[]
-    connectOrCreate?: HistoriaCreateOrConnectWithoutSalaInput | HistoriaCreateOrConnectWithoutSalaInput[]
-    upsert?: HistoriaUpsertWithWhereUniqueWithoutSalaInput | HistoriaUpsertWithWhereUniqueWithoutSalaInput[]
-    createMany?: HistoriaCreateManySalaInputEnvelope
-    set?: HistoriaWhereUniqueInput | HistoriaWhereUniqueInput[]
-    disconnect?: HistoriaWhereUniqueInput | HistoriaWhereUniqueInput[]
-    delete?: HistoriaWhereUniqueInput | HistoriaWhereUniqueInput[]
-    connect?: HistoriaWhereUniqueInput | HistoriaWhereUniqueInput[]
-    update?: HistoriaUpdateWithWhereUniqueWithoutSalaInput | HistoriaUpdateWithWhereUniqueWithoutSalaInput[]
-    updateMany?: HistoriaUpdateManyWithWhereWithoutSalaInput | HistoriaUpdateManyWithWhereWithoutSalaInput[]
-    deleteMany?: HistoriaScalarWhereInput | HistoriaScalarWhereInput[]
+  export type PessoaUpdateOneRequiredWithoutSalasCriadasNestedInput = {
+    create?: XOR<PessoaCreateWithoutSalasCriadasInput, PessoaUncheckedCreateWithoutSalasCriadasInput>
+    connectOrCreate?: PessoaCreateOrConnectWithoutSalasCriadasInput
+    upsert?: PessoaUpsertWithoutSalasCriadasInput
+    connect?: PessoaWhereUniqueInput
+    update?: XOR<XOR<PessoaUpdateToOneWithWhereWithoutSalasCriadasInput, PessoaUpdateWithoutSalasCriadasInput>, PessoaUncheckedUpdateWithoutSalasCriadasInput>
   }
 
   export type VotoUpdateManyWithoutSalaNestedInput = {
@@ -12717,20 +12717,6 @@ export namespace Prisma {
     deleteMany?: VotoScalarWhereInput | VotoScalarWhereInput[]
   }
 
-  export type ParticipanteSalaUncheckedUpdateManyWithoutSalaNestedInput = {
-    create?: XOR<ParticipanteSalaCreateWithoutSalaInput, ParticipanteSalaUncheckedCreateWithoutSalaInput> | ParticipanteSalaCreateWithoutSalaInput[] | ParticipanteSalaUncheckedCreateWithoutSalaInput[]
-    connectOrCreate?: ParticipanteSalaCreateOrConnectWithoutSalaInput | ParticipanteSalaCreateOrConnectWithoutSalaInput[]
-    upsert?: ParticipanteSalaUpsertWithWhereUniqueWithoutSalaInput | ParticipanteSalaUpsertWithWhereUniqueWithoutSalaInput[]
-    createMany?: ParticipanteSalaCreateManySalaInputEnvelope
-    set?: ParticipanteSalaWhereUniqueInput | ParticipanteSalaWhereUniqueInput[]
-    disconnect?: ParticipanteSalaWhereUniqueInput | ParticipanteSalaWhereUniqueInput[]
-    delete?: ParticipanteSalaWhereUniqueInput | ParticipanteSalaWhereUniqueInput[]
-    connect?: ParticipanteSalaWhereUniqueInput | ParticipanteSalaWhereUniqueInput[]
-    update?: ParticipanteSalaUpdateWithWhereUniqueWithoutSalaInput | ParticipanteSalaUpdateWithWhereUniqueWithoutSalaInput[]
-    updateMany?: ParticipanteSalaUpdateManyWithWhereWithoutSalaInput | ParticipanteSalaUpdateManyWithWhereWithoutSalaInput[]
-    deleteMany?: ParticipanteSalaScalarWhereInput | ParticipanteSalaScalarWhereInput[]
-  }
-
   export type HistoriaUncheckedUpdateManyWithoutSalaNestedInput = {
     create?: XOR<HistoriaCreateWithoutSalaInput, HistoriaUncheckedCreateWithoutSalaInput> | HistoriaCreateWithoutSalaInput[] | HistoriaUncheckedCreateWithoutSalaInput[]
     connectOrCreate?: HistoriaCreateOrConnectWithoutSalaInput | HistoriaCreateOrConnectWithoutSalaInput[]
@@ -12743,6 +12729,20 @@ export namespace Prisma {
     update?: HistoriaUpdateWithWhereUniqueWithoutSalaInput | HistoriaUpdateWithWhereUniqueWithoutSalaInput[]
     updateMany?: HistoriaUpdateManyWithWhereWithoutSalaInput | HistoriaUpdateManyWithWhereWithoutSalaInput[]
     deleteMany?: HistoriaScalarWhereInput | HistoriaScalarWhereInput[]
+  }
+
+  export type ParticipanteSalaUncheckedUpdateManyWithoutSalaNestedInput = {
+    create?: XOR<ParticipanteSalaCreateWithoutSalaInput, ParticipanteSalaUncheckedCreateWithoutSalaInput> | ParticipanteSalaCreateWithoutSalaInput[] | ParticipanteSalaUncheckedCreateWithoutSalaInput[]
+    connectOrCreate?: ParticipanteSalaCreateOrConnectWithoutSalaInput | ParticipanteSalaCreateOrConnectWithoutSalaInput[]
+    upsert?: ParticipanteSalaUpsertWithWhereUniqueWithoutSalaInput | ParticipanteSalaUpsertWithWhereUniqueWithoutSalaInput[]
+    createMany?: ParticipanteSalaCreateManySalaInputEnvelope
+    set?: ParticipanteSalaWhereUniqueInput | ParticipanteSalaWhereUniqueInput[]
+    disconnect?: ParticipanteSalaWhereUniqueInput | ParticipanteSalaWhereUniqueInput[]
+    delete?: ParticipanteSalaWhereUniqueInput | ParticipanteSalaWhereUniqueInput[]
+    connect?: ParticipanteSalaWhereUniqueInput | ParticipanteSalaWhereUniqueInput[]
+    update?: ParticipanteSalaUpdateWithWhereUniqueWithoutSalaInput | ParticipanteSalaUpdateWithWhereUniqueWithoutSalaInput[]
+    updateMany?: ParticipanteSalaUpdateManyWithWhereWithoutSalaInput | ParticipanteSalaUpdateManyWithWhereWithoutSalaInput[]
+    deleteMany?: ParticipanteSalaScalarWhereInput | ParticipanteSalaScalarWhereInput[]
   }
 
   export type VotoUncheckedUpdateManyWithoutSalaNestedInput = {
@@ -12787,16 +12787,16 @@ export namespace Prisma {
     update?: XOR<XOR<SalaUpdateToOneWithWhereWithoutParticipantesInput, SalaUpdateWithoutParticipantesInput>, SalaUncheckedUpdateWithoutParticipantesInput>
   }
 
-  export type SalaCreateNestedOneWithoutHistoriasInput = {
-    create?: XOR<SalaCreateWithoutHistoriasInput, SalaUncheckedCreateWithoutHistoriasInput>
-    connectOrCreate?: SalaCreateOrConnectWithoutHistoriasInput
-    connect?: SalaWhereUniqueInput
-  }
-
   export type PessoaCreateNestedOneWithoutHistoriasCriadasInput = {
     create?: XOR<PessoaCreateWithoutHistoriasCriadasInput, PessoaUncheckedCreateWithoutHistoriasCriadasInput>
     connectOrCreate?: PessoaCreateOrConnectWithoutHistoriasCriadasInput
     connect?: PessoaWhereUniqueInput
+  }
+
+  export type SalaCreateNestedOneWithoutHistoriasInput = {
+    create?: XOR<SalaCreateWithoutHistoriasInput, SalaUncheckedCreateWithoutHistoriasInput>
+    connectOrCreate?: SalaCreateOrConnectWithoutHistoriasInput
+    connect?: SalaWhereUniqueInput
   }
 
   export type VotoCreateNestedManyWithoutHistoriaInput = {
@@ -12813,20 +12813,20 @@ export namespace Prisma {
     connect?: VotoWhereUniqueInput | VotoWhereUniqueInput[]
   }
 
-  export type SalaUpdateOneRequiredWithoutHistoriasNestedInput = {
-    create?: XOR<SalaCreateWithoutHistoriasInput, SalaUncheckedCreateWithoutHistoriasInput>
-    connectOrCreate?: SalaCreateOrConnectWithoutHistoriasInput
-    upsert?: SalaUpsertWithoutHistoriasInput
-    connect?: SalaWhereUniqueInput
-    update?: XOR<XOR<SalaUpdateToOneWithWhereWithoutHistoriasInput, SalaUpdateWithoutHistoriasInput>, SalaUncheckedUpdateWithoutHistoriasInput>
-  }
-
   export type PessoaUpdateOneRequiredWithoutHistoriasCriadasNestedInput = {
     create?: XOR<PessoaCreateWithoutHistoriasCriadasInput, PessoaUncheckedCreateWithoutHistoriasCriadasInput>
     connectOrCreate?: PessoaCreateOrConnectWithoutHistoriasCriadasInput
     upsert?: PessoaUpsertWithoutHistoriasCriadasInput
     connect?: PessoaWhereUniqueInput
     update?: XOR<XOR<PessoaUpdateToOneWithWhereWithoutHistoriasCriadasInput, PessoaUpdateWithoutHistoriasCriadasInput>, PessoaUncheckedUpdateWithoutHistoriasCriadasInput>
+  }
+
+  export type SalaUpdateOneRequiredWithoutHistoriasNestedInput = {
+    create?: XOR<SalaCreateWithoutHistoriasInput, SalaUncheckedCreateWithoutHistoriasInput>
+    connectOrCreate?: SalaCreateOrConnectWithoutHistoriasInput
+    upsert?: SalaUpsertWithoutHistoriasInput
+    connect?: SalaWhereUniqueInput
+    update?: XOR<XOR<SalaUpdateToOneWithWhereWithoutHistoriasInput, SalaUpdateWithoutHistoriasInput>, SalaUncheckedUpdateWithoutHistoriasInput>
   }
 
   export type VotoUpdateManyWithoutHistoriaNestedInput = {
@@ -12857,6 +12857,12 @@ export namespace Prisma {
     deleteMany?: VotoScalarWhereInput | VotoScalarWhereInput[]
   }
 
+  export type HistoriaCreateNestedOneWithoutVotosInput = {
+    create?: XOR<HistoriaCreateWithoutVotosInput, HistoriaUncheckedCreateWithoutVotosInput>
+    connectOrCreate?: HistoriaCreateOrConnectWithoutVotosInput
+    connect?: HistoriaWhereUniqueInput
+  }
+
   export type PessoaCreateNestedOneWithoutVotosInput = {
     create?: XOR<PessoaCreateWithoutVotosInput, PessoaUncheckedCreateWithoutVotosInput>
     connectOrCreate?: PessoaCreateOrConnectWithoutVotosInput
@@ -12869,10 +12875,12 @@ export namespace Prisma {
     connect?: SalaWhereUniqueInput
   }
 
-  export type HistoriaCreateNestedOneWithoutVotosInput = {
+  export type HistoriaUpdateOneRequiredWithoutVotosNestedInput = {
     create?: XOR<HistoriaCreateWithoutVotosInput, HistoriaUncheckedCreateWithoutVotosInput>
     connectOrCreate?: HistoriaCreateOrConnectWithoutVotosInput
+    upsert?: HistoriaUpsertWithoutVotosInput
     connect?: HistoriaWhereUniqueInput
+    update?: XOR<XOR<HistoriaUpdateToOneWithWhereWithoutVotosInput, HistoriaUpdateWithoutVotosInput>, HistoriaUncheckedUpdateWithoutVotosInput>
   }
 
   export type PessoaUpdateOneRequiredWithoutVotosNestedInput = {
@@ -12889,14 +12897,6 @@ export namespace Prisma {
     upsert?: SalaUpsertWithoutVotosInput
     connect?: SalaWhereUniqueInput
     update?: XOR<XOR<SalaUpdateToOneWithWhereWithoutVotosInput, SalaUpdateWithoutVotosInput>, SalaUncheckedUpdateWithoutVotosInput>
-  }
-
-  export type HistoriaUpdateOneRequiredWithoutVotosNestedInput = {
-    create?: XOR<HistoriaCreateWithoutVotosInput, HistoriaUncheckedCreateWithoutVotosInput>
-    connectOrCreate?: HistoriaCreateOrConnectWithoutVotosInput
-    upsert?: HistoriaUpsertWithoutVotosInput
-    connect?: HistoriaWhereUniqueInput
-    update?: XOR<XOR<HistoriaUpdateToOneWithWhereWithoutVotosInput, HistoriaUpdateWithoutVotosInput>, HistoriaUncheckedUpdateWithoutVotosInput>
   }
 
   export type NestedStringFilter<$PrismaModel = never> = {
@@ -13048,86 +13048,6 @@ export namespace Prisma {
     not?: NestedFloatFilter<$PrismaModel> | number
   }
 
-  export type MembroEquipeCreateWithoutPessoaInput = {
-    id?: string
-    proprietario?: boolean
-    equipe: EquipeCreateNestedOneWithoutMembrosInput
-  }
-
-  export type MembroEquipeUncheckedCreateWithoutPessoaInput = {
-    id?: string
-    equipe_id: string
-    proprietario?: boolean
-  }
-
-  export type MembroEquipeCreateOrConnectWithoutPessoaInput = {
-    where: MembroEquipeWhereUniqueInput
-    create: XOR<MembroEquipeCreateWithoutPessoaInput, MembroEquipeUncheckedCreateWithoutPessoaInput>
-  }
-
-  export type MembroEquipeCreateManyPessoaInputEnvelope = {
-    data: MembroEquipeCreateManyPessoaInput | MembroEquipeCreateManyPessoaInput[]
-    skipDuplicates?: boolean
-  }
-
-  export type SalaCreateWithoutProprietarioInput = {
-    id?: string
-    codigo: number
-    titulo: string
-    senha?: string | null
-    inativo?: boolean
-    data_criacao?: Date | string
-    data_alteracao?: Date | string
-    participantes?: ParticipanteSalaCreateNestedManyWithoutSalaInput
-    historias?: HistoriaCreateNestedManyWithoutSalaInput
-    votos?: VotoCreateNestedManyWithoutSalaInput
-  }
-
-  export type SalaUncheckedCreateWithoutProprietarioInput = {
-    id?: string
-    codigo: number
-    titulo: string
-    senha?: string | null
-    inativo?: boolean
-    data_criacao?: Date | string
-    data_alteracao?: Date | string
-    participantes?: ParticipanteSalaUncheckedCreateNestedManyWithoutSalaInput
-    historias?: HistoriaUncheckedCreateNestedManyWithoutSalaInput
-    votos?: VotoUncheckedCreateNestedManyWithoutSalaInput
-  }
-
-  export type SalaCreateOrConnectWithoutProprietarioInput = {
-    where: SalaWhereUniqueInput
-    create: XOR<SalaCreateWithoutProprietarioInput, SalaUncheckedCreateWithoutProprietarioInput>
-  }
-
-  export type SalaCreateManyProprietarioInputEnvelope = {
-    data: SalaCreateManyProprietarioInput | SalaCreateManyProprietarioInput[]
-    skipDuplicates?: boolean
-  }
-
-  export type ParticipanteSalaCreateWithoutPessoaInput = {
-    id?: string
-    adicionado?: Date | string
-    sala: SalaCreateNestedOneWithoutParticipantesInput
-  }
-
-  export type ParticipanteSalaUncheckedCreateWithoutPessoaInput = {
-    id?: string
-    sala_id: string
-    adicionado?: Date | string
-  }
-
-  export type ParticipanteSalaCreateOrConnectWithoutPessoaInput = {
-    where: ParticipanteSalaWhereUniqueInput
-    create: XOR<ParticipanteSalaCreateWithoutPessoaInput, ParticipanteSalaUncheckedCreateWithoutPessoaInput>
-  }
-
-  export type ParticipanteSalaCreateManyPessoaInputEnvelope = {
-    data: ParticipanteSalaCreateManyPessoaInput | ParticipanteSalaCreateManyPessoaInput[]
-    skipDuplicates?: boolean
-  }
-
   export type HistoriaCreateWithoutCriadorInput = {
     id?: string
     titulo: string
@@ -13160,12 +13080,92 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
+  export type MembroEquipeCreateWithoutPessoaInput = {
+    id?: string
+    proprietario?: boolean
+    equipe: EquipeCreateNestedOneWithoutMembrosInput
+  }
+
+  export type MembroEquipeUncheckedCreateWithoutPessoaInput = {
+    id?: string
+    equipe_id: string
+    proprietario?: boolean
+  }
+
+  export type MembroEquipeCreateOrConnectWithoutPessoaInput = {
+    where: MembroEquipeWhereUniqueInput
+    create: XOR<MembroEquipeCreateWithoutPessoaInput, MembroEquipeUncheckedCreateWithoutPessoaInput>
+  }
+
+  export type MembroEquipeCreateManyPessoaInputEnvelope = {
+    data: MembroEquipeCreateManyPessoaInput | MembroEquipeCreateManyPessoaInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type ParticipanteSalaCreateWithoutPessoaInput = {
+    id?: string
+    adicionado?: Date | string
+    sala: SalaCreateNestedOneWithoutParticipantesInput
+  }
+
+  export type ParticipanteSalaUncheckedCreateWithoutPessoaInput = {
+    id?: string
+    sala_id: string
+    adicionado?: Date | string
+  }
+
+  export type ParticipanteSalaCreateOrConnectWithoutPessoaInput = {
+    where: ParticipanteSalaWhereUniqueInput
+    create: XOR<ParticipanteSalaCreateWithoutPessoaInput, ParticipanteSalaUncheckedCreateWithoutPessoaInput>
+  }
+
+  export type ParticipanteSalaCreateManyPessoaInputEnvelope = {
+    data: ParticipanteSalaCreateManyPessoaInput | ParticipanteSalaCreateManyPessoaInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type SalaCreateWithoutProprietarioInput = {
+    id?: string
+    codigo: number
+    titulo: string
+    senha?: string | null
+    inativo?: boolean
+    data_criacao?: Date | string
+    data_alteracao?: Date | string
+    historias?: HistoriaCreateNestedManyWithoutSalaInput
+    participantes?: ParticipanteSalaCreateNestedManyWithoutSalaInput
+    votos?: VotoCreateNestedManyWithoutSalaInput
+  }
+
+  export type SalaUncheckedCreateWithoutProprietarioInput = {
+    id?: string
+    codigo: number
+    titulo: string
+    senha?: string | null
+    inativo?: boolean
+    data_criacao?: Date | string
+    data_alteracao?: Date | string
+    historias?: HistoriaUncheckedCreateNestedManyWithoutSalaInput
+    participantes?: ParticipanteSalaUncheckedCreateNestedManyWithoutSalaInput
+    votos?: VotoUncheckedCreateNestedManyWithoutSalaInput
+  }
+
+  export type SalaCreateOrConnectWithoutProprietarioInput = {
+    where: SalaWhereUniqueInput
+    create: XOR<SalaCreateWithoutProprietarioInput, SalaUncheckedCreateWithoutProprietarioInput>
+  }
+
+  export type SalaCreateManyProprietarioInputEnvelope = {
+    data: SalaCreateManyProprietarioInput | SalaCreateManyProprietarioInput[]
+    skipDuplicates?: boolean
+  }
+
   export type VotoCreateWithoutPessoaInput = {
     id?: string
     valor: number
     data_voto?: Date | string
-    sala: SalaCreateNestedOneWithoutVotosInput
     historia: HistoriaCreateNestedOneWithoutVotosInput
+    sala: SalaCreateNestedOneWithoutVotosInput
   }
 
   export type VotoUncheckedCreateWithoutPessoaInput = {
@@ -13184,88 +13184,6 @@ export namespace Prisma {
   export type VotoCreateManyPessoaInputEnvelope = {
     data: VotoCreateManyPessoaInput | VotoCreateManyPessoaInput[]
     skipDuplicates?: boolean
-  }
-
-  export type MembroEquipeUpsertWithWhereUniqueWithoutPessoaInput = {
-    where: MembroEquipeWhereUniqueInput
-    update: XOR<MembroEquipeUpdateWithoutPessoaInput, MembroEquipeUncheckedUpdateWithoutPessoaInput>
-    create: XOR<MembroEquipeCreateWithoutPessoaInput, MembroEquipeUncheckedCreateWithoutPessoaInput>
-  }
-
-  export type MembroEquipeUpdateWithWhereUniqueWithoutPessoaInput = {
-    where: MembroEquipeWhereUniqueInput
-    data: XOR<MembroEquipeUpdateWithoutPessoaInput, MembroEquipeUncheckedUpdateWithoutPessoaInput>
-  }
-
-  export type MembroEquipeUpdateManyWithWhereWithoutPessoaInput = {
-    where: MembroEquipeScalarWhereInput
-    data: XOR<MembroEquipeUpdateManyMutationInput, MembroEquipeUncheckedUpdateManyWithoutPessoaInput>
-  }
-
-  export type MembroEquipeScalarWhereInput = {
-    AND?: MembroEquipeScalarWhereInput | MembroEquipeScalarWhereInput[]
-    OR?: MembroEquipeScalarWhereInput[]
-    NOT?: MembroEquipeScalarWhereInput | MembroEquipeScalarWhereInput[]
-    id?: StringFilter<"MembroEquipe"> | string
-    pessoa_id?: StringFilter<"MembroEquipe"> | string
-    equipe_id?: StringFilter<"MembroEquipe"> | string
-    proprietario?: BoolFilter<"MembroEquipe"> | boolean
-  }
-
-  export type SalaUpsertWithWhereUniqueWithoutProprietarioInput = {
-    where: SalaWhereUniqueInput
-    update: XOR<SalaUpdateWithoutProprietarioInput, SalaUncheckedUpdateWithoutProprietarioInput>
-    create: XOR<SalaCreateWithoutProprietarioInput, SalaUncheckedCreateWithoutProprietarioInput>
-  }
-
-  export type SalaUpdateWithWhereUniqueWithoutProprietarioInput = {
-    where: SalaWhereUniqueInput
-    data: XOR<SalaUpdateWithoutProprietarioInput, SalaUncheckedUpdateWithoutProprietarioInput>
-  }
-
-  export type SalaUpdateManyWithWhereWithoutProprietarioInput = {
-    where: SalaScalarWhereInput
-    data: XOR<SalaUpdateManyMutationInput, SalaUncheckedUpdateManyWithoutProprietarioInput>
-  }
-
-  export type SalaScalarWhereInput = {
-    AND?: SalaScalarWhereInput | SalaScalarWhereInput[]
-    OR?: SalaScalarWhereInput[]
-    NOT?: SalaScalarWhereInput | SalaScalarWhereInput[]
-    id?: StringFilter<"Sala"> | string
-    codigo?: IntFilter<"Sala"> | number
-    titulo?: StringFilter<"Sala"> | string
-    criado_por?: StringFilter<"Sala"> | string
-    senha?: StringNullableFilter<"Sala"> | string | null
-    inativo?: BoolFilter<"Sala"> | boolean
-    data_criacao?: DateTimeFilter<"Sala"> | Date | string
-    data_alteracao?: DateTimeFilter<"Sala"> | Date | string
-  }
-
-  export type ParticipanteSalaUpsertWithWhereUniqueWithoutPessoaInput = {
-    where: ParticipanteSalaWhereUniqueInput
-    update: XOR<ParticipanteSalaUpdateWithoutPessoaInput, ParticipanteSalaUncheckedUpdateWithoutPessoaInput>
-    create: XOR<ParticipanteSalaCreateWithoutPessoaInput, ParticipanteSalaUncheckedCreateWithoutPessoaInput>
-  }
-
-  export type ParticipanteSalaUpdateWithWhereUniqueWithoutPessoaInput = {
-    where: ParticipanteSalaWhereUniqueInput
-    data: XOR<ParticipanteSalaUpdateWithoutPessoaInput, ParticipanteSalaUncheckedUpdateWithoutPessoaInput>
-  }
-
-  export type ParticipanteSalaUpdateManyWithWhereWithoutPessoaInput = {
-    where: ParticipanteSalaScalarWhereInput
-    data: XOR<ParticipanteSalaUpdateManyMutationInput, ParticipanteSalaUncheckedUpdateManyWithoutPessoaInput>
-  }
-
-  export type ParticipanteSalaScalarWhereInput = {
-    AND?: ParticipanteSalaScalarWhereInput | ParticipanteSalaScalarWhereInput[]
-    OR?: ParticipanteSalaScalarWhereInput[]
-    NOT?: ParticipanteSalaScalarWhereInput | ParticipanteSalaScalarWhereInput[]
-    id?: StringFilter<"ParticipanteSala"> | string
-    sala_id?: StringFilter<"ParticipanteSala"> | string
-    pessoa_id?: StringFilter<"ParticipanteSala"> | string
-    adicionado?: DateTimeFilter<"ParticipanteSala"> | Date | string
   }
 
   export type HistoriaUpsertWithWhereUniqueWithoutCriadorInput = {
@@ -13296,6 +13214,88 @@ export namespace Prisma {
     data_criacao?: DateTimeFilter<"Historia"> | Date | string
     data_alteracao?: DateTimeFilter<"Historia"> | Date | string
     finalizada?: BoolFilter<"Historia"> | boolean
+  }
+
+  export type MembroEquipeUpsertWithWhereUniqueWithoutPessoaInput = {
+    where: MembroEquipeWhereUniqueInput
+    update: XOR<MembroEquipeUpdateWithoutPessoaInput, MembroEquipeUncheckedUpdateWithoutPessoaInput>
+    create: XOR<MembroEquipeCreateWithoutPessoaInput, MembroEquipeUncheckedCreateWithoutPessoaInput>
+  }
+
+  export type MembroEquipeUpdateWithWhereUniqueWithoutPessoaInput = {
+    where: MembroEquipeWhereUniqueInput
+    data: XOR<MembroEquipeUpdateWithoutPessoaInput, MembroEquipeUncheckedUpdateWithoutPessoaInput>
+  }
+
+  export type MembroEquipeUpdateManyWithWhereWithoutPessoaInput = {
+    where: MembroEquipeScalarWhereInput
+    data: XOR<MembroEquipeUpdateManyMutationInput, MembroEquipeUncheckedUpdateManyWithoutPessoaInput>
+  }
+
+  export type MembroEquipeScalarWhereInput = {
+    AND?: MembroEquipeScalarWhereInput | MembroEquipeScalarWhereInput[]
+    OR?: MembroEquipeScalarWhereInput[]
+    NOT?: MembroEquipeScalarWhereInput | MembroEquipeScalarWhereInput[]
+    id?: StringFilter<"MembroEquipe"> | string
+    pessoa_id?: StringFilter<"MembroEquipe"> | string
+    equipe_id?: StringFilter<"MembroEquipe"> | string
+    proprietario?: BoolFilter<"MembroEquipe"> | boolean
+  }
+
+  export type ParticipanteSalaUpsertWithWhereUniqueWithoutPessoaInput = {
+    where: ParticipanteSalaWhereUniqueInput
+    update: XOR<ParticipanteSalaUpdateWithoutPessoaInput, ParticipanteSalaUncheckedUpdateWithoutPessoaInput>
+    create: XOR<ParticipanteSalaCreateWithoutPessoaInput, ParticipanteSalaUncheckedCreateWithoutPessoaInput>
+  }
+
+  export type ParticipanteSalaUpdateWithWhereUniqueWithoutPessoaInput = {
+    where: ParticipanteSalaWhereUniqueInput
+    data: XOR<ParticipanteSalaUpdateWithoutPessoaInput, ParticipanteSalaUncheckedUpdateWithoutPessoaInput>
+  }
+
+  export type ParticipanteSalaUpdateManyWithWhereWithoutPessoaInput = {
+    where: ParticipanteSalaScalarWhereInput
+    data: XOR<ParticipanteSalaUpdateManyMutationInput, ParticipanteSalaUncheckedUpdateManyWithoutPessoaInput>
+  }
+
+  export type ParticipanteSalaScalarWhereInput = {
+    AND?: ParticipanteSalaScalarWhereInput | ParticipanteSalaScalarWhereInput[]
+    OR?: ParticipanteSalaScalarWhereInput[]
+    NOT?: ParticipanteSalaScalarWhereInput | ParticipanteSalaScalarWhereInput[]
+    id?: StringFilter<"ParticipanteSala"> | string
+    sala_id?: StringFilter<"ParticipanteSala"> | string
+    pessoa_id?: StringFilter<"ParticipanteSala"> | string
+    adicionado?: DateTimeFilter<"ParticipanteSala"> | Date | string
+  }
+
+  export type SalaUpsertWithWhereUniqueWithoutProprietarioInput = {
+    where: SalaWhereUniqueInput
+    update: XOR<SalaUpdateWithoutProprietarioInput, SalaUncheckedUpdateWithoutProprietarioInput>
+    create: XOR<SalaCreateWithoutProprietarioInput, SalaUncheckedCreateWithoutProprietarioInput>
+  }
+
+  export type SalaUpdateWithWhereUniqueWithoutProprietarioInput = {
+    where: SalaWhereUniqueInput
+    data: XOR<SalaUpdateWithoutProprietarioInput, SalaUncheckedUpdateWithoutProprietarioInput>
+  }
+
+  export type SalaUpdateManyWithWhereWithoutProprietarioInput = {
+    where: SalaScalarWhereInput
+    data: XOR<SalaUpdateManyMutationInput, SalaUncheckedUpdateManyWithoutProprietarioInput>
+  }
+
+  export type SalaScalarWhereInput = {
+    AND?: SalaScalarWhereInput | SalaScalarWhereInput[]
+    OR?: SalaScalarWhereInput[]
+    NOT?: SalaScalarWhereInput | SalaScalarWhereInput[]
+    id?: StringFilter<"Sala"> | string
+    codigo?: IntFilter<"Sala"> | number
+    titulo?: StringFilter<"Sala"> | string
+    criado_por?: StringFilter<"Sala"> | string
+    senha?: StringNullableFilter<"Sala"> | string | null
+    inativo?: BoolFilter<"Sala"> | boolean
+    data_criacao?: DateTimeFilter<"Sala"> | Date | string
+    data_alteracao?: DateTimeFilter<"Sala"> | Date | string
   }
 
   export type VotoUpsertWithWhereUniqueWithoutPessoaInput = {
@@ -13415,37 +13415,6 @@ export namespace Prisma {
     gerente_id?: StringNullableFilter<"Projeto"> | string | null
   }
 
-  export type PessoaCreateWithoutEquipesMembroInput = {
-    id: string
-    nome: string
-    email?: string | null
-    auth_id: string
-    inativo?: boolean
-    data_criacao?: Date | string
-    salasCriadas?: SalaCreateNestedManyWithoutProprietarioInput
-    participacoes?: ParticipanteSalaCreateNestedManyWithoutPessoaInput
-    historiasCriadas?: HistoriaCreateNestedManyWithoutCriadorInput
-    votos?: VotoCreateNestedManyWithoutPessoaInput
-  }
-
-  export type PessoaUncheckedCreateWithoutEquipesMembroInput = {
-    id: string
-    nome: string
-    email?: string | null
-    auth_id: string
-    inativo?: boolean
-    data_criacao?: Date | string
-    salasCriadas?: SalaUncheckedCreateNestedManyWithoutProprietarioInput
-    participacoes?: ParticipanteSalaUncheckedCreateNestedManyWithoutPessoaInput
-    historiasCriadas?: HistoriaUncheckedCreateNestedManyWithoutCriadorInput
-    votos?: VotoUncheckedCreateNestedManyWithoutPessoaInput
-  }
-
-  export type PessoaCreateOrConnectWithoutEquipesMembroInput = {
-    where: PessoaWhereUniqueInput
-    create: XOR<PessoaCreateWithoutEquipesMembroInput, PessoaUncheckedCreateWithoutEquipesMembroInput>
-  }
-
   export type EquipeCreateWithoutMembrosInput = {
     id?: string
     nome: string
@@ -13465,41 +13434,35 @@ export namespace Prisma {
     create: XOR<EquipeCreateWithoutMembrosInput, EquipeUncheckedCreateWithoutMembrosInput>
   }
 
-  export type PessoaUpsertWithoutEquipesMembroInput = {
-    update: XOR<PessoaUpdateWithoutEquipesMembroInput, PessoaUncheckedUpdateWithoutEquipesMembroInput>
+  export type PessoaCreateWithoutEquipesMembroInput = {
+    id?: string
+    nome: string
+    email?: string | null
+    senha?: string | null
+    inativo?: boolean
+    data_criacao?: Date | string
+    historiasCriadas?: HistoriaCreateNestedManyWithoutCriadorInput
+    participacoes?: ParticipanteSalaCreateNestedManyWithoutPessoaInput
+    salasCriadas?: SalaCreateNestedManyWithoutProprietarioInput
+    votos?: VotoCreateNestedManyWithoutPessoaInput
+  }
+
+  export type PessoaUncheckedCreateWithoutEquipesMembroInput = {
+    id?: string
+    nome: string
+    email?: string | null
+    senha?: string | null
+    inativo?: boolean
+    data_criacao?: Date | string
+    historiasCriadas?: HistoriaUncheckedCreateNestedManyWithoutCriadorInput
+    participacoes?: ParticipanteSalaUncheckedCreateNestedManyWithoutPessoaInput
+    salasCriadas?: SalaUncheckedCreateNestedManyWithoutProprietarioInput
+    votos?: VotoUncheckedCreateNestedManyWithoutPessoaInput
+  }
+
+  export type PessoaCreateOrConnectWithoutEquipesMembroInput = {
+    where: PessoaWhereUniqueInput
     create: XOR<PessoaCreateWithoutEquipesMembroInput, PessoaUncheckedCreateWithoutEquipesMembroInput>
-    where?: PessoaWhereInput
-  }
-
-  export type PessoaUpdateToOneWithWhereWithoutEquipesMembroInput = {
-    where?: PessoaWhereInput
-    data: XOR<PessoaUpdateWithoutEquipesMembroInput, PessoaUncheckedUpdateWithoutEquipesMembroInput>
-  }
-
-  export type PessoaUpdateWithoutEquipesMembroInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    nome?: StringFieldUpdateOperationsInput | string
-    email?: NullableStringFieldUpdateOperationsInput | string | null
-    auth_id?: StringFieldUpdateOperationsInput | string
-    inativo?: BoolFieldUpdateOperationsInput | boolean
-    data_criacao?: DateTimeFieldUpdateOperationsInput | Date | string
-    salasCriadas?: SalaUpdateManyWithoutProprietarioNestedInput
-    participacoes?: ParticipanteSalaUpdateManyWithoutPessoaNestedInput
-    historiasCriadas?: HistoriaUpdateManyWithoutCriadorNestedInput
-    votos?: VotoUpdateManyWithoutPessoaNestedInput
-  }
-
-  export type PessoaUncheckedUpdateWithoutEquipesMembroInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    nome?: StringFieldUpdateOperationsInput | string
-    email?: NullableStringFieldUpdateOperationsInput | string | null
-    auth_id?: StringFieldUpdateOperationsInput | string
-    inativo?: BoolFieldUpdateOperationsInput | boolean
-    data_criacao?: DateTimeFieldUpdateOperationsInput | Date | string
-    salasCriadas?: SalaUncheckedUpdateManyWithoutProprietarioNestedInput
-    participacoes?: ParticipanteSalaUncheckedUpdateManyWithoutPessoaNestedInput
-    historiasCriadas?: HistoriaUncheckedUpdateManyWithoutCriadorNestedInput
-    votos?: VotoUncheckedUpdateManyWithoutPessoaNestedInput
   }
 
   export type EquipeUpsertWithoutMembrosInput = {
@@ -13525,6 +13488,43 @@ export namespace Prisma {
     nome?: StringFieldUpdateOperationsInput | string
     inativo?: BoolFieldUpdateOperationsInput | boolean
     projetos?: ProjetoUncheckedUpdateManyWithoutEquipeNestedInput
+  }
+
+  export type PessoaUpsertWithoutEquipesMembroInput = {
+    update: XOR<PessoaUpdateWithoutEquipesMembroInput, PessoaUncheckedUpdateWithoutEquipesMembroInput>
+    create: XOR<PessoaCreateWithoutEquipesMembroInput, PessoaUncheckedCreateWithoutEquipesMembroInput>
+    where?: PessoaWhereInput
+  }
+
+  export type PessoaUpdateToOneWithWhereWithoutEquipesMembroInput = {
+    where?: PessoaWhereInput
+    data: XOR<PessoaUpdateWithoutEquipesMembroInput, PessoaUncheckedUpdateWithoutEquipesMembroInput>
+  }
+
+  export type PessoaUpdateWithoutEquipesMembroInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    nome?: StringFieldUpdateOperationsInput | string
+    email?: NullableStringFieldUpdateOperationsInput | string | null
+    senha?: NullableStringFieldUpdateOperationsInput | string | null
+    inativo?: BoolFieldUpdateOperationsInput | boolean
+    data_criacao?: DateTimeFieldUpdateOperationsInput | Date | string
+    historiasCriadas?: HistoriaUpdateManyWithoutCriadorNestedInput
+    participacoes?: ParticipanteSalaUpdateManyWithoutPessoaNestedInput
+    salasCriadas?: SalaUpdateManyWithoutProprietarioNestedInput
+    votos?: VotoUpdateManyWithoutPessoaNestedInput
+  }
+
+  export type PessoaUncheckedUpdateWithoutEquipesMembroInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    nome?: StringFieldUpdateOperationsInput | string
+    email?: NullableStringFieldUpdateOperationsInput | string | null
+    senha?: NullableStringFieldUpdateOperationsInput | string | null
+    inativo?: BoolFieldUpdateOperationsInput | boolean
+    data_criacao?: DateTimeFieldUpdateOperationsInput | Date | string
+    historiasCriadas?: HistoriaUncheckedUpdateManyWithoutCriadorNestedInput
+    participacoes?: ParticipanteSalaUncheckedUpdateManyWithoutPessoaNestedInput
+    salasCriadas?: SalaUncheckedUpdateManyWithoutProprietarioNestedInput
+    votos?: VotoUncheckedUpdateManyWithoutPessoaNestedInput
   }
 
   export type EquipeCreateWithoutProjetosInput = {
@@ -13571,59 +13571,6 @@ export namespace Prisma {
     membros?: MembroEquipeUncheckedUpdateManyWithoutEquipeNestedInput
   }
 
-  export type PessoaCreateWithoutSalasCriadasInput = {
-    id: string
-    nome: string
-    email?: string | null
-    auth_id: string
-    inativo?: boolean
-    data_criacao?: Date | string
-    equipesMembro?: MembroEquipeCreateNestedManyWithoutPessoaInput
-    participacoes?: ParticipanteSalaCreateNestedManyWithoutPessoaInput
-    historiasCriadas?: HistoriaCreateNestedManyWithoutCriadorInput
-    votos?: VotoCreateNestedManyWithoutPessoaInput
-  }
-
-  export type PessoaUncheckedCreateWithoutSalasCriadasInput = {
-    id: string
-    nome: string
-    email?: string | null
-    auth_id: string
-    inativo?: boolean
-    data_criacao?: Date | string
-    equipesMembro?: MembroEquipeUncheckedCreateNestedManyWithoutPessoaInput
-    participacoes?: ParticipanteSalaUncheckedCreateNestedManyWithoutPessoaInput
-    historiasCriadas?: HistoriaUncheckedCreateNestedManyWithoutCriadorInput
-    votos?: VotoUncheckedCreateNestedManyWithoutPessoaInput
-  }
-
-  export type PessoaCreateOrConnectWithoutSalasCriadasInput = {
-    where: PessoaWhereUniqueInput
-    create: XOR<PessoaCreateWithoutSalasCriadasInput, PessoaUncheckedCreateWithoutSalasCriadasInput>
-  }
-
-  export type ParticipanteSalaCreateWithoutSalaInput = {
-    id?: string
-    adicionado?: Date | string
-    pessoa: PessoaCreateNestedOneWithoutParticipacoesInput
-  }
-
-  export type ParticipanteSalaUncheckedCreateWithoutSalaInput = {
-    id?: string
-    pessoa_id: string
-    adicionado?: Date | string
-  }
-
-  export type ParticipanteSalaCreateOrConnectWithoutSalaInput = {
-    where: ParticipanteSalaWhereUniqueInput
-    create: XOR<ParticipanteSalaCreateWithoutSalaInput, ParticipanteSalaUncheckedCreateWithoutSalaInput>
-  }
-
-  export type ParticipanteSalaCreateManySalaInputEnvelope = {
-    data: ParticipanteSalaCreateManySalaInput | ParticipanteSalaCreateManySalaInput[]
-    skipDuplicates?: boolean
-  }
-
   export type HistoriaCreateWithoutSalaInput = {
     id?: string
     titulo: string
@@ -13656,12 +13603,65 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
+  export type ParticipanteSalaCreateWithoutSalaInput = {
+    id?: string
+    adicionado?: Date | string
+    pessoa: PessoaCreateNestedOneWithoutParticipacoesInput
+  }
+
+  export type ParticipanteSalaUncheckedCreateWithoutSalaInput = {
+    id?: string
+    pessoa_id: string
+    adicionado?: Date | string
+  }
+
+  export type ParticipanteSalaCreateOrConnectWithoutSalaInput = {
+    where: ParticipanteSalaWhereUniqueInput
+    create: XOR<ParticipanteSalaCreateWithoutSalaInput, ParticipanteSalaUncheckedCreateWithoutSalaInput>
+  }
+
+  export type ParticipanteSalaCreateManySalaInputEnvelope = {
+    data: ParticipanteSalaCreateManySalaInput | ParticipanteSalaCreateManySalaInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type PessoaCreateWithoutSalasCriadasInput = {
+    id?: string
+    nome: string
+    email?: string | null
+    senha?: string | null
+    inativo?: boolean
+    data_criacao?: Date | string
+    historiasCriadas?: HistoriaCreateNestedManyWithoutCriadorInput
+    equipesMembro?: MembroEquipeCreateNestedManyWithoutPessoaInput
+    participacoes?: ParticipanteSalaCreateNestedManyWithoutPessoaInput
+    votos?: VotoCreateNestedManyWithoutPessoaInput
+  }
+
+  export type PessoaUncheckedCreateWithoutSalasCriadasInput = {
+    id?: string
+    nome: string
+    email?: string | null
+    senha?: string | null
+    inativo?: boolean
+    data_criacao?: Date | string
+    historiasCriadas?: HistoriaUncheckedCreateNestedManyWithoutCriadorInput
+    equipesMembro?: MembroEquipeUncheckedCreateNestedManyWithoutPessoaInput
+    participacoes?: ParticipanteSalaUncheckedCreateNestedManyWithoutPessoaInput
+    votos?: VotoUncheckedCreateNestedManyWithoutPessoaInput
+  }
+
+  export type PessoaCreateOrConnectWithoutSalasCriadasInput = {
+    where: PessoaWhereUniqueInput
+    create: XOR<PessoaCreateWithoutSalasCriadasInput, PessoaUncheckedCreateWithoutSalasCriadasInput>
+  }
+
   export type VotoCreateWithoutSalaInput = {
     id?: string
     valor: number
     data_voto?: Date | string
-    pessoa: PessoaCreateNestedOneWithoutVotosInput
     historia: HistoriaCreateNestedOneWithoutVotosInput
+    pessoa: PessoaCreateNestedOneWithoutVotosInput
   }
 
   export type VotoUncheckedCreateWithoutSalaInput = {
@@ -13682,41 +13682,20 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
-  export type PessoaUpsertWithoutSalasCriadasInput = {
-    update: XOR<PessoaUpdateWithoutSalasCriadasInput, PessoaUncheckedUpdateWithoutSalasCriadasInput>
-    create: XOR<PessoaCreateWithoutSalasCriadasInput, PessoaUncheckedCreateWithoutSalasCriadasInput>
-    where?: PessoaWhereInput
+  export type HistoriaUpsertWithWhereUniqueWithoutSalaInput = {
+    where: HistoriaWhereUniqueInput
+    update: XOR<HistoriaUpdateWithoutSalaInput, HistoriaUncheckedUpdateWithoutSalaInput>
+    create: XOR<HistoriaCreateWithoutSalaInput, HistoriaUncheckedCreateWithoutSalaInput>
   }
 
-  export type PessoaUpdateToOneWithWhereWithoutSalasCriadasInput = {
-    where?: PessoaWhereInput
-    data: XOR<PessoaUpdateWithoutSalasCriadasInput, PessoaUncheckedUpdateWithoutSalasCriadasInput>
+  export type HistoriaUpdateWithWhereUniqueWithoutSalaInput = {
+    where: HistoriaWhereUniqueInput
+    data: XOR<HistoriaUpdateWithoutSalaInput, HistoriaUncheckedUpdateWithoutSalaInput>
   }
 
-  export type PessoaUpdateWithoutSalasCriadasInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    nome?: StringFieldUpdateOperationsInput | string
-    email?: NullableStringFieldUpdateOperationsInput | string | null
-    auth_id?: StringFieldUpdateOperationsInput | string
-    inativo?: BoolFieldUpdateOperationsInput | boolean
-    data_criacao?: DateTimeFieldUpdateOperationsInput | Date | string
-    equipesMembro?: MembroEquipeUpdateManyWithoutPessoaNestedInput
-    participacoes?: ParticipanteSalaUpdateManyWithoutPessoaNestedInput
-    historiasCriadas?: HistoriaUpdateManyWithoutCriadorNestedInput
-    votos?: VotoUpdateManyWithoutPessoaNestedInput
-  }
-
-  export type PessoaUncheckedUpdateWithoutSalasCriadasInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    nome?: StringFieldUpdateOperationsInput | string
-    email?: NullableStringFieldUpdateOperationsInput | string | null
-    auth_id?: StringFieldUpdateOperationsInput | string
-    inativo?: BoolFieldUpdateOperationsInput | boolean
-    data_criacao?: DateTimeFieldUpdateOperationsInput | Date | string
-    equipesMembro?: MembroEquipeUncheckedUpdateManyWithoutPessoaNestedInput
-    participacoes?: ParticipanteSalaUncheckedUpdateManyWithoutPessoaNestedInput
-    historiasCriadas?: HistoriaUncheckedUpdateManyWithoutCriadorNestedInput
-    votos?: VotoUncheckedUpdateManyWithoutPessoaNestedInput
+  export type HistoriaUpdateManyWithWhereWithoutSalaInput = {
+    where: HistoriaScalarWhereInput
+    data: XOR<HistoriaUpdateManyMutationInput, HistoriaUncheckedUpdateManyWithoutSalaInput>
   }
 
   export type ParticipanteSalaUpsertWithWhereUniqueWithoutSalaInput = {
@@ -13735,20 +13714,41 @@ export namespace Prisma {
     data: XOR<ParticipanteSalaUpdateManyMutationInput, ParticipanteSalaUncheckedUpdateManyWithoutSalaInput>
   }
 
-  export type HistoriaUpsertWithWhereUniqueWithoutSalaInput = {
-    where: HistoriaWhereUniqueInput
-    update: XOR<HistoriaUpdateWithoutSalaInput, HistoriaUncheckedUpdateWithoutSalaInput>
-    create: XOR<HistoriaCreateWithoutSalaInput, HistoriaUncheckedCreateWithoutSalaInput>
+  export type PessoaUpsertWithoutSalasCriadasInput = {
+    update: XOR<PessoaUpdateWithoutSalasCriadasInput, PessoaUncheckedUpdateWithoutSalasCriadasInput>
+    create: XOR<PessoaCreateWithoutSalasCriadasInput, PessoaUncheckedCreateWithoutSalasCriadasInput>
+    where?: PessoaWhereInput
   }
 
-  export type HistoriaUpdateWithWhereUniqueWithoutSalaInput = {
-    where: HistoriaWhereUniqueInput
-    data: XOR<HistoriaUpdateWithoutSalaInput, HistoriaUncheckedUpdateWithoutSalaInput>
+  export type PessoaUpdateToOneWithWhereWithoutSalasCriadasInput = {
+    where?: PessoaWhereInput
+    data: XOR<PessoaUpdateWithoutSalasCriadasInput, PessoaUncheckedUpdateWithoutSalasCriadasInput>
   }
 
-  export type HistoriaUpdateManyWithWhereWithoutSalaInput = {
-    where: HistoriaScalarWhereInput
-    data: XOR<HistoriaUpdateManyMutationInput, HistoriaUncheckedUpdateManyWithoutSalaInput>
+  export type PessoaUpdateWithoutSalasCriadasInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    nome?: StringFieldUpdateOperationsInput | string
+    email?: NullableStringFieldUpdateOperationsInput | string | null
+    senha?: NullableStringFieldUpdateOperationsInput | string | null
+    inativo?: BoolFieldUpdateOperationsInput | boolean
+    data_criacao?: DateTimeFieldUpdateOperationsInput | Date | string
+    historiasCriadas?: HistoriaUpdateManyWithoutCriadorNestedInput
+    equipesMembro?: MembroEquipeUpdateManyWithoutPessoaNestedInput
+    participacoes?: ParticipanteSalaUpdateManyWithoutPessoaNestedInput
+    votos?: VotoUpdateManyWithoutPessoaNestedInput
+  }
+
+  export type PessoaUncheckedUpdateWithoutSalasCriadasInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    nome?: StringFieldUpdateOperationsInput | string
+    email?: NullableStringFieldUpdateOperationsInput | string | null
+    senha?: NullableStringFieldUpdateOperationsInput | string | null
+    inativo?: BoolFieldUpdateOperationsInput | boolean
+    data_criacao?: DateTimeFieldUpdateOperationsInput | Date | string
+    historiasCriadas?: HistoriaUncheckedUpdateManyWithoutCriadorNestedInput
+    equipesMembro?: MembroEquipeUncheckedUpdateManyWithoutPessoaNestedInput
+    participacoes?: ParticipanteSalaUncheckedUpdateManyWithoutPessoaNestedInput
+    votos?: VotoUncheckedUpdateManyWithoutPessoaNestedInput
   }
 
   export type VotoUpsertWithWhereUniqueWithoutSalaInput = {
@@ -13768,28 +13768,28 @@ export namespace Prisma {
   }
 
   export type PessoaCreateWithoutParticipacoesInput = {
-    id: string
+    id?: string
     nome: string
     email?: string | null
-    auth_id: string
+    senha?: string | null
     inativo?: boolean
     data_criacao?: Date | string
+    historiasCriadas?: HistoriaCreateNestedManyWithoutCriadorInput
     equipesMembro?: MembroEquipeCreateNestedManyWithoutPessoaInput
     salasCriadas?: SalaCreateNestedManyWithoutProprietarioInput
-    historiasCriadas?: HistoriaCreateNestedManyWithoutCriadorInput
     votos?: VotoCreateNestedManyWithoutPessoaInput
   }
 
   export type PessoaUncheckedCreateWithoutParticipacoesInput = {
-    id: string
+    id?: string
     nome: string
     email?: string | null
-    auth_id: string
+    senha?: string | null
     inativo?: boolean
     data_criacao?: Date | string
+    historiasCriadas?: HistoriaUncheckedCreateNestedManyWithoutCriadorInput
     equipesMembro?: MembroEquipeUncheckedCreateNestedManyWithoutPessoaInput
     salasCriadas?: SalaUncheckedCreateNestedManyWithoutProprietarioInput
-    historiasCriadas?: HistoriaUncheckedCreateNestedManyWithoutCriadorInput
     votos?: VotoUncheckedCreateNestedManyWithoutPessoaInput
   }
 
@@ -13806,8 +13806,8 @@ export namespace Prisma {
     inativo?: boolean
     data_criacao?: Date | string
     data_alteracao?: Date | string
-    proprietario: PessoaCreateNestedOneWithoutSalasCriadasInput
     historias?: HistoriaCreateNestedManyWithoutSalaInput
+    proprietario: PessoaCreateNestedOneWithoutSalasCriadasInput
     votos?: VotoCreateNestedManyWithoutSalaInput
   }
 
@@ -13844,12 +13844,12 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     nome?: StringFieldUpdateOperationsInput | string
     email?: NullableStringFieldUpdateOperationsInput | string | null
-    auth_id?: StringFieldUpdateOperationsInput | string
+    senha?: NullableStringFieldUpdateOperationsInput | string | null
     inativo?: BoolFieldUpdateOperationsInput | boolean
     data_criacao?: DateTimeFieldUpdateOperationsInput | Date | string
+    historiasCriadas?: HistoriaUpdateManyWithoutCriadorNestedInput
     equipesMembro?: MembroEquipeUpdateManyWithoutPessoaNestedInput
     salasCriadas?: SalaUpdateManyWithoutProprietarioNestedInput
-    historiasCriadas?: HistoriaUpdateManyWithoutCriadorNestedInput
     votos?: VotoUpdateManyWithoutPessoaNestedInput
   }
 
@@ -13857,12 +13857,12 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     nome?: StringFieldUpdateOperationsInput | string
     email?: NullableStringFieldUpdateOperationsInput | string | null
-    auth_id?: StringFieldUpdateOperationsInput | string
+    senha?: NullableStringFieldUpdateOperationsInput | string | null
     inativo?: BoolFieldUpdateOperationsInput | boolean
     data_criacao?: DateTimeFieldUpdateOperationsInput | Date | string
+    historiasCriadas?: HistoriaUncheckedUpdateManyWithoutCriadorNestedInput
     equipesMembro?: MembroEquipeUncheckedUpdateManyWithoutPessoaNestedInput
     salasCriadas?: SalaUncheckedUpdateManyWithoutProprietarioNestedInput
-    historiasCriadas?: HistoriaUncheckedUpdateManyWithoutCriadorNestedInput
     votos?: VotoUncheckedUpdateManyWithoutPessoaNestedInput
   }
 
@@ -13885,8 +13885,8 @@ export namespace Prisma {
     inativo?: BoolFieldUpdateOperationsInput | boolean
     data_criacao?: DateTimeFieldUpdateOperationsInput | Date | string
     data_alteracao?: DateTimeFieldUpdateOperationsInput | Date | string
-    proprietario?: PessoaUpdateOneRequiredWithoutSalasCriadasNestedInput
     historias?: HistoriaUpdateManyWithoutSalaNestedInput
+    proprietario?: PessoaUpdateOneRequiredWithoutSalasCriadasNestedInput
     votos?: VotoUpdateManyWithoutSalaNestedInput
   }
 
@@ -13903,6 +13903,37 @@ export namespace Prisma {
     votos?: VotoUncheckedUpdateManyWithoutSalaNestedInput
   }
 
+  export type PessoaCreateWithoutHistoriasCriadasInput = {
+    id?: string
+    nome: string
+    email?: string | null
+    senha?: string | null
+    inativo?: boolean
+    data_criacao?: Date | string
+    equipesMembro?: MembroEquipeCreateNestedManyWithoutPessoaInput
+    participacoes?: ParticipanteSalaCreateNestedManyWithoutPessoaInput
+    salasCriadas?: SalaCreateNestedManyWithoutProprietarioInput
+    votos?: VotoCreateNestedManyWithoutPessoaInput
+  }
+
+  export type PessoaUncheckedCreateWithoutHistoriasCriadasInput = {
+    id?: string
+    nome: string
+    email?: string | null
+    senha?: string | null
+    inativo?: boolean
+    data_criacao?: Date | string
+    equipesMembro?: MembroEquipeUncheckedCreateNestedManyWithoutPessoaInput
+    participacoes?: ParticipanteSalaUncheckedCreateNestedManyWithoutPessoaInput
+    salasCriadas?: SalaUncheckedCreateNestedManyWithoutProprietarioInput
+    votos?: VotoUncheckedCreateNestedManyWithoutPessoaInput
+  }
+
+  export type PessoaCreateOrConnectWithoutHistoriasCriadasInput = {
+    where: PessoaWhereUniqueInput
+    create: XOR<PessoaCreateWithoutHistoriasCriadasInput, PessoaUncheckedCreateWithoutHistoriasCriadasInput>
+  }
+
   export type SalaCreateWithoutHistoriasInput = {
     id?: string
     codigo: number
@@ -13911,8 +13942,8 @@ export namespace Prisma {
     inativo?: boolean
     data_criacao?: Date | string
     data_alteracao?: Date | string
-    proprietario: PessoaCreateNestedOneWithoutSalasCriadasInput
     participantes?: ParticipanteSalaCreateNestedManyWithoutSalaInput
+    proprietario: PessoaCreateNestedOneWithoutSalasCriadasInput
     votos?: VotoCreateNestedManyWithoutSalaInput
   }
 
@@ -13932,37 +13963,6 @@ export namespace Prisma {
   export type SalaCreateOrConnectWithoutHistoriasInput = {
     where: SalaWhereUniqueInput
     create: XOR<SalaCreateWithoutHistoriasInput, SalaUncheckedCreateWithoutHistoriasInput>
-  }
-
-  export type PessoaCreateWithoutHistoriasCriadasInput = {
-    id: string
-    nome: string
-    email?: string | null
-    auth_id: string
-    inativo?: boolean
-    data_criacao?: Date | string
-    equipesMembro?: MembroEquipeCreateNestedManyWithoutPessoaInput
-    salasCriadas?: SalaCreateNestedManyWithoutProprietarioInput
-    participacoes?: ParticipanteSalaCreateNestedManyWithoutPessoaInput
-    votos?: VotoCreateNestedManyWithoutPessoaInput
-  }
-
-  export type PessoaUncheckedCreateWithoutHistoriasCriadasInput = {
-    id: string
-    nome: string
-    email?: string | null
-    auth_id: string
-    inativo?: boolean
-    data_criacao?: Date | string
-    equipesMembro?: MembroEquipeUncheckedCreateNestedManyWithoutPessoaInput
-    salasCriadas?: SalaUncheckedCreateNestedManyWithoutProprietarioInput
-    participacoes?: ParticipanteSalaUncheckedCreateNestedManyWithoutPessoaInput
-    votos?: VotoUncheckedCreateNestedManyWithoutPessoaInput
-  }
-
-  export type PessoaCreateOrConnectWithoutHistoriasCriadasInput = {
-    where: PessoaWhereUniqueInput
-    create: XOR<PessoaCreateWithoutHistoriasCriadasInput, PessoaUncheckedCreateWithoutHistoriasCriadasInput>
   }
 
   export type VotoCreateWithoutHistoriaInput = {
@@ -13991,6 +13991,43 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
+  export type PessoaUpsertWithoutHistoriasCriadasInput = {
+    update: XOR<PessoaUpdateWithoutHistoriasCriadasInput, PessoaUncheckedUpdateWithoutHistoriasCriadasInput>
+    create: XOR<PessoaCreateWithoutHistoriasCriadasInput, PessoaUncheckedCreateWithoutHistoriasCriadasInput>
+    where?: PessoaWhereInput
+  }
+
+  export type PessoaUpdateToOneWithWhereWithoutHistoriasCriadasInput = {
+    where?: PessoaWhereInput
+    data: XOR<PessoaUpdateWithoutHistoriasCriadasInput, PessoaUncheckedUpdateWithoutHistoriasCriadasInput>
+  }
+
+  export type PessoaUpdateWithoutHistoriasCriadasInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    nome?: StringFieldUpdateOperationsInput | string
+    email?: NullableStringFieldUpdateOperationsInput | string | null
+    senha?: NullableStringFieldUpdateOperationsInput | string | null
+    inativo?: BoolFieldUpdateOperationsInput | boolean
+    data_criacao?: DateTimeFieldUpdateOperationsInput | Date | string
+    equipesMembro?: MembroEquipeUpdateManyWithoutPessoaNestedInput
+    participacoes?: ParticipanteSalaUpdateManyWithoutPessoaNestedInput
+    salasCriadas?: SalaUpdateManyWithoutProprietarioNestedInput
+    votos?: VotoUpdateManyWithoutPessoaNestedInput
+  }
+
+  export type PessoaUncheckedUpdateWithoutHistoriasCriadasInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    nome?: StringFieldUpdateOperationsInput | string
+    email?: NullableStringFieldUpdateOperationsInput | string | null
+    senha?: NullableStringFieldUpdateOperationsInput | string | null
+    inativo?: BoolFieldUpdateOperationsInput | boolean
+    data_criacao?: DateTimeFieldUpdateOperationsInput | Date | string
+    equipesMembro?: MembroEquipeUncheckedUpdateManyWithoutPessoaNestedInput
+    participacoes?: ParticipanteSalaUncheckedUpdateManyWithoutPessoaNestedInput
+    salasCriadas?: SalaUncheckedUpdateManyWithoutProprietarioNestedInput
+    votos?: VotoUncheckedUpdateManyWithoutPessoaNestedInput
+  }
+
   export type SalaUpsertWithoutHistoriasInput = {
     update: XOR<SalaUpdateWithoutHistoriasInput, SalaUncheckedUpdateWithoutHistoriasInput>
     create: XOR<SalaCreateWithoutHistoriasInput, SalaUncheckedCreateWithoutHistoriasInput>
@@ -14010,8 +14047,8 @@ export namespace Prisma {
     inativo?: BoolFieldUpdateOperationsInput | boolean
     data_criacao?: DateTimeFieldUpdateOperationsInput | Date | string
     data_alteracao?: DateTimeFieldUpdateOperationsInput | Date | string
-    proprietario?: PessoaUpdateOneRequiredWithoutSalasCriadasNestedInput
     participantes?: ParticipanteSalaUpdateManyWithoutSalaNestedInput
+    proprietario?: PessoaUpdateOneRequiredWithoutSalasCriadasNestedInput
     votos?: VotoUpdateManyWithoutSalaNestedInput
   }
 
@@ -14026,43 +14063,6 @@ export namespace Prisma {
     data_alteracao?: DateTimeFieldUpdateOperationsInput | Date | string
     participantes?: ParticipanteSalaUncheckedUpdateManyWithoutSalaNestedInput
     votos?: VotoUncheckedUpdateManyWithoutSalaNestedInput
-  }
-
-  export type PessoaUpsertWithoutHistoriasCriadasInput = {
-    update: XOR<PessoaUpdateWithoutHistoriasCriadasInput, PessoaUncheckedUpdateWithoutHistoriasCriadasInput>
-    create: XOR<PessoaCreateWithoutHistoriasCriadasInput, PessoaUncheckedCreateWithoutHistoriasCriadasInput>
-    where?: PessoaWhereInput
-  }
-
-  export type PessoaUpdateToOneWithWhereWithoutHistoriasCriadasInput = {
-    where?: PessoaWhereInput
-    data: XOR<PessoaUpdateWithoutHistoriasCriadasInput, PessoaUncheckedUpdateWithoutHistoriasCriadasInput>
-  }
-
-  export type PessoaUpdateWithoutHistoriasCriadasInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    nome?: StringFieldUpdateOperationsInput | string
-    email?: NullableStringFieldUpdateOperationsInput | string | null
-    auth_id?: StringFieldUpdateOperationsInput | string
-    inativo?: BoolFieldUpdateOperationsInput | boolean
-    data_criacao?: DateTimeFieldUpdateOperationsInput | Date | string
-    equipesMembro?: MembroEquipeUpdateManyWithoutPessoaNestedInput
-    salasCriadas?: SalaUpdateManyWithoutProprietarioNestedInput
-    participacoes?: ParticipanteSalaUpdateManyWithoutPessoaNestedInput
-    votos?: VotoUpdateManyWithoutPessoaNestedInput
-  }
-
-  export type PessoaUncheckedUpdateWithoutHistoriasCriadasInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    nome?: StringFieldUpdateOperationsInput | string
-    email?: NullableStringFieldUpdateOperationsInput | string | null
-    auth_id?: StringFieldUpdateOperationsInput | string
-    inativo?: BoolFieldUpdateOperationsInput | boolean
-    data_criacao?: DateTimeFieldUpdateOperationsInput | Date | string
-    equipesMembro?: MembroEquipeUncheckedUpdateManyWithoutPessoaNestedInput
-    salasCriadas?: SalaUncheckedUpdateManyWithoutProprietarioNestedInput
-    participacoes?: ParticipanteSalaUncheckedUpdateManyWithoutPessoaNestedInput
-    votos?: VotoUncheckedUpdateManyWithoutPessoaNestedInput
   }
 
   export type VotoUpsertWithWhereUniqueWithoutHistoriaInput = {
@@ -14081,68 +14081,6 @@ export namespace Prisma {
     data: XOR<VotoUpdateManyMutationInput, VotoUncheckedUpdateManyWithoutHistoriaInput>
   }
 
-  export type PessoaCreateWithoutVotosInput = {
-    id: string
-    nome: string
-    email?: string | null
-    auth_id: string
-    inativo?: boolean
-    data_criacao?: Date | string
-    equipesMembro?: MembroEquipeCreateNestedManyWithoutPessoaInput
-    salasCriadas?: SalaCreateNestedManyWithoutProprietarioInput
-    participacoes?: ParticipanteSalaCreateNestedManyWithoutPessoaInput
-    historiasCriadas?: HistoriaCreateNestedManyWithoutCriadorInput
-  }
-
-  export type PessoaUncheckedCreateWithoutVotosInput = {
-    id: string
-    nome: string
-    email?: string | null
-    auth_id: string
-    inativo?: boolean
-    data_criacao?: Date | string
-    equipesMembro?: MembroEquipeUncheckedCreateNestedManyWithoutPessoaInput
-    salasCriadas?: SalaUncheckedCreateNestedManyWithoutProprietarioInput
-    participacoes?: ParticipanteSalaUncheckedCreateNestedManyWithoutPessoaInput
-    historiasCriadas?: HistoriaUncheckedCreateNestedManyWithoutCriadorInput
-  }
-
-  export type PessoaCreateOrConnectWithoutVotosInput = {
-    where: PessoaWhereUniqueInput
-    create: XOR<PessoaCreateWithoutVotosInput, PessoaUncheckedCreateWithoutVotosInput>
-  }
-
-  export type SalaCreateWithoutVotosInput = {
-    id?: string
-    codigo: number
-    titulo: string
-    senha?: string | null
-    inativo?: boolean
-    data_criacao?: Date | string
-    data_alteracao?: Date | string
-    proprietario: PessoaCreateNestedOneWithoutSalasCriadasInput
-    participantes?: ParticipanteSalaCreateNestedManyWithoutSalaInput
-    historias?: HistoriaCreateNestedManyWithoutSalaInput
-  }
-
-  export type SalaUncheckedCreateWithoutVotosInput = {
-    id?: string
-    codigo: number
-    titulo: string
-    criado_por: string
-    senha?: string | null
-    inativo?: boolean
-    data_criacao?: Date | string
-    data_alteracao?: Date | string
-    participantes?: ParticipanteSalaUncheckedCreateNestedManyWithoutSalaInput
-    historias?: HistoriaUncheckedCreateNestedManyWithoutSalaInput
-  }
-
-  export type SalaCreateOrConnectWithoutVotosInput = {
-    where: SalaWhereUniqueInput
-    create: XOR<SalaCreateWithoutVotosInput, SalaUncheckedCreateWithoutVotosInput>
-  }
-
   export type HistoriaCreateWithoutVotosInput = {
     id?: string
     titulo: string
@@ -14150,8 +14088,8 @@ export namespace Prisma {
     data_criacao?: Date | string
     data_alteracao?: Date | string
     finalizada?: boolean
-    sala: SalaCreateNestedOneWithoutHistoriasInput
     criador: PessoaCreateNestedOneWithoutHistoriasCriadasInput
+    sala: SalaCreateNestedOneWithoutHistoriasInput
   }
 
   export type HistoriaUncheckedCreateWithoutVotosInput = {
@@ -14170,6 +14108,101 @@ export namespace Prisma {
     create: XOR<HistoriaCreateWithoutVotosInput, HistoriaUncheckedCreateWithoutVotosInput>
   }
 
+  export type PessoaCreateWithoutVotosInput = {
+    id?: string
+    nome: string
+    email?: string | null
+    senha?: string | null
+    inativo?: boolean
+    data_criacao?: Date | string
+    historiasCriadas?: HistoriaCreateNestedManyWithoutCriadorInput
+    equipesMembro?: MembroEquipeCreateNestedManyWithoutPessoaInput
+    participacoes?: ParticipanteSalaCreateNestedManyWithoutPessoaInput
+    salasCriadas?: SalaCreateNestedManyWithoutProprietarioInput
+  }
+
+  export type PessoaUncheckedCreateWithoutVotosInput = {
+    id?: string
+    nome: string
+    email?: string | null
+    senha?: string | null
+    inativo?: boolean
+    data_criacao?: Date | string
+    historiasCriadas?: HistoriaUncheckedCreateNestedManyWithoutCriadorInput
+    equipesMembro?: MembroEquipeUncheckedCreateNestedManyWithoutPessoaInput
+    participacoes?: ParticipanteSalaUncheckedCreateNestedManyWithoutPessoaInput
+    salasCriadas?: SalaUncheckedCreateNestedManyWithoutProprietarioInput
+  }
+
+  export type PessoaCreateOrConnectWithoutVotosInput = {
+    where: PessoaWhereUniqueInput
+    create: XOR<PessoaCreateWithoutVotosInput, PessoaUncheckedCreateWithoutVotosInput>
+  }
+
+  export type SalaCreateWithoutVotosInput = {
+    id?: string
+    codigo: number
+    titulo: string
+    senha?: string | null
+    inativo?: boolean
+    data_criacao?: Date | string
+    data_alteracao?: Date | string
+    historias?: HistoriaCreateNestedManyWithoutSalaInput
+    participantes?: ParticipanteSalaCreateNestedManyWithoutSalaInput
+    proprietario: PessoaCreateNestedOneWithoutSalasCriadasInput
+  }
+
+  export type SalaUncheckedCreateWithoutVotosInput = {
+    id?: string
+    codigo: number
+    titulo: string
+    criado_por: string
+    senha?: string | null
+    inativo?: boolean
+    data_criacao?: Date | string
+    data_alteracao?: Date | string
+    historias?: HistoriaUncheckedCreateNestedManyWithoutSalaInput
+    participantes?: ParticipanteSalaUncheckedCreateNestedManyWithoutSalaInput
+  }
+
+  export type SalaCreateOrConnectWithoutVotosInput = {
+    where: SalaWhereUniqueInput
+    create: XOR<SalaCreateWithoutVotosInput, SalaUncheckedCreateWithoutVotosInput>
+  }
+
+  export type HistoriaUpsertWithoutVotosInput = {
+    update: XOR<HistoriaUpdateWithoutVotosInput, HistoriaUncheckedUpdateWithoutVotosInput>
+    create: XOR<HistoriaCreateWithoutVotosInput, HistoriaUncheckedCreateWithoutVotosInput>
+    where?: HistoriaWhereInput
+  }
+
+  export type HistoriaUpdateToOneWithWhereWithoutVotosInput = {
+    where?: HistoriaWhereInput
+    data: XOR<HistoriaUpdateWithoutVotosInput, HistoriaUncheckedUpdateWithoutVotosInput>
+  }
+
+  export type HistoriaUpdateWithoutVotosInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    titulo?: StringFieldUpdateOperationsInput | string
+    descricao?: NullableStringFieldUpdateOperationsInput | string | null
+    data_criacao?: DateTimeFieldUpdateOperationsInput | Date | string
+    data_alteracao?: DateTimeFieldUpdateOperationsInput | Date | string
+    finalizada?: BoolFieldUpdateOperationsInput | boolean
+    criador?: PessoaUpdateOneRequiredWithoutHistoriasCriadasNestedInput
+    sala?: SalaUpdateOneRequiredWithoutHistoriasNestedInput
+  }
+
+  export type HistoriaUncheckedUpdateWithoutVotosInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    titulo?: StringFieldUpdateOperationsInput | string
+    descricao?: NullableStringFieldUpdateOperationsInput | string | null
+    sala_id?: StringFieldUpdateOperationsInput | string
+    criado_por?: StringFieldUpdateOperationsInput | string
+    data_criacao?: DateTimeFieldUpdateOperationsInput | Date | string
+    data_alteracao?: DateTimeFieldUpdateOperationsInput | Date | string
+    finalizada?: BoolFieldUpdateOperationsInput | boolean
+  }
+
   export type PessoaUpsertWithoutVotosInput = {
     update: XOR<PessoaUpdateWithoutVotosInput, PessoaUncheckedUpdateWithoutVotosInput>
     create: XOR<PessoaCreateWithoutVotosInput, PessoaUncheckedCreateWithoutVotosInput>
@@ -14185,26 +14218,26 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     nome?: StringFieldUpdateOperationsInput | string
     email?: NullableStringFieldUpdateOperationsInput | string | null
-    auth_id?: StringFieldUpdateOperationsInput | string
+    senha?: NullableStringFieldUpdateOperationsInput | string | null
     inativo?: BoolFieldUpdateOperationsInput | boolean
     data_criacao?: DateTimeFieldUpdateOperationsInput | Date | string
-    equipesMembro?: MembroEquipeUpdateManyWithoutPessoaNestedInput
-    salasCriadas?: SalaUpdateManyWithoutProprietarioNestedInput
-    participacoes?: ParticipanteSalaUpdateManyWithoutPessoaNestedInput
     historiasCriadas?: HistoriaUpdateManyWithoutCriadorNestedInput
+    equipesMembro?: MembroEquipeUpdateManyWithoutPessoaNestedInput
+    participacoes?: ParticipanteSalaUpdateManyWithoutPessoaNestedInput
+    salasCriadas?: SalaUpdateManyWithoutProprietarioNestedInput
   }
 
   export type PessoaUncheckedUpdateWithoutVotosInput = {
     id?: StringFieldUpdateOperationsInput | string
     nome?: StringFieldUpdateOperationsInput | string
     email?: NullableStringFieldUpdateOperationsInput | string | null
-    auth_id?: StringFieldUpdateOperationsInput | string
+    senha?: NullableStringFieldUpdateOperationsInput | string | null
     inativo?: BoolFieldUpdateOperationsInput | boolean
     data_criacao?: DateTimeFieldUpdateOperationsInput | Date | string
-    equipesMembro?: MembroEquipeUncheckedUpdateManyWithoutPessoaNestedInput
-    salasCriadas?: SalaUncheckedUpdateManyWithoutProprietarioNestedInput
-    participacoes?: ParticipanteSalaUncheckedUpdateManyWithoutPessoaNestedInput
     historiasCriadas?: HistoriaUncheckedUpdateManyWithoutCriadorNestedInput
+    equipesMembro?: MembroEquipeUncheckedUpdateManyWithoutPessoaNestedInput
+    participacoes?: ParticipanteSalaUncheckedUpdateManyWithoutPessoaNestedInput
+    salasCriadas?: SalaUncheckedUpdateManyWithoutProprietarioNestedInput
   }
 
   export type SalaUpsertWithoutVotosInput = {
@@ -14226,9 +14259,9 @@ export namespace Prisma {
     inativo?: BoolFieldUpdateOperationsInput | boolean
     data_criacao?: DateTimeFieldUpdateOperationsInput | Date | string
     data_alteracao?: DateTimeFieldUpdateOperationsInput | Date | string
-    proprietario?: PessoaUpdateOneRequiredWithoutSalasCriadasNestedInput
-    participantes?: ParticipanteSalaUpdateManyWithoutSalaNestedInput
     historias?: HistoriaUpdateManyWithoutSalaNestedInput
+    participantes?: ParticipanteSalaUpdateManyWithoutSalaNestedInput
+    proprietario?: PessoaUpdateOneRequiredWithoutSalasCriadasNestedInput
   }
 
   export type SalaUncheckedUpdateWithoutVotosInput = {
@@ -14240,63 +14273,8 @@ export namespace Prisma {
     inativo?: BoolFieldUpdateOperationsInput | boolean
     data_criacao?: DateTimeFieldUpdateOperationsInput | Date | string
     data_alteracao?: DateTimeFieldUpdateOperationsInput | Date | string
-    participantes?: ParticipanteSalaUncheckedUpdateManyWithoutSalaNestedInput
     historias?: HistoriaUncheckedUpdateManyWithoutSalaNestedInput
-  }
-
-  export type HistoriaUpsertWithoutVotosInput = {
-    update: XOR<HistoriaUpdateWithoutVotosInput, HistoriaUncheckedUpdateWithoutVotosInput>
-    create: XOR<HistoriaCreateWithoutVotosInput, HistoriaUncheckedCreateWithoutVotosInput>
-    where?: HistoriaWhereInput
-  }
-
-  export type HistoriaUpdateToOneWithWhereWithoutVotosInput = {
-    where?: HistoriaWhereInput
-    data: XOR<HistoriaUpdateWithoutVotosInput, HistoriaUncheckedUpdateWithoutVotosInput>
-  }
-
-  export type HistoriaUpdateWithoutVotosInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    titulo?: StringFieldUpdateOperationsInput | string
-    descricao?: NullableStringFieldUpdateOperationsInput | string | null
-    data_criacao?: DateTimeFieldUpdateOperationsInput | Date | string
-    data_alteracao?: DateTimeFieldUpdateOperationsInput | Date | string
-    finalizada?: BoolFieldUpdateOperationsInput | boolean
-    sala?: SalaUpdateOneRequiredWithoutHistoriasNestedInput
-    criador?: PessoaUpdateOneRequiredWithoutHistoriasCriadasNestedInput
-  }
-
-  export type HistoriaUncheckedUpdateWithoutVotosInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    titulo?: StringFieldUpdateOperationsInput | string
-    descricao?: NullableStringFieldUpdateOperationsInput | string | null
-    sala_id?: StringFieldUpdateOperationsInput | string
-    criado_por?: StringFieldUpdateOperationsInput | string
-    data_criacao?: DateTimeFieldUpdateOperationsInput | Date | string
-    data_alteracao?: DateTimeFieldUpdateOperationsInput | Date | string
-    finalizada?: BoolFieldUpdateOperationsInput | boolean
-  }
-
-  export type MembroEquipeCreateManyPessoaInput = {
-    id?: string
-    equipe_id: string
-    proprietario?: boolean
-  }
-
-  export type SalaCreateManyProprietarioInput = {
-    id?: string
-    codigo: number
-    titulo: string
-    senha?: string | null
-    inativo?: boolean
-    data_criacao?: Date | string
-    data_alteracao?: Date | string
-  }
-
-  export type ParticipanteSalaCreateManyPessoaInput = {
-    id?: string
-    sala_id: string
-    adicionado?: Date | string
+    participantes?: ParticipanteSalaUncheckedUpdateManyWithoutSalaNestedInput
   }
 
   export type HistoriaCreateManyCriadorInput = {
@@ -14309,84 +14287,34 @@ export namespace Prisma {
     finalizada?: boolean
   }
 
+  export type MembroEquipeCreateManyPessoaInput = {
+    id?: string
+    equipe_id: string
+    proprietario?: boolean
+  }
+
+  export type ParticipanteSalaCreateManyPessoaInput = {
+    id?: string
+    sala_id: string
+    adicionado?: Date | string
+  }
+
+  export type SalaCreateManyProprietarioInput = {
+    id?: string
+    codigo: number
+    titulo: string
+    senha?: string | null
+    inativo?: boolean
+    data_criacao?: Date | string
+    data_alteracao?: Date | string
+  }
+
   export type VotoCreateManyPessoaInput = {
     id?: string
     sala_id: string
     historia_id: string
     valor: number
     data_voto?: Date | string
-  }
-
-  export type MembroEquipeUpdateWithoutPessoaInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    proprietario?: BoolFieldUpdateOperationsInput | boolean
-    equipe?: EquipeUpdateOneRequiredWithoutMembrosNestedInput
-  }
-
-  export type MembroEquipeUncheckedUpdateWithoutPessoaInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    equipe_id?: StringFieldUpdateOperationsInput | string
-    proprietario?: BoolFieldUpdateOperationsInput | boolean
-  }
-
-  export type MembroEquipeUncheckedUpdateManyWithoutPessoaInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    equipe_id?: StringFieldUpdateOperationsInput | string
-    proprietario?: BoolFieldUpdateOperationsInput | boolean
-  }
-
-  export type SalaUpdateWithoutProprietarioInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    codigo?: IntFieldUpdateOperationsInput | number
-    titulo?: StringFieldUpdateOperationsInput | string
-    senha?: NullableStringFieldUpdateOperationsInput | string | null
-    inativo?: BoolFieldUpdateOperationsInput | boolean
-    data_criacao?: DateTimeFieldUpdateOperationsInput | Date | string
-    data_alteracao?: DateTimeFieldUpdateOperationsInput | Date | string
-    participantes?: ParticipanteSalaUpdateManyWithoutSalaNestedInput
-    historias?: HistoriaUpdateManyWithoutSalaNestedInput
-    votos?: VotoUpdateManyWithoutSalaNestedInput
-  }
-
-  export type SalaUncheckedUpdateWithoutProprietarioInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    codigo?: IntFieldUpdateOperationsInput | number
-    titulo?: StringFieldUpdateOperationsInput | string
-    senha?: NullableStringFieldUpdateOperationsInput | string | null
-    inativo?: BoolFieldUpdateOperationsInput | boolean
-    data_criacao?: DateTimeFieldUpdateOperationsInput | Date | string
-    data_alteracao?: DateTimeFieldUpdateOperationsInput | Date | string
-    participantes?: ParticipanteSalaUncheckedUpdateManyWithoutSalaNestedInput
-    historias?: HistoriaUncheckedUpdateManyWithoutSalaNestedInput
-    votos?: VotoUncheckedUpdateManyWithoutSalaNestedInput
-  }
-
-  export type SalaUncheckedUpdateManyWithoutProprietarioInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    codigo?: IntFieldUpdateOperationsInput | number
-    titulo?: StringFieldUpdateOperationsInput | string
-    senha?: NullableStringFieldUpdateOperationsInput | string | null
-    inativo?: BoolFieldUpdateOperationsInput | boolean
-    data_criacao?: DateTimeFieldUpdateOperationsInput | Date | string
-    data_alteracao?: DateTimeFieldUpdateOperationsInput | Date | string
-  }
-
-  export type ParticipanteSalaUpdateWithoutPessoaInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    adicionado?: DateTimeFieldUpdateOperationsInput | Date | string
-    sala?: SalaUpdateOneRequiredWithoutParticipantesNestedInput
-  }
-
-  export type ParticipanteSalaUncheckedUpdateWithoutPessoaInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    sala_id?: StringFieldUpdateOperationsInput | string
-    adicionado?: DateTimeFieldUpdateOperationsInput | Date | string
-  }
-
-  export type ParticipanteSalaUncheckedUpdateManyWithoutPessoaInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    sala_id?: StringFieldUpdateOperationsInput | string
-    adicionado?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type HistoriaUpdateWithoutCriadorInput = {
@@ -14421,12 +14349,84 @@ export namespace Prisma {
     finalizada?: BoolFieldUpdateOperationsInput | boolean
   }
 
+  export type MembroEquipeUpdateWithoutPessoaInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    proprietario?: BoolFieldUpdateOperationsInput | boolean
+    equipe?: EquipeUpdateOneRequiredWithoutMembrosNestedInput
+  }
+
+  export type MembroEquipeUncheckedUpdateWithoutPessoaInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    equipe_id?: StringFieldUpdateOperationsInput | string
+    proprietario?: BoolFieldUpdateOperationsInput | boolean
+  }
+
+  export type MembroEquipeUncheckedUpdateManyWithoutPessoaInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    equipe_id?: StringFieldUpdateOperationsInput | string
+    proprietario?: BoolFieldUpdateOperationsInput | boolean
+  }
+
+  export type ParticipanteSalaUpdateWithoutPessoaInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    adicionado?: DateTimeFieldUpdateOperationsInput | Date | string
+    sala?: SalaUpdateOneRequiredWithoutParticipantesNestedInput
+  }
+
+  export type ParticipanteSalaUncheckedUpdateWithoutPessoaInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    sala_id?: StringFieldUpdateOperationsInput | string
+    adicionado?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ParticipanteSalaUncheckedUpdateManyWithoutPessoaInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    sala_id?: StringFieldUpdateOperationsInput | string
+    adicionado?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type SalaUpdateWithoutProprietarioInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    codigo?: IntFieldUpdateOperationsInput | number
+    titulo?: StringFieldUpdateOperationsInput | string
+    senha?: NullableStringFieldUpdateOperationsInput | string | null
+    inativo?: BoolFieldUpdateOperationsInput | boolean
+    data_criacao?: DateTimeFieldUpdateOperationsInput | Date | string
+    data_alteracao?: DateTimeFieldUpdateOperationsInput | Date | string
+    historias?: HistoriaUpdateManyWithoutSalaNestedInput
+    participantes?: ParticipanteSalaUpdateManyWithoutSalaNestedInput
+    votos?: VotoUpdateManyWithoutSalaNestedInput
+  }
+
+  export type SalaUncheckedUpdateWithoutProprietarioInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    codigo?: IntFieldUpdateOperationsInput | number
+    titulo?: StringFieldUpdateOperationsInput | string
+    senha?: NullableStringFieldUpdateOperationsInput | string | null
+    inativo?: BoolFieldUpdateOperationsInput | boolean
+    data_criacao?: DateTimeFieldUpdateOperationsInput | Date | string
+    data_alteracao?: DateTimeFieldUpdateOperationsInput | Date | string
+    historias?: HistoriaUncheckedUpdateManyWithoutSalaNestedInput
+    participantes?: ParticipanteSalaUncheckedUpdateManyWithoutSalaNestedInput
+    votos?: VotoUncheckedUpdateManyWithoutSalaNestedInput
+  }
+
+  export type SalaUncheckedUpdateManyWithoutProprietarioInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    codigo?: IntFieldUpdateOperationsInput | number
+    titulo?: StringFieldUpdateOperationsInput | string
+    senha?: NullableStringFieldUpdateOperationsInput | string | null
+    inativo?: BoolFieldUpdateOperationsInput | boolean
+    data_criacao?: DateTimeFieldUpdateOperationsInput | Date | string
+    data_alteracao?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type VotoUpdateWithoutPessoaInput = {
     id?: StringFieldUpdateOperationsInput | string
     valor?: IntFieldUpdateOperationsInput | number
     data_voto?: DateTimeFieldUpdateOperationsInput | Date | string
-    sala?: SalaUpdateOneRequiredWithoutVotosNestedInput
     historia?: HistoriaUpdateOneRequiredWithoutVotosNestedInput
+    sala?: SalaUpdateOneRequiredWithoutVotosNestedInput
   }
 
   export type VotoUncheckedUpdateWithoutPessoaInput = {
@@ -14497,12 +14497,6 @@ export namespace Prisma {
     gerente_id?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
-  export type ParticipanteSalaCreateManySalaInput = {
-    id?: string
-    pessoa_id: string
-    adicionado?: Date | string
-  }
-
   export type HistoriaCreateManySalaInput = {
     id?: string
     titulo: string
@@ -14513,30 +14507,18 @@ export namespace Prisma {
     finalizada?: boolean
   }
 
+  export type ParticipanteSalaCreateManySalaInput = {
+    id?: string
+    pessoa_id: string
+    adicionado?: Date | string
+  }
+
   export type VotoCreateManySalaInput = {
     id?: string
     pessoa_id: string
     historia_id: string
     valor: number
     data_voto?: Date | string
-  }
-
-  export type ParticipanteSalaUpdateWithoutSalaInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    adicionado?: DateTimeFieldUpdateOperationsInput | Date | string
-    pessoa?: PessoaUpdateOneRequiredWithoutParticipacoesNestedInput
-  }
-
-  export type ParticipanteSalaUncheckedUpdateWithoutSalaInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    pessoa_id?: StringFieldUpdateOperationsInput | string
-    adicionado?: DateTimeFieldUpdateOperationsInput | Date | string
-  }
-
-  export type ParticipanteSalaUncheckedUpdateManyWithoutSalaInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    pessoa_id?: StringFieldUpdateOperationsInput | string
-    adicionado?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type HistoriaUpdateWithoutSalaInput = {
@@ -14571,12 +14553,30 @@ export namespace Prisma {
     finalizada?: BoolFieldUpdateOperationsInput | boolean
   }
 
+  export type ParticipanteSalaUpdateWithoutSalaInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    adicionado?: DateTimeFieldUpdateOperationsInput | Date | string
+    pessoa?: PessoaUpdateOneRequiredWithoutParticipacoesNestedInput
+  }
+
+  export type ParticipanteSalaUncheckedUpdateWithoutSalaInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    pessoa_id?: StringFieldUpdateOperationsInput | string
+    adicionado?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ParticipanteSalaUncheckedUpdateManyWithoutSalaInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    pessoa_id?: StringFieldUpdateOperationsInput | string
+    adicionado?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type VotoUpdateWithoutSalaInput = {
     id?: StringFieldUpdateOperationsInput | string
     valor?: IntFieldUpdateOperationsInput | number
     data_voto?: DateTimeFieldUpdateOperationsInput | Date | string
-    pessoa?: PessoaUpdateOneRequiredWithoutVotosNestedInput
     historia?: HistoriaUpdateOneRequiredWithoutVotosNestedInput
+    pessoa?: PessoaUpdateOneRequiredWithoutVotosNestedInput
   }
 
   export type VotoUncheckedUpdateWithoutSalaInput = {
