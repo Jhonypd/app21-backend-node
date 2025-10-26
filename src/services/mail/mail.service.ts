@@ -84,11 +84,7 @@ class EmailService {
       ano: new Date().getFullYear(),
     });
 
-    return this.sendEmail(
-      user.email,
-      "Recuperação de Senha - Sistema de Salas",
-      html
-    );
+    return this.sendEmail(user.email, "Recuperação de Senha - App21", html);
   }
 
   // Email de convite para sala
