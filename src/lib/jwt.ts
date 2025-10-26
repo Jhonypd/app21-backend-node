@@ -1,5 +1,4 @@
 import jwt from "jsonwebtoken";
-import { format } from "date-fns";
 
 const jwtSecret = process.env.JWT_SECRET as string;
 

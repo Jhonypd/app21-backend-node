@@ -2,23 +2,12 @@ import { NextFunction, Request, Response } from "express";
 import { prismaClient } from "../lib/prisma";
 
 import jwt from "jsonwebtoken";
-
-interface User {
-  id: string;
-  nome: string;
-  email: string | null;
-}
-
-interface JwtPayload extends User{
-  id: string;
-  iat?: number;
-  exp?: number;
-}
+import { Claims } from "../lib/jwt";
 
 declare global {
   namespace Express {
     interface Request {
-      user?: User;
+      user?: Claims;
     }
   }
 }
@@ -30,9 +19,7 @@ export const authGuard = async (
   res: Response,
   next: NextFunction
 ) => {
- const authHeader = req.headers.authorization;
-
-  
+  const authHeader = req.headers.authorization;
 
   if (!authHeader) {
     return res.status(401).json({ mensagem: "Token não informado." });
@@ -41,11 +28,10 @@ export const authGuard = async (
   const [, token] = authHeader.split(" ");
 
   try {
-
-    const decoded = jwt.verify(token, jwtSecret) as JwtPayload;
+    const decoded = jwt.verify(token, jwtSecret) as Claims;
 
     const user = await prismaClient.pessoa.findUnique({
-      where: { id: decoded.id },
+      where: { id: decoded.Usu_Id },
       select: { id: true, nome: true, email: true },
     });
 
@@ -55,7 +41,15 @@ export const authGuard = async (
         .json({ errors: ["Usuário não encontrado no banco."] });
     }
 
-    req.user = user;
+    req.user = {
+      Usu_Id: user.id,
+      Usu_na: user.nome,
+      email: user.email,
+      Dt_Ex: decoded.Dt_Ex,
+      Idp: decoded.Idp,
+      iss: decoded.iss,
+      aud: decoded.aud,
+    };
     next();
   } catch (error) {
     console.error("Erro na autenticação:", error);
