@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      body {
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+          "Helvetica Neue", Arial, sans-serif;
+        line-height: 1.6;
+        color: #333;
+        background-color: #f4f4f4;
+        padding: 20px;
+      }
+      .container {
+        max-width: 600px;
+        margin: 0 auto;
+        background: white;
+        border-radius: 8px;
+        overflow: hidden;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      }
+      .header {
+        background: linear-gradient(135deg, #df5200 0%, #ff6b1a 100%);
+        color: white;
+        padding: 40px 20px;
+        text-align: center;
+      }
+      .header h1 {
+        font-size: 32px;
+        font-weight: 600;
+        margin-bottom: 8px;
+        color: #eee;
+      }
+      .header p {
+        font-size: 16px;
+        opacity: 0.95;
+        color: #c6cbd7;
+      }
+      .content {
+        padding: 40px 30px;
+      }
+      .content h2 {
+        color: #df5200;
+        font-size: 24px;
+        margin-bottom: 20px;
+      }
+      .content p {
+        margin-bottom: 16px;
+        font-size: 15px;
+        color: #555;
+      }
+      .benefits {
+        background: #f9f9f9;
+        border-left: 4px solid #df5200;
+        padding: 20px;
+        margin: 24px 0;
+        border-radius: 4px;
+      }
+      .benefits ul {
+        list-style: none;
+        padding: 0;
+      }
+      .benefits li {
+        padding: 8px 0;
+        font-size: 15px;
+        color: #555;
+        position: relative;
+        padding-left: 28px;
+      }
+      .benefits li:before {
+        content: "✓";
+        position: absolute;
+        left: 0;
+        color: #df5200;
+        font-weight: bold;
+        font-size: 18px;
+      }
+      .button-container {
+        text-align: center;
+        margin: 32px 0;
+      }
+      .confirm-button {
+        display: inline-block;
+        background: linear-gradient(135deg, #df5200 0%, #ff6b1a 100%);
+        color: white;
+        text-decoration: none;
+        padding: 16px 48px;
+        border-radius: 6px;
+        font-size: 16px;
+        font-weight: 600;
+        box-shadow: 0 4px 12px rgba(223, 82, 0, 0.3);
+        transition: transform 0.2s, box-shadow 0.2s;
+      }
+      .confirm-button:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 16px rgba(223, 82, 0, 0.4);
+      }
+      .info-box {
+        background: #fff8f0;
+        border: 1px solid #ffe0cc;
+        padding: 16px;
+        border-radius: 6px;
+        margin-top: 24px;
+        font-size: 14px;
+        color: #666;
+      }
+      .footer {
+        text-align: center;
+        padding: 30px 20px;
+        font-size: 13px;
+        color: #999;
+        background: #f9f9f9;
+        border-top: 1px solid #eee;
+      }
+      .footer p {
+        margin: 8px 0;
+      }
+      .footer a {
+        color: #df5200;
+        text-decoration: none;
+      }
+      @media only screen and (max-width: 600px) {
+        body {
+          padding: 10px;
+        }
+        .content {
+          padding: 30px 20px;
+        }
+        .header {
+          padding: 30px 20px;
+        }
+        .confirm-button {
+          padding: 14px 32px;
+          font-size: 15px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="header">
+        <h1>App21</h1>
+        <p>Bem-vindo à plataforma</p>
+      </div>
+
+      <div class="content">
+        <h2>Olá, <%= nome %>!</h2>
+        <p>Estamos muito felizes em tê-lo conosco! 🎉</p>
+        <p>
+          Para começar a usar todos os recursos da plataforma, precisamos
+          confirmar seu endereço de e-mail.
+        </p>
+
+        <div class="button-container">
+          <a href="<%= linkConfirmacao %>" class="confirm-button"
+            >Confirmar minha conta</a
+          >
+        </div>
+
+        <div class="benefits">
+          <p style="font-weight: 600; color: #333; margin-bottom: 12px">
+            Após a confirmação, você poderá:
+          </p>
+          <ul>
+            <li>Criar e gerenciar salas de reunião</li>
+            <li>Participar de sessões de votação em tempo real</li>
+            <li>Colaborar de forma eficiente com sua equipe</li>
+            <li>Acessar relatórios e histórico completo</li>
+          </ul>
+        </div>
+
+        <div class="info-box">
+          <strong>⏰ Link expira em 30 minutos</strong><br />
+          Por motivos de segurança, este link de confirmação expira em 30
+          minutos. Se você não solicitou este cadastro, pode ignorar este
+          e-mail.
+        </div>
+      </div>
+
+      <div class="footer">
+        <p>
+          &copy; <%= ano %> App21 - Sistema de Salas. Todos os direitos
+          reservados.
+        </p>
+        <p>
+          Precisa de ajuda?
+          <a href="mailto:suporte@app21.com">Entre em contato</a>
+        </p>
+      </div>
+    </div>
+  </body>
+</html>

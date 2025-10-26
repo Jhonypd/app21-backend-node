@@ -9,7 +9,7 @@ interface User {
   email: string | null;
 }
 
-interface JwtPayload {
+interface JwtPayload extends User{
   id: string;
   iat?: number;
   exp?: number;
@@ -30,24 +30,22 @@ export const authGuard = async (
   res: Response,
   next: NextFunction
 ) => {
-  const authHeader = req.headers["authorization"];
-  const refreshToken = req.headers["refreshtoken"] as string;
+ const authHeader = req.headers.authorization;
 
-  const accessToken =
-    authHeader && authHeader.startsWith("Bearer ") ? authHeader.slice(7) : null;
+  
 
-  // Requer ambos os tokens
-  if (!accessToken || !refreshToken) {
-    return res.status(401).json({
-      errors: ["Tokens de acesso inválidos!"],
-    });
+  if (!authHeader) {
+    return res.status(401).json({ mensagem: "Token não informado." });
   }
 
+  const [, token] = authHeader.split(" ");
+
   try {
-    const verified = jwt.verify(accessToken, jwtSecret);
+
+    const decoded = jwt.verify(token, jwtSecret) as JwtPayload;
 
     const user = await prismaClient.pessoa.findUnique({
-      where: { id: verified.id },
+      where: { id: decoded.id },
       select: { id: true, nome: true, email: true },
     });
 

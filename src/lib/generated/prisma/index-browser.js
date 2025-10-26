@@ -124,7 +124,13 @@ exports.Prisma.PessoaScalarFieldEnum = {
   id: 'id',
   nome: 'nome',
   email: 'email',
+  email_hash: 'email_hash',
+  email_confirmado: 'email_confirmado',
+  codigo_confirmacao: 'codigo_confirmacao',
+  codigo_confirmacao_hash: 'codigo_confirmacao_hash',
+  codigo_expiracao: 'codigo_expiracao',
   senha: 'senha',
+  ultima_senha: 'ultima_senha',
   inativo: 'inativo',
   data_criacao: 'data_criacao'
 };

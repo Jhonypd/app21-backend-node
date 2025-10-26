@@ -9,17 +9,23 @@ datasource db {
 }
 
 model Pessoa {
-  id               String             @id @default(uuid())
-  nome             String
-  email            String?            @unique
-  senha            String?
-  inativo          Boolean            @default(false)
-  data_criacao     DateTime           @default(now())
-  historiasCriadas Historia[]         @relation("HistoriasCriadasPorPessoa")
-  equipesMembro    MembroEquipe[]
-  participacoes    ParticipanteSala[]
-  salasCriadas     Sala[]             @relation("SalasCriadasPorPessoa")
-  votos            Voto[]
+  id                      String             @id @default(uuid())
+  nome                    String
+  email                   String             @unique
+  email_hash              String             @unique
+  email_confirmado        Boolean            @default(false)
+  codigo_confirmacao      String?            @unique
+  codigo_confirmacao_hash String?            @unique
+  codigo_expiracao        DateTime?
+  senha                   String
+  ultima_senha            String
+  inativo                 Boolean            @default(false)
+  data_criacao            DateTime           @default(now())
+  historiasCriadas        Historia[]         @relation("HistoriasCriadasPorPessoa")
+  equipesMembro           MembroEquipe[]
+  participacoes           ParticipanteSala[]
+  salasCriadas            Sala[]             @relation("SalasCriadasPorPessoa")
+  votos                   Voto[]
 }
 
 model Equipe {

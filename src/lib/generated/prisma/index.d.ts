@@ -1698,7 +1698,13 @@ export namespace Prisma {
     id: string | null
     nome: string | null
     email: string | null
+    email_hash: string | null
+    email_confirmado: boolean | null
+    codigo_confirmacao: string | null
+    codigo_confirmacao_hash: string | null
+    codigo_expiracao: Date | null
     senha: string | null
+    ultima_senha: string | null
     inativo: boolean | null
     data_criacao: Date | null
   }
@@ -1707,7 +1713,13 @@ export namespace Prisma {
     id: string | null
     nome: string | null
     email: string | null
+    email_hash: string | null
+    email_confirmado: boolean | null
+    codigo_confirmacao: string | null
+    codigo_confirmacao_hash: string | null
+    codigo_expiracao: Date | null
     senha: string | null
+    ultima_senha: string | null
     inativo: boolean | null
     data_criacao: Date | null
   }
@@ -1716,7 +1728,13 @@ export namespace Prisma {
     id: number
     nome: number
     email: number
+    email_hash: number
+    email_confirmado: number
+    codigo_confirmacao: number
+    codigo_confirmacao_hash: number
+    codigo_expiracao: number
     senha: number
+    ultima_senha: number
     inativo: number
     data_criacao: number
     _all: number
@@ -1727,7 +1745,13 @@ export namespace Prisma {
     id?: true
     nome?: true
     email?: true
+    email_hash?: true
+    email_confirmado?: true
+    codigo_confirmacao?: true
+    codigo_confirmacao_hash?: true
+    codigo_expiracao?: true
     senha?: true
+    ultima_senha?: true
     inativo?: true
     data_criacao?: true
   }
@@ -1736,7 +1760,13 @@ export namespace Prisma {
     id?: true
     nome?: true
     email?: true
+    email_hash?: true
+    email_confirmado?: true
+    codigo_confirmacao?: true
+    codigo_confirmacao_hash?: true
+    codigo_expiracao?: true
     senha?: true
+    ultima_senha?: true
     inativo?: true
     data_criacao?: true
   }
@@ -1745,7 +1775,13 @@ export namespace Prisma {
     id?: true
     nome?: true
     email?: true
+    email_hash?: true
+    email_confirmado?: true
+    codigo_confirmacao?: true
+    codigo_confirmacao_hash?: true
+    codigo_expiracao?: true
     senha?: true
+    ultima_senha?: true
     inativo?: true
     data_criacao?: true
     _all?: true
@@ -1826,8 +1862,14 @@ export namespace Prisma {
   export type PessoaGroupByOutputType = {
     id: string
     nome: string
-    email: string | null
-    senha: string | null
+    email: string
+    email_hash: string
+    email_confirmado: boolean
+    codigo_confirmacao: string | null
+    codigo_confirmacao_hash: string | null
+    codigo_expiracao: Date | null
+    senha: string
+    ultima_senha: string
     inativo: boolean
     data_criacao: Date
     _count: PessoaCountAggregateOutputType | null
@@ -1853,7 +1895,13 @@ export namespace Prisma {
     id?: boolean
     nome?: boolean
     email?: boolean
+    email_hash?: boolean
+    email_confirmado?: boolean
+    codigo_confirmacao?: boolean
+    codigo_confirmacao_hash?: boolean
+    codigo_expiracao?: boolean
     senha?: boolean
+    ultima_senha?: boolean
     inativo?: boolean
     data_criacao?: boolean
     historiasCriadas?: boolean | Pessoa$historiasCriadasArgs<ExtArgs>
@@ -1868,7 +1916,13 @@ export namespace Prisma {
     id?: boolean
     nome?: boolean
     email?: boolean
+    email_hash?: boolean
+    email_confirmado?: boolean
+    codigo_confirmacao?: boolean
+    codigo_confirmacao_hash?: boolean
+    codigo_expiracao?: boolean
     senha?: boolean
+    ultima_senha?: boolean
     inativo?: boolean
     data_criacao?: boolean
   }, ExtArgs["result"]["pessoa"]>
@@ -1877,7 +1931,13 @@ export namespace Prisma {
     id?: boolean
     nome?: boolean
     email?: boolean
+    email_hash?: boolean
+    email_confirmado?: boolean
+    codigo_confirmacao?: boolean
+    codigo_confirmacao_hash?: boolean
+    codigo_expiracao?: boolean
     senha?: boolean
+    ultima_senha?: boolean
     inativo?: boolean
     data_criacao?: boolean
   }, ExtArgs["result"]["pessoa"]>
@@ -1886,12 +1946,18 @@ export namespace Prisma {
     id?: boolean
     nome?: boolean
     email?: boolean
+    email_hash?: boolean
+    email_confirmado?: boolean
+    codigo_confirmacao?: boolean
+    codigo_confirmacao_hash?: boolean
+    codigo_expiracao?: boolean
     senha?: boolean
+    ultima_senha?: boolean
     inativo?: boolean
     data_criacao?: boolean
   }
 
-  export type PessoaOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "nome" | "email" | "senha" | "inativo" | "data_criacao", ExtArgs["result"]["pessoa"]>
+  export type PessoaOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "nome" | "email" | "email_hash" | "email_confirmado" | "codigo_confirmacao" | "codigo_confirmacao_hash" | "codigo_expiracao" | "senha" | "ultima_senha" | "inativo" | "data_criacao", ExtArgs["result"]["pessoa"]>
   export type PessoaInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     historiasCriadas?: boolean | Pessoa$historiasCriadasArgs<ExtArgs>
     equipesMembro?: boolean | Pessoa$equipesMembroArgs<ExtArgs>
@@ -1915,8 +1981,14 @@ export namespace Prisma {
     scalars: $Extensions.GetPayloadResult<{
       id: string
       nome: string
-      email: string | null
-      senha: string | null
+      email: string
+      email_hash: string
+      email_confirmado: boolean
+      codigo_confirmacao: string | null
+      codigo_confirmacao_hash: string | null
+      codigo_expiracao: Date | null
+      senha: string
+      ultima_senha: string
       inativo: boolean
       data_criacao: Date
     }, ExtArgs["result"]["pessoa"]>
@@ -2350,7 +2422,13 @@ export namespace Prisma {
     readonly id: FieldRef<"Pessoa", 'String'>
     readonly nome: FieldRef<"Pessoa", 'String'>
     readonly email: FieldRef<"Pessoa", 'String'>
+    readonly email_hash: FieldRef<"Pessoa", 'String'>
+    readonly email_confirmado: FieldRef<"Pessoa", 'Boolean'>
+    readonly codigo_confirmacao: FieldRef<"Pessoa", 'String'>
+    readonly codigo_confirmacao_hash: FieldRef<"Pessoa", 'String'>
+    readonly codigo_expiracao: FieldRef<"Pessoa", 'DateTime'>
     readonly senha: FieldRef<"Pessoa", 'String'>
+    readonly ultima_senha: FieldRef<"Pessoa", 'String'>
     readonly inativo: FieldRef<"Pessoa", 'Boolean'>
     readonly data_criacao: FieldRef<"Pessoa", 'DateTime'>
   }
@@ -10606,7 +10684,13 @@ export namespace Prisma {
     id: 'id',
     nome: 'nome',
     email: 'email',
+    email_hash: 'email_hash',
+    email_confirmado: 'email_confirmado',
+    codigo_confirmacao: 'codigo_confirmacao',
+    codigo_confirmacao_hash: 'codigo_confirmacao_hash',
+    codigo_expiracao: 'codigo_expiracao',
     senha: 'senha',
+    ultima_senha: 'ultima_senha',
     inativo: 'inativo',
     data_criacao: 'data_criacao'
   };
@@ -10795,8 +10879,14 @@ export namespace Prisma {
     NOT?: PessoaWhereInput | PessoaWhereInput[]
     id?: StringFilter<"Pessoa"> | string
     nome?: StringFilter<"Pessoa"> | string
-    email?: StringNullableFilter<"Pessoa"> | string | null
-    senha?: StringNullableFilter<"Pessoa"> | string | null
+    email?: StringFilter<"Pessoa"> | string
+    email_hash?: StringFilter<"Pessoa"> | string
+    email_confirmado?: BoolFilter<"Pessoa"> | boolean
+    codigo_confirmacao?: StringNullableFilter<"Pessoa"> | string | null
+    codigo_confirmacao_hash?: StringNullableFilter<"Pessoa"> | string | null
+    codigo_expiracao?: DateTimeNullableFilter<"Pessoa"> | Date | string | null
+    senha?: StringFilter<"Pessoa"> | string
+    ultima_senha?: StringFilter<"Pessoa"> | string
     inativo?: BoolFilter<"Pessoa"> | boolean
     data_criacao?: DateTimeFilter<"Pessoa"> | Date | string
     historiasCriadas?: HistoriaListRelationFilter
@@ -10809,8 +10899,14 @@ export namespace Prisma {
   export type PessoaOrderByWithRelationInput = {
     id?: SortOrder
     nome?: SortOrder
-    email?: SortOrderInput | SortOrder
-    senha?: SortOrderInput | SortOrder
+    email?: SortOrder
+    email_hash?: SortOrder
+    email_confirmado?: SortOrder
+    codigo_confirmacao?: SortOrderInput | SortOrder
+    codigo_confirmacao_hash?: SortOrderInput | SortOrder
+    codigo_expiracao?: SortOrderInput | SortOrder
+    senha?: SortOrder
+    ultima_senha?: SortOrder
     inativo?: SortOrder
     data_criacao?: SortOrder
     historiasCriadas?: HistoriaOrderByRelationAggregateInput
@@ -10823,11 +10919,17 @@ export namespace Prisma {
   export type PessoaWhereUniqueInput = Prisma.AtLeast<{
     id?: string
     email?: string
+    email_hash?: string
+    codigo_confirmacao?: string
+    codigo_confirmacao_hash?: string
     AND?: PessoaWhereInput | PessoaWhereInput[]
     OR?: PessoaWhereInput[]
     NOT?: PessoaWhereInput | PessoaWhereInput[]
     nome?: StringFilter<"Pessoa"> | string
-    senha?: StringNullableFilter<"Pessoa"> | string | null
+    email_confirmado?: BoolFilter<"Pessoa"> | boolean
+    codigo_expiracao?: DateTimeNullableFilter<"Pessoa"> | Date | string | null
+    senha?: StringFilter<"Pessoa"> | string
+    ultima_senha?: StringFilter<"Pessoa"> | string
     inativo?: BoolFilter<"Pessoa"> | boolean
     data_criacao?: DateTimeFilter<"Pessoa"> | Date | string
     historiasCriadas?: HistoriaListRelationFilter
@@ -10835,13 +10937,19 @@ export namespace Prisma {
     participacoes?: ParticipanteSalaListRelationFilter
     salasCriadas?: SalaListRelationFilter
     votos?: VotoListRelationFilter
-  }, "id" | "email">
+  }, "id" | "email" | "email_hash" | "codigo_confirmacao" | "codigo_confirmacao_hash">
 
   export type PessoaOrderByWithAggregationInput = {
     id?: SortOrder
     nome?: SortOrder
-    email?: SortOrderInput | SortOrder
-    senha?: SortOrderInput | SortOrder
+    email?: SortOrder
+    email_hash?: SortOrder
+    email_confirmado?: SortOrder
+    codigo_confirmacao?: SortOrderInput | SortOrder
+    codigo_confirmacao_hash?: SortOrderInput | SortOrder
+    codigo_expiracao?: SortOrderInput | SortOrder
+    senha?: SortOrder
+    ultima_senha?: SortOrder
     inativo?: SortOrder
     data_criacao?: SortOrder
     _count?: PessoaCountOrderByAggregateInput
@@ -10855,8 +10963,14 @@ export namespace Prisma {
     NOT?: PessoaScalarWhereWithAggregatesInput | PessoaScalarWhereWithAggregatesInput[]
     id?: StringWithAggregatesFilter<"Pessoa"> | string
     nome?: StringWithAggregatesFilter<"Pessoa"> | string
-    email?: StringNullableWithAggregatesFilter<"Pessoa"> | string | null
-    senha?: StringNullableWithAggregatesFilter<"Pessoa"> | string | null
+    email?: StringWithAggregatesFilter<"Pessoa"> | string
+    email_hash?: StringWithAggregatesFilter<"Pessoa"> | string
+    email_confirmado?: BoolWithAggregatesFilter<"Pessoa"> | boolean
+    codigo_confirmacao?: StringNullableWithAggregatesFilter<"Pessoa"> | string | null
+    codigo_confirmacao_hash?: StringNullableWithAggregatesFilter<"Pessoa"> | string | null
+    codigo_expiracao?: DateTimeNullableWithAggregatesFilter<"Pessoa"> | Date | string | null
+    senha?: StringWithAggregatesFilter<"Pessoa"> | string
+    ultima_senha?: StringWithAggregatesFilter<"Pessoa"> | string
     inativo?: BoolWithAggregatesFilter<"Pessoa"> | boolean
     data_criacao?: DateTimeWithAggregatesFilter<"Pessoa"> | Date | string
   }
@@ -11301,8 +11415,14 @@ export namespace Prisma {
   export type PessoaCreateInput = {
     id?: string
     nome: string
-    email?: string | null
-    senha?: string | null
+    email: string
+    email_hash: string
+    email_confirmado?: boolean
+    codigo_confirmacao?: string | null
+    codigo_confirmacao_hash?: string | null
+    codigo_expiracao?: Date | string | null
+    senha: string
+    ultima_senha: string
     inativo?: boolean
     data_criacao?: Date | string
     historiasCriadas?: HistoriaCreateNestedManyWithoutCriadorInput
@@ -11315,8 +11435,14 @@ export namespace Prisma {
   export type PessoaUncheckedCreateInput = {
     id?: string
     nome: string
-    email?: string | null
-    senha?: string | null
+    email: string
+    email_hash: string
+    email_confirmado?: boolean
+    codigo_confirmacao?: string | null
+    codigo_confirmacao_hash?: string | null
+    codigo_expiracao?: Date | string | null
+    senha: string
+    ultima_senha: string
     inativo?: boolean
     data_criacao?: Date | string
     historiasCriadas?: HistoriaUncheckedCreateNestedManyWithoutCriadorInput
@@ -11329,8 +11455,14 @@ export namespace Prisma {
   export type PessoaUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
     nome?: StringFieldUpdateOperationsInput | string
-    email?: NullableStringFieldUpdateOperationsInput | string | null
-    senha?: NullableStringFieldUpdateOperationsInput | string | null
+    email?: StringFieldUpdateOperationsInput | string
+    email_hash?: StringFieldUpdateOperationsInput | string
+    email_confirmado?: BoolFieldUpdateOperationsInput | boolean
+    codigo_confirmacao?: NullableStringFieldUpdateOperationsInput | string | null
+    codigo_confirmacao_hash?: NullableStringFieldUpdateOperationsInput | string | null
+    codigo_expiracao?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    senha?: StringFieldUpdateOperationsInput | string
+    ultima_senha?: StringFieldUpdateOperationsInput | string
     inativo?: BoolFieldUpdateOperationsInput | boolean
     data_criacao?: DateTimeFieldUpdateOperationsInput | Date | string
     historiasCriadas?: HistoriaUpdateManyWithoutCriadorNestedInput
@@ -11343,8 +11475,14 @@ export namespace Prisma {
   export type PessoaUncheckedUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
     nome?: StringFieldUpdateOperationsInput | string
-    email?: NullableStringFieldUpdateOperationsInput | string | null
-    senha?: NullableStringFieldUpdateOperationsInput | string | null
+    email?: StringFieldUpdateOperationsInput | string
+    email_hash?: StringFieldUpdateOperationsInput | string
+    email_confirmado?: BoolFieldUpdateOperationsInput | boolean
+    codigo_confirmacao?: NullableStringFieldUpdateOperationsInput | string | null
+    codigo_confirmacao_hash?: NullableStringFieldUpdateOperationsInput | string | null
+    codigo_expiracao?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    senha?: StringFieldUpdateOperationsInput | string
+    ultima_senha?: StringFieldUpdateOperationsInput | string
     inativo?: BoolFieldUpdateOperationsInput | boolean
     data_criacao?: DateTimeFieldUpdateOperationsInput | Date | string
     historiasCriadas?: HistoriaUncheckedUpdateManyWithoutCriadorNestedInput
@@ -11357,8 +11495,14 @@ export namespace Prisma {
   export type PessoaCreateManyInput = {
     id?: string
     nome: string
-    email?: string | null
-    senha?: string | null
+    email: string
+    email_hash: string
+    email_confirmado?: boolean
+    codigo_confirmacao?: string | null
+    codigo_confirmacao_hash?: string | null
+    codigo_expiracao?: Date | string | null
+    senha: string
+    ultima_senha: string
     inativo?: boolean
     data_criacao?: Date | string
   }
@@ -11366,8 +11510,14 @@ export namespace Prisma {
   export type PessoaUpdateManyMutationInput = {
     id?: StringFieldUpdateOperationsInput | string
     nome?: StringFieldUpdateOperationsInput | string
-    email?: NullableStringFieldUpdateOperationsInput | string | null
-    senha?: NullableStringFieldUpdateOperationsInput | string | null
+    email?: StringFieldUpdateOperationsInput | string
+    email_hash?: StringFieldUpdateOperationsInput | string
+    email_confirmado?: BoolFieldUpdateOperationsInput | boolean
+    codigo_confirmacao?: NullableStringFieldUpdateOperationsInput | string | null
+    codigo_confirmacao_hash?: NullableStringFieldUpdateOperationsInput | string | null
+    codigo_expiracao?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    senha?: StringFieldUpdateOperationsInput | string
+    ultima_senha?: StringFieldUpdateOperationsInput | string
     inativo?: BoolFieldUpdateOperationsInput | boolean
     data_criacao?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -11375,8 +11525,14 @@ export namespace Prisma {
   export type PessoaUncheckedUpdateManyInput = {
     id?: StringFieldUpdateOperationsInput | string
     nome?: StringFieldUpdateOperationsInput | string
-    email?: NullableStringFieldUpdateOperationsInput | string | null
-    senha?: NullableStringFieldUpdateOperationsInput | string | null
+    email?: StringFieldUpdateOperationsInput | string
+    email_hash?: StringFieldUpdateOperationsInput | string
+    email_confirmado?: BoolFieldUpdateOperationsInput | boolean
+    codigo_confirmacao?: NullableStringFieldUpdateOperationsInput | string | null
+    codigo_confirmacao_hash?: NullableStringFieldUpdateOperationsInput | string | null
+    codigo_expiracao?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    senha?: StringFieldUpdateOperationsInput | string
+    ultima_senha?: StringFieldUpdateOperationsInput | string
     inativo?: BoolFieldUpdateOperationsInput | boolean
     data_criacao?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -11822,6 +11978,11 @@ export namespace Prisma {
     not?: NestedStringFilter<$PrismaModel> | string
   }
 
+  export type BoolFilter<$PrismaModel = never> = {
+    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
+    not?: NestedBoolFilter<$PrismaModel> | boolean
+  }
+
   export type StringNullableFilter<$PrismaModel = never> = {
     equals?: string | StringFieldRefInput<$PrismaModel> | null
     in?: string[] | ListStringFieldRefInput<$PrismaModel> | null
@@ -11837,9 +11998,15 @@ export namespace Prisma {
     not?: NestedStringNullableFilter<$PrismaModel> | string | null
   }
 
-  export type BoolFilter<$PrismaModel = never> = {
-    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
-    not?: NestedBoolFilter<$PrismaModel> | boolean
+  export type DateTimeNullableFilter<$PrismaModel = never> = {
+    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
+    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
+    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
+    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    not?: NestedDateTimeNullableFilter<$PrismaModel> | Date | string | null
   }
 
   export type DateTimeFilter<$PrismaModel = never> = {
@@ -11912,7 +12079,13 @@ export namespace Prisma {
     id?: SortOrder
     nome?: SortOrder
     email?: SortOrder
+    email_hash?: SortOrder
+    email_confirmado?: SortOrder
+    codigo_confirmacao?: SortOrder
+    codigo_confirmacao_hash?: SortOrder
+    codigo_expiracao?: SortOrder
     senha?: SortOrder
+    ultima_senha?: SortOrder
     inativo?: SortOrder
     data_criacao?: SortOrder
   }
@@ -11921,7 +12094,13 @@ export namespace Prisma {
     id?: SortOrder
     nome?: SortOrder
     email?: SortOrder
+    email_hash?: SortOrder
+    email_confirmado?: SortOrder
+    codigo_confirmacao?: SortOrder
+    codigo_confirmacao_hash?: SortOrder
+    codigo_expiracao?: SortOrder
     senha?: SortOrder
+    ultima_senha?: SortOrder
     inativo?: SortOrder
     data_criacao?: SortOrder
   }
@@ -11930,7 +12109,13 @@ export namespace Prisma {
     id?: SortOrder
     nome?: SortOrder
     email?: SortOrder
+    email_hash?: SortOrder
+    email_confirmado?: SortOrder
+    codigo_confirmacao?: SortOrder
+    codigo_confirmacao_hash?: SortOrder
+    codigo_expiracao?: SortOrder
     senha?: SortOrder
+    ultima_senha?: SortOrder
     inativo?: SortOrder
     data_criacao?: SortOrder
   }
@@ -11953,6 +12138,14 @@ export namespace Prisma {
     _max?: NestedStringFilter<$PrismaModel>
   }
 
+  export type BoolWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
+    not?: NestedBoolWithAggregatesFilter<$PrismaModel> | boolean
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedBoolFilter<$PrismaModel>
+    _max?: NestedBoolFilter<$PrismaModel>
+  }
+
   export type StringNullableWithAggregatesFilter<$PrismaModel = never> = {
     equals?: string | StringFieldRefInput<$PrismaModel> | null
     in?: string[] | ListStringFieldRefInput<$PrismaModel> | null
@@ -11971,12 +12164,18 @@ export namespace Prisma {
     _max?: NestedStringNullableFilter<$PrismaModel>
   }
 
-  export type BoolWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
-    not?: NestedBoolWithAggregatesFilter<$PrismaModel> | boolean
-    _count?: NestedIntFilter<$PrismaModel>
-    _min?: NestedBoolFilter<$PrismaModel>
-    _max?: NestedBoolFilter<$PrismaModel>
+  export type DateTimeNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
+    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
+    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
+    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    not?: NestedDateTimeNullableWithAggregatesFilter<$PrismaModel> | Date | string | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedDateTimeNullableFilter<$PrismaModel>
+    _max?: NestedDateTimeNullableFilter<$PrismaModel>
   }
 
   export type DateTimeWithAggregatesFilter<$PrismaModel = never> = {
@@ -12333,12 +12532,16 @@ export namespace Prisma {
     set?: string
   }
 
+  export type BoolFieldUpdateOperationsInput = {
+    set?: boolean
+  }
+
   export type NullableStringFieldUpdateOperationsInput = {
     set?: string | null
   }
 
-  export type BoolFieldUpdateOperationsInput = {
-    set?: boolean
+  export type NullableDateTimeFieldUpdateOperationsInput = {
+    set?: Date | string | null
   }
 
   export type DateTimeFieldUpdateOperationsInput = {
@@ -12913,6 +13116,11 @@ export namespace Prisma {
     not?: NestedStringFilter<$PrismaModel> | string
   }
 
+  export type NestedBoolFilter<$PrismaModel = never> = {
+    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
+    not?: NestedBoolFilter<$PrismaModel> | boolean
+  }
+
   export type NestedStringNullableFilter<$PrismaModel = never> = {
     equals?: string | StringFieldRefInput<$PrismaModel> | null
     in?: string[] | ListStringFieldRefInput<$PrismaModel> | null
@@ -12927,9 +13135,15 @@ export namespace Prisma {
     not?: NestedStringNullableFilter<$PrismaModel> | string | null
   }
 
-  export type NestedBoolFilter<$PrismaModel = never> = {
-    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
-    not?: NestedBoolFilter<$PrismaModel> | boolean
+  export type NestedDateTimeNullableFilter<$PrismaModel = never> = {
+    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
+    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
+    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
+    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    not?: NestedDateTimeNullableFilter<$PrismaModel> | Date | string | null
   }
 
   export type NestedDateTimeFilter<$PrismaModel = never> = {
@@ -12971,6 +13185,14 @@ export namespace Prisma {
     not?: NestedIntFilter<$PrismaModel> | number
   }
 
+  export type NestedBoolWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
+    not?: NestedBoolWithAggregatesFilter<$PrismaModel> | boolean
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedBoolFilter<$PrismaModel>
+    _max?: NestedBoolFilter<$PrismaModel>
+  }
+
   export type NestedStringNullableWithAggregatesFilter<$PrismaModel = never> = {
     equals?: string | StringFieldRefInput<$PrismaModel> | null
     in?: string[] | ListStringFieldRefInput<$PrismaModel> | null
@@ -12999,12 +13221,18 @@ export namespace Prisma {
     not?: NestedIntNullableFilter<$PrismaModel> | number | null
   }
 
-  export type NestedBoolWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: boolean | BooleanFieldRefInput<$PrismaModel>
-    not?: NestedBoolWithAggregatesFilter<$PrismaModel> | boolean
-    _count?: NestedIntFilter<$PrismaModel>
-    _min?: NestedBoolFilter<$PrismaModel>
-    _max?: NestedBoolFilter<$PrismaModel>
+  export type NestedDateTimeNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
+    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
+    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
+    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    not?: NestedDateTimeNullableWithAggregatesFilter<$PrismaModel> | Date | string | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedDateTimeNullableFilter<$PrismaModel>
+    _max?: NestedDateTimeNullableFilter<$PrismaModel>
   }
 
   export type NestedDateTimeWithAggregatesFilter<$PrismaModel = never> = {
@@ -13437,8 +13665,14 @@ export namespace Prisma {
   export type PessoaCreateWithoutEquipesMembroInput = {
     id?: string
     nome: string
-    email?: string | null
-    senha?: string | null
+    email: string
+    email_hash: string
+    email_confirmado?: boolean
+    codigo_confirmacao?: string | null
+    codigo_confirmacao_hash?: string | null
+    codigo_expiracao?: Date | string | null
+    senha: string
+    ultima_senha: string
     inativo?: boolean
     data_criacao?: Date | string
     historiasCriadas?: HistoriaCreateNestedManyWithoutCriadorInput
@@ -13450,8 +13684,14 @@ export namespace Prisma {
   export type PessoaUncheckedCreateWithoutEquipesMembroInput = {
     id?: string
     nome: string
-    email?: string | null
-    senha?: string | null
+    email: string
+    email_hash: string
+    email_confirmado?: boolean
+    codigo_confirmacao?: string | null
+    codigo_confirmacao_hash?: string | null
+    codigo_expiracao?: Date | string | null
+    senha: string
+    ultima_senha: string
     inativo?: boolean
     data_criacao?: Date | string
     historiasCriadas?: HistoriaUncheckedCreateNestedManyWithoutCriadorInput
@@ -13504,8 +13744,14 @@ export namespace Prisma {
   export type PessoaUpdateWithoutEquipesMembroInput = {
     id?: StringFieldUpdateOperationsInput | string
     nome?: StringFieldUpdateOperationsInput | string
-    email?: NullableStringFieldUpdateOperationsInput | string | null
-    senha?: NullableStringFieldUpdateOperationsInput | string | null
+    email?: StringFieldUpdateOperationsInput | string
+    email_hash?: StringFieldUpdateOperationsInput | string
+    email_confirmado?: BoolFieldUpdateOperationsInput | boolean
+    codigo_confirmacao?: NullableStringFieldUpdateOperationsInput | string | null
+    codigo_confirmacao_hash?: NullableStringFieldUpdateOperationsInput | string | null
+    codigo_expiracao?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    senha?: StringFieldUpdateOperationsInput | string
+    ultima_senha?: StringFieldUpdateOperationsInput | string
     inativo?: BoolFieldUpdateOperationsInput | boolean
     data_criacao?: DateTimeFieldUpdateOperationsInput | Date | string
     historiasCriadas?: HistoriaUpdateManyWithoutCriadorNestedInput
@@ -13517,8 +13763,14 @@ export namespace Prisma {
   export type PessoaUncheckedUpdateWithoutEquipesMembroInput = {
     id?: StringFieldUpdateOperationsInput | string
     nome?: StringFieldUpdateOperationsInput | string
-    email?: NullableStringFieldUpdateOperationsInput | string | null
-    senha?: NullableStringFieldUpdateOperationsInput | string | null
+    email?: StringFieldUpdateOperationsInput | string
+    email_hash?: StringFieldUpdateOperationsInput | string
+    email_confirmado?: BoolFieldUpdateOperationsInput | boolean
+    codigo_confirmacao?: NullableStringFieldUpdateOperationsInput | string | null
+    codigo_confirmacao_hash?: NullableStringFieldUpdateOperationsInput | string | null
+    codigo_expiracao?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    senha?: StringFieldUpdateOperationsInput | string
+    ultima_senha?: StringFieldUpdateOperationsInput | string
     inativo?: BoolFieldUpdateOperationsInput | boolean
     data_criacao?: DateTimeFieldUpdateOperationsInput | Date | string
     historiasCriadas?: HistoriaUncheckedUpdateManyWithoutCriadorNestedInput
@@ -13628,8 +13880,14 @@ export namespace Prisma {
   export type PessoaCreateWithoutSalasCriadasInput = {
     id?: string
     nome: string
-    email?: string | null
-    senha?: string | null
+    email: string
+    email_hash: string
+    email_confirmado?: boolean
+    codigo_confirmacao?: string | null
+    codigo_confirmacao_hash?: string | null
+    codigo_expiracao?: Date | string | null
+    senha: string
+    ultima_senha: string
     inativo?: boolean
     data_criacao?: Date | string
     historiasCriadas?: HistoriaCreateNestedManyWithoutCriadorInput
@@ -13641,8 +13899,14 @@ export namespace Prisma {
   export type PessoaUncheckedCreateWithoutSalasCriadasInput = {
     id?: string
     nome: string
-    email?: string | null
-    senha?: string | null
+    email: string
+    email_hash: string
+    email_confirmado?: boolean
+    codigo_confirmacao?: string | null
+    codigo_confirmacao_hash?: string | null
+    codigo_expiracao?: Date | string | null
+    senha: string
+    ultima_senha: string
     inativo?: boolean
     data_criacao?: Date | string
     historiasCriadas?: HistoriaUncheckedCreateNestedManyWithoutCriadorInput
@@ -13728,8 +13992,14 @@ export namespace Prisma {
   export type PessoaUpdateWithoutSalasCriadasInput = {
     id?: StringFieldUpdateOperationsInput | string
     nome?: StringFieldUpdateOperationsInput | string
-    email?: NullableStringFieldUpdateOperationsInput | string | null
-    senha?: NullableStringFieldUpdateOperationsInput | string | null
+    email?: StringFieldUpdateOperationsInput | string
+    email_hash?: StringFieldUpdateOperationsInput | string
+    email_confirmado?: BoolFieldUpdateOperationsInput | boolean
+    codigo_confirmacao?: NullableStringFieldUpdateOperationsInput | string | null
+    codigo_confirmacao_hash?: NullableStringFieldUpdateOperationsInput | string | null
+    codigo_expiracao?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    senha?: StringFieldUpdateOperationsInput | string
+    ultima_senha?: StringFieldUpdateOperationsInput | string
     inativo?: BoolFieldUpdateOperationsInput | boolean
     data_criacao?: DateTimeFieldUpdateOperationsInput | Date | string
     historiasCriadas?: HistoriaUpdateManyWithoutCriadorNestedInput
@@ -13741,8 +14011,14 @@ export namespace Prisma {
   export type PessoaUncheckedUpdateWithoutSalasCriadasInput = {
     id?: StringFieldUpdateOperationsInput | string
     nome?: StringFieldUpdateOperationsInput | string
-    email?: NullableStringFieldUpdateOperationsInput | string | null
-    senha?: NullableStringFieldUpdateOperationsInput | string | null
+    email?: StringFieldUpdateOperationsInput | string
+    email_hash?: StringFieldUpdateOperationsInput | string
+    email_confirmado?: BoolFieldUpdateOperationsInput | boolean
+    codigo_confirmacao?: NullableStringFieldUpdateOperationsInput | string | null
+    codigo_confirmacao_hash?: NullableStringFieldUpdateOperationsInput | string | null
+    codigo_expiracao?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    senha?: StringFieldUpdateOperationsInput | string
+    ultima_senha?: StringFieldUpdateOperationsInput | string
     inativo?: BoolFieldUpdateOperationsInput | boolean
     data_criacao?: DateTimeFieldUpdateOperationsInput | Date | string
     historiasCriadas?: HistoriaUncheckedUpdateManyWithoutCriadorNestedInput
@@ -13770,8 +14046,14 @@ export namespace Prisma {
   export type PessoaCreateWithoutParticipacoesInput = {
     id?: string
     nome: string
-    email?: string | null
-    senha?: string | null
+    email: string
+    email_hash: string
+    email_confirmado?: boolean
+    codigo_confirmacao?: string | null
+    codigo_confirmacao_hash?: string | null
+    codigo_expiracao?: Date | string | null
+    senha: string
+    ultima_senha: string
     inativo?: boolean
     data_criacao?: Date | string
     historiasCriadas?: HistoriaCreateNestedManyWithoutCriadorInput
@@ -13783,8 +14065,14 @@ export namespace Prisma {
   export type PessoaUncheckedCreateWithoutParticipacoesInput = {
     id?: string
     nome: string
-    email?: string | null
-    senha?: string | null
+    email: string
+    email_hash: string
+    email_confirmado?: boolean
+    codigo_confirmacao?: string | null
+    codigo_confirmacao_hash?: string | null
+    codigo_expiracao?: Date | string | null
+    senha: string
+    ultima_senha: string
     inativo?: boolean
     data_criacao?: Date | string
     historiasCriadas?: HistoriaUncheckedCreateNestedManyWithoutCriadorInput
@@ -13843,8 +14131,14 @@ export namespace Prisma {
   export type PessoaUpdateWithoutParticipacoesInput = {
     id?: StringFieldUpdateOperationsInput | string
     nome?: StringFieldUpdateOperationsInput | string
-    email?: NullableStringFieldUpdateOperationsInput | string | null
-    senha?: NullableStringFieldUpdateOperationsInput | string | null
+    email?: StringFieldUpdateOperationsInput | string
+    email_hash?: StringFieldUpdateOperationsInput | string
+    email_confirmado?: BoolFieldUpdateOperationsInput | boolean
+    codigo_confirmacao?: NullableStringFieldUpdateOperationsInput | string | null
+    codigo_confirmacao_hash?: NullableStringFieldUpdateOperationsInput | string | null
+    codigo_expiracao?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    senha?: StringFieldUpdateOperationsInput | string
+    ultima_senha?: StringFieldUpdateOperationsInput | string
     inativo?: BoolFieldUpdateOperationsInput | boolean
     data_criacao?: DateTimeFieldUpdateOperationsInput | Date | string
     historiasCriadas?: HistoriaUpdateManyWithoutCriadorNestedInput
@@ -13856,8 +14150,14 @@ export namespace Prisma {
   export type PessoaUncheckedUpdateWithoutParticipacoesInput = {
     id?: StringFieldUpdateOperationsInput | string
     nome?: StringFieldUpdateOperationsInput | string
-    email?: NullableStringFieldUpdateOperationsInput | string | null
-    senha?: NullableStringFieldUpdateOperationsInput | string | null
+    email?: StringFieldUpdateOperationsInput | string
+    email_hash?: StringFieldUpdateOperationsInput | string
+    email_confirmado?: BoolFieldUpdateOperationsInput | boolean
+    codigo_confirmacao?: NullableStringFieldUpdateOperationsInput | string | null
+    codigo_confirmacao_hash?: NullableStringFieldUpdateOperationsInput | string | null
+    codigo_expiracao?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    senha?: StringFieldUpdateOperationsInput | string
+    ultima_senha?: StringFieldUpdateOperationsInput | string
     inativo?: BoolFieldUpdateOperationsInput | boolean
     data_criacao?: DateTimeFieldUpdateOperationsInput | Date | string
     historiasCriadas?: HistoriaUncheckedUpdateManyWithoutCriadorNestedInput
@@ -13906,8 +14206,14 @@ export namespace Prisma {
   export type PessoaCreateWithoutHistoriasCriadasInput = {
     id?: string
     nome: string
-    email?: string | null
-    senha?: string | null
+    email: string
+    email_hash: string
+    email_confirmado?: boolean
+    codigo_confirmacao?: string | null
+    codigo_confirmacao_hash?: string | null
+    codigo_expiracao?: Date | string | null
+    senha: string
+    ultima_senha: string
     inativo?: boolean
     data_criacao?: Date | string
     equipesMembro?: MembroEquipeCreateNestedManyWithoutPessoaInput
@@ -13919,8 +14225,14 @@ export namespace Prisma {
   export type PessoaUncheckedCreateWithoutHistoriasCriadasInput = {
     id?: string
     nome: string
-    email?: string | null
-    senha?: string | null
+    email: string
+    email_hash: string
+    email_confirmado?: boolean
+    codigo_confirmacao?: string | null
+    codigo_confirmacao_hash?: string | null
+    codigo_expiracao?: Date | string | null
+    senha: string
+    ultima_senha: string
     inativo?: boolean
     data_criacao?: Date | string
     equipesMembro?: MembroEquipeUncheckedCreateNestedManyWithoutPessoaInput
@@ -14005,8 +14317,14 @@ export namespace Prisma {
   export type PessoaUpdateWithoutHistoriasCriadasInput = {
     id?: StringFieldUpdateOperationsInput | string
     nome?: StringFieldUpdateOperationsInput | string
-    email?: NullableStringFieldUpdateOperationsInput | string | null
-    senha?: NullableStringFieldUpdateOperationsInput | string | null
+    email?: StringFieldUpdateOperationsInput | string
+    email_hash?: StringFieldUpdateOperationsInput | string
+    email_confirmado?: BoolFieldUpdateOperationsInput | boolean
+    codigo_confirmacao?: NullableStringFieldUpdateOperationsInput | string | null
+    codigo_confirmacao_hash?: NullableStringFieldUpdateOperationsInput | string | null
+    codigo_expiracao?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    senha?: StringFieldUpdateOperationsInput | string
+    ultima_senha?: StringFieldUpdateOperationsInput | string
     inativo?: BoolFieldUpdateOperationsInput | boolean
     data_criacao?: DateTimeFieldUpdateOperationsInput | Date | string
     equipesMembro?: MembroEquipeUpdateManyWithoutPessoaNestedInput
@@ -14018,8 +14336,14 @@ export namespace Prisma {
   export type PessoaUncheckedUpdateWithoutHistoriasCriadasInput = {
     id?: StringFieldUpdateOperationsInput | string
     nome?: StringFieldUpdateOperationsInput | string
-    email?: NullableStringFieldUpdateOperationsInput | string | null
-    senha?: NullableStringFieldUpdateOperationsInput | string | null
+    email?: StringFieldUpdateOperationsInput | string
+    email_hash?: StringFieldUpdateOperationsInput | string
+    email_confirmado?: BoolFieldUpdateOperationsInput | boolean
+    codigo_confirmacao?: NullableStringFieldUpdateOperationsInput | string | null
+    codigo_confirmacao_hash?: NullableStringFieldUpdateOperationsInput | string | null
+    codigo_expiracao?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    senha?: StringFieldUpdateOperationsInput | string
+    ultima_senha?: StringFieldUpdateOperationsInput | string
     inativo?: BoolFieldUpdateOperationsInput | boolean
     data_criacao?: DateTimeFieldUpdateOperationsInput | Date | string
     equipesMembro?: MembroEquipeUncheckedUpdateManyWithoutPessoaNestedInput
@@ -14111,8 +14435,14 @@ export namespace Prisma {
   export type PessoaCreateWithoutVotosInput = {
     id?: string
     nome: string
-    email?: string | null
-    senha?: string | null
+    email: string
+    email_hash: string
+    email_confirmado?: boolean
+    codigo_confirmacao?: string | null
+    codigo_confirmacao_hash?: string | null
+    codigo_expiracao?: Date | string | null
+    senha: string
+    ultima_senha: string
     inativo?: boolean
     data_criacao?: Date | string
     historiasCriadas?: HistoriaCreateNestedManyWithoutCriadorInput
@@ -14124,8 +14454,14 @@ export namespace Prisma {
   export type PessoaUncheckedCreateWithoutVotosInput = {
     id?: string
     nome: string
-    email?: string | null
-    senha?: string | null
+    email: string
+    email_hash: string
+    email_confirmado?: boolean
+    codigo_confirmacao?: string | null
+    codigo_confirmacao_hash?: string | null
+    codigo_expiracao?: Date | string | null
+    senha: string
+    ultima_senha: string
     inativo?: boolean
     data_criacao?: Date | string
     historiasCriadas?: HistoriaUncheckedCreateNestedManyWithoutCriadorInput
@@ -14217,8 +14553,14 @@ export namespace Prisma {
   export type PessoaUpdateWithoutVotosInput = {
     id?: StringFieldUpdateOperationsInput | string
     nome?: StringFieldUpdateOperationsInput | string
-    email?: NullableStringFieldUpdateOperationsInput | string | null
-    senha?: NullableStringFieldUpdateOperationsInput | string | null
+    email?: StringFieldUpdateOperationsInput | string
+    email_hash?: StringFieldUpdateOperationsInput | string
+    email_confirmado?: BoolFieldUpdateOperationsInput | boolean
+    codigo_confirmacao?: NullableStringFieldUpdateOperationsInput | string | null
+    codigo_confirmacao_hash?: NullableStringFieldUpdateOperationsInput | string | null
+    codigo_expiracao?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    senha?: StringFieldUpdateOperationsInput | string
+    ultima_senha?: StringFieldUpdateOperationsInput | string
     inativo?: BoolFieldUpdateOperationsInput | boolean
     data_criacao?: DateTimeFieldUpdateOperationsInput | Date | string
     historiasCriadas?: HistoriaUpdateManyWithoutCriadorNestedInput
@@ -14230,8 +14572,14 @@ export namespace Prisma {
   export type PessoaUncheckedUpdateWithoutVotosInput = {
     id?: StringFieldUpdateOperationsInput | string
     nome?: StringFieldUpdateOperationsInput | string
-    email?: NullableStringFieldUpdateOperationsInput | string | null
-    senha?: NullableStringFieldUpdateOperationsInput | string | null
+    email?: StringFieldUpdateOperationsInput | string
+    email_hash?: StringFieldUpdateOperationsInput | string
+    email_confirmado?: BoolFieldUpdateOperationsInput | boolean
+    codigo_confirmacao?: NullableStringFieldUpdateOperationsInput | string | null
+    codigo_confirmacao_hash?: NullableStringFieldUpdateOperationsInput | string | null
+    codigo_expiracao?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    senha?: StringFieldUpdateOperationsInput | string
+    ultima_senha?: StringFieldUpdateOperationsInput | string
     inativo?: BoolFieldUpdateOperationsInput | boolean
     data_criacao?: DateTimeFieldUpdateOperationsInput | Date | string
     historiasCriadas?: HistoriaUncheckedUpdateManyWithoutCriadorNestedInput

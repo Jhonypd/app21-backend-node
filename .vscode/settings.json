@@ -1,14 +1,26 @@
 {
-	"cSpell.words": [
-		"Codigo",
-		"criacao",
-		"Operacao",
-		"participacoes",
-		"proprietario",
-		"refreshtoken",
-		"supabase",
-		"SUPABASE",
-		"Unico",
-		"usuario"
-	]
+  "cSpell.words": [
+    "alteracao",
+    "codigo",
+    "Codigo",
+    "codigos",
+    "confirmacao",
+    "criacao",
+    "descricao",
+    "expiracao",
+    "Extraidos",
+    "Operacao",
+    "Padrao",
+    "participacoes",
+    "proprietario",
+    "Recuperacao",
+    "redefinicao",
+    "refreshtoken",
+    "supabase",
+    "SUPABASE",
+    "Unico",
+    "usuario",
+    "uuid",
+    "Verificacoes"
+  ]
 }
