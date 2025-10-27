@@ -110,7 +110,7 @@ export const authController = {
 
   async validaCodigoEmail(req: Request, res: Response) {
     try {
-      const { codigo } = req.query;
+      const { codigo, confirmarConta } = req.query;
       if (!codigo) {
         return res
           .status(400)
@@ -118,7 +118,8 @@ export const authController = {
       }
 
       const resultado = await authService.validaCodigoConfirmacaoEmail(
-        codigo as string
+        codigo as string,
+        confirmarConta === "true" ? true : false
       );
 
       return res.status(200).json(

@@ -130,30 +130,8 @@ exports.Prisma.PessoaScalarFieldEnum = {
   codigo_confirmacao_hash: 'codigo_confirmacao_hash',
   codigo_expiracao: 'codigo_expiracao',
   senha: 'senha',
-  ultima_senha: 'ultima_senha',
   inativo: 'inativo',
   data_criacao: 'data_criacao'
-};
-
-exports.Prisma.EquipeScalarFieldEnum = {
-  id: 'id',
-  nome: 'nome',
-  inativo: 'inativo'
-};
-
-exports.Prisma.MembroEquipeScalarFieldEnum = {
-  id: 'id',
-  pessoa_id: 'pessoa_id',
-  equipe_id: 'equipe_id',
-  proprietario: 'proprietario'
-};
-
-exports.Prisma.ProjetoScalarFieldEnum = {
-  id: 'id',
-  nome: 'nome',
-  equipe_id: 'equipe_id',
-  inativo: 'inativo',
-  gerente_id: 'gerente_id'
 };
 
 exports.Prisma.SalaScalarFieldEnum = {
@@ -174,22 +152,10 @@ exports.Prisma.ParticipanteSalaScalarFieldEnum = {
   adicionado: 'adicionado'
 };
 
-exports.Prisma.HistoriaScalarFieldEnum = {
-  id: 'id',
-  titulo: 'titulo',
-  descricao: 'descricao',
-  sala_id: 'sala_id',
-  criado_por: 'criado_por',
-  data_criacao: 'data_criacao',
-  data_alteracao: 'data_alteracao',
-  finalizada: 'finalizada'
-};
-
 exports.Prisma.VotoScalarFieldEnum = {
   id: 'id',
   pessoa_id: 'pessoa_id',
   sala_id: 'sala_id',
-  historia_id: 'historia_id',
   valor: 'valor',
   data_voto: 'data_voto'
 };
@@ -212,12 +178,8 @@ exports.Prisma.NullsOrder = {
 
 exports.Prisma.ModelName = {
   Pessoa: 'Pessoa',
-  Equipe: 'Equipe',
-  MembroEquipe: 'MembroEquipe',
-  Projeto: 'Projeto',
   Sala: 'Sala',
   ParticipanteSala: 'ParticipanteSala',
-  Historia: 'Historia',
   Voto: 'Voto'
 };
 

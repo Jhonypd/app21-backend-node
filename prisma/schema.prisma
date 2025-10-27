@@ -18,57 +18,31 @@ model Pessoa {
   codigo_confirmacao_hash String?            @unique
   codigo_expiracao        DateTime?
   senha                   String
-  ultima_senha            String
   inativo                 Boolean            @default(false)
   data_criacao            DateTime           @default(now())
-  historiasCriadas        Historia[]         @relation("HistoriasCriadasPorPessoa")
-  equipesMembro           MembroEquipe[]
   participacoes           ParticipanteSala[]
   salasCriadas            Sala[]             @relation("SalasCriadasPorPessoa")
   votos                   Voto[]
-}
 
-model Equipe {
-  id       String         @id @default(uuid())
-  nome     String
-  inativo  Boolean        @default(false)
-  membros  MembroEquipe[]
-  projetos Projeto[]
-}
-
-model MembroEquipe {
-  id           String  @id @default(uuid())
-  pessoa_id    String
-  equipe_id    String
-  proprietario Boolean @default(false)
-  equipe       Equipe  @relation(fields: [equipe_id], references: [id])
-  pessoa       Pessoa  @relation(fields: [pessoa_id], references: [id])
-
-  @@unique([pessoa_id, equipe_id])
-}
-
-model Projeto {
-  id         String  @id @default(uuid())
-  nome       String
-  equipe_id  String
-  inativo    Boolean @default(false)
-  gerente_id String?
-  equipe     Equipe  @relation(fields: [equipe_id], references: [id])
+  @@index([email])
+  @@index([codigo_expiracao])
 }
 
 model Sala {
   id             String             @id @default(uuid())
-  codigo         Int
+  codigo         Int                @unique
   titulo         String
   criado_por     String
   senha          String?
   inativo        Boolean            @default(false)
   data_criacao   DateTime           @default(now())
   data_alteracao DateTime           @updatedAt
-  historias      Historia[]
   participantes  ParticipanteSala[]
   proprietario   Pessoa             @relation("SalasCriadasPorPessoa", fields: [criado_por], references: [id])
   votos          Voto[]
+
+  @@index([criado_por])
+  @@index([codigo])
 }
 
 model ParticipanteSala {
@@ -84,33 +58,16 @@ model ParticipanteSala {
   @@index([pessoa_id])
 }
 
-model Historia {
-  id             String   @id @default(uuid())
-  titulo         String
-  descricao      String?
-  sala_id        String
-  criado_por     String
-  data_criacao   DateTime @default(now())
-  data_alteracao DateTime @updatedAt
-  finalizada     Boolean  @default(false)
-  criador        Pessoa   @relation("HistoriasCriadasPorPessoa", fields: [criado_por], references: [id])
-  sala           Sala     @relation(fields: [sala_id], references: [id])
-  votos          Voto[]
-}
-
 model Voto {
-  id          String   @id @default(uuid())
-  pessoa_id   String
-  sala_id     String
-  historia_id String
-  valor       Int
-  data_voto   DateTime @default(now())
-  historia    Historia @relation(fields: [historia_id], references: [id])
-  pessoa      Pessoa   @relation(fields: [pessoa_id], references: [id])
-  sala        Sala     @relation(fields: [sala_id], references: [id])
+  id        String   @id @default(uuid())
+  pessoa_id String
+  sala_id   String
+  valor     Int
+  data_voto DateTime @default(now())
+  pessoa    Pessoa   @relation(fields: [pessoa_id], references: [id])
+  sala      Sala     @relation(fields: [sala_id], references: [id])
 
-  @@unique([sala_id, historia_id, pessoa_id])
+  @@unique([sala_id, pessoa_id])
   @@index([sala_id])
-  @@index([historia_id])
   @@index([pessoa_id])
 }

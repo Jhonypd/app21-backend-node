@@ -92,6 +92,7 @@ export const pessoaRepository = {
         email_hash: true,
         data_criacao: true,
         inativo: true,
+        email_confirmado: true,
         senha: withPassword ? true : false,
       },
     }),
@@ -120,5 +121,21 @@ export const pessoaRepository = {
         codigo_confirmacao_hash: codigoHash,
         codigo_expiracao: codigoExp,
       },
+    }),
+
+  alterar: (
+    id: string,
+    data: {
+      nome: string;
+      email: string;
+      inativo: boolean;
+      codigo_confirmacao?: string;
+      codigo_confirmacao_hash?: string;
+      codigo_expiracao?: Date;
+    }
+  ) =>
+    prismaClient.pessoa.update({
+      where: { id },
+      data,
     }),
 };

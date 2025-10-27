@@ -72,6 +72,27 @@ class EmailService {
 
     return this.sendEmail(user.email, "Confirmação de Conta - App21", html);
   }
+  // Email de confirmação de alteração de e-mail
+  async sendEmailConfirmaAlteracao(
+    user: {
+      nome: string;
+      email: string;
+    },
+    linkConfirmacao: string
+  ) {
+    const html = await this.renderTemplate("email-confirmar", {
+      nome: user.nome,
+      email: user.email,
+      ano: new Date().getFullYear(),
+      linkConfirmacao: linkConfirmacao,
+    });
+
+    return this.sendEmail(
+      user.email,
+      "Confirmação de Alteração de E-mail - App21",
+      html
+    );
+  }
 
   // Email de recuperação de senha
   async sendEmailRecuperacaoSenha(

@@ -32,8 +32,28 @@ export const authGuard = async (
 
     const user = await prismaClient.pessoa.findUnique({
       where: { id: decoded.Usu_Id },
-      select: { id: true, nome: true, email: true },
+      select: {
+        id: true,
+        nome: true,
+        email: true,
+        inativo: true,
+        email_confirmado: true,
+        codigo_expiracao: true,
+      },
     });
+
+    if (user?.inativo) {
+      return res.status(403).json({
+        mensagem:
+          "Usuário sem permissão de acesso. Você precisa entrar em contato com o administrador.",
+      });
+    }
+
+    if (user?.codigo_expiracao && user.codigo_expiracao < new Date()) {
+      return res.status(403).json({
+        mensagem: "Você precisa confirmar seu e-mail para continuar.",
+      });
+    }
 
     if (!user) {
       return res

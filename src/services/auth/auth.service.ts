@@ -22,6 +22,18 @@ export const authService = {
 
     if (!usuario) throw new Error("Usuário não encontrado");
 
+    if (usuario.inativo) {
+      throw new Error(
+        "Usuário sem permissão de acesso, entre em contato com o administrador."
+      );
+    }
+
+    if (usuario.email_confirmado === false) {
+      throw new Error(
+        "E-mail não confirmado. Por favor, confirme seu e-mail para continuar."
+      );
+    }
+
     const senhaValida = await hash.compare(senha, usuario.senha as string);
 
     if (!senhaValida) throw new Error("Senha inválida");
@@ -92,6 +104,10 @@ export const authService = {
     const usuarioExistente = await this.usuarioExiste(email);
 
     if (!usuarioExistente) {
+      return;
+    }
+
+    if (!usuarioExistente.codigo_confirmacao) {
       return;
     }
 
@@ -188,7 +204,7 @@ export const authService = {
           usuarioNovoExistente.id
         );
 
-      return { confirmaContaNovoUsuario, contaConfirmada: true };
+      return { id: usuarioNovoExistente.id, contaConfirmada: true };
     } else {
       return {
         id: usuarioNovoExistente.id,

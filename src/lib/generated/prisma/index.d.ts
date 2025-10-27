@@ -19,21 +19,6 @@ export type PrismaPromise<T> = $Public.PrismaPromise<T>
  */
 export type Pessoa = $Result.DefaultSelection<Prisma.$PessoaPayload>
 /**
- * Model Equipe
- * 
- */
-export type Equipe = $Result.DefaultSelection<Prisma.$EquipePayload>
-/**
- * Model MembroEquipe
- * 
- */
-export type MembroEquipe = $Result.DefaultSelection<Prisma.$MembroEquipePayload>
-/**
- * Model Projeto
- * 
- */
-export type Projeto = $Result.DefaultSelection<Prisma.$ProjetoPayload>
-/**
  * Model Sala
  * 
  */
@@ -43,11 +28,6 @@ export type Sala = $Result.DefaultSelection<Prisma.$SalaPayload>
  * 
  */
 export type ParticipanteSala = $Result.DefaultSelection<Prisma.$ParticipanteSalaPayload>
-/**
- * Model Historia
- * 
- */
-export type Historia = $Result.DefaultSelection<Prisma.$HistoriaPayload>
 /**
  * Model Voto
  * 
@@ -183,36 +163,6 @@ export class PrismaClient<
   get pessoa(): Prisma.PessoaDelegate<ExtArgs, ClientOptions>;
 
   /**
-   * `prisma.equipe`: Exposes CRUD operations for the **Equipe** model.
-    * Example usage:
-    * ```ts
-    * // Fetch zero or more Equipes
-    * const equipes = await prisma.equipe.findMany()
-    * ```
-    */
-  get equipe(): Prisma.EquipeDelegate<ExtArgs, ClientOptions>;
-
-  /**
-   * `prisma.membroEquipe`: Exposes CRUD operations for the **MembroEquipe** model.
-    * Example usage:
-    * ```ts
-    * // Fetch zero or more MembroEquipes
-    * const membroEquipes = await prisma.membroEquipe.findMany()
-    * ```
-    */
-  get membroEquipe(): Prisma.MembroEquipeDelegate<ExtArgs, ClientOptions>;
-
-  /**
-   * `prisma.projeto`: Exposes CRUD operations for the **Projeto** model.
-    * Example usage:
-    * ```ts
-    * // Fetch zero or more Projetos
-    * const projetos = await prisma.projeto.findMany()
-    * ```
-    */
-  get projeto(): Prisma.ProjetoDelegate<ExtArgs, ClientOptions>;
-
-  /**
    * `prisma.sala`: Exposes CRUD operations for the **Sala** model.
     * Example usage:
     * ```ts
@@ -231,16 +181,6 @@ export class PrismaClient<
     * ```
     */
   get participanteSala(): Prisma.ParticipanteSalaDelegate<ExtArgs, ClientOptions>;
-
-  /**
-   * `prisma.historia`: Exposes CRUD operations for the **Historia** model.
-    * Example usage:
-    * ```ts
-    * // Fetch zero or more Historias
-    * const historias = await prisma.historia.findMany()
-    * ```
-    */
-  get historia(): Prisma.HistoriaDelegate<ExtArgs, ClientOptions>;
 
   /**
    * `prisma.voto`: Exposes CRUD operations for the **Voto** model.
@@ -693,12 +633,8 @@ export namespace Prisma {
 
   export const ModelName: {
     Pessoa: 'Pessoa',
-    Equipe: 'Equipe',
-    MembroEquipe: 'MembroEquipe',
-    Projeto: 'Projeto',
     Sala: 'Sala',
     ParticipanteSala: 'ParticipanteSala',
-    Historia: 'Historia',
     Voto: 'Voto'
   };
 
@@ -718,7 +654,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "pessoa" | "equipe" | "membroEquipe" | "projeto" | "sala" | "participanteSala" | "historia" | "voto"
+      modelProps: "pessoa" | "sala" | "participanteSala" | "voto"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -793,228 +729,6 @@ export namespace Prisma {
           count: {
             args: Prisma.PessoaCountArgs<ExtArgs>
             result: $Utils.Optional<PessoaCountAggregateOutputType> | number
-          }
-        }
-      }
-      Equipe: {
-        payload: Prisma.$EquipePayload<ExtArgs>
-        fields: Prisma.EquipeFieldRefs
-        operations: {
-          findUnique: {
-            args: Prisma.EquipeFindUniqueArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$EquipePayload> | null
-          }
-          findUniqueOrThrow: {
-            args: Prisma.EquipeFindUniqueOrThrowArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$EquipePayload>
-          }
-          findFirst: {
-            args: Prisma.EquipeFindFirstArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$EquipePayload> | null
-          }
-          findFirstOrThrow: {
-            args: Prisma.EquipeFindFirstOrThrowArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$EquipePayload>
-          }
-          findMany: {
-            args: Prisma.EquipeFindManyArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$EquipePayload>[]
-          }
-          create: {
-            args: Prisma.EquipeCreateArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$EquipePayload>
-          }
-          createMany: {
-            args: Prisma.EquipeCreateManyArgs<ExtArgs>
-            result: BatchPayload
-          }
-          createManyAndReturn: {
-            args: Prisma.EquipeCreateManyAndReturnArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$EquipePayload>[]
-          }
-          delete: {
-            args: Prisma.EquipeDeleteArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$EquipePayload>
-          }
-          update: {
-            args: Prisma.EquipeUpdateArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$EquipePayload>
-          }
-          deleteMany: {
-            args: Prisma.EquipeDeleteManyArgs<ExtArgs>
-            result: BatchPayload
-          }
-          updateMany: {
-            args: Prisma.EquipeUpdateManyArgs<ExtArgs>
-            result: BatchPayload
-          }
-          updateManyAndReturn: {
-            args: Prisma.EquipeUpdateManyAndReturnArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$EquipePayload>[]
-          }
-          upsert: {
-            args: Prisma.EquipeUpsertArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$EquipePayload>
-          }
-          aggregate: {
-            args: Prisma.EquipeAggregateArgs<ExtArgs>
-            result: $Utils.Optional<AggregateEquipe>
-          }
-          groupBy: {
-            args: Prisma.EquipeGroupByArgs<ExtArgs>
-            result: $Utils.Optional<EquipeGroupByOutputType>[]
-          }
-          count: {
-            args: Prisma.EquipeCountArgs<ExtArgs>
-            result: $Utils.Optional<EquipeCountAggregateOutputType> | number
-          }
-        }
-      }
-      MembroEquipe: {
-        payload: Prisma.$MembroEquipePayload<ExtArgs>
-        fields: Prisma.MembroEquipeFieldRefs
-        operations: {
-          findUnique: {
-            args: Prisma.MembroEquipeFindUniqueArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$MembroEquipePayload> | null
-          }
-          findUniqueOrThrow: {
-            args: Prisma.MembroEquipeFindUniqueOrThrowArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$MembroEquipePayload>
-          }
-          findFirst: {
-            args: Prisma.MembroEquipeFindFirstArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$MembroEquipePayload> | null
-          }
-          findFirstOrThrow: {
-            args: Prisma.MembroEquipeFindFirstOrThrowArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$MembroEquipePayload>
-          }
-          findMany: {
-            args: Prisma.MembroEquipeFindManyArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$MembroEquipePayload>[]
-          }
-          create: {
-            args: Prisma.MembroEquipeCreateArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$MembroEquipePayload>
-          }
-          createMany: {
-            args: Prisma.MembroEquipeCreateManyArgs<ExtArgs>
-            result: BatchPayload
-          }
-          createManyAndReturn: {
-            args: Prisma.MembroEquipeCreateManyAndReturnArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$MembroEquipePayload>[]
-          }
-          delete: {
-            args: Prisma.MembroEquipeDeleteArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$MembroEquipePayload>
-          }
-          update: {
-            args: Prisma.MembroEquipeUpdateArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$MembroEquipePayload>
-          }
-          deleteMany: {
-            args: Prisma.MembroEquipeDeleteManyArgs<ExtArgs>
-            result: BatchPayload
-          }
-          updateMany: {
-            args: Prisma.MembroEquipeUpdateManyArgs<ExtArgs>
-            result: BatchPayload
-          }
-          updateManyAndReturn: {
-            args: Prisma.MembroEquipeUpdateManyAndReturnArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$MembroEquipePayload>[]
-          }
-          upsert: {
-            args: Prisma.MembroEquipeUpsertArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$MembroEquipePayload>
-          }
-          aggregate: {
-            args: Prisma.MembroEquipeAggregateArgs<ExtArgs>
-            result: $Utils.Optional<AggregateMembroEquipe>
-          }
-          groupBy: {
-            args: Prisma.MembroEquipeGroupByArgs<ExtArgs>
-            result: $Utils.Optional<MembroEquipeGroupByOutputType>[]
-          }
-          count: {
-            args: Prisma.MembroEquipeCountArgs<ExtArgs>
-            result: $Utils.Optional<MembroEquipeCountAggregateOutputType> | number
-          }
-        }
-      }
-      Projeto: {
-        payload: Prisma.$ProjetoPayload<ExtArgs>
-        fields: Prisma.ProjetoFieldRefs
-        operations: {
-          findUnique: {
-            args: Prisma.ProjetoFindUniqueArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$ProjetoPayload> | null
-          }
-          findUniqueOrThrow: {
-            args: Prisma.ProjetoFindUniqueOrThrowArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$ProjetoPayload>
-          }
-          findFirst: {
-            args: Prisma.ProjetoFindFirstArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$ProjetoPayload> | null
-          }
-          findFirstOrThrow: {
-            args: Prisma.ProjetoFindFirstOrThrowArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$ProjetoPayload>
-          }
-          findMany: {
-            args: Prisma.ProjetoFindManyArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$ProjetoPayload>[]
-          }
-          create: {
-            args: Prisma.ProjetoCreateArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$ProjetoPayload>
-          }
-          createMany: {
-            args: Prisma.ProjetoCreateManyArgs<ExtArgs>
-            result: BatchPayload
-          }
-          createManyAndReturn: {
-            args: Prisma.ProjetoCreateManyAndReturnArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$ProjetoPayload>[]
-          }
-          delete: {
-            args: Prisma.ProjetoDeleteArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$ProjetoPayload>
-          }
-          update: {
-            args: Prisma.ProjetoUpdateArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$ProjetoPayload>
-          }
-          deleteMany: {
-            args: Prisma.ProjetoDeleteManyArgs<ExtArgs>
-            result: BatchPayload
-          }
-          updateMany: {
-            args: Prisma.ProjetoUpdateManyArgs<ExtArgs>
-            result: BatchPayload
-          }
-          updateManyAndReturn: {
-            args: Prisma.ProjetoUpdateManyAndReturnArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$ProjetoPayload>[]
-          }
-          upsert: {
-            args: Prisma.ProjetoUpsertArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$ProjetoPayload>
-          }
-          aggregate: {
-            args: Prisma.ProjetoAggregateArgs<ExtArgs>
-            result: $Utils.Optional<AggregateProjeto>
-          }
-          groupBy: {
-            args: Prisma.ProjetoGroupByArgs<ExtArgs>
-            result: $Utils.Optional<ProjetoGroupByOutputType>[]
-          }
-          count: {
-            args: Prisma.ProjetoCountArgs<ExtArgs>
-            result: $Utils.Optional<ProjetoCountAggregateOutputType> | number
           }
         }
       }
@@ -1163,80 +877,6 @@ export namespace Prisma {
           count: {
             args: Prisma.ParticipanteSalaCountArgs<ExtArgs>
             result: $Utils.Optional<ParticipanteSalaCountAggregateOutputType> | number
-          }
-        }
-      }
-      Historia: {
-        payload: Prisma.$HistoriaPayload<ExtArgs>
-        fields: Prisma.HistoriaFieldRefs
-        operations: {
-          findUnique: {
-            args: Prisma.HistoriaFindUniqueArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$HistoriaPayload> | null
-          }
-          findUniqueOrThrow: {
-            args: Prisma.HistoriaFindUniqueOrThrowArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$HistoriaPayload>
-          }
-          findFirst: {
-            args: Prisma.HistoriaFindFirstArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$HistoriaPayload> | null
-          }
-          findFirstOrThrow: {
-            args: Prisma.HistoriaFindFirstOrThrowArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$HistoriaPayload>
-          }
-          findMany: {
-            args: Prisma.HistoriaFindManyArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$HistoriaPayload>[]
-          }
-          create: {
-            args: Prisma.HistoriaCreateArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$HistoriaPayload>
-          }
-          createMany: {
-            args: Prisma.HistoriaCreateManyArgs<ExtArgs>
-            result: BatchPayload
-          }
-          createManyAndReturn: {
-            args: Prisma.HistoriaCreateManyAndReturnArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$HistoriaPayload>[]
-          }
-          delete: {
-            args: Prisma.HistoriaDeleteArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$HistoriaPayload>
-          }
-          update: {
-            args: Prisma.HistoriaUpdateArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$HistoriaPayload>
-          }
-          deleteMany: {
-            args: Prisma.HistoriaDeleteManyArgs<ExtArgs>
-            result: BatchPayload
-          }
-          updateMany: {
-            args: Prisma.HistoriaUpdateManyArgs<ExtArgs>
-            result: BatchPayload
-          }
-          updateManyAndReturn: {
-            args: Prisma.HistoriaUpdateManyAndReturnArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$HistoriaPayload>[]
-          }
-          upsert: {
-            args: Prisma.HistoriaUpsertArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$HistoriaPayload>
-          }
-          aggregate: {
-            args: Prisma.HistoriaAggregateArgs<ExtArgs>
-            result: $Utils.Optional<AggregateHistoria>
-          }
-          groupBy: {
-            args: Prisma.HistoriaGroupByArgs<ExtArgs>
-            result: $Utils.Optional<HistoriaGroupByOutputType>[]
-          }
-          count: {
-            args: Prisma.HistoriaCountArgs<ExtArgs>
-            result: $Utils.Optional<HistoriaCountAggregateOutputType> | number
           }
         }
       }
@@ -1411,12 +1051,8 @@ export namespace Prisma {
   }
   export type GlobalOmitConfig = {
     pessoa?: PessoaOmit
-    equipe?: EquipeOmit
-    membroEquipe?: MembroEquipeOmit
-    projeto?: ProjetoOmit
     sala?: SalaOmit
     participanteSala?: ParticipanteSalaOmit
-    historia?: HistoriaOmit
     voto?: VotoOmit
   }
 
@@ -1498,16 +1134,12 @@ export namespace Prisma {
    */
 
   export type PessoaCountOutputType = {
-    historiasCriadas: number
-    equipesMembro: number
     participacoes: number
     salasCriadas: number
     votos: number
   }
 
   export type PessoaCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    historiasCriadas?: boolean | PessoaCountOutputTypeCountHistoriasCriadasArgs
-    equipesMembro?: boolean | PessoaCountOutputTypeCountEquipesMembroArgs
     participacoes?: boolean | PessoaCountOutputTypeCountParticipacoesArgs
     salasCriadas?: boolean | PessoaCountOutputTypeCountSalasCriadasArgs
     votos?: boolean | PessoaCountOutputTypeCountVotosArgs
@@ -1522,20 +1154,6 @@ export namespace Prisma {
      * Select specific fields to fetch from the PessoaCountOutputType
      */
     select?: PessoaCountOutputTypeSelect<ExtArgs> | null
-  }
-
-  /**
-   * PessoaCountOutputType without action
-   */
-  export type PessoaCountOutputTypeCountHistoriasCriadasArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    where?: HistoriaWhereInput
-  }
-
-  /**
-   * PessoaCountOutputType without action
-   */
-  export type PessoaCountOutputTypeCountEquipesMembroArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    where?: MembroEquipeWhereInput
   }
 
   /**
@@ -1561,57 +1179,15 @@ export namespace Prisma {
 
 
   /**
-   * Count Type EquipeCountOutputType
-   */
-
-  export type EquipeCountOutputType = {
-    membros: number
-    projetos: number
-  }
-
-  export type EquipeCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    membros?: boolean | EquipeCountOutputTypeCountMembrosArgs
-    projetos?: boolean | EquipeCountOutputTypeCountProjetosArgs
-  }
-
-  // Custom InputTypes
-  /**
-   * EquipeCountOutputType without action
-   */
-  export type EquipeCountOutputTypeDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the EquipeCountOutputType
-     */
-    select?: EquipeCountOutputTypeSelect<ExtArgs> | null
-  }
-
-  /**
-   * EquipeCountOutputType without action
-   */
-  export type EquipeCountOutputTypeCountMembrosArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    where?: MembroEquipeWhereInput
-  }
-
-  /**
-   * EquipeCountOutputType without action
-   */
-  export type EquipeCountOutputTypeCountProjetosArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    where?: ProjetoWhereInput
-  }
-
-
-  /**
    * Count Type SalaCountOutputType
    */
 
   export type SalaCountOutputType = {
-    historias: number
     participantes: number
     votos: number
   }
 
   export type SalaCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    historias?: boolean | SalaCountOutputTypeCountHistoriasArgs
     participantes?: boolean | SalaCountOutputTypeCountParticipantesArgs
     votos?: boolean | SalaCountOutputTypeCountVotosArgs
   }
@@ -1630,13 +1206,6 @@ export namespace Prisma {
   /**
    * SalaCountOutputType without action
    */
-  export type SalaCountOutputTypeCountHistoriasArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    where?: HistoriaWhereInput
-  }
-
-  /**
-   * SalaCountOutputType without action
-   */
   export type SalaCountOutputTypeCountParticipantesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: ParticipanteSalaWhereInput
   }
@@ -1645,37 +1214,6 @@ export namespace Prisma {
    * SalaCountOutputType without action
    */
   export type SalaCountOutputTypeCountVotosArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    where?: VotoWhereInput
-  }
-
-
-  /**
-   * Count Type HistoriaCountOutputType
-   */
-
-  export type HistoriaCountOutputType = {
-    votos: number
-  }
-
-  export type HistoriaCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    votos?: boolean | HistoriaCountOutputTypeCountVotosArgs
-  }
-
-  // Custom InputTypes
-  /**
-   * HistoriaCountOutputType without action
-   */
-  export type HistoriaCountOutputTypeDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the HistoriaCountOutputType
-     */
-    select?: HistoriaCountOutputTypeSelect<ExtArgs> | null
-  }
-
-  /**
-   * HistoriaCountOutputType without action
-   */
-  export type HistoriaCountOutputTypeCountVotosArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: VotoWhereInput
   }
 
@@ -1704,7 +1242,6 @@ export namespace Prisma {
     codigo_confirmacao_hash: string | null
     codigo_expiracao: Date | null
     senha: string | null
-    ultima_senha: string | null
     inativo: boolean | null
     data_criacao: Date | null
   }
@@ -1719,7 +1256,6 @@ export namespace Prisma {
     codigo_confirmacao_hash: string | null
     codigo_expiracao: Date | null
     senha: string | null
-    ultima_senha: string | null
     inativo: boolean | null
     data_criacao: Date | null
   }
@@ -1734,7 +1270,6 @@ export namespace Prisma {
     codigo_confirmacao_hash: number
     codigo_expiracao: number
     senha: number
-    ultima_senha: number
     inativo: number
     data_criacao: number
     _all: number
@@ -1751,7 +1286,6 @@ export namespace Prisma {
     codigo_confirmacao_hash?: true
     codigo_expiracao?: true
     senha?: true
-    ultima_senha?: true
     inativo?: true
     data_criacao?: true
   }
@@ -1766,7 +1300,6 @@ export namespace Prisma {
     codigo_confirmacao_hash?: true
     codigo_expiracao?: true
     senha?: true
-    ultima_senha?: true
     inativo?: true
     data_criacao?: true
   }
@@ -1781,7 +1314,6 @@ export namespace Prisma {
     codigo_confirmacao_hash?: true
     codigo_expiracao?: true
     senha?: true
-    ultima_senha?: true
     inativo?: true
     data_criacao?: true
     _all?: true
@@ -1869,7 +1401,6 @@ export namespace Prisma {
     codigo_confirmacao_hash: string | null
     codigo_expiracao: Date | null
     senha: string
-    ultima_senha: string
     inativo: boolean
     data_criacao: Date
     _count: PessoaCountAggregateOutputType | null
@@ -1901,11 +1432,8 @@ export namespace Prisma {
     codigo_confirmacao_hash?: boolean
     codigo_expiracao?: boolean
     senha?: boolean
-    ultima_senha?: boolean
     inativo?: boolean
     data_criacao?: boolean
-    historiasCriadas?: boolean | Pessoa$historiasCriadasArgs<ExtArgs>
-    equipesMembro?: boolean | Pessoa$equipesMembroArgs<ExtArgs>
     participacoes?: boolean | Pessoa$participacoesArgs<ExtArgs>
     salasCriadas?: boolean | Pessoa$salasCriadasArgs<ExtArgs>
     votos?: boolean | Pessoa$votosArgs<ExtArgs>
@@ -1922,7 +1450,6 @@ export namespace Prisma {
     codigo_confirmacao_hash?: boolean
     codigo_expiracao?: boolean
     senha?: boolean
-    ultima_senha?: boolean
     inativo?: boolean
     data_criacao?: boolean
   }, ExtArgs["result"]["pessoa"]>
@@ -1937,7 +1464,6 @@ export namespace Prisma {
     codigo_confirmacao_hash?: boolean
     codigo_expiracao?: boolean
     senha?: boolean
-    ultima_senha?: boolean
     inativo?: boolean
     data_criacao?: boolean
   }, ExtArgs["result"]["pessoa"]>
@@ -1952,15 +1478,12 @@ export namespace Prisma {
     codigo_confirmacao_hash?: boolean
     codigo_expiracao?: boolean
     senha?: boolean
-    ultima_senha?: boolean
     inativo?: boolean
     data_criacao?: boolean
   }
 
-  export type PessoaOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "nome" | "email" | "email_hash" | "email_confirmado" | "codigo_confirmacao" | "codigo_confirmacao_hash" | "codigo_expiracao" | "senha" | "ultima_senha" | "inativo" | "data_criacao", ExtArgs["result"]["pessoa"]>
+  export type PessoaOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "nome" | "email" | "email_hash" | "email_confirmado" | "codigo_confirmacao" | "codigo_confirmacao_hash" | "codigo_expiracao" | "senha" | "inativo" | "data_criacao", ExtArgs["result"]["pessoa"]>
   export type PessoaInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    historiasCriadas?: boolean | Pessoa$historiasCriadasArgs<ExtArgs>
-    equipesMembro?: boolean | Pessoa$equipesMembroArgs<ExtArgs>
     participacoes?: boolean | Pessoa$participacoesArgs<ExtArgs>
     salasCriadas?: boolean | Pessoa$salasCriadasArgs<ExtArgs>
     votos?: boolean | Pessoa$votosArgs<ExtArgs>
@@ -1972,8 +1495,6 @@ export namespace Prisma {
   export type $PessoaPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "Pessoa"
     objects: {
-      historiasCriadas: Prisma.$HistoriaPayload<ExtArgs>[]
-      equipesMembro: Prisma.$MembroEquipePayload<ExtArgs>[]
       participacoes: Prisma.$ParticipanteSalaPayload<ExtArgs>[]
       salasCriadas: Prisma.$SalaPayload<ExtArgs>[]
       votos: Prisma.$VotoPayload<ExtArgs>[]
@@ -1988,7 +1509,6 @@ export namespace Prisma {
       codigo_confirmacao_hash: string | null
       codigo_expiracao: Date | null
       senha: string
-      ultima_senha: string
       inativo: boolean
       data_criacao: Date
     }, ExtArgs["result"]["pessoa"]>
@@ -2385,8 +1905,6 @@ export namespace Prisma {
    */
   export interface Prisma__PessoaClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
-    historiasCriadas<T extends Pessoa$historiasCriadasArgs<ExtArgs> = {}>(args?: Subset<T, Pessoa$historiasCriadasArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$HistoriaPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
-    equipesMembro<T extends Pessoa$equipesMembroArgs<ExtArgs> = {}>(args?: Subset<T, Pessoa$equipesMembroArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$MembroEquipePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     participacoes<T extends Pessoa$participacoesArgs<ExtArgs> = {}>(args?: Subset<T, Pessoa$participacoesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ParticipanteSalaPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     salasCriadas<T extends Pessoa$salasCriadasArgs<ExtArgs> = {}>(args?: Subset<T, Pessoa$salasCriadasArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SalaPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     votos<T extends Pessoa$votosArgs<ExtArgs> = {}>(args?: Subset<T, Pessoa$votosArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$VotoPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
@@ -2428,7 +1946,6 @@ export namespace Prisma {
     readonly codigo_confirmacao_hash: FieldRef<"Pessoa", 'String'>
     readonly codigo_expiracao: FieldRef<"Pessoa", 'DateTime'>
     readonly senha: FieldRef<"Pessoa", 'String'>
-    readonly ultima_senha: FieldRef<"Pessoa", 'String'>
     readonly inativo: FieldRef<"Pessoa", 'Boolean'>
     readonly data_criacao: FieldRef<"Pessoa", 'DateTime'>
   }
@@ -2819,54 +2336,6 @@ export namespace Prisma {
   }
 
   /**
-   * Pessoa.historiasCriadas
-   */
-  export type Pessoa$historiasCriadasArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Historia
-     */
-    select?: HistoriaSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the Historia
-     */
-    omit?: HistoriaOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: HistoriaInclude<ExtArgs> | null
-    where?: HistoriaWhereInput
-    orderBy?: HistoriaOrderByWithRelationInput | HistoriaOrderByWithRelationInput[]
-    cursor?: HistoriaWhereUniqueInput
-    take?: number
-    skip?: number
-    distinct?: HistoriaScalarFieldEnum | HistoriaScalarFieldEnum[]
-  }
-
-  /**
-   * Pessoa.equipesMembro
-   */
-  export type Pessoa$equipesMembroArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the MembroEquipe
-     */
-    select?: MembroEquipeSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the MembroEquipe
-     */
-    omit?: MembroEquipeOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: MembroEquipeInclude<ExtArgs> | null
-    where?: MembroEquipeWhereInput
-    orderBy?: MembroEquipeOrderByWithRelationInput | MembroEquipeOrderByWithRelationInput[]
-    cursor?: MembroEquipeWhereUniqueInput
-    take?: number
-    skip?: number
-    distinct?: MembroEquipeScalarFieldEnum | MembroEquipeScalarFieldEnum[]
-  }
-
-  /**
    * Pessoa.participacoes
    */
   export type Pessoa$participacoesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -2954,3189 +2423,6 @@ export namespace Prisma {
      * Choose, which related nodes to fetch as well
      */
     include?: PessoaInclude<ExtArgs> | null
-  }
-
-
-  /**
-   * Model Equipe
-   */
-
-  export type AggregateEquipe = {
-    _count: EquipeCountAggregateOutputType | null
-    _min: EquipeMinAggregateOutputType | null
-    _max: EquipeMaxAggregateOutputType | null
-  }
-
-  export type EquipeMinAggregateOutputType = {
-    id: string | null
-    nome: string | null
-    inativo: boolean | null
-  }
-
-  export type EquipeMaxAggregateOutputType = {
-    id: string | null
-    nome: string | null
-    inativo: boolean | null
-  }
-
-  export type EquipeCountAggregateOutputType = {
-    id: number
-    nome: number
-    inativo: number
-    _all: number
-  }
-
-
-  export type EquipeMinAggregateInputType = {
-    id?: true
-    nome?: true
-    inativo?: true
-  }
-
-  export type EquipeMaxAggregateInputType = {
-    id?: true
-    nome?: true
-    inativo?: true
-  }
-
-  export type EquipeCountAggregateInputType = {
-    id?: true
-    nome?: true
-    inativo?: true
-    _all?: true
-  }
-
-  export type EquipeAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Filter which Equipe to aggregate.
-     */
-    where?: EquipeWhereInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
-     * 
-     * Determine the order of Equipes to fetch.
-     */
-    orderBy?: EquipeOrderByWithRelationInput | EquipeOrderByWithRelationInput[]
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
-     * 
-     * Sets the start position
-     */
-    cursor?: EquipeWhereUniqueInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Take `±n` Equipes from the position of the cursor.
-     */
-    take?: number
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Skip the first `n` Equipes.
-     */
-    skip?: number
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-     * 
-     * Count returned Equipes
-    **/
-    _count?: true | EquipeCountAggregateInputType
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-     * 
-     * Select which fields to find the minimum value
-    **/
-    _min?: EquipeMinAggregateInputType
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-     * 
-     * Select which fields to find the maximum value
-    **/
-    _max?: EquipeMaxAggregateInputType
-  }
-
-  export type GetEquipeAggregateType<T extends EquipeAggregateArgs> = {
-        [P in keyof T & keyof AggregateEquipe]: P extends '_count' | 'count'
-      ? T[P] extends true
-        ? number
-        : GetScalarType<T[P], AggregateEquipe[P]>
-      : GetScalarType<T[P], AggregateEquipe[P]>
-  }
-
-
-
-
-  export type EquipeGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    where?: EquipeWhereInput
-    orderBy?: EquipeOrderByWithAggregationInput | EquipeOrderByWithAggregationInput[]
-    by: EquipeScalarFieldEnum[] | EquipeScalarFieldEnum
-    having?: EquipeScalarWhereWithAggregatesInput
-    take?: number
-    skip?: number
-    _count?: EquipeCountAggregateInputType | true
-    _min?: EquipeMinAggregateInputType
-    _max?: EquipeMaxAggregateInputType
-  }
-
-  export type EquipeGroupByOutputType = {
-    id: string
-    nome: string
-    inativo: boolean
-    _count: EquipeCountAggregateOutputType | null
-    _min: EquipeMinAggregateOutputType | null
-    _max: EquipeMaxAggregateOutputType | null
-  }
-
-  type GetEquipeGroupByPayload<T extends EquipeGroupByArgs> = Prisma.PrismaPromise<
-    Array<
-      PickEnumerable<EquipeGroupByOutputType, T['by']> &
-        {
-          [P in ((keyof T) & (keyof EquipeGroupByOutputType))]: P extends '_count'
-            ? T[P] extends boolean
-              ? number
-              : GetScalarType<T[P], EquipeGroupByOutputType[P]>
-            : GetScalarType<T[P], EquipeGroupByOutputType[P]>
-        }
-      >
-    >
-
-
-  export type EquipeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
-    id?: boolean
-    nome?: boolean
-    inativo?: boolean
-    membros?: boolean | Equipe$membrosArgs<ExtArgs>
-    projetos?: boolean | Equipe$projetosArgs<ExtArgs>
-    _count?: boolean | EquipeCountOutputTypeDefaultArgs<ExtArgs>
-  }, ExtArgs["result"]["equipe"]>
-
-  export type EquipeSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
-    id?: boolean
-    nome?: boolean
-    inativo?: boolean
-  }, ExtArgs["result"]["equipe"]>
-
-  export type EquipeSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
-    id?: boolean
-    nome?: boolean
-    inativo?: boolean
-  }, ExtArgs["result"]["equipe"]>
-
-  export type EquipeSelectScalar = {
-    id?: boolean
-    nome?: boolean
-    inativo?: boolean
-  }
-
-  export type EquipeOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "nome" | "inativo", ExtArgs["result"]["equipe"]>
-  export type EquipeInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    membros?: boolean | Equipe$membrosArgs<ExtArgs>
-    projetos?: boolean | Equipe$projetosArgs<ExtArgs>
-    _count?: boolean | EquipeCountOutputTypeDefaultArgs<ExtArgs>
-  }
-  export type EquipeIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
-  export type EquipeIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
-
-  export type $EquipePayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    name: "Equipe"
-    objects: {
-      membros: Prisma.$MembroEquipePayload<ExtArgs>[]
-      projetos: Prisma.$ProjetoPayload<ExtArgs>[]
-    }
-    scalars: $Extensions.GetPayloadResult<{
-      id: string
-      nome: string
-      inativo: boolean
-    }, ExtArgs["result"]["equipe"]>
-    composites: {}
-  }
-
-  type EquipeGetPayload<S extends boolean | null | undefined | EquipeDefaultArgs> = $Result.GetResult<Prisma.$EquipePayload, S>
-
-  type EquipeCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
-    Omit<EquipeFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
-      select?: EquipeCountAggregateInputType | true
-    }
-
-  export interface EquipeDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
-    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['Equipe'], meta: { name: 'Equipe' } }
-    /**
-     * Find zero or one Equipe that matches the filter.
-     * @param {EquipeFindUniqueArgs} args - Arguments to find a Equipe
-     * @example
-     * // Get one Equipe
-     * const equipe = await prisma.equipe.findUnique({
-     *   where: {
-     *     // ... provide filter here
-     *   }
-     * })
-     */
-    findUnique<T extends EquipeFindUniqueArgs>(args: SelectSubset<T, EquipeFindUniqueArgs<ExtArgs>>): Prisma__EquipeClient<$Result.GetResult<Prisma.$EquipePayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
-
-    /**
-     * Find one Equipe that matches the filter or throw an error with `error.code='P2025'`
-     * if no matches were found.
-     * @param {EquipeFindUniqueOrThrowArgs} args - Arguments to find a Equipe
-     * @example
-     * // Get one Equipe
-     * const equipe = await prisma.equipe.findUniqueOrThrow({
-     *   where: {
-     *     // ... provide filter here
-     *   }
-     * })
-     */
-    findUniqueOrThrow<T extends EquipeFindUniqueOrThrowArgs>(args: SelectSubset<T, EquipeFindUniqueOrThrowArgs<ExtArgs>>): Prisma__EquipeClient<$Result.GetResult<Prisma.$EquipePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
-
-    /**
-     * Find the first Equipe that matches the filter.
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * @param {EquipeFindFirstArgs} args - Arguments to find a Equipe
-     * @example
-     * // Get one Equipe
-     * const equipe = await prisma.equipe.findFirst({
-     *   where: {
-     *     // ... provide filter here
-     *   }
-     * })
-     */
-    findFirst<T extends EquipeFindFirstArgs>(args?: SelectSubset<T, EquipeFindFirstArgs<ExtArgs>>): Prisma__EquipeClient<$Result.GetResult<Prisma.$EquipePayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
-
-    /**
-     * Find the first Equipe that matches the filter or
-     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * @param {EquipeFindFirstOrThrowArgs} args - Arguments to find a Equipe
-     * @example
-     * // Get one Equipe
-     * const equipe = await prisma.equipe.findFirstOrThrow({
-     *   where: {
-     *     // ... provide filter here
-     *   }
-     * })
-     */
-    findFirstOrThrow<T extends EquipeFindFirstOrThrowArgs>(args?: SelectSubset<T, EquipeFindFirstOrThrowArgs<ExtArgs>>): Prisma__EquipeClient<$Result.GetResult<Prisma.$EquipePayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
-
-    /**
-     * Find zero or more Equipes that matches the filter.
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * @param {EquipeFindManyArgs} args - Arguments to filter and select certain fields only.
-     * @example
-     * // Get all Equipes
-     * const equipes = await prisma.equipe.findMany()
-     * 
-     * // Get first 10 Equipes
-     * const equipes = await prisma.equipe.findMany({ take: 10 })
-     * 
-     * // Only select the `id`
-     * const equipeWithIdOnly = await prisma.equipe.findMany({ select: { id: true } })
-     * 
-     */
-    findMany<T extends EquipeFindManyArgs>(args?: SelectSubset<T, EquipeFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$EquipePayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
-
-    /**
-     * Create a Equipe.
-     * @param {EquipeCreateArgs} args - Arguments to create a Equipe.
-     * @example
-     * // Create one Equipe
-     * const Equipe = await prisma.equipe.create({
-     *   data: {
-     *     // ... data to create a Equipe
-     *   }
-     * })
-     * 
-     */
-    create<T extends EquipeCreateArgs>(args: SelectSubset<T, EquipeCreateArgs<ExtArgs>>): Prisma__EquipeClient<$Result.GetResult<Prisma.$EquipePayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
-
-    /**
-     * Create many Equipes.
-     * @param {EquipeCreateManyArgs} args - Arguments to create many Equipes.
-     * @example
-     * // Create many Equipes
-     * const equipe = await prisma.equipe.createMany({
-     *   data: [
-     *     // ... provide data here
-     *   ]
-     * })
-     *     
-     */
-    createMany<T extends EquipeCreateManyArgs>(args?: SelectSubset<T, EquipeCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
-
-    /**
-     * Create many Equipes and returns the data saved in the database.
-     * @param {EquipeCreateManyAndReturnArgs} args - Arguments to create many Equipes.
-     * @example
-     * // Create many Equipes
-     * const equipe = await prisma.equipe.createManyAndReturn({
-     *   data: [
-     *     // ... provide data here
-     *   ]
-     * })
-     * 
-     * // Create many Equipes and only return the `id`
-     * const equipeWithIdOnly = await prisma.equipe.createManyAndReturn({
-     *   select: { id: true },
-     *   data: [
-     *     // ... provide data here
-     *   ]
-     * })
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * 
-     */
-    createManyAndReturn<T extends EquipeCreateManyAndReturnArgs>(args?: SelectSubset<T, EquipeCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$EquipePayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
-
-    /**
-     * Delete a Equipe.
-     * @param {EquipeDeleteArgs} args - Arguments to delete one Equipe.
-     * @example
-     * // Delete one Equipe
-     * const Equipe = await prisma.equipe.delete({
-     *   where: {
-     *     // ... filter to delete one Equipe
-     *   }
-     * })
-     * 
-     */
-    delete<T extends EquipeDeleteArgs>(args: SelectSubset<T, EquipeDeleteArgs<ExtArgs>>): Prisma__EquipeClient<$Result.GetResult<Prisma.$EquipePayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
-
-    /**
-     * Update one Equipe.
-     * @param {EquipeUpdateArgs} args - Arguments to update one Equipe.
-     * @example
-     * // Update one Equipe
-     * const equipe = await prisma.equipe.update({
-     *   where: {
-     *     // ... provide filter here
-     *   },
-     *   data: {
-     *     // ... provide data here
-     *   }
-     * })
-     * 
-     */
-    update<T extends EquipeUpdateArgs>(args: SelectSubset<T, EquipeUpdateArgs<ExtArgs>>): Prisma__EquipeClient<$Result.GetResult<Prisma.$EquipePayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
-
-    /**
-     * Delete zero or more Equipes.
-     * @param {EquipeDeleteManyArgs} args - Arguments to filter Equipes to delete.
-     * @example
-     * // Delete a few Equipes
-     * const { count } = await prisma.equipe.deleteMany({
-     *   where: {
-     *     // ... provide filter here
-     *   }
-     * })
-     * 
-     */
-    deleteMany<T extends EquipeDeleteManyArgs>(args?: SelectSubset<T, EquipeDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
-
-    /**
-     * Update zero or more Equipes.
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * @param {EquipeUpdateManyArgs} args - Arguments to update one or more rows.
-     * @example
-     * // Update many Equipes
-     * const equipe = await prisma.equipe.updateMany({
-     *   where: {
-     *     // ... provide filter here
-     *   },
-     *   data: {
-     *     // ... provide data here
-     *   }
-     * })
-     * 
-     */
-    updateMany<T extends EquipeUpdateManyArgs>(args: SelectSubset<T, EquipeUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
-
-    /**
-     * Update zero or more Equipes and returns the data updated in the database.
-     * @param {EquipeUpdateManyAndReturnArgs} args - Arguments to update many Equipes.
-     * @example
-     * // Update many Equipes
-     * const equipe = await prisma.equipe.updateManyAndReturn({
-     *   where: {
-     *     // ... provide filter here
-     *   },
-     *   data: [
-     *     // ... provide data here
-     *   ]
-     * })
-     * 
-     * // Update zero or more Equipes and only return the `id`
-     * const equipeWithIdOnly = await prisma.equipe.updateManyAndReturn({
-     *   select: { id: true },
-     *   where: {
-     *     // ... provide filter here
-     *   },
-     *   data: [
-     *     // ... provide data here
-     *   ]
-     * })
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * 
-     */
-    updateManyAndReturn<T extends EquipeUpdateManyAndReturnArgs>(args: SelectSubset<T, EquipeUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$EquipePayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
-
-    /**
-     * Create or update one Equipe.
-     * @param {EquipeUpsertArgs} args - Arguments to update or create a Equipe.
-     * @example
-     * // Update or create a Equipe
-     * const equipe = await prisma.equipe.upsert({
-     *   create: {
-     *     // ... data to create a Equipe
-     *   },
-     *   update: {
-     *     // ... in case it already exists, update
-     *   },
-     *   where: {
-     *     // ... the filter for the Equipe we want to update
-     *   }
-     * })
-     */
-    upsert<T extends EquipeUpsertArgs>(args: SelectSubset<T, EquipeUpsertArgs<ExtArgs>>): Prisma__EquipeClient<$Result.GetResult<Prisma.$EquipePayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
-
-
-    /**
-     * Count the number of Equipes.
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * @param {EquipeCountArgs} args - Arguments to filter Equipes to count.
-     * @example
-     * // Count the number of Equipes
-     * const count = await prisma.equipe.count({
-     *   where: {
-     *     // ... the filter for the Equipes we want to count
-     *   }
-     * })
-    **/
-    count<T extends EquipeCountArgs>(
-      args?: Subset<T, EquipeCountArgs>,
-    ): Prisma.PrismaPromise<
-      T extends $Utils.Record<'select', any>
-        ? T['select'] extends true
-          ? number
-          : GetScalarType<T['select'], EquipeCountAggregateOutputType>
-        : number
-    >
-
-    /**
-     * Allows you to perform aggregations operations on a Equipe.
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * @param {EquipeAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
-     * @example
-     * // Ordered by age ascending
-     * // Where email contains prisma.io
-     * // Limited to the 10 users
-     * const aggregations = await prisma.user.aggregate({
-     *   _avg: {
-     *     age: true,
-     *   },
-     *   where: {
-     *     email: {
-     *       contains: "prisma.io",
-     *     },
-     *   },
-     *   orderBy: {
-     *     age: "asc",
-     *   },
-     *   take: 10,
-     * })
-    **/
-    aggregate<T extends EquipeAggregateArgs>(args: Subset<T, EquipeAggregateArgs>): Prisma.PrismaPromise<GetEquipeAggregateType<T>>
-
-    /**
-     * Group by Equipe.
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * @param {EquipeGroupByArgs} args - Group by arguments.
-     * @example
-     * // Group by city, order by createdAt, get count
-     * const result = await prisma.user.groupBy({
-     *   by: ['city', 'createdAt'],
-     *   orderBy: {
-     *     createdAt: true
-     *   },
-     *   _count: {
-     *     _all: true
-     *   },
-     * })
-     * 
-    **/
-    groupBy<
-      T extends EquipeGroupByArgs,
-      HasSelectOrTake extends Or<
-        Extends<'skip', Keys<T>>,
-        Extends<'take', Keys<T>>
-      >,
-      OrderByArg extends True extends HasSelectOrTake
-        ? { orderBy: EquipeGroupByArgs['orderBy'] }
-        : { orderBy?: EquipeGroupByArgs['orderBy'] },
-      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
-      ByFields extends MaybeTupleToUnion<T['by']>,
-      ByValid extends Has<ByFields, OrderFields>,
-      HavingFields extends GetHavingFields<T['having']>,
-      HavingValid extends Has<ByFields, HavingFields>,
-      ByEmpty extends T['by'] extends never[] ? True : False,
-      InputErrors extends ByEmpty extends True
-      ? `Error: "by" must not be empty.`
-      : HavingValid extends False
-      ? {
-          [P in HavingFields]: P extends ByFields
-            ? never
-            : P extends string
-            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
-            : [
-                Error,
-                'Field ',
-                P,
-                ` in "having" needs to be provided in "by"`,
-              ]
-        }[HavingFields]
-      : 'take' extends Keys<T>
-      ? 'orderBy' extends Keys<T>
-        ? ByValid extends True
-          ? {}
-          : {
-              [P in OrderFields]: P extends ByFields
-                ? never
-                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
-            }[OrderFields]
-        : 'Error: If you provide "take", you also need to provide "orderBy"'
-      : 'skip' extends Keys<T>
-      ? 'orderBy' extends Keys<T>
-        ? ByValid extends True
-          ? {}
-          : {
-              [P in OrderFields]: P extends ByFields
-                ? never
-                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
-            }[OrderFields]
-        : 'Error: If you provide "skip", you also need to provide "orderBy"'
-      : ByValid extends True
-      ? {}
-      : {
-          [P in OrderFields]: P extends ByFields
-            ? never
-            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
-        }[OrderFields]
-    >(args: SubsetIntersection<T, EquipeGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetEquipeGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
-  /**
-   * Fields of the Equipe model
-   */
-  readonly fields: EquipeFieldRefs;
-  }
-
-  /**
-   * The delegate class that acts as a "Promise-like" for Equipe.
-   * Why is this prefixed with `Prisma__`?
-   * Because we want to prevent naming conflicts as mentioned in
-   * https://github.com/prisma/prisma-client-js/issues/707
-   */
-  export interface Prisma__EquipeClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
-    readonly [Symbol.toStringTag]: "PrismaPromise"
-    membros<T extends Equipe$membrosArgs<ExtArgs> = {}>(args?: Subset<T, Equipe$membrosArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$MembroEquipePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
-    projetos<T extends Equipe$projetosArgs<ExtArgs> = {}>(args?: Subset<T, Equipe$projetosArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ProjetoPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
-    /**
-     * Attaches callbacks for the resolution and/or rejection of the Promise.
-     * @param onfulfilled The callback to execute when the Promise is resolved.
-     * @param onrejected The callback to execute when the Promise is rejected.
-     * @returns A Promise for the completion of which ever callback is executed.
-     */
-    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
-    /**
-     * Attaches a callback for only the rejection of the Promise.
-     * @param onrejected The callback to execute when the Promise is rejected.
-     * @returns A Promise for the completion of the callback.
-     */
-    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
-    /**
-     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
-     * resolved value cannot be modified from the callback.
-     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
-     * @returns A Promise for the completion of the callback.
-     */
-    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
-  }
-
-
-
-
-  /**
-   * Fields of the Equipe model
-   */
-  interface EquipeFieldRefs {
-    readonly id: FieldRef<"Equipe", 'String'>
-    readonly nome: FieldRef<"Equipe", 'String'>
-    readonly inativo: FieldRef<"Equipe", 'Boolean'>
-  }
-    
-
-  // Custom InputTypes
-  /**
-   * Equipe findUnique
-   */
-  export type EquipeFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Equipe
-     */
-    select?: EquipeSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the Equipe
-     */
-    omit?: EquipeOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: EquipeInclude<ExtArgs> | null
-    /**
-     * Filter, which Equipe to fetch.
-     */
-    where: EquipeWhereUniqueInput
-  }
-
-  /**
-   * Equipe findUniqueOrThrow
-   */
-  export type EquipeFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Equipe
-     */
-    select?: EquipeSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the Equipe
-     */
-    omit?: EquipeOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: EquipeInclude<ExtArgs> | null
-    /**
-     * Filter, which Equipe to fetch.
-     */
-    where: EquipeWhereUniqueInput
-  }
-
-  /**
-   * Equipe findFirst
-   */
-  export type EquipeFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Equipe
-     */
-    select?: EquipeSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the Equipe
-     */
-    omit?: EquipeOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: EquipeInclude<ExtArgs> | null
-    /**
-     * Filter, which Equipe to fetch.
-     */
-    where?: EquipeWhereInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
-     * 
-     * Determine the order of Equipes to fetch.
-     */
-    orderBy?: EquipeOrderByWithRelationInput | EquipeOrderByWithRelationInput[]
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
-     * 
-     * Sets the position for searching for Equipes.
-     */
-    cursor?: EquipeWhereUniqueInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Take `±n` Equipes from the position of the cursor.
-     */
-    take?: number
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Skip the first `n` Equipes.
-     */
-    skip?: number
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
-     * 
-     * Filter by unique combinations of Equipes.
-     */
-    distinct?: EquipeScalarFieldEnum | EquipeScalarFieldEnum[]
-  }
-
-  /**
-   * Equipe findFirstOrThrow
-   */
-  export type EquipeFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Equipe
-     */
-    select?: EquipeSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the Equipe
-     */
-    omit?: EquipeOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: EquipeInclude<ExtArgs> | null
-    /**
-     * Filter, which Equipe to fetch.
-     */
-    where?: EquipeWhereInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
-     * 
-     * Determine the order of Equipes to fetch.
-     */
-    orderBy?: EquipeOrderByWithRelationInput | EquipeOrderByWithRelationInput[]
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
-     * 
-     * Sets the position for searching for Equipes.
-     */
-    cursor?: EquipeWhereUniqueInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Take `±n` Equipes from the position of the cursor.
-     */
-    take?: number
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Skip the first `n` Equipes.
-     */
-    skip?: number
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
-     * 
-     * Filter by unique combinations of Equipes.
-     */
-    distinct?: EquipeScalarFieldEnum | EquipeScalarFieldEnum[]
-  }
-
-  /**
-   * Equipe findMany
-   */
-  export type EquipeFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Equipe
-     */
-    select?: EquipeSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the Equipe
-     */
-    omit?: EquipeOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: EquipeInclude<ExtArgs> | null
-    /**
-     * Filter, which Equipes to fetch.
-     */
-    where?: EquipeWhereInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
-     * 
-     * Determine the order of Equipes to fetch.
-     */
-    orderBy?: EquipeOrderByWithRelationInput | EquipeOrderByWithRelationInput[]
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
-     * 
-     * Sets the position for listing Equipes.
-     */
-    cursor?: EquipeWhereUniqueInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Take `±n` Equipes from the position of the cursor.
-     */
-    take?: number
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Skip the first `n` Equipes.
-     */
-    skip?: number
-    distinct?: EquipeScalarFieldEnum | EquipeScalarFieldEnum[]
-  }
-
-  /**
-   * Equipe create
-   */
-  export type EquipeCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Equipe
-     */
-    select?: EquipeSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the Equipe
-     */
-    omit?: EquipeOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: EquipeInclude<ExtArgs> | null
-    /**
-     * The data needed to create a Equipe.
-     */
-    data: XOR<EquipeCreateInput, EquipeUncheckedCreateInput>
-  }
-
-  /**
-   * Equipe createMany
-   */
-  export type EquipeCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * The data used to create many Equipes.
-     */
-    data: EquipeCreateManyInput | EquipeCreateManyInput[]
-    skipDuplicates?: boolean
-  }
-
-  /**
-   * Equipe createManyAndReturn
-   */
-  export type EquipeCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Equipe
-     */
-    select?: EquipeSelectCreateManyAndReturn<ExtArgs> | null
-    /**
-     * Omit specific fields from the Equipe
-     */
-    omit?: EquipeOmit<ExtArgs> | null
-    /**
-     * The data used to create many Equipes.
-     */
-    data: EquipeCreateManyInput | EquipeCreateManyInput[]
-    skipDuplicates?: boolean
-  }
-
-  /**
-   * Equipe update
-   */
-  export type EquipeUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Equipe
-     */
-    select?: EquipeSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the Equipe
-     */
-    omit?: EquipeOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: EquipeInclude<ExtArgs> | null
-    /**
-     * The data needed to update a Equipe.
-     */
-    data: XOR<EquipeUpdateInput, EquipeUncheckedUpdateInput>
-    /**
-     * Choose, which Equipe to update.
-     */
-    where: EquipeWhereUniqueInput
-  }
-
-  /**
-   * Equipe updateMany
-   */
-  export type EquipeUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * The data used to update Equipes.
-     */
-    data: XOR<EquipeUpdateManyMutationInput, EquipeUncheckedUpdateManyInput>
-    /**
-     * Filter which Equipes to update
-     */
-    where?: EquipeWhereInput
-    /**
-     * Limit how many Equipes to update.
-     */
-    limit?: number
-  }
-
-  /**
-   * Equipe updateManyAndReturn
-   */
-  export type EquipeUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Equipe
-     */
-    select?: EquipeSelectUpdateManyAndReturn<ExtArgs> | null
-    /**
-     * Omit specific fields from the Equipe
-     */
-    omit?: EquipeOmit<ExtArgs> | null
-    /**
-     * The data used to update Equipes.
-     */
-    data: XOR<EquipeUpdateManyMutationInput, EquipeUncheckedUpdateManyInput>
-    /**
-     * Filter which Equipes to update
-     */
-    where?: EquipeWhereInput
-    /**
-     * Limit how many Equipes to update.
-     */
-    limit?: number
-  }
-
-  /**
-   * Equipe upsert
-   */
-  export type EquipeUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Equipe
-     */
-    select?: EquipeSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the Equipe
-     */
-    omit?: EquipeOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: EquipeInclude<ExtArgs> | null
-    /**
-     * The filter to search for the Equipe to update in case it exists.
-     */
-    where: EquipeWhereUniqueInput
-    /**
-     * In case the Equipe found by the `where` argument doesn't exist, create a new Equipe with this data.
-     */
-    create: XOR<EquipeCreateInput, EquipeUncheckedCreateInput>
-    /**
-     * In case the Equipe was found with the provided `where` argument, update it with this data.
-     */
-    update: XOR<EquipeUpdateInput, EquipeUncheckedUpdateInput>
-  }
-
-  /**
-   * Equipe delete
-   */
-  export type EquipeDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Equipe
-     */
-    select?: EquipeSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the Equipe
-     */
-    omit?: EquipeOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: EquipeInclude<ExtArgs> | null
-    /**
-     * Filter which Equipe to delete.
-     */
-    where: EquipeWhereUniqueInput
-  }
-
-  /**
-   * Equipe deleteMany
-   */
-  export type EquipeDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Filter which Equipes to delete
-     */
-    where?: EquipeWhereInput
-    /**
-     * Limit how many Equipes to delete.
-     */
-    limit?: number
-  }
-
-  /**
-   * Equipe.membros
-   */
-  export type Equipe$membrosArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the MembroEquipe
-     */
-    select?: MembroEquipeSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the MembroEquipe
-     */
-    omit?: MembroEquipeOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: MembroEquipeInclude<ExtArgs> | null
-    where?: MembroEquipeWhereInput
-    orderBy?: MembroEquipeOrderByWithRelationInput | MembroEquipeOrderByWithRelationInput[]
-    cursor?: MembroEquipeWhereUniqueInput
-    take?: number
-    skip?: number
-    distinct?: MembroEquipeScalarFieldEnum | MembroEquipeScalarFieldEnum[]
-  }
-
-  /**
-   * Equipe.projetos
-   */
-  export type Equipe$projetosArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Projeto
-     */
-    select?: ProjetoSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the Projeto
-     */
-    omit?: ProjetoOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: ProjetoInclude<ExtArgs> | null
-    where?: ProjetoWhereInput
-    orderBy?: ProjetoOrderByWithRelationInput | ProjetoOrderByWithRelationInput[]
-    cursor?: ProjetoWhereUniqueInput
-    take?: number
-    skip?: number
-    distinct?: ProjetoScalarFieldEnum | ProjetoScalarFieldEnum[]
-  }
-
-  /**
-   * Equipe without action
-   */
-  export type EquipeDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Equipe
-     */
-    select?: EquipeSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the Equipe
-     */
-    omit?: EquipeOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: EquipeInclude<ExtArgs> | null
-  }
-
-
-  /**
-   * Model MembroEquipe
-   */
-
-  export type AggregateMembroEquipe = {
-    _count: MembroEquipeCountAggregateOutputType | null
-    _min: MembroEquipeMinAggregateOutputType | null
-    _max: MembroEquipeMaxAggregateOutputType | null
-  }
-
-  export type MembroEquipeMinAggregateOutputType = {
-    id: string | null
-    pessoa_id: string | null
-    equipe_id: string | null
-    proprietario: boolean | null
-  }
-
-  export type MembroEquipeMaxAggregateOutputType = {
-    id: string | null
-    pessoa_id: string | null
-    equipe_id: string | null
-    proprietario: boolean | null
-  }
-
-  export type MembroEquipeCountAggregateOutputType = {
-    id: number
-    pessoa_id: number
-    equipe_id: number
-    proprietario: number
-    _all: number
-  }
-
-
-  export type MembroEquipeMinAggregateInputType = {
-    id?: true
-    pessoa_id?: true
-    equipe_id?: true
-    proprietario?: true
-  }
-
-  export type MembroEquipeMaxAggregateInputType = {
-    id?: true
-    pessoa_id?: true
-    equipe_id?: true
-    proprietario?: true
-  }
-
-  export type MembroEquipeCountAggregateInputType = {
-    id?: true
-    pessoa_id?: true
-    equipe_id?: true
-    proprietario?: true
-    _all?: true
-  }
-
-  export type MembroEquipeAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Filter which MembroEquipe to aggregate.
-     */
-    where?: MembroEquipeWhereInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
-     * 
-     * Determine the order of MembroEquipes to fetch.
-     */
-    orderBy?: MembroEquipeOrderByWithRelationInput | MembroEquipeOrderByWithRelationInput[]
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
-     * 
-     * Sets the start position
-     */
-    cursor?: MembroEquipeWhereUniqueInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Take `±n` MembroEquipes from the position of the cursor.
-     */
-    take?: number
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Skip the first `n` MembroEquipes.
-     */
-    skip?: number
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-     * 
-     * Count returned MembroEquipes
-    **/
-    _count?: true | MembroEquipeCountAggregateInputType
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-     * 
-     * Select which fields to find the minimum value
-    **/
-    _min?: MembroEquipeMinAggregateInputType
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-     * 
-     * Select which fields to find the maximum value
-    **/
-    _max?: MembroEquipeMaxAggregateInputType
-  }
-
-  export type GetMembroEquipeAggregateType<T extends MembroEquipeAggregateArgs> = {
-        [P in keyof T & keyof AggregateMembroEquipe]: P extends '_count' | 'count'
-      ? T[P] extends true
-        ? number
-        : GetScalarType<T[P], AggregateMembroEquipe[P]>
-      : GetScalarType<T[P], AggregateMembroEquipe[P]>
-  }
-
-
-
-
-  export type MembroEquipeGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    where?: MembroEquipeWhereInput
-    orderBy?: MembroEquipeOrderByWithAggregationInput | MembroEquipeOrderByWithAggregationInput[]
-    by: MembroEquipeScalarFieldEnum[] | MembroEquipeScalarFieldEnum
-    having?: MembroEquipeScalarWhereWithAggregatesInput
-    take?: number
-    skip?: number
-    _count?: MembroEquipeCountAggregateInputType | true
-    _min?: MembroEquipeMinAggregateInputType
-    _max?: MembroEquipeMaxAggregateInputType
-  }
-
-  export type MembroEquipeGroupByOutputType = {
-    id: string
-    pessoa_id: string
-    equipe_id: string
-    proprietario: boolean
-    _count: MembroEquipeCountAggregateOutputType | null
-    _min: MembroEquipeMinAggregateOutputType | null
-    _max: MembroEquipeMaxAggregateOutputType | null
-  }
-
-  type GetMembroEquipeGroupByPayload<T extends MembroEquipeGroupByArgs> = Prisma.PrismaPromise<
-    Array<
-      PickEnumerable<MembroEquipeGroupByOutputType, T['by']> &
-        {
-          [P in ((keyof T) & (keyof MembroEquipeGroupByOutputType))]: P extends '_count'
-            ? T[P] extends boolean
-              ? number
-              : GetScalarType<T[P], MembroEquipeGroupByOutputType[P]>
-            : GetScalarType<T[P], MembroEquipeGroupByOutputType[P]>
-        }
-      >
-    >
-
-
-  export type MembroEquipeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
-    id?: boolean
-    pessoa_id?: boolean
-    equipe_id?: boolean
-    proprietario?: boolean
-    equipe?: boolean | EquipeDefaultArgs<ExtArgs>
-    pessoa?: boolean | PessoaDefaultArgs<ExtArgs>
-  }, ExtArgs["result"]["membroEquipe"]>
-
-  export type MembroEquipeSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
-    id?: boolean
-    pessoa_id?: boolean
-    equipe_id?: boolean
-    proprietario?: boolean
-    equipe?: boolean | EquipeDefaultArgs<ExtArgs>
-    pessoa?: boolean | PessoaDefaultArgs<ExtArgs>
-  }, ExtArgs["result"]["membroEquipe"]>
-
-  export type MembroEquipeSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
-    id?: boolean
-    pessoa_id?: boolean
-    equipe_id?: boolean
-    proprietario?: boolean
-    equipe?: boolean | EquipeDefaultArgs<ExtArgs>
-    pessoa?: boolean | PessoaDefaultArgs<ExtArgs>
-  }, ExtArgs["result"]["membroEquipe"]>
-
-  export type MembroEquipeSelectScalar = {
-    id?: boolean
-    pessoa_id?: boolean
-    equipe_id?: boolean
-    proprietario?: boolean
-  }
-
-  export type MembroEquipeOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "pessoa_id" | "equipe_id" | "proprietario", ExtArgs["result"]["membroEquipe"]>
-  export type MembroEquipeInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    equipe?: boolean | EquipeDefaultArgs<ExtArgs>
-    pessoa?: boolean | PessoaDefaultArgs<ExtArgs>
-  }
-  export type MembroEquipeIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    equipe?: boolean | EquipeDefaultArgs<ExtArgs>
-    pessoa?: boolean | PessoaDefaultArgs<ExtArgs>
-  }
-  export type MembroEquipeIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    equipe?: boolean | EquipeDefaultArgs<ExtArgs>
-    pessoa?: boolean | PessoaDefaultArgs<ExtArgs>
-  }
-
-  export type $MembroEquipePayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    name: "MembroEquipe"
-    objects: {
-      equipe: Prisma.$EquipePayload<ExtArgs>
-      pessoa: Prisma.$PessoaPayload<ExtArgs>
-    }
-    scalars: $Extensions.GetPayloadResult<{
-      id: string
-      pessoa_id: string
-      equipe_id: string
-      proprietario: boolean
-    }, ExtArgs["result"]["membroEquipe"]>
-    composites: {}
-  }
-
-  type MembroEquipeGetPayload<S extends boolean | null | undefined | MembroEquipeDefaultArgs> = $Result.GetResult<Prisma.$MembroEquipePayload, S>
-
-  type MembroEquipeCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
-    Omit<MembroEquipeFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
-      select?: MembroEquipeCountAggregateInputType | true
-    }
-
-  export interface MembroEquipeDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
-    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['MembroEquipe'], meta: { name: 'MembroEquipe' } }
-    /**
-     * Find zero or one MembroEquipe that matches the filter.
-     * @param {MembroEquipeFindUniqueArgs} args - Arguments to find a MembroEquipe
-     * @example
-     * // Get one MembroEquipe
-     * const membroEquipe = await prisma.membroEquipe.findUnique({
-     *   where: {
-     *     // ... provide filter here
-     *   }
-     * })
-     */
-    findUnique<T extends MembroEquipeFindUniqueArgs>(args: SelectSubset<T, MembroEquipeFindUniqueArgs<ExtArgs>>): Prisma__MembroEquipeClient<$Result.GetResult<Prisma.$MembroEquipePayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
-
-    /**
-     * Find one MembroEquipe that matches the filter or throw an error with `error.code='P2025'`
-     * if no matches were found.
-     * @param {MembroEquipeFindUniqueOrThrowArgs} args - Arguments to find a MembroEquipe
-     * @example
-     * // Get one MembroEquipe
-     * const membroEquipe = await prisma.membroEquipe.findUniqueOrThrow({
-     *   where: {
-     *     // ... provide filter here
-     *   }
-     * })
-     */
-    findUniqueOrThrow<T extends MembroEquipeFindUniqueOrThrowArgs>(args: SelectSubset<T, MembroEquipeFindUniqueOrThrowArgs<ExtArgs>>): Prisma__MembroEquipeClient<$Result.GetResult<Prisma.$MembroEquipePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
-
-    /**
-     * Find the first MembroEquipe that matches the filter.
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * @param {MembroEquipeFindFirstArgs} args - Arguments to find a MembroEquipe
-     * @example
-     * // Get one MembroEquipe
-     * const membroEquipe = await prisma.membroEquipe.findFirst({
-     *   where: {
-     *     // ... provide filter here
-     *   }
-     * })
-     */
-    findFirst<T extends MembroEquipeFindFirstArgs>(args?: SelectSubset<T, MembroEquipeFindFirstArgs<ExtArgs>>): Prisma__MembroEquipeClient<$Result.GetResult<Prisma.$MembroEquipePayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
-
-    /**
-     * Find the first MembroEquipe that matches the filter or
-     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * @param {MembroEquipeFindFirstOrThrowArgs} args - Arguments to find a MembroEquipe
-     * @example
-     * // Get one MembroEquipe
-     * const membroEquipe = await prisma.membroEquipe.findFirstOrThrow({
-     *   where: {
-     *     // ... provide filter here
-     *   }
-     * })
-     */
-    findFirstOrThrow<T extends MembroEquipeFindFirstOrThrowArgs>(args?: SelectSubset<T, MembroEquipeFindFirstOrThrowArgs<ExtArgs>>): Prisma__MembroEquipeClient<$Result.GetResult<Prisma.$MembroEquipePayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
-
-    /**
-     * Find zero or more MembroEquipes that matches the filter.
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * @param {MembroEquipeFindManyArgs} args - Arguments to filter and select certain fields only.
-     * @example
-     * // Get all MembroEquipes
-     * const membroEquipes = await prisma.membroEquipe.findMany()
-     * 
-     * // Get first 10 MembroEquipes
-     * const membroEquipes = await prisma.membroEquipe.findMany({ take: 10 })
-     * 
-     * // Only select the `id`
-     * const membroEquipeWithIdOnly = await prisma.membroEquipe.findMany({ select: { id: true } })
-     * 
-     */
-    findMany<T extends MembroEquipeFindManyArgs>(args?: SelectSubset<T, MembroEquipeFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$MembroEquipePayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
-
-    /**
-     * Create a MembroEquipe.
-     * @param {MembroEquipeCreateArgs} args - Arguments to create a MembroEquipe.
-     * @example
-     * // Create one MembroEquipe
-     * const MembroEquipe = await prisma.membroEquipe.create({
-     *   data: {
-     *     // ... data to create a MembroEquipe
-     *   }
-     * })
-     * 
-     */
-    create<T extends MembroEquipeCreateArgs>(args: SelectSubset<T, MembroEquipeCreateArgs<ExtArgs>>): Prisma__MembroEquipeClient<$Result.GetResult<Prisma.$MembroEquipePayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
-
-    /**
-     * Create many MembroEquipes.
-     * @param {MembroEquipeCreateManyArgs} args - Arguments to create many MembroEquipes.
-     * @example
-     * // Create many MembroEquipes
-     * const membroEquipe = await prisma.membroEquipe.createMany({
-     *   data: [
-     *     // ... provide data here
-     *   ]
-     * })
-     *     
-     */
-    createMany<T extends MembroEquipeCreateManyArgs>(args?: SelectSubset<T, MembroEquipeCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
-
-    /**
-     * Create many MembroEquipes and returns the data saved in the database.
-     * @param {MembroEquipeCreateManyAndReturnArgs} args - Arguments to create many MembroEquipes.
-     * @example
-     * // Create many MembroEquipes
-     * const membroEquipe = await prisma.membroEquipe.createManyAndReturn({
-     *   data: [
-     *     // ... provide data here
-     *   ]
-     * })
-     * 
-     * // Create many MembroEquipes and only return the `id`
-     * const membroEquipeWithIdOnly = await prisma.membroEquipe.createManyAndReturn({
-     *   select: { id: true },
-     *   data: [
-     *     // ... provide data here
-     *   ]
-     * })
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * 
-     */
-    createManyAndReturn<T extends MembroEquipeCreateManyAndReturnArgs>(args?: SelectSubset<T, MembroEquipeCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$MembroEquipePayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
-
-    /**
-     * Delete a MembroEquipe.
-     * @param {MembroEquipeDeleteArgs} args - Arguments to delete one MembroEquipe.
-     * @example
-     * // Delete one MembroEquipe
-     * const MembroEquipe = await prisma.membroEquipe.delete({
-     *   where: {
-     *     // ... filter to delete one MembroEquipe
-     *   }
-     * })
-     * 
-     */
-    delete<T extends MembroEquipeDeleteArgs>(args: SelectSubset<T, MembroEquipeDeleteArgs<ExtArgs>>): Prisma__MembroEquipeClient<$Result.GetResult<Prisma.$MembroEquipePayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
-
-    /**
-     * Update one MembroEquipe.
-     * @param {MembroEquipeUpdateArgs} args - Arguments to update one MembroEquipe.
-     * @example
-     * // Update one MembroEquipe
-     * const membroEquipe = await prisma.membroEquipe.update({
-     *   where: {
-     *     // ... provide filter here
-     *   },
-     *   data: {
-     *     // ... provide data here
-     *   }
-     * })
-     * 
-     */
-    update<T extends MembroEquipeUpdateArgs>(args: SelectSubset<T, MembroEquipeUpdateArgs<ExtArgs>>): Prisma__MembroEquipeClient<$Result.GetResult<Prisma.$MembroEquipePayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
-
-    /**
-     * Delete zero or more MembroEquipes.
-     * @param {MembroEquipeDeleteManyArgs} args - Arguments to filter MembroEquipes to delete.
-     * @example
-     * // Delete a few MembroEquipes
-     * const { count } = await prisma.membroEquipe.deleteMany({
-     *   where: {
-     *     // ... provide filter here
-     *   }
-     * })
-     * 
-     */
-    deleteMany<T extends MembroEquipeDeleteManyArgs>(args?: SelectSubset<T, MembroEquipeDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
-
-    /**
-     * Update zero or more MembroEquipes.
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * @param {MembroEquipeUpdateManyArgs} args - Arguments to update one or more rows.
-     * @example
-     * // Update many MembroEquipes
-     * const membroEquipe = await prisma.membroEquipe.updateMany({
-     *   where: {
-     *     // ... provide filter here
-     *   },
-     *   data: {
-     *     // ... provide data here
-     *   }
-     * })
-     * 
-     */
-    updateMany<T extends MembroEquipeUpdateManyArgs>(args: SelectSubset<T, MembroEquipeUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
-
-    /**
-     * Update zero or more MembroEquipes and returns the data updated in the database.
-     * @param {MembroEquipeUpdateManyAndReturnArgs} args - Arguments to update many MembroEquipes.
-     * @example
-     * // Update many MembroEquipes
-     * const membroEquipe = await prisma.membroEquipe.updateManyAndReturn({
-     *   where: {
-     *     // ... provide filter here
-     *   },
-     *   data: [
-     *     // ... provide data here
-     *   ]
-     * })
-     * 
-     * // Update zero or more MembroEquipes and only return the `id`
-     * const membroEquipeWithIdOnly = await prisma.membroEquipe.updateManyAndReturn({
-     *   select: { id: true },
-     *   where: {
-     *     // ... provide filter here
-     *   },
-     *   data: [
-     *     // ... provide data here
-     *   ]
-     * })
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * 
-     */
-    updateManyAndReturn<T extends MembroEquipeUpdateManyAndReturnArgs>(args: SelectSubset<T, MembroEquipeUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$MembroEquipePayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
-
-    /**
-     * Create or update one MembroEquipe.
-     * @param {MembroEquipeUpsertArgs} args - Arguments to update or create a MembroEquipe.
-     * @example
-     * // Update or create a MembroEquipe
-     * const membroEquipe = await prisma.membroEquipe.upsert({
-     *   create: {
-     *     // ... data to create a MembroEquipe
-     *   },
-     *   update: {
-     *     // ... in case it already exists, update
-     *   },
-     *   where: {
-     *     // ... the filter for the MembroEquipe we want to update
-     *   }
-     * })
-     */
-    upsert<T extends MembroEquipeUpsertArgs>(args: SelectSubset<T, MembroEquipeUpsertArgs<ExtArgs>>): Prisma__MembroEquipeClient<$Result.GetResult<Prisma.$MembroEquipePayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
-
-
-    /**
-     * Count the number of MembroEquipes.
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * @param {MembroEquipeCountArgs} args - Arguments to filter MembroEquipes to count.
-     * @example
-     * // Count the number of MembroEquipes
-     * const count = await prisma.membroEquipe.count({
-     *   where: {
-     *     // ... the filter for the MembroEquipes we want to count
-     *   }
-     * })
-    **/
-    count<T extends MembroEquipeCountArgs>(
-      args?: Subset<T, MembroEquipeCountArgs>,
-    ): Prisma.PrismaPromise<
-      T extends $Utils.Record<'select', any>
-        ? T['select'] extends true
-          ? number
-          : GetScalarType<T['select'], MembroEquipeCountAggregateOutputType>
-        : number
-    >
-
-    /**
-     * Allows you to perform aggregations operations on a MembroEquipe.
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * @param {MembroEquipeAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
-     * @example
-     * // Ordered by age ascending
-     * // Where email contains prisma.io
-     * // Limited to the 10 users
-     * const aggregations = await prisma.user.aggregate({
-     *   _avg: {
-     *     age: true,
-     *   },
-     *   where: {
-     *     email: {
-     *       contains: "prisma.io",
-     *     },
-     *   },
-     *   orderBy: {
-     *     age: "asc",
-     *   },
-     *   take: 10,
-     * })
-    **/
-    aggregate<T extends MembroEquipeAggregateArgs>(args: Subset<T, MembroEquipeAggregateArgs>): Prisma.PrismaPromise<GetMembroEquipeAggregateType<T>>
-
-    /**
-     * Group by MembroEquipe.
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * @param {MembroEquipeGroupByArgs} args - Group by arguments.
-     * @example
-     * // Group by city, order by createdAt, get count
-     * const result = await prisma.user.groupBy({
-     *   by: ['city', 'createdAt'],
-     *   orderBy: {
-     *     createdAt: true
-     *   },
-     *   _count: {
-     *     _all: true
-     *   },
-     * })
-     * 
-    **/
-    groupBy<
-      T extends MembroEquipeGroupByArgs,
-      HasSelectOrTake extends Or<
-        Extends<'skip', Keys<T>>,
-        Extends<'take', Keys<T>>
-      >,
-      OrderByArg extends True extends HasSelectOrTake
-        ? { orderBy: MembroEquipeGroupByArgs['orderBy'] }
-        : { orderBy?: MembroEquipeGroupByArgs['orderBy'] },
-      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
-      ByFields extends MaybeTupleToUnion<T['by']>,
-      ByValid extends Has<ByFields, OrderFields>,
-      HavingFields extends GetHavingFields<T['having']>,
-      HavingValid extends Has<ByFields, HavingFields>,
-      ByEmpty extends T['by'] extends never[] ? True : False,
-      InputErrors extends ByEmpty extends True
-      ? `Error: "by" must not be empty.`
-      : HavingValid extends False
-      ? {
-          [P in HavingFields]: P extends ByFields
-            ? never
-            : P extends string
-            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
-            : [
-                Error,
-                'Field ',
-                P,
-                ` in "having" needs to be provided in "by"`,
-              ]
-        }[HavingFields]
-      : 'take' extends Keys<T>
-      ? 'orderBy' extends Keys<T>
-        ? ByValid extends True
-          ? {}
-          : {
-              [P in OrderFields]: P extends ByFields
-                ? never
-                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
-            }[OrderFields]
-        : 'Error: If you provide "take", you also need to provide "orderBy"'
-      : 'skip' extends Keys<T>
-      ? 'orderBy' extends Keys<T>
-        ? ByValid extends True
-          ? {}
-          : {
-              [P in OrderFields]: P extends ByFields
-                ? never
-                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
-            }[OrderFields]
-        : 'Error: If you provide "skip", you also need to provide "orderBy"'
-      : ByValid extends True
-      ? {}
-      : {
-          [P in OrderFields]: P extends ByFields
-            ? never
-            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
-        }[OrderFields]
-    >(args: SubsetIntersection<T, MembroEquipeGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetMembroEquipeGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
-  /**
-   * Fields of the MembroEquipe model
-   */
-  readonly fields: MembroEquipeFieldRefs;
-  }
-
-  /**
-   * The delegate class that acts as a "Promise-like" for MembroEquipe.
-   * Why is this prefixed with `Prisma__`?
-   * Because we want to prevent naming conflicts as mentioned in
-   * https://github.com/prisma/prisma-client-js/issues/707
-   */
-  export interface Prisma__MembroEquipeClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
-    readonly [Symbol.toStringTag]: "PrismaPromise"
-    equipe<T extends EquipeDefaultArgs<ExtArgs> = {}>(args?: Subset<T, EquipeDefaultArgs<ExtArgs>>): Prisma__EquipeClient<$Result.GetResult<Prisma.$EquipePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
-    pessoa<T extends PessoaDefaultArgs<ExtArgs> = {}>(args?: Subset<T, PessoaDefaultArgs<ExtArgs>>): Prisma__PessoaClient<$Result.GetResult<Prisma.$PessoaPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
-    /**
-     * Attaches callbacks for the resolution and/or rejection of the Promise.
-     * @param onfulfilled The callback to execute when the Promise is resolved.
-     * @param onrejected The callback to execute when the Promise is rejected.
-     * @returns A Promise for the completion of which ever callback is executed.
-     */
-    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
-    /**
-     * Attaches a callback for only the rejection of the Promise.
-     * @param onrejected The callback to execute when the Promise is rejected.
-     * @returns A Promise for the completion of the callback.
-     */
-    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
-    /**
-     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
-     * resolved value cannot be modified from the callback.
-     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
-     * @returns A Promise for the completion of the callback.
-     */
-    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
-  }
-
-
-
-
-  /**
-   * Fields of the MembroEquipe model
-   */
-  interface MembroEquipeFieldRefs {
-    readonly id: FieldRef<"MembroEquipe", 'String'>
-    readonly pessoa_id: FieldRef<"MembroEquipe", 'String'>
-    readonly equipe_id: FieldRef<"MembroEquipe", 'String'>
-    readonly proprietario: FieldRef<"MembroEquipe", 'Boolean'>
-  }
-    
-
-  // Custom InputTypes
-  /**
-   * MembroEquipe findUnique
-   */
-  export type MembroEquipeFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the MembroEquipe
-     */
-    select?: MembroEquipeSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the MembroEquipe
-     */
-    omit?: MembroEquipeOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: MembroEquipeInclude<ExtArgs> | null
-    /**
-     * Filter, which MembroEquipe to fetch.
-     */
-    where: MembroEquipeWhereUniqueInput
-  }
-
-  /**
-   * MembroEquipe findUniqueOrThrow
-   */
-  export type MembroEquipeFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the MembroEquipe
-     */
-    select?: MembroEquipeSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the MembroEquipe
-     */
-    omit?: MembroEquipeOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: MembroEquipeInclude<ExtArgs> | null
-    /**
-     * Filter, which MembroEquipe to fetch.
-     */
-    where: MembroEquipeWhereUniqueInput
-  }
-
-  /**
-   * MembroEquipe findFirst
-   */
-  export type MembroEquipeFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the MembroEquipe
-     */
-    select?: MembroEquipeSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the MembroEquipe
-     */
-    omit?: MembroEquipeOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: MembroEquipeInclude<ExtArgs> | null
-    /**
-     * Filter, which MembroEquipe to fetch.
-     */
-    where?: MembroEquipeWhereInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
-     * 
-     * Determine the order of MembroEquipes to fetch.
-     */
-    orderBy?: MembroEquipeOrderByWithRelationInput | MembroEquipeOrderByWithRelationInput[]
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
-     * 
-     * Sets the position for searching for MembroEquipes.
-     */
-    cursor?: MembroEquipeWhereUniqueInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Take `±n` MembroEquipes from the position of the cursor.
-     */
-    take?: number
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Skip the first `n` MembroEquipes.
-     */
-    skip?: number
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
-     * 
-     * Filter by unique combinations of MembroEquipes.
-     */
-    distinct?: MembroEquipeScalarFieldEnum | MembroEquipeScalarFieldEnum[]
-  }
-
-  /**
-   * MembroEquipe findFirstOrThrow
-   */
-  export type MembroEquipeFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the MembroEquipe
-     */
-    select?: MembroEquipeSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the MembroEquipe
-     */
-    omit?: MembroEquipeOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: MembroEquipeInclude<ExtArgs> | null
-    /**
-     * Filter, which MembroEquipe to fetch.
-     */
-    where?: MembroEquipeWhereInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
-     * 
-     * Determine the order of MembroEquipes to fetch.
-     */
-    orderBy?: MembroEquipeOrderByWithRelationInput | MembroEquipeOrderByWithRelationInput[]
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
-     * 
-     * Sets the position for searching for MembroEquipes.
-     */
-    cursor?: MembroEquipeWhereUniqueInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Take `±n` MembroEquipes from the position of the cursor.
-     */
-    take?: number
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Skip the first `n` MembroEquipes.
-     */
-    skip?: number
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
-     * 
-     * Filter by unique combinations of MembroEquipes.
-     */
-    distinct?: MembroEquipeScalarFieldEnum | MembroEquipeScalarFieldEnum[]
-  }
-
-  /**
-   * MembroEquipe findMany
-   */
-  export type MembroEquipeFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the MembroEquipe
-     */
-    select?: MembroEquipeSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the MembroEquipe
-     */
-    omit?: MembroEquipeOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: MembroEquipeInclude<ExtArgs> | null
-    /**
-     * Filter, which MembroEquipes to fetch.
-     */
-    where?: MembroEquipeWhereInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
-     * 
-     * Determine the order of MembroEquipes to fetch.
-     */
-    orderBy?: MembroEquipeOrderByWithRelationInput | MembroEquipeOrderByWithRelationInput[]
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
-     * 
-     * Sets the position for listing MembroEquipes.
-     */
-    cursor?: MembroEquipeWhereUniqueInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Take `±n` MembroEquipes from the position of the cursor.
-     */
-    take?: number
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Skip the first `n` MembroEquipes.
-     */
-    skip?: number
-    distinct?: MembroEquipeScalarFieldEnum | MembroEquipeScalarFieldEnum[]
-  }
-
-  /**
-   * MembroEquipe create
-   */
-  export type MembroEquipeCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the MembroEquipe
-     */
-    select?: MembroEquipeSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the MembroEquipe
-     */
-    omit?: MembroEquipeOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: MembroEquipeInclude<ExtArgs> | null
-    /**
-     * The data needed to create a MembroEquipe.
-     */
-    data: XOR<MembroEquipeCreateInput, MembroEquipeUncheckedCreateInput>
-  }
-
-  /**
-   * MembroEquipe createMany
-   */
-  export type MembroEquipeCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * The data used to create many MembroEquipes.
-     */
-    data: MembroEquipeCreateManyInput | MembroEquipeCreateManyInput[]
-    skipDuplicates?: boolean
-  }
-
-  /**
-   * MembroEquipe createManyAndReturn
-   */
-  export type MembroEquipeCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the MembroEquipe
-     */
-    select?: MembroEquipeSelectCreateManyAndReturn<ExtArgs> | null
-    /**
-     * Omit specific fields from the MembroEquipe
-     */
-    omit?: MembroEquipeOmit<ExtArgs> | null
-    /**
-     * The data used to create many MembroEquipes.
-     */
-    data: MembroEquipeCreateManyInput | MembroEquipeCreateManyInput[]
-    skipDuplicates?: boolean
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: MembroEquipeIncludeCreateManyAndReturn<ExtArgs> | null
-  }
-
-  /**
-   * MembroEquipe update
-   */
-  export type MembroEquipeUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the MembroEquipe
-     */
-    select?: MembroEquipeSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the MembroEquipe
-     */
-    omit?: MembroEquipeOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: MembroEquipeInclude<ExtArgs> | null
-    /**
-     * The data needed to update a MembroEquipe.
-     */
-    data: XOR<MembroEquipeUpdateInput, MembroEquipeUncheckedUpdateInput>
-    /**
-     * Choose, which MembroEquipe to update.
-     */
-    where: MembroEquipeWhereUniqueInput
-  }
-
-  /**
-   * MembroEquipe updateMany
-   */
-  export type MembroEquipeUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * The data used to update MembroEquipes.
-     */
-    data: XOR<MembroEquipeUpdateManyMutationInput, MembroEquipeUncheckedUpdateManyInput>
-    /**
-     * Filter which MembroEquipes to update
-     */
-    where?: MembroEquipeWhereInput
-    /**
-     * Limit how many MembroEquipes to update.
-     */
-    limit?: number
-  }
-
-  /**
-   * MembroEquipe updateManyAndReturn
-   */
-  export type MembroEquipeUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the MembroEquipe
-     */
-    select?: MembroEquipeSelectUpdateManyAndReturn<ExtArgs> | null
-    /**
-     * Omit specific fields from the MembroEquipe
-     */
-    omit?: MembroEquipeOmit<ExtArgs> | null
-    /**
-     * The data used to update MembroEquipes.
-     */
-    data: XOR<MembroEquipeUpdateManyMutationInput, MembroEquipeUncheckedUpdateManyInput>
-    /**
-     * Filter which MembroEquipes to update
-     */
-    where?: MembroEquipeWhereInput
-    /**
-     * Limit how many MembroEquipes to update.
-     */
-    limit?: number
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: MembroEquipeIncludeUpdateManyAndReturn<ExtArgs> | null
-  }
-
-  /**
-   * MembroEquipe upsert
-   */
-  export type MembroEquipeUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the MembroEquipe
-     */
-    select?: MembroEquipeSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the MembroEquipe
-     */
-    omit?: MembroEquipeOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: MembroEquipeInclude<ExtArgs> | null
-    /**
-     * The filter to search for the MembroEquipe to update in case it exists.
-     */
-    where: MembroEquipeWhereUniqueInput
-    /**
-     * In case the MembroEquipe found by the `where` argument doesn't exist, create a new MembroEquipe with this data.
-     */
-    create: XOR<MembroEquipeCreateInput, MembroEquipeUncheckedCreateInput>
-    /**
-     * In case the MembroEquipe was found with the provided `where` argument, update it with this data.
-     */
-    update: XOR<MembroEquipeUpdateInput, MembroEquipeUncheckedUpdateInput>
-  }
-
-  /**
-   * MembroEquipe delete
-   */
-  export type MembroEquipeDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the MembroEquipe
-     */
-    select?: MembroEquipeSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the MembroEquipe
-     */
-    omit?: MembroEquipeOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: MembroEquipeInclude<ExtArgs> | null
-    /**
-     * Filter which MembroEquipe to delete.
-     */
-    where: MembroEquipeWhereUniqueInput
-  }
-
-  /**
-   * MembroEquipe deleteMany
-   */
-  export type MembroEquipeDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Filter which MembroEquipes to delete
-     */
-    where?: MembroEquipeWhereInput
-    /**
-     * Limit how many MembroEquipes to delete.
-     */
-    limit?: number
-  }
-
-  /**
-   * MembroEquipe without action
-   */
-  export type MembroEquipeDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the MembroEquipe
-     */
-    select?: MembroEquipeSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the MembroEquipe
-     */
-    omit?: MembroEquipeOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: MembroEquipeInclude<ExtArgs> | null
-  }
-
-
-  /**
-   * Model Projeto
-   */
-
-  export type AggregateProjeto = {
-    _count: ProjetoCountAggregateOutputType | null
-    _min: ProjetoMinAggregateOutputType | null
-    _max: ProjetoMaxAggregateOutputType | null
-  }
-
-  export type ProjetoMinAggregateOutputType = {
-    id: string | null
-    nome: string | null
-    equipe_id: string | null
-    inativo: boolean | null
-    gerente_id: string | null
-  }
-
-  export type ProjetoMaxAggregateOutputType = {
-    id: string | null
-    nome: string | null
-    equipe_id: string | null
-    inativo: boolean | null
-    gerente_id: string | null
-  }
-
-  export type ProjetoCountAggregateOutputType = {
-    id: number
-    nome: number
-    equipe_id: number
-    inativo: number
-    gerente_id: number
-    _all: number
-  }
-
-
-  export type ProjetoMinAggregateInputType = {
-    id?: true
-    nome?: true
-    equipe_id?: true
-    inativo?: true
-    gerente_id?: true
-  }
-
-  export type ProjetoMaxAggregateInputType = {
-    id?: true
-    nome?: true
-    equipe_id?: true
-    inativo?: true
-    gerente_id?: true
-  }
-
-  export type ProjetoCountAggregateInputType = {
-    id?: true
-    nome?: true
-    equipe_id?: true
-    inativo?: true
-    gerente_id?: true
-    _all?: true
-  }
-
-  export type ProjetoAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Filter which Projeto to aggregate.
-     */
-    where?: ProjetoWhereInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
-     * 
-     * Determine the order of Projetos to fetch.
-     */
-    orderBy?: ProjetoOrderByWithRelationInput | ProjetoOrderByWithRelationInput[]
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
-     * 
-     * Sets the start position
-     */
-    cursor?: ProjetoWhereUniqueInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Take `±n` Projetos from the position of the cursor.
-     */
-    take?: number
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Skip the first `n` Projetos.
-     */
-    skip?: number
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-     * 
-     * Count returned Projetos
-    **/
-    _count?: true | ProjetoCountAggregateInputType
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-     * 
-     * Select which fields to find the minimum value
-    **/
-    _min?: ProjetoMinAggregateInputType
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-     * 
-     * Select which fields to find the maximum value
-    **/
-    _max?: ProjetoMaxAggregateInputType
-  }
-
-  export type GetProjetoAggregateType<T extends ProjetoAggregateArgs> = {
-        [P in keyof T & keyof AggregateProjeto]: P extends '_count' | 'count'
-      ? T[P] extends true
-        ? number
-        : GetScalarType<T[P], AggregateProjeto[P]>
-      : GetScalarType<T[P], AggregateProjeto[P]>
-  }
-
-
-
-
-  export type ProjetoGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    where?: ProjetoWhereInput
-    orderBy?: ProjetoOrderByWithAggregationInput | ProjetoOrderByWithAggregationInput[]
-    by: ProjetoScalarFieldEnum[] | ProjetoScalarFieldEnum
-    having?: ProjetoScalarWhereWithAggregatesInput
-    take?: number
-    skip?: number
-    _count?: ProjetoCountAggregateInputType | true
-    _min?: ProjetoMinAggregateInputType
-    _max?: ProjetoMaxAggregateInputType
-  }
-
-  export type ProjetoGroupByOutputType = {
-    id: string
-    nome: string
-    equipe_id: string
-    inativo: boolean
-    gerente_id: string | null
-    _count: ProjetoCountAggregateOutputType | null
-    _min: ProjetoMinAggregateOutputType | null
-    _max: ProjetoMaxAggregateOutputType | null
-  }
-
-  type GetProjetoGroupByPayload<T extends ProjetoGroupByArgs> = Prisma.PrismaPromise<
-    Array<
-      PickEnumerable<ProjetoGroupByOutputType, T['by']> &
-        {
-          [P in ((keyof T) & (keyof ProjetoGroupByOutputType))]: P extends '_count'
-            ? T[P] extends boolean
-              ? number
-              : GetScalarType<T[P], ProjetoGroupByOutputType[P]>
-            : GetScalarType<T[P], ProjetoGroupByOutputType[P]>
-        }
-      >
-    >
-
-
-  export type ProjetoSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
-    id?: boolean
-    nome?: boolean
-    equipe_id?: boolean
-    inativo?: boolean
-    gerente_id?: boolean
-    equipe?: boolean | EquipeDefaultArgs<ExtArgs>
-  }, ExtArgs["result"]["projeto"]>
-
-  export type ProjetoSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
-    id?: boolean
-    nome?: boolean
-    equipe_id?: boolean
-    inativo?: boolean
-    gerente_id?: boolean
-    equipe?: boolean | EquipeDefaultArgs<ExtArgs>
-  }, ExtArgs["result"]["projeto"]>
-
-  export type ProjetoSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
-    id?: boolean
-    nome?: boolean
-    equipe_id?: boolean
-    inativo?: boolean
-    gerente_id?: boolean
-    equipe?: boolean | EquipeDefaultArgs<ExtArgs>
-  }, ExtArgs["result"]["projeto"]>
-
-  export type ProjetoSelectScalar = {
-    id?: boolean
-    nome?: boolean
-    equipe_id?: boolean
-    inativo?: boolean
-    gerente_id?: boolean
-  }
-
-  export type ProjetoOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "nome" | "equipe_id" | "inativo" | "gerente_id", ExtArgs["result"]["projeto"]>
-  export type ProjetoInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    equipe?: boolean | EquipeDefaultArgs<ExtArgs>
-  }
-  export type ProjetoIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    equipe?: boolean | EquipeDefaultArgs<ExtArgs>
-  }
-  export type ProjetoIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    equipe?: boolean | EquipeDefaultArgs<ExtArgs>
-  }
-
-  export type $ProjetoPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    name: "Projeto"
-    objects: {
-      equipe: Prisma.$EquipePayload<ExtArgs>
-    }
-    scalars: $Extensions.GetPayloadResult<{
-      id: string
-      nome: string
-      equipe_id: string
-      inativo: boolean
-      gerente_id: string | null
-    }, ExtArgs["result"]["projeto"]>
-    composites: {}
-  }
-
-  type ProjetoGetPayload<S extends boolean | null | undefined | ProjetoDefaultArgs> = $Result.GetResult<Prisma.$ProjetoPayload, S>
-
-  type ProjetoCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
-    Omit<ProjetoFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
-      select?: ProjetoCountAggregateInputType | true
-    }
-
-  export interface ProjetoDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
-    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['Projeto'], meta: { name: 'Projeto' } }
-    /**
-     * Find zero or one Projeto that matches the filter.
-     * @param {ProjetoFindUniqueArgs} args - Arguments to find a Projeto
-     * @example
-     * // Get one Projeto
-     * const projeto = await prisma.projeto.findUnique({
-     *   where: {
-     *     // ... provide filter here
-     *   }
-     * })
-     */
-    findUnique<T extends ProjetoFindUniqueArgs>(args: SelectSubset<T, ProjetoFindUniqueArgs<ExtArgs>>): Prisma__ProjetoClient<$Result.GetResult<Prisma.$ProjetoPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
-
-    /**
-     * Find one Projeto that matches the filter or throw an error with `error.code='P2025'`
-     * if no matches were found.
-     * @param {ProjetoFindUniqueOrThrowArgs} args - Arguments to find a Projeto
-     * @example
-     * // Get one Projeto
-     * const projeto = await prisma.projeto.findUniqueOrThrow({
-     *   where: {
-     *     // ... provide filter here
-     *   }
-     * })
-     */
-    findUniqueOrThrow<T extends ProjetoFindUniqueOrThrowArgs>(args: SelectSubset<T, ProjetoFindUniqueOrThrowArgs<ExtArgs>>): Prisma__ProjetoClient<$Result.GetResult<Prisma.$ProjetoPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
-
-    /**
-     * Find the first Projeto that matches the filter.
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * @param {ProjetoFindFirstArgs} args - Arguments to find a Projeto
-     * @example
-     * // Get one Projeto
-     * const projeto = await prisma.projeto.findFirst({
-     *   where: {
-     *     // ... provide filter here
-     *   }
-     * })
-     */
-    findFirst<T extends ProjetoFindFirstArgs>(args?: SelectSubset<T, ProjetoFindFirstArgs<ExtArgs>>): Prisma__ProjetoClient<$Result.GetResult<Prisma.$ProjetoPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
-
-    /**
-     * Find the first Projeto that matches the filter or
-     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * @param {ProjetoFindFirstOrThrowArgs} args - Arguments to find a Projeto
-     * @example
-     * // Get one Projeto
-     * const projeto = await prisma.projeto.findFirstOrThrow({
-     *   where: {
-     *     // ... provide filter here
-     *   }
-     * })
-     */
-    findFirstOrThrow<T extends ProjetoFindFirstOrThrowArgs>(args?: SelectSubset<T, ProjetoFindFirstOrThrowArgs<ExtArgs>>): Prisma__ProjetoClient<$Result.GetResult<Prisma.$ProjetoPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
-
-    /**
-     * Find zero or more Projetos that matches the filter.
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * @param {ProjetoFindManyArgs} args - Arguments to filter and select certain fields only.
-     * @example
-     * // Get all Projetos
-     * const projetos = await prisma.projeto.findMany()
-     * 
-     * // Get first 10 Projetos
-     * const projetos = await prisma.projeto.findMany({ take: 10 })
-     * 
-     * // Only select the `id`
-     * const projetoWithIdOnly = await prisma.projeto.findMany({ select: { id: true } })
-     * 
-     */
-    findMany<T extends ProjetoFindManyArgs>(args?: SelectSubset<T, ProjetoFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ProjetoPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
-
-    /**
-     * Create a Projeto.
-     * @param {ProjetoCreateArgs} args - Arguments to create a Projeto.
-     * @example
-     * // Create one Projeto
-     * const Projeto = await prisma.projeto.create({
-     *   data: {
-     *     // ... data to create a Projeto
-     *   }
-     * })
-     * 
-     */
-    create<T extends ProjetoCreateArgs>(args: SelectSubset<T, ProjetoCreateArgs<ExtArgs>>): Prisma__ProjetoClient<$Result.GetResult<Prisma.$ProjetoPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
-
-    /**
-     * Create many Projetos.
-     * @param {ProjetoCreateManyArgs} args - Arguments to create many Projetos.
-     * @example
-     * // Create many Projetos
-     * const projeto = await prisma.projeto.createMany({
-     *   data: [
-     *     // ... provide data here
-     *   ]
-     * })
-     *     
-     */
-    createMany<T extends ProjetoCreateManyArgs>(args?: SelectSubset<T, ProjetoCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
-
-    /**
-     * Create many Projetos and returns the data saved in the database.
-     * @param {ProjetoCreateManyAndReturnArgs} args - Arguments to create many Projetos.
-     * @example
-     * // Create many Projetos
-     * const projeto = await prisma.projeto.createManyAndReturn({
-     *   data: [
-     *     // ... provide data here
-     *   ]
-     * })
-     * 
-     * // Create many Projetos and only return the `id`
-     * const projetoWithIdOnly = await prisma.projeto.createManyAndReturn({
-     *   select: { id: true },
-     *   data: [
-     *     // ... provide data here
-     *   ]
-     * })
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * 
-     */
-    createManyAndReturn<T extends ProjetoCreateManyAndReturnArgs>(args?: SelectSubset<T, ProjetoCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ProjetoPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
-
-    /**
-     * Delete a Projeto.
-     * @param {ProjetoDeleteArgs} args - Arguments to delete one Projeto.
-     * @example
-     * // Delete one Projeto
-     * const Projeto = await prisma.projeto.delete({
-     *   where: {
-     *     // ... filter to delete one Projeto
-     *   }
-     * })
-     * 
-     */
-    delete<T extends ProjetoDeleteArgs>(args: SelectSubset<T, ProjetoDeleteArgs<ExtArgs>>): Prisma__ProjetoClient<$Result.GetResult<Prisma.$ProjetoPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
-
-    /**
-     * Update one Projeto.
-     * @param {ProjetoUpdateArgs} args - Arguments to update one Projeto.
-     * @example
-     * // Update one Projeto
-     * const projeto = await prisma.projeto.update({
-     *   where: {
-     *     // ... provide filter here
-     *   },
-     *   data: {
-     *     // ... provide data here
-     *   }
-     * })
-     * 
-     */
-    update<T extends ProjetoUpdateArgs>(args: SelectSubset<T, ProjetoUpdateArgs<ExtArgs>>): Prisma__ProjetoClient<$Result.GetResult<Prisma.$ProjetoPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
-
-    /**
-     * Delete zero or more Projetos.
-     * @param {ProjetoDeleteManyArgs} args - Arguments to filter Projetos to delete.
-     * @example
-     * // Delete a few Projetos
-     * const { count } = await prisma.projeto.deleteMany({
-     *   where: {
-     *     // ... provide filter here
-     *   }
-     * })
-     * 
-     */
-    deleteMany<T extends ProjetoDeleteManyArgs>(args?: SelectSubset<T, ProjetoDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
-
-    /**
-     * Update zero or more Projetos.
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * @param {ProjetoUpdateManyArgs} args - Arguments to update one or more rows.
-     * @example
-     * // Update many Projetos
-     * const projeto = await prisma.projeto.updateMany({
-     *   where: {
-     *     // ... provide filter here
-     *   },
-     *   data: {
-     *     // ... provide data here
-     *   }
-     * })
-     * 
-     */
-    updateMany<T extends ProjetoUpdateManyArgs>(args: SelectSubset<T, ProjetoUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
-
-    /**
-     * Update zero or more Projetos and returns the data updated in the database.
-     * @param {ProjetoUpdateManyAndReturnArgs} args - Arguments to update many Projetos.
-     * @example
-     * // Update many Projetos
-     * const projeto = await prisma.projeto.updateManyAndReturn({
-     *   where: {
-     *     // ... provide filter here
-     *   },
-     *   data: [
-     *     // ... provide data here
-     *   ]
-     * })
-     * 
-     * // Update zero or more Projetos and only return the `id`
-     * const projetoWithIdOnly = await prisma.projeto.updateManyAndReturn({
-     *   select: { id: true },
-     *   where: {
-     *     // ... provide filter here
-     *   },
-     *   data: [
-     *     // ... provide data here
-     *   ]
-     * })
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * 
-     */
-    updateManyAndReturn<T extends ProjetoUpdateManyAndReturnArgs>(args: SelectSubset<T, ProjetoUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ProjetoPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
-
-    /**
-     * Create or update one Projeto.
-     * @param {ProjetoUpsertArgs} args - Arguments to update or create a Projeto.
-     * @example
-     * // Update or create a Projeto
-     * const projeto = await prisma.projeto.upsert({
-     *   create: {
-     *     // ... data to create a Projeto
-     *   },
-     *   update: {
-     *     // ... in case it already exists, update
-     *   },
-     *   where: {
-     *     // ... the filter for the Projeto we want to update
-     *   }
-     * })
-     */
-    upsert<T extends ProjetoUpsertArgs>(args: SelectSubset<T, ProjetoUpsertArgs<ExtArgs>>): Prisma__ProjetoClient<$Result.GetResult<Prisma.$ProjetoPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
-
-
-    /**
-     * Count the number of Projetos.
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * @param {ProjetoCountArgs} args - Arguments to filter Projetos to count.
-     * @example
-     * // Count the number of Projetos
-     * const count = await prisma.projeto.count({
-     *   where: {
-     *     // ... the filter for the Projetos we want to count
-     *   }
-     * })
-    **/
-    count<T extends ProjetoCountArgs>(
-      args?: Subset<T, ProjetoCountArgs>,
-    ): Prisma.PrismaPromise<
-      T extends $Utils.Record<'select', any>
-        ? T['select'] extends true
-          ? number
-          : GetScalarType<T['select'], ProjetoCountAggregateOutputType>
-        : number
-    >
-
-    /**
-     * Allows you to perform aggregations operations on a Projeto.
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * @param {ProjetoAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
-     * @example
-     * // Ordered by age ascending
-     * // Where email contains prisma.io
-     * // Limited to the 10 users
-     * const aggregations = await prisma.user.aggregate({
-     *   _avg: {
-     *     age: true,
-     *   },
-     *   where: {
-     *     email: {
-     *       contains: "prisma.io",
-     *     },
-     *   },
-     *   orderBy: {
-     *     age: "asc",
-     *   },
-     *   take: 10,
-     * })
-    **/
-    aggregate<T extends ProjetoAggregateArgs>(args: Subset<T, ProjetoAggregateArgs>): Prisma.PrismaPromise<GetProjetoAggregateType<T>>
-
-    /**
-     * Group by Projeto.
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * @param {ProjetoGroupByArgs} args - Group by arguments.
-     * @example
-     * // Group by city, order by createdAt, get count
-     * const result = await prisma.user.groupBy({
-     *   by: ['city', 'createdAt'],
-     *   orderBy: {
-     *     createdAt: true
-     *   },
-     *   _count: {
-     *     _all: true
-     *   },
-     * })
-     * 
-    **/
-    groupBy<
-      T extends ProjetoGroupByArgs,
-      HasSelectOrTake extends Or<
-        Extends<'skip', Keys<T>>,
-        Extends<'take', Keys<T>>
-      >,
-      OrderByArg extends True extends HasSelectOrTake
-        ? { orderBy: ProjetoGroupByArgs['orderBy'] }
-        : { orderBy?: ProjetoGroupByArgs['orderBy'] },
-      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
-      ByFields extends MaybeTupleToUnion<T['by']>,
-      ByValid extends Has<ByFields, OrderFields>,
-      HavingFields extends GetHavingFields<T['having']>,
-      HavingValid extends Has<ByFields, HavingFields>,
-      ByEmpty extends T['by'] extends never[] ? True : False,
-      InputErrors extends ByEmpty extends True
-      ? `Error: "by" must not be empty.`
-      : HavingValid extends False
-      ? {
-          [P in HavingFields]: P extends ByFields
-            ? never
-            : P extends string
-            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
-            : [
-                Error,
-                'Field ',
-                P,
-                ` in "having" needs to be provided in "by"`,
-              ]
-        }[HavingFields]
-      : 'take' extends Keys<T>
-      ? 'orderBy' extends Keys<T>
-        ? ByValid extends True
-          ? {}
-          : {
-              [P in OrderFields]: P extends ByFields
-                ? never
-                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
-            }[OrderFields]
-        : 'Error: If you provide "take", you also need to provide "orderBy"'
-      : 'skip' extends Keys<T>
-      ? 'orderBy' extends Keys<T>
-        ? ByValid extends True
-          ? {}
-          : {
-              [P in OrderFields]: P extends ByFields
-                ? never
-                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
-            }[OrderFields]
-        : 'Error: If you provide "skip", you also need to provide "orderBy"'
-      : ByValid extends True
-      ? {}
-      : {
-          [P in OrderFields]: P extends ByFields
-            ? never
-            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
-        }[OrderFields]
-    >(args: SubsetIntersection<T, ProjetoGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetProjetoGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
-  /**
-   * Fields of the Projeto model
-   */
-  readonly fields: ProjetoFieldRefs;
-  }
-
-  /**
-   * The delegate class that acts as a "Promise-like" for Projeto.
-   * Why is this prefixed with `Prisma__`?
-   * Because we want to prevent naming conflicts as mentioned in
-   * https://github.com/prisma/prisma-client-js/issues/707
-   */
-  export interface Prisma__ProjetoClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
-    readonly [Symbol.toStringTag]: "PrismaPromise"
-    equipe<T extends EquipeDefaultArgs<ExtArgs> = {}>(args?: Subset<T, EquipeDefaultArgs<ExtArgs>>): Prisma__EquipeClient<$Result.GetResult<Prisma.$EquipePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
-    /**
-     * Attaches callbacks for the resolution and/or rejection of the Promise.
-     * @param onfulfilled The callback to execute when the Promise is resolved.
-     * @param onrejected The callback to execute when the Promise is rejected.
-     * @returns A Promise for the completion of which ever callback is executed.
-     */
-    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
-    /**
-     * Attaches a callback for only the rejection of the Promise.
-     * @param onrejected The callback to execute when the Promise is rejected.
-     * @returns A Promise for the completion of the callback.
-     */
-    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
-    /**
-     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
-     * resolved value cannot be modified from the callback.
-     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
-     * @returns A Promise for the completion of the callback.
-     */
-    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
-  }
-
-
-
-
-  /**
-   * Fields of the Projeto model
-   */
-  interface ProjetoFieldRefs {
-    readonly id: FieldRef<"Projeto", 'String'>
-    readonly nome: FieldRef<"Projeto", 'String'>
-    readonly equipe_id: FieldRef<"Projeto", 'String'>
-    readonly inativo: FieldRef<"Projeto", 'Boolean'>
-    readonly gerente_id: FieldRef<"Projeto", 'String'>
-  }
-    
-
-  // Custom InputTypes
-  /**
-   * Projeto findUnique
-   */
-  export type ProjetoFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Projeto
-     */
-    select?: ProjetoSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the Projeto
-     */
-    omit?: ProjetoOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: ProjetoInclude<ExtArgs> | null
-    /**
-     * Filter, which Projeto to fetch.
-     */
-    where: ProjetoWhereUniqueInput
-  }
-
-  /**
-   * Projeto findUniqueOrThrow
-   */
-  export type ProjetoFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Projeto
-     */
-    select?: ProjetoSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the Projeto
-     */
-    omit?: ProjetoOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: ProjetoInclude<ExtArgs> | null
-    /**
-     * Filter, which Projeto to fetch.
-     */
-    where: ProjetoWhereUniqueInput
-  }
-
-  /**
-   * Projeto findFirst
-   */
-  export type ProjetoFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Projeto
-     */
-    select?: ProjetoSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the Projeto
-     */
-    omit?: ProjetoOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: ProjetoInclude<ExtArgs> | null
-    /**
-     * Filter, which Projeto to fetch.
-     */
-    where?: ProjetoWhereInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
-     * 
-     * Determine the order of Projetos to fetch.
-     */
-    orderBy?: ProjetoOrderByWithRelationInput | ProjetoOrderByWithRelationInput[]
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
-     * 
-     * Sets the position for searching for Projetos.
-     */
-    cursor?: ProjetoWhereUniqueInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Take `±n` Projetos from the position of the cursor.
-     */
-    take?: number
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Skip the first `n` Projetos.
-     */
-    skip?: number
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
-     * 
-     * Filter by unique combinations of Projetos.
-     */
-    distinct?: ProjetoScalarFieldEnum | ProjetoScalarFieldEnum[]
-  }
-
-  /**
-   * Projeto findFirstOrThrow
-   */
-  export type ProjetoFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Projeto
-     */
-    select?: ProjetoSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the Projeto
-     */
-    omit?: ProjetoOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: ProjetoInclude<ExtArgs> | null
-    /**
-     * Filter, which Projeto to fetch.
-     */
-    where?: ProjetoWhereInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
-     * 
-     * Determine the order of Projetos to fetch.
-     */
-    orderBy?: ProjetoOrderByWithRelationInput | ProjetoOrderByWithRelationInput[]
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
-     * 
-     * Sets the position for searching for Projetos.
-     */
-    cursor?: ProjetoWhereUniqueInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Take `±n` Projetos from the position of the cursor.
-     */
-    take?: number
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Skip the first `n` Projetos.
-     */
-    skip?: number
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
-     * 
-     * Filter by unique combinations of Projetos.
-     */
-    distinct?: ProjetoScalarFieldEnum | ProjetoScalarFieldEnum[]
-  }
-
-  /**
-   * Projeto findMany
-   */
-  export type ProjetoFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Projeto
-     */
-    select?: ProjetoSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the Projeto
-     */
-    omit?: ProjetoOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: ProjetoInclude<ExtArgs> | null
-    /**
-     * Filter, which Projetos to fetch.
-     */
-    where?: ProjetoWhereInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
-     * 
-     * Determine the order of Projetos to fetch.
-     */
-    orderBy?: ProjetoOrderByWithRelationInput | ProjetoOrderByWithRelationInput[]
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
-     * 
-     * Sets the position for listing Projetos.
-     */
-    cursor?: ProjetoWhereUniqueInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Take `±n` Projetos from the position of the cursor.
-     */
-    take?: number
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Skip the first `n` Projetos.
-     */
-    skip?: number
-    distinct?: ProjetoScalarFieldEnum | ProjetoScalarFieldEnum[]
-  }
-
-  /**
-   * Projeto create
-   */
-  export type ProjetoCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Projeto
-     */
-    select?: ProjetoSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the Projeto
-     */
-    omit?: ProjetoOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: ProjetoInclude<ExtArgs> | null
-    /**
-     * The data needed to create a Projeto.
-     */
-    data: XOR<ProjetoCreateInput, ProjetoUncheckedCreateInput>
-  }
-
-  /**
-   * Projeto createMany
-   */
-  export type ProjetoCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * The data used to create many Projetos.
-     */
-    data: ProjetoCreateManyInput | ProjetoCreateManyInput[]
-    skipDuplicates?: boolean
-  }
-
-  /**
-   * Projeto createManyAndReturn
-   */
-  export type ProjetoCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Projeto
-     */
-    select?: ProjetoSelectCreateManyAndReturn<ExtArgs> | null
-    /**
-     * Omit specific fields from the Projeto
-     */
-    omit?: ProjetoOmit<ExtArgs> | null
-    /**
-     * The data used to create many Projetos.
-     */
-    data: ProjetoCreateManyInput | ProjetoCreateManyInput[]
-    skipDuplicates?: boolean
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: ProjetoIncludeCreateManyAndReturn<ExtArgs> | null
-  }
-
-  /**
-   * Projeto update
-   */
-  export type ProjetoUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Projeto
-     */
-    select?: ProjetoSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the Projeto
-     */
-    omit?: ProjetoOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: ProjetoInclude<ExtArgs> | null
-    /**
-     * The data needed to update a Projeto.
-     */
-    data: XOR<ProjetoUpdateInput, ProjetoUncheckedUpdateInput>
-    /**
-     * Choose, which Projeto to update.
-     */
-    where: ProjetoWhereUniqueInput
-  }
-
-  /**
-   * Projeto updateMany
-   */
-  export type ProjetoUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * The data used to update Projetos.
-     */
-    data: XOR<ProjetoUpdateManyMutationInput, ProjetoUncheckedUpdateManyInput>
-    /**
-     * Filter which Projetos to update
-     */
-    where?: ProjetoWhereInput
-    /**
-     * Limit how many Projetos to update.
-     */
-    limit?: number
-  }
-
-  /**
-   * Projeto updateManyAndReturn
-   */
-  export type ProjetoUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Projeto
-     */
-    select?: ProjetoSelectUpdateManyAndReturn<ExtArgs> | null
-    /**
-     * Omit specific fields from the Projeto
-     */
-    omit?: ProjetoOmit<ExtArgs> | null
-    /**
-     * The data used to update Projetos.
-     */
-    data: XOR<ProjetoUpdateManyMutationInput, ProjetoUncheckedUpdateManyInput>
-    /**
-     * Filter which Projetos to update
-     */
-    where?: ProjetoWhereInput
-    /**
-     * Limit how many Projetos to update.
-     */
-    limit?: number
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: ProjetoIncludeUpdateManyAndReturn<ExtArgs> | null
-  }
-
-  /**
-   * Projeto upsert
-   */
-  export type ProjetoUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Projeto
-     */
-    select?: ProjetoSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the Projeto
-     */
-    omit?: ProjetoOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: ProjetoInclude<ExtArgs> | null
-    /**
-     * The filter to search for the Projeto to update in case it exists.
-     */
-    where: ProjetoWhereUniqueInput
-    /**
-     * In case the Projeto found by the `where` argument doesn't exist, create a new Projeto with this data.
-     */
-    create: XOR<ProjetoCreateInput, ProjetoUncheckedCreateInput>
-    /**
-     * In case the Projeto was found with the provided `where` argument, update it with this data.
-     */
-    update: XOR<ProjetoUpdateInput, ProjetoUncheckedUpdateInput>
-  }
-
-  /**
-   * Projeto delete
-   */
-  export type ProjetoDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Projeto
-     */
-    select?: ProjetoSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the Projeto
-     */
-    omit?: ProjetoOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: ProjetoInclude<ExtArgs> | null
-    /**
-     * Filter which Projeto to delete.
-     */
-    where: ProjetoWhereUniqueInput
-  }
-
-  /**
-   * Projeto deleteMany
-   */
-  export type ProjetoDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Filter which Projetos to delete
-     */
-    where?: ProjetoWhereInput
-    /**
-     * Limit how many Projetos to delete.
-     */
-    limit?: number
-  }
-
-  /**
-   * Projeto without action
-   */
-  export type ProjetoDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Projeto
-     */
-    select?: ProjetoSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the Projeto
-     */
-    omit?: ProjetoOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: ProjetoInclude<ExtArgs> | null
   }
 
 
@@ -6362,7 +2648,6 @@ export namespace Prisma {
     inativo?: boolean
     data_criacao?: boolean
     data_alteracao?: boolean
-    historias?: boolean | Sala$historiasArgs<ExtArgs>
     participantes?: boolean | Sala$participantesArgs<ExtArgs>
     proprietario?: boolean | PessoaDefaultArgs<ExtArgs>
     votos?: boolean | Sala$votosArgs<ExtArgs>
@@ -6406,7 +2691,6 @@ export namespace Prisma {
 
   export type SalaOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "codigo" | "titulo" | "criado_por" | "senha" | "inativo" | "data_criacao" | "data_alteracao", ExtArgs["result"]["sala"]>
   export type SalaInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    historias?: boolean | Sala$historiasArgs<ExtArgs>
     participantes?: boolean | Sala$participantesArgs<ExtArgs>
     proprietario?: boolean | PessoaDefaultArgs<ExtArgs>
     votos?: boolean | Sala$votosArgs<ExtArgs>
@@ -6422,7 +2706,6 @@ export namespace Prisma {
   export type $SalaPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "Sala"
     objects: {
-      historias: Prisma.$HistoriaPayload<ExtArgs>[]
       participantes: Prisma.$ParticipanteSalaPayload<ExtArgs>[]
       proprietario: Prisma.$PessoaPayload<ExtArgs>
       votos: Prisma.$VotoPayload<ExtArgs>[]
@@ -6830,7 +3113,6 @@ export namespace Prisma {
    */
   export interface Prisma__SalaClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
-    historias<T extends Sala$historiasArgs<ExtArgs> = {}>(args?: Subset<T, Sala$historiasArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$HistoriaPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     participantes<T extends Sala$participantesArgs<ExtArgs> = {}>(args?: Subset<T, Sala$participantesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ParticipanteSalaPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     proprietario<T extends PessoaDefaultArgs<ExtArgs> = {}>(args?: Subset<T, PessoaDefaultArgs<ExtArgs>>): Prisma__PessoaClient<$Result.GetResult<Prisma.$PessoaPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
     votos<T extends Sala$votosArgs<ExtArgs> = {}>(args?: Subset<T, Sala$votosArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$VotoPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
@@ -7264,30 +3546,6 @@ export namespace Prisma {
      * Limit how many Salas to delete.
      */
     limit?: number
-  }
-
-  /**
-   * Sala.historias
-   */
-  export type Sala$historiasArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Historia
-     */
-    select?: HistoriaSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the Historia
-     */
-    omit?: HistoriaOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: HistoriaInclude<ExtArgs> | null
-    where?: HistoriaWhereInput
-    orderBy?: HistoriaOrderByWithRelationInput | HistoriaOrderByWithRelationInput[]
-    cursor?: HistoriaWhereUniqueInput
-    take?: number
-    skip?: number
-    distinct?: HistoriaScalarFieldEnum | HistoriaScalarFieldEnum[]
   }
 
   /**
@@ -8411,1141 +4669,6 @@ export namespace Prisma {
 
 
   /**
-   * Model Historia
-   */
-
-  export type AggregateHistoria = {
-    _count: HistoriaCountAggregateOutputType | null
-    _min: HistoriaMinAggregateOutputType | null
-    _max: HistoriaMaxAggregateOutputType | null
-  }
-
-  export type HistoriaMinAggregateOutputType = {
-    id: string | null
-    titulo: string | null
-    descricao: string | null
-    sala_id: string | null
-    criado_por: string | null
-    data_criacao: Date | null
-    data_alteracao: Date | null
-    finalizada: boolean | null
-  }
-
-  export type HistoriaMaxAggregateOutputType = {
-    id: string | null
-    titulo: string | null
-    descricao: string | null
-    sala_id: string | null
-    criado_por: string | null
-    data_criacao: Date | null
-    data_alteracao: Date | null
-    finalizada: boolean | null
-  }
-
-  export type HistoriaCountAggregateOutputType = {
-    id: number
-    titulo: number
-    descricao: number
-    sala_id: number
-    criado_por: number
-    data_criacao: number
-    data_alteracao: number
-    finalizada: number
-    _all: number
-  }
-
-
-  export type HistoriaMinAggregateInputType = {
-    id?: true
-    titulo?: true
-    descricao?: true
-    sala_id?: true
-    criado_por?: true
-    data_criacao?: true
-    data_alteracao?: true
-    finalizada?: true
-  }
-
-  export type HistoriaMaxAggregateInputType = {
-    id?: true
-    titulo?: true
-    descricao?: true
-    sala_id?: true
-    criado_por?: true
-    data_criacao?: true
-    data_alteracao?: true
-    finalizada?: true
-  }
-
-  export type HistoriaCountAggregateInputType = {
-    id?: true
-    titulo?: true
-    descricao?: true
-    sala_id?: true
-    criado_por?: true
-    data_criacao?: true
-    data_alteracao?: true
-    finalizada?: true
-    _all?: true
-  }
-
-  export type HistoriaAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Filter which Historia to aggregate.
-     */
-    where?: HistoriaWhereInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
-     * 
-     * Determine the order of Historias to fetch.
-     */
-    orderBy?: HistoriaOrderByWithRelationInput | HistoriaOrderByWithRelationInput[]
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
-     * 
-     * Sets the start position
-     */
-    cursor?: HistoriaWhereUniqueInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Take `±n` Historias from the position of the cursor.
-     */
-    take?: number
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Skip the first `n` Historias.
-     */
-    skip?: number
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-     * 
-     * Count returned Historias
-    **/
-    _count?: true | HistoriaCountAggregateInputType
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-     * 
-     * Select which fields to find the minimum value
-    **/
-    _min?: HistoriaMinAggregateInputType
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-     * 
-     * Select which fields to find the maximum value
-    **/
-    _max?: HistoriaMaxAggregateInputType
-  }
-
-  export type GetHistoriaAggregateType<T extends HistoriaAggregateArgs> = {
-        [P in keyof T & keyof AggregateHistoria]: P extends '_count' | 'count'
-      ? T[P] extends true
-        ? number
-        : GetScalarType<T[P], AggregateHistoria[P]>
-      : GetScalarType<T[P], AggregateHistoria[P]>
-  }
-
-
-
-
-  export type HistoriaGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    where?: HistoriaWhereInput
-    orderBy?: HistoriaOrderByWithAggregationInput | HistoriaOrderByWithAggregationInput[]
-    by: HistoriaScalarFieldEnum[] | HistoriaScalarFieldEnum
-    having?: HistoriaScalarWhereWithAggregatesInput
-    take?: number
-    skip?: number
-    _count?: HistoriaCountAggregateInputType | true
-    _min?: HistoriaMinAggregateInputType
-    _max?: HistoriaMaxAggregateInputType
-  }
-
-  export type HistoriaGroupByOutputType = {
-    id: string
-    titulo: string
-    descricao: string | null
-    sala_id: string
-    criado_por: string
-    data_criacao: Date
-    data_alteracao: Date
-    finalizada: boolean
-    _count: HistoriaCountAggregateOutputType | null
-    _min: HistoriaMinAggregateOutputType | null
-    _max: HistoriaMaxAggregateOutputType | null
-  }
-
-  type GetHistoriaGroupByPayload<T extends HistoriaGroupByArgs> = Prisma.PrismaPromise<
-    Array<
-      PickEnumerable<HistoriaGroupByOutputType, T['by']> &
-        {
-          [P in ((keyof T) & (keyof HistoriaGroupByOutputType))]: P extends '_count'
-            ? T[P] extends boolean
-              ? number
-              : GetScalarType<T[P], HistoriaGroupByOutputType[P]>
-            : GetScalarType<T[P], HistoriaGroupByOutputType[P]>
-        }
-      >
-    >
-
-
-  export type HistoriaSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
-    id?: boolean
-    titulo?: boolean
-    descricao?: boolean
-    sala_id?: boolean
-    criado_por?: boolean
-    data_criacao?: boolean
-    data_alteracao?: boolean
-    finalizada?: boolean
-    criador?: boolean | PessoaDefaultArgs<ExtArgs>
-    sala?: boolean | SalaDefaultArgs<ExtArgs>
-    votos?: boolean | Historia$votosArgs<ExtArgs>
-    _count?: boolean | HistoriaCountOutputTypeDefaultArgs<ExtArgs>
-  }, ExtArgs["result"]["historia"]>
-
-  export type HistoriaSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
-    id?: boolean
-    titulo?: boolean
-    descricao?: boolean
-    sala_id?: boolean
-    criado_por?: boolean
-    data_criacao?: boolean
-    data_alteracao?: boolean
-    finalizada?: boolean
-    criador?: boolean | PessoaDefaultArgs<ExtArgs>
-    sala?: boolean | SalaDefaultArgs<ExtArgs>
-  }, ExtArgs["result"]["historia"]>
-
-  export type HistoriaSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
-    id?: boolean
-    titulo?: boolean
-    descricao?: boolean
-    sala_id?: boolean
-    criado_por?: boolean
-    data_criacao?: boolean
-    data_alteracao?: boolean
-    finalizada?: boolean
-    criador?: boolean | PessoaDefaultArgs<ExtArgs>
-    sala?: boolean | SalaDefaultArgs<ExtArgs>
-  }, ExtArgs["result"]["historia"]>
-
-  export type HistoriaSelectScalar = {
-    id?: boolean
-    titulo?: boolean
-    descricao?: boolean
-    sala_id?: boolean
-    criado_por?: boolean
-    data_criacao?: boolean
-    data_alteracao?: boolean
-    finalizada?: boolean
-  }
-
-  export type HistoriaOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "titulo" | "descricao" | "sala_id" | "criado_por" | "data_criacao" | "data_alteracao" | "finalizada", ExtArgs["result"]["historia"]>
-  export type HistoriaInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    criador?: boolean | PessoaDefaultArgs<ExtArgs>
-    sala?: boolean | SalaDefaultArgs<ExtArgs>
-    votos?: boolean | Historia$votosArgs<ExtArgs>
-    _count?: boolean | HistoriaCountOutputTypeDefaultArgs<ExtArgs>
-  }
-  export type HistoriaIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    criador?: boolean | PessoaDefaultArgs<ExtArgs>
-    sala?: boolean | SalaDefaultArgs<ExtArgs>
-  }
-  export type HistoriaIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    criador?: boolean | PessoaDefaultArgs<ExtArgs>
-    sala?: boolean | SalaDefaultArgs<ExtArgs>
-  }
-
-  export type $HistoriaPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    name: "Historia"
-    objects: {
-      criador: Prisma.$PessoaPayload<ExtArgs>
-      sala: Prisma.$SalaPayload<ExtArgs>
-      votos: Prisma.$VotoPayload<ExtArgs>[]
-    }
-    scalars: $Extensions.GetPayloadResult<{
-      id: string
-      titulo: string
-      descricao: string | null
-      sala_id: string
-      criado_por: string
-      data_criacao: Date
-      data_alteracao: Date
-      finalizada: boolean
-    }, ExtArgs["result"]["historia"]>
-    composites: {}
-  }
-
-  type HistoriaGetPayload<S extends boolean | null | undefined | HistoriaDefaultArgs> = $Result.GetResult<Prisma.$HistoriaPayload, S>
-
-  type HistoriaCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
-    Omit<HistoriaFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
-      select?: HistoriaCountAggregateInputType | true
-    }
-
-  export interface HistoriaDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
-    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['Historia'], meta: { name: 'Historia' } }
-    /**
-     * Find zero or one Historia that matches the filter.
-     * @param {HistoriaFindUniqueArgs} args - Arguments to find a Historia
-     * @example
-     * // Get one Historia
-     * const historia = await prisma.historia.findUnique({
-     *   where: {
-     *     // ... provide filter here
-     *   }
-     * })
-     */
-    findUnique<T extends HistoriaFindUniqueArgs>(args: SelectSubset<T, HistoriaFindUniqueArgs<ExtArgs>>): Prisma__HistoriaClient<$Result.GetResult<Prisma.$HistoriaPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
-
-    /**
-     * Find one Historia that matches the filter or throw an error with `error.code='P2025'`
-     * if no matches were found.
-     * @param {HistoriaFindUniqueOrThrowArgs} args - Arguments to find a Historia
-     * @example
-     * // Get one Historia
-     * const historia = await prisma.historia.findUniqueOrThrow({
-     *   where: {
-     *     // ... provide filter here
-     *   }
-     * })
-     */
-    findUniqueOrThrow<T extends HistoriaFindUniqueOrThrowArgs>(args: SelectSubset<T, HistoriaFindUniqueOrThrowArgs<ExtArgs>>): Prisma__HistoriaClient<$Result.GetResult<Prisma.$HistoriaPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
-
-    /**
-     * Find the first Historia that matches the filter.
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * @param {HistoriaFindFirstArgs} args - Arguments to find a Historia
-     * @example
-     * // Get one Historia
-     * const historia = await prisma.historia.findFirst({
-     *   where: {
-     *     // ... provide filter here
-     *   }
-     * })
-     */
-    findFirst<T extends HistoriaFindFirstArgs>(args?: SelectSubset<T, HistoriaFindFirstArgs<ExtArgs>>): Prisma__HistoriaClient<$Result.GetResult<Prisma.$HistoriaPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
-
-    /**
-     * Find the first Historia that matches the filter or
-     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * @param {HistoriaFindFirstOrThrowArgs} args - Arguments to find a Historia
-     * @example
-     * // Get one Historia
-     * const historia = await prisma.historia.findFirstOrThrow({
-     *   where: {
-     *     // ... provide filter here
-     *   }
-     * })
-     */
-    findFirstOrThrow<T extends HistoriaFindFirstOrThrowArgs>(args?: SelectSubset<T, HistoriaFindFirstOrThrowArgs<ExtArgs>>): Prisma__HistoriaClient<$Result.GetResult<Prisma.$HistoriaPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
-
-    /**
-     * Find zero or more Historias that matches the filter.
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * @param {HistoriaFindManyArgs} args - Arguments to filter and select certain fields only.
-     * @example
-     * // Get all Historias
-     * const historias = await prisma.historia.findMany()
-     * 
-     * // Get first 10 Historias
-     * const historias = await prisma.historia.findMany({ take: 10 })
-     * 
-     * // Only select the `id`
-     * const historiaWithIdOnly = await prisma.historia.findMany({ select: { id: true } })
-     * 
-     */
-    findMany<T extends HistoriaFindManyArgs>(args?: SelectSubset<T, HistoriaFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$HistoriaPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
-
-    /**
-     * Create a Historia.
-     * @param {HistoriaCreateArgs} args - Arguments to create a Historia.
-     * @example
-     * // Create one Historia
-     * const Historia = await prisma.historia.create({
-     *   data: {
-     *     // ... data to create a Historia
-     *   }
-     * })
-     * 
-     */
-    create<T extends HistoriaCreateArgs>(args: SelectSubset<T, HistoriaCreateArgs<ExtArgs>>): Prisma__HistoriaClient<$Result.GetResult<Prisma.$HistoriaPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
-
-    /**
-     * Create many Historias.
-     * @param {HistoriaCreateManyArgs} args - Arguments to create many Historias.
-     * @example
-     * // Create many Historias
-     * const historia = await prisma.historia.createMany({
-     *   data: [
-     *     // ... provide data here
-     *   ]
-     * })
-     *     
-     */
-    createMany<T extends HistoriaCreateManyArgs>(args?: SelectSubset<T, HistoriaCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
-
-    /**
-     * Create many Historias and returns the data saved in the database.
-     * @param {HistoriaCreateManyAndReturnArgs} args - Arguments to create many Historias.
-     * @example
-     * // Create many Historias
-     * const historia = await prisma.historia.createManyAndReturn({
-     *   data: [
-     *     // ... provide data here
-     *   ]
-     * })
-     * 
-     * // Create many Historias and only return the `id`
-     * const historiaWithIdOnly = await prisma.historia.createManyAndReturn({
-     *   select: { id: true },
-     *   data: [
-     *     // ... provide data here
-     *   ]
-     * })
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * 
-     */
-    createManyAndReturn<T extends HistoriaCreateManyAndReturnArgs>(args?: SelectSubset<T, HistoriaCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$HistoriaPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
-
-    /**
-     * Delete a Historia.
-     * @param {HistoriaDeleteArgs} args - Arguments to delete one Historia.
-     * @example
-     * // Delete one Historia
-     * const Historia = await prisma.historia.delete({
-     *   where: {
-     *     // ... filter to delete one Historia
-     *   }
-     * })
-     * 
-     */
-    delete<T extends HistoriaDeleteArgs>(args: SelectSubset<T, HistoriaDeleteArgs<ExtArgs>>): Prisma__HistoriaClient<$Result.GetResult<Prisma.$HistoriaPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
-
-    /**
-     * Update one Historia.
-     * @param {HistoriaUpdateArgs} args - Arguments to update one Historia.
-     * @example
-     * // Update one Historia
-     * const historia = await prisma.historia.update({
-     *   where: {
-     *     // ... provide filter here
-     *   },
-     *   data: {
-     *     // ... provide data here
-     *   }
-     * })
-     * 
-     */
-    update<T extends HistoriaUpdateArgs>(args: SelectSubset<T, HistoriaUpdateArgs<ExtArgs>>): Prisma__HistoriaClient<$Result.GetResult<Prisma.$HistoriaPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
-
-    /**
-     * Delete zero or more Historias.
-     * @param {HistoriaDeleteManyArgs} args - Arguments to filter Historias to delete.
-     * @example
-     * // Delete a few Historias
-     * const { count } = await prisma.historia.deleteMany({
-     *   where: {
-     *     // ... provide filter here
-     *   }
-     * })
-     * 
-     */
-    deleteMany<T extends HistoriaDeleteManyArgs>(args?: SelectSubset<T, HistoriaDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
-
-    /**
-     * Update zero or more Historias.
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * @param {HistoriaUpdateManyArgs} args - Arguments to update one or more rows.
-     * @example
-     * // Update many Historias
-     * const historia = await prisma.historia.updateMany({
-     *   where: {
-     *     // ... provide filter here
-     *   },
-     *   data: {
-     *     // ... provide data here
-     *   }
-     * })
-     * 
-     */
-    updateMany<T extends HistoriaUpdateManyArgs>(args: SelectSubset<T, HistoriaUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
-
-    /**
-     * Update zero or more Historias and returns the data updated in the database.
-     * @param {HistoriaUpdateManyAndReturnArgs} args - Arguments to update many Historias.
-     * @example
-     * // Update many Historias
-     * const historia = await prisma.historia.updateManyAndReturn({
-     *   where: {
-     *     // ... provide filter here
-     *   },
-     *   data: [
-     *     // ... provide data here
-     *   ]
-     * })
-     * 
-     * // Update zero or more Historias and only return the `id`
-     * const historiaWithIdOnly = await prisma.historia.updateManyAndReturn({
-     *   select: { id: true },
-     *   where: {
-     *     // ... provide filter here
-     *   },
-     *   data: [
-     *     // ... provide data here
-     *   ]
-     * })
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * 
-     */
-    updateManyAndReturn<T extends HistoriaUpdateManyAndReturnArgs>(args: SelectSubset<T, HistoriaUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$HistoriaPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
-
-    /**
-     * Create or update one Historia.
-     * @param {HistoriaUpsertArgs} args - Arguments to update or create a Historia.
-     * @example
-     * // Update or create a Historia
-     * const historia = await prisma.historia.upsert({
-     *   create: {
-     *     // ... data to create a Historia
-     *   },
-     *   update: {
-     *     // ... in case it already exists, update
-     *   },
-     *   where: {
-     *     // ... the filter for the Historia we want to update
-     *   }
-     * })
-     */
-    upsert<T extends HistoriaUpsertArgs>(args: SelectSubset<T, HistoriaUpsertArgs<ExtArgs>>): Prisma__HistoriaClient<$Result.GetResult<Prisma.$HistoriaPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
-
-
-    /**
-     * Count the number of Historias.
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * @param {HistoriaCountArgs} args - Arguments to filter Historias to count.
-     * @example
-     * // Count the number of Historias
-     * const count = await prisma.historia.count({
-     *   where: {
-     *     // ... the filter for the Historias we want to count
-     *   }
-     * })
-    **/
-    count<T extends HistoriaCountArgs>(
-      args?: Subset<T, HistoriaCountArgs>,
-    ): Prisma.PrismaPromise<
-      T extends $Utils.Record<'select', any>
-        ? T['select'] extends true
-          ? number
-          : GetScalarType<T['select'], HistoriaCountAggregateOutputType>
-        : number
-    >
-
-    /**
-     * Allows you to perform aggregations operations on a Historia.
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * @param {HistoriaAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
-     * @example
-     * // Ordered by age ascending
-     * // Where email contains prisma.io
-     * // Limited to the 10 users
-     * const aggregations = await prisma.user.aggregate({
-     *   _avg: {
-     *     age: true,
-     *   },
-     *   where: {
-     *     email: {
-     *       contains: "prisma.io",
-     *     },
-     *   },
-     *   orderBy: {
-     *     age: "asc",
-     *   },
-     *   take: 10,
-     * })
-    **/
-    aggregate<T extends HistoriaAggregateArgs>(args: Subset<T, HistoriaAggregateArgs>): Prisma.PrismaPromise<GetHistoriaAggregateType<T>>
-
-    /**
-     * Group by Historia.
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * @param {HistoriaGroupByArgs} args - Group by arguments.
-     * @example
-     * // Group by city, order by createdAt, get count
-     * const result = await prisma.user.groupBy({
-     *   by: ['city', 'createdAt'],
-     *   orderBy: {
-     *     createdAt: true
-     *   },
-     *   _count: {
-     *     _all: true
-     *   },
-     * })
-     * 
-    **/
-    groupBy<
-      T extends HistoriaGroupByArgs,
-      HasSelectOrTake extends Or<
-        Extends<'skip', Keys<T>>,
-        Extends<'take', Keys<T>>
-      >,
-      OrderByArg extends True extends HasSelectOrTake
-        ? { orderBy: HistoriaGroupByArgs['orderBy'] }
-        : { orderBy?: HistoriaGroupByArgs['orderBy'] },
-      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
-      ByFields extends MaybeTupleToUnion<T['by']>,
-      ByValid extends Has<ByFields, OrderFields>,
-      HavingFields extends GetHavingFields<T['having']>,
-      HavingValid extends Has<ByFields, HavingFields>,
-      ByEmpty extends T['by'] extends never[] ? True : False,
-      InputErrors extends ByEmpty extends True
-      ? `Error: "by" must not be empty.`
-      : HavingValid extends False
-      ? {
-          [P in HavingFields]: P extends ByFields
-            ? never
-            : P extends string
-            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
-            : [
-                Error,
-                'Field ',
-                P,
-                ` in "having" needs to be provided in "by"`,
-              ]
-        }[HavingFields]
-      : 'take' extends Keys<T>
-      ? 'orderBy' extends Keys<T>
-        ? ByValid extends True
-          ? {}
-          : {
-              [P in OrderFields]: P extends ByFields
-                ? never
-                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
-            }[OrderFields]
-        : 'Error: If you provide "take", you also need to provide "orderBy"'
-      : 'skip' extends Keys<T>
-      ? 'orderBy' extends Keys<T>
-        ? ByValid extends True
-          ? {}
-          : {
-              [P in OrderFields]: P extends ByFields
-                ? never
-                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
-            }[OrderFields]
-        : 'Error: If you provide "skip", you also need to provide "orderBy"'
-      : ByValid extends True
-      ? {}
-      : {
-          [P in OrderFields]: P extends ByFields
-            ? never
-            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
-        }[OrderFields]
-    >(args: SubsetIntersection<T, HistoriaGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetHistoriaGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
-  /**
-   * Fields of the Historia model
-   */
-  readonly fields: HistoriaFieldRefs;
-  }
-
-  /**
-   * The delegate class that acts as a "Promise-like" for Historia.
-   * Why is this prefixed with `Prisma__`?
-   * Because we want to prevent naming conflicts as mentioned in
-   * https://github.com/prisma/prisma-client-js/issues/707
-   */
-  export interface Prisma__HistoriaClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
-    readonly [Symbol.toStringTag]: "PrismaPromise"
-    criador<T extends PessoaDefaultArgs<ExtArgs> = {}>(args?: Subset<T, PessoaDefaultArgs<ExtArgs>>): Prisma__PessoaClient<$Result.GetResult<Prisma.$PessoaPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
-    sala<T extends SalaDefaultArgs<ExtArgs> = {}>(args?: Subset<T, SalaDefaultArgs<ExtArgs>>): Prisma__SalaClient<$Result.GetResult<Prisma.$SalaPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
-    votos<T extends Historia$votosArgs<ExtArgs> = {}>(args?: Subset<T, Historia$votosArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$VotoPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
-    /**
-     * Attaches callbacks for the resolution and/or rejection of the Promise.
-     * @param onfulfilled The callback to execute when the Promise is resolved.
-     * @param onrejected The callback to execute when the Promise is rejected.
-     * @returns A Promise for the completion of which ever callback is executed.
-     */
-    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
-    /**
-     * Attaches a callback for only the rejection of the Promise.
-     * @param onrejected The callback to execute when the Promise is rejected.
-     * @returns A Promise for the completion of the callback.
-     */
-    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
-    /**
-     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
-     * resolved value cannot be modified from the callback.
-     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
-     * @returns A Promise for the completion of the callback.
-     */
-    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
-  }
-
-
-
-
-  /**
-   * Fields of the Historia model
-   */
-  interface HistoriaFieldRefs {
-    readonly id: FieldRef<"Historia", 'String'>
-    readonly titulo: FieldRef<"Historia", 'String'>
-    readonly descricao: FieldRef<"Historia", 'String'>
-    readonly sala_id: FieldRef<"Historia", 'String'>
-    readonly criado_por: FieldRef<"Historia", 'String'>
-    readonly data_criacao: FieldRef<"Historia", 'DateTime'>
-    readonly data_alteracao: FieldRef<"Historia", 'DateTime'>
-    readonly finalizada: FieldRef<"Historia", 'Boolean'>
-  }
-    
-
-  // Custom InputTypes
-  /**
-   * Historia findUnique
-   */
-  export type HistoriaFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Historia
-     */
-    select?: HistoriaSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the Historia
-     */
-    omit?: HistoriaOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: HistoriaInclude<ExtArgs> | null
-    /**
-     * Filter, which Historia to fetch.
-     */
-    where: HistoriaWhereUniqueInput
-  }
-
-  /**
-   * Historia findUniqueOrThrow
-   */
-  export type HistoriaFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Historia
-     */
-    select?: HistoriaSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the Historia
-     */
-    omit?: HistoriaOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: HistoriaInclude<ExtArgs> | null
-    /**
-     * Filter, which Historia to fetch.
-     */
-    where: HistoriaWhereUniqueInput
-  }
-
-  /**
-   * Historia findFirst
-   */
-  export type HistoriaFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Historia
-     */
-    select?: HistoriaSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the Historia
-     */
-    omit?: HistoriaOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: HistoriaInclude<ExtArgs> | null
-    /**
-     * Filter, which Historia to fetch.
-     */
-    where?: HistoriaWhereInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
-     * 
-     * Determine the order of Historias to fetch.
-     */
-    orderBy?: HistoriaOrderByWithRelationInput | HistoriaOrderByWithRelationInput[]
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
-     * 
-     * Sets the position for searching for Historias.
-     */
-    cursor?: HistoriaWhereUniqueInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Take `±n` Historias from the position of the cursor.
-     */
-    take?: number
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Skip the first `n` Historias.
-     */
-    skip?: number
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
-     * 
-     * Filter by unique combinations of Historias.
-     */
-    distinct?: HistoriaScalarFieldEnum | HistoriaScalarFieldEnum[]
-  }
-
-  /**
-   * Historia findFirstOrThrow
-   */
-  export type HistoriaFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Historia
-     */
-    select?: HistoriaSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the Historia
-     */
-    omit?: HistoriaOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: HistoriaInclude<ExtArgs> | null
-    /**
-     * Filter, which Historia to fetch.
-     */
-    where?: HistoriaWhereInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
-     * 
-     * Determine the order of Historias to fetch.
-     */
-    orderBy?: HistoriaOrderByWithRelationInput | HistoriaOrderByWithRelationInput[]
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
-     * 
-     * Sets the position for searching for Historias.
-     */
-    cursor?: HistoriaWhereUniqueInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Take `±n` Historias from the position of the cursor.
-     */
-    take?: number
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Skip the first `n` Historias.
-     */
-    skip?: number
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
-     * 
-     * Filter by unique combinations of Historias.
-     */
-    distinct?: HistoriaScalarFieldEnum | HistoriaScalarFieldEnum[]
-  }
-
-  /**
-   * Historia findMany
-   */
-  export type HistoriaFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Historia
-     */
-    select?: HistoriaSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the Historia
-     */
-    omit?: HistoriaOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: HistoriaInclude<ExtArgs> | null
-    /**
-     * Filter, which Historias to fetch.
-     */
-    where?: HistoriaWhereInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
-     * 
-     * Determine the order of Historias to fetch.
-     */
-    orderBy?: HistoriaOrderByWithRelationInput | HistoriaOrderByWithRelationInput[]
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
-     * 
-     * Sets the position for listing Historias.
-     */
-    cursor?: HistoriaWhereUniqueInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Take `±n` Historias from the position of the cursor.
-     */
-    take?: number
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Skip the first `n` Historias.
-     */
-    skip?: number
-    distinct?: HistoriaScalarFieldEnum | HistoriaScalarFieldEnum[]
-  }
-
-  /**
-   * Historia create
-   */
-  export type HistoriaCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Historia
-     */
-    select?: HistoriaSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the Historia
-     */
-    omit?: HistoriaOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: HistoriaInclude<ExtArgs> | null
-    /**
-     * The data needed to create a Historia.
-     */
-    data: XOR<HistoriaCreateInput, HistoriaUncheckedCreateInput>
-  }
-
-  /**
-   * Historia createMany
-   */
-  export type HistoriaCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * The data used to create many Historias.
-     */
-    data: HistoriaCreateManyInput | HistoriaCreateManyInput[]
-    skipDuplicates?: boolean
-  }
-
-  /**
-   * Historia createManyAndReturn
-   */
-  export type HistoriaCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Historia
-     */
-    select?: HistoriaSelectCreateManyAndReturn<ExtArgs> | null
-    /**
-     * Omit specific fields from the Historia
-     */
-    omit?: HistoriaOmit<ExtArgs> | null
-    /**
-     * The data used to create many Historias.
-     */
-    data: HistoriaCreateManyInput | HistoriaCreateManyInput[]
-    skipDuplicates?: boolean
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: HistoriaIncludeCreateManyAndReturn<ExtArgs> | null
-  }
-
-  /**
-   * Historia update
-   */
-  export type HistoriaUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Historia
-     */
-    select?: HistoriaSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the Historia
-     */
-    omit?: HistoriaOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: HistoriaInclude<ExtArgs> | null
-    /**
-     * The data needed to update a Historia.
-     */
-    data: XOR<HistoriaUpdateInput, HistoriaUncheckedUpdateInput>
-    /**
-     * Choose, which Historia to update.
-     */
-    where: HistoriaWhereUniqueInput
-  }
-
-  /**
-   * Historia updateMany
-   */
-  export type HistoriaUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * The data used to update Historias.
-     */
-    data: XOR<HistoriaUpdateManyMutationInput, HistoriaUncheckedUpdateManyInput>
-    /**
-     * Filter which Historias to update
-     */
-    where?: HistoriaWhereInput
-    /**
-     * Limit how many Historias to update.
-     */
-    limit?: number
-  }
-
-  /**
-   * Historia updateManyAndReturn
-   */
-  export type HistoriaUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Historia
-     */
-    select?: HistoriaSelectUpdateManyAndReturn<ExtArgs> | null
-    /**
-     * Omit specific fields from the Historia
-     */
-    omit?: HistoriaOmit<ExtArgs> | null
-    /**
-     * The data used to update Historias.
-     */
-    data: XOR<HistoriaUpdateManyMutationInput, HistoriaUncheckedUpdateManyInput>
-    /**
-     * Filter which Historias to update
-     */
-    where?: HistoriaWhereInput
-    /**
-     * Limit how many Historias to update.
-     */
-    limit?: number
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: HistoriaIncludeUpdateManyAndReturn<ExtArgs> | null
-  }
-
-  /**
-   * Historia upsert
-   */
-  export type HistoriaUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Historia
-     */
-    select?: HistoriaSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the Historia
-     */
-    omit?: HistoriaOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: HistoriaInclude<ExtArgs> | null
-    /**
-     * The filter to search for the Historia to update in case it exists.
-     */
-    where: HistoriaWhereUniqueInput
-    /**
-     * In case the Historia found by the `where` argument doesn't exist, create a new Historia with this data.
-     */
-    create: XOR<HistoriaCreateInput, HistoriaUncheckedCreateInput>
-    /**
-     * In case the Historia was found with the provided `where` argument, update it with this data.
-     */
-    update: XOR<HistoriaUpdateInput, HistoriaUncheckedUpdateInput>
-  }
-
-  /**
-   * Historia delete
-   */
-  export type HistoriaDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Historia
-     */
-    select?: HistoriaSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the Historia
-     */
-    omit?: HistoriaOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: HistoriaInclude<ExtArgs> | null
-    /**
-     * Filter which Historia to delete.
-     */
-    where: HistoriaWhereUniqueInput
-  }
-
-  /**
-   * Historia deleteMany
-   */
-  export type HistoriaDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Filter which Historias to delete
-     */
-    where?: HistoriaWhereInput
-    /**
-     * Limit how many Historias to delete.
-     */
-    limit?: number
-  }
-
-  /**
-   * Historia.votos
-   */
-  export type Historia$votosArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Voto
-     */
-    select?: VotoSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the Voto
-     */
-    omit?: VotoOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: VotoInclude<ExtArgs> | null
-    where?: VotoWhereInput
-    orderBy?: VotoOrderByWithRelationInput | VotoOrderByWithRelationInput[]
-    cursor?: VotoWhereUniqueInput
-    take?: number
-    skip?: number
-    distinct?: VotoScalarFieldEnum | VotoScalarFieldEnum[]
-  }
-
-  /**
-   * Historia without action
-   */
-  export type HistoriaDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the Historia
-     */
-    select?: HistoriaSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the Historia
-     */
-    omit?: HistoriaOmit<ExtArgs> | null
-    /**
-     * Choose, which related nodes to fetch as well
-     */
-    include?: HistoriaInclude<ExtArgs> | null
-  }
-
-
-  /**
    * Model Voto
    */
 
@@ -9569,7 +4692,6 @@ export namespace Prisma {
     id: string | null
     pessoa_id: string | null
     sala_id: string | null
-    historia_id: string | null
     valor: number | null
     data_voto: Date | null
   }
@@ -9578,7 +4700,6 @@ export namespace Prisma {
     id: string | null
     pessoa_id: string | null
     sala_id: string | null
-    historia_id: string | null
     valor: number | null
     data_voto: Date | null
   }
@@ -9587,7 +4708,6 @@ export namespace Prisma {
     id: number
     pessoa_id: number
     sala_id: number
-    historia_id: number
     valor: number
     data_voto: number
     _all: number
@@ -9606,7 +4726,6 @@ export namespace Prisma {
     id?: true
     pessoa_id?: true
     sala_id?: true
-    historia_id?: true
     valor?: true
     data_voto?: true
   }
@@ -9615,7 +4734,6 @@ export namespace Prisma {
     id?: true
     pessoa_id?: true
     sala_id?: true
-    historia_id?: true
     valor?: true
     data_voto?: true
   }
@@ -9624,7 +4742,6 @@ export namespace Prisma {
     id?: true
     pessoa_id?: true
     sala_id?: true
-    historia_id?: true
     valor?: true
     data_voto?: true
     _all?: true
@@ -9720,7 +4837,6 @@ export namespace Prisma {
     id: string
     pessoa_id: string
     sala_id: string
-    historia_id: string
     valor: number
     data_voto: Date
     _count: VotoCountAggregateOutputType | null
@@ -9748,10 +4864,8 @@ export namespace Prisma {
     id?: boolean
     pessoa_id?: boolean
     sala_id?: boolean
-    historia_id?: boolean
     valor?: boolean
     data_voto?: boolean
-    historia?: boolean | HistoriaDefaultArgs<ExtArgs>
     pessoa?: boolean | PessoaDefaultArgs<ExtArgs>
     sala?: boolean | SalaDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["voto"]>
@@ -9760,10 +4874,8 @@ export namespace Prisma {
     id?: boolean
     pessoa_id?: boolean
     sala_id?: boolean
-    historia_id?: boolean
     valor?: boolean
     data_voto?: boolean
-    historia?: boolean | HistoriaDefaultArgs<ExtArgs>
     pessoa?: boolean | PessoaDefaultArgs<ExtArgs>
     sala?: boolean | SalaDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["voto"]>
@@ -9772,10 +4884,8 @@ export namespace Prisma {
     id?: boolean
     pessoa_id?: boolean
     sala_id?: boolean
-    historia_id?: boolean
     valor?: boolean
     data_voto?: boolean
-    historia?: boolean | HistoriaDefaultArgs<ExtArgs>
     pessoa?: boolean | PessoaDefaultArgs<ExtArgs>
     sala?: boolean | SalaDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["voto"]>
@@ -9784,24 +4894,20 @@ export namespace Prisma {
     id?: boolean
     pessoa_id?: boolean
     sala_id?: boolean
-    historia_id?: boolean
     valor?: boolean
     data_voto?: boolean
   }
 
-  export type VotoOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "pessoa_id" | "sala_id" | "historia_id" | "valor" | "data_voto", ExtArgs["result"]["voto"]>
+  export type VotoOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "pessoa_id" | "sala_id" | "valor" | "data_voto", ExtArgs["result"]["voto"]>
   export type VotoInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    historia?: boolean | HistoriaDefaultArgs<ExtArgs>
     pessoa?: boolean | PessoaDefaultArgs<ExtArgs>
     sala?: boolean | SalaDefaultArgs<ExtArgs>
   }
   export type VotoIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    historia?: boolean | HistoriaDefaultArgs<ExtArgs>
     pessoa?: boolean | PessoaDefaultArgs<ExtArgs>
     sala?: boolean | SalaDefaultArgs<ExtArgs>
   }
   export type VotoIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    historia?: boolean | HistoriaDefaultArgs<ExtArgs>
     pessoa?: boolean | PessoaDefaultArgs<ExtArgs>
     sala?: boolean | SalaDefaultArgs<ExtArgs>
   }
@@ -9809,7 +4915,6 @@ export namespace Prisma {
   export type $VotoPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "Voto"
     objects: {
-      historia: Prisma.$HistoriaPayload<ExtArgs>
       pessoa: Prisma.$PessoaPayload<ExtArgs>
       sala: Prisma.$SalaPayload<ExtArgs>
     }
@@ -9817,7 +4922,6 @@ export namespace Prisma {
       id: string
       pessoa_id: string
       sala_id: string
-      historia_id: string
       valor: number
       data_voto: Date
     }, ExtArgs["result"]["voto"]>
@@ -10214,7 +5318,6 @@ export namespace Prisma {
    */
   export interface Prisma__VotoClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
-    historia<T extends HistoriaDefaultArgs<ExtArgs> = {}>(args?: Subset<T, HistoriaDefaultArgs<ExtArgs>>): Prisma__HistoriaClient<$Result.GetResult<Prisma.$HistoriaPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
     pessoa<T extends PessoaDefaultArgs<ExtArgs> = {}>(args?: Subset<T, PessoaDefaultArgs<ExtArgs>>): Prisma__PessoaClient<$Result.GetResult<Prisma.$PessoaPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
     sala<T extends SalaDefaultArgs<ExtArgs> = {}>(args?: Subset<T, SalaDefaultArgs<ExtArgs>>): Prisma__SalaClient<$Result.GetResult<Prisma.$SalaPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
     /**
@@ -10249,7 +5352,6 @@ export namespace Prisma {
     readonly id: FieldRef<"Voto", 'String'>
     readonly pessoa_id: FieldRef<"Voto", 'String'>
     readonly sala_id: FieldRef<"Voto", 'String'>
-    readonly historia_id: FieldRef<"Voto", 'String'>
     readonly valor: FieldRef<"Voto", 'Int'>
     readonly data_voto: FieldRef<"Voto", 'DateTime'>
   }
@@ -10690,42 +5792,11 @@ export namespace Prisma {
     codigo_confirmacao_hash: 'codigo_confirmacao_hash',
     codigo_expiracao: 'codigo_expiracao',
     senha: 'senha',
-    ultima_senha: 'ultima_senha',
     inativo: 'inativo',
     data_criacao: 'data_criacao'
   };
 
   export type PessoaScalarFieldEnum = (typeof PessoaScalarFieldEnum)[keyof typeof PessoaScalarFieldEnum]
-
-
-  export const EquipeScalarFieldEnum: {
-    id: 'id',
-    nome: 'nome',
-    inativo: 'inativo'
-  };
-
-  export type EquipeScalarFieldEnum = (typeof EquipeScalarFieldEnum)[keyof typeof EquipeScalarFieldEnum]
-
-
-  export const MembroEquipeScalarFieldEnum: {
-    id: 'id',
-    pessoa_id: 'pessoa_id',
-    equipe_id: 'equipe_id',
-    proprietario: 'proprietario'
-  };
-
-  export type MembroEquipeScalarFieldEnum = (typeof MembroEquipeScalarFieldEnum)[keyof typeof MembroEquipeScalarFieldEnum]
-
-
-  export const ProjetoScalarFieldEnum: {
-    id: 'id',
-    nome: 'nome',
-    equipe_id: 'equipe_id',
-    inativo: 'inativo',
-    gerente_id: 'gerente_id'
-  };
-
-  export type ProjetoScalarFieldEnum = (typeof ProjetoScalarFieldEnum)[keyof typeof ProjetoScalarFieldEnum]
 
 
   export const SalaScalarFieldEnum: {
@@ -10752,25 +5823,10 @@ export namespace Prisma {
   export type ParticipanteSalaScalarFieldEnum = (typeof ParticipanteSalaScalarFieldEnum)[keyof typeof ParticipanteSalaScalarFieldEnum]
 
 
-  export const HistoriaScalarFieldEnum: {
-    id: 'id',
-    titulo: 'titulo',
-    descricao: 'descricao',
-    sala_id: 'sala_id',
-    criado_por: 'criado_por',
-    data_criacao: 'data_criacao',
-    data_alteracao: 'data_alteracao',
-    finalizada: 'finalizada'
-  };
-
-  export type HistoriaScalarFieldEnum = (typeof HistoriaScalarFieldEnum)[keyof typeof HistoriaScalarFieldEnum]
-
-
   export const VotoScalarFieldEnum: {
     id: 'id',
     pessoa_id: 'pessoa_id',
     sala_id: 'sala_id',
-    historia_id: 'historia_id',
     valor: 'valor',
     data_voto: 'data_voto'
   };
@@ -10886,11 +5942,8 @@ export namespace Prisma {
     codigo_confirmacao_hash?: StringNullableFilter<"Pessoa"> | string | null
     codigo_expiracao?: DateTimeNullableFilter<"Pessoa"> | Date | string | null
     senha?: StringFilter<"Pessoa"> | string
-    ultima_senha?: StringFilter<"Pessoa"> | string
     inativo?: BoolFilter<"Pessoa"> | boolean
     data_criacao?: DateTimeFilter<"Pessoa"> | Date | string
-    historiasCriadas?: HistoriaListRelationFilter
-    equipesMembro?: MembroEquipeListRelationFilter
     participacoes?: ParticipanteSalaListRelationFilter
     salasCriadas?: SalaListRelationFilter
     votos?: VotoListRelationFilter
@@ -10906,11 +5959,8 @@ export namespace Prisma {
     codigo_confirmacao_hash?: SortOrderInput | SortOrder
     codigo_expiracao?: SortOrderInput | SortOrder
     senha?: SortOrder
-    ultima_senha?: SortOrder
     inativo?: SortOrder
     data_criacao?: SortOrder
-    historiasCriadas?: HistoriaOrderByRelationAggregateInput
-    equipesMembro?: MembroEquipeOrderByRelationAggregateInput
     participacoes?: ParticipanteSalaOrderByRelationAggregateInput
     salasCriadas?: SalaOrderByRelationAggregateInput
     votos?: VotoOrderByRelationAggregateInput
@@ -10929,11 +5979,8 @@ export namespace Prisma {
     email_confirmado?: BoolFilter<"Pessoa"> | boolean
     codigo_expiracao?: DateTimeNullableFilter<"Pessoa"> | Date | string | null
     senha?: StringFilter<"Pessoa"> | string
-    ultima_senha?: StringFilter<"Pessoa"> | string
     inativo?: BoolFilter<"Pessoa"> | boolean
     data_criacao?: DateTimeFilter<"Pessoa"> | Date | string
-    historiasCriadas?: HistoriaListRelationFilter
-    equipesMembro?: MembroEquipeListRelationFilter
     participacoes?: ParticipanteSalaListRelationFilter
     salasCriadas?: SalaListRelationFilter
     votos?: VotoListRelationFilter
@@ -10949,7 +5996,6 @@ export namespace Prisma {
     codigo_confirmacao_hash?: SortOrderInput | SortOrder
     codigo_expiracao?: SortOrderInput | SortOrder
     senha?: SortOrder
-    ultima_senha?: SortOrder
     inativo?: SortOrder
     data_criacao?: SortOrder
     _count?: PessoaCountOrderByAggregateInput
@@ -10970,166 +6016,8 @@ export namespace Prisma {
     codigo_confirmacao_hash?: StringNullableWithAggregatesFilter<"Pessoa"> | string | null
     codigo_expiracao?: DateTimeNullableWithAggregatesFilter<"Pessoa"> | Date | string | null
     senha?: StringWithAggregatesFilter<"Pessoa"> | string
-    ultima_senha?: StringWithAggregatesFilter<"Pessoa"> | string
     inativo?: BoolWithAggregatesFilter<"Pessoa"> | boolean
     data_criacao?: DateTimeWithAggregatesFilter<"Pessoa"> | Date | string
-  }
-
-  export type EquipeWhereInput = {
-    AND?: EquipeWhereInput | EquipeWhereInput[]
-    OR?: EquipeWhereInput[]
-    NOT?: EquipeWhereInput | EquipeWhereInput[]
-    id?: StringFilter<"Equipe"> | string
-    nome?: StringFilter<"Equipe"> | string
-    inativo?: BoolFilter<"Equipe"> | boolean
-    membros?: MembroEquipeListRelationFilter
-    projetos?: ProjetoListRelationFilter
-  }
-
-  export type EquipeOrderByWithRelationInput = {
-    id?: SortOrder
-    nome?: SortOrder
-    inativo?: SortOrder
-    membros?: MembroEquipeOrderByRelationAggregateInput
-    projetos?: ProjetoOrderByRelationAggregateInput
-  }
-
-  export type EquipeWhereUniqueInput = Prisma.AtLeast<{
-    id?: string
-    AND?: EquipeWhereInput | EquipeWhereInput[]
-    OR?: EquipeWhereInput[]
-    NOT?: EquipeWhereInput | EquipeWhereInput[]
-    nome?: StringFilter<"Equipe"> | string
-    inativo?: BoolFilter<"Equipe"> | boolean
-    membros?: MembroEquipeListRelationFilter
-    projetos?: ProjetoListRelationFilter
-  }, "id">
-
-  export type EquipeOrderByWithAggregationInput = {
-    id?: SortOrder
-    nome?: SortOrder
-    inativo?: SortOrder
-    _count?: EquipeCountOrderByAggregateInput
-    _max?: EquipeMaxOrderByAggregateInput
-    _min?: EquipeMinOrderByAggregateInput
-  }
-
-  export type EquipeScalarWhereWithAggregatesInput = {
-    AND?: EquipeScalarWhereWithAggregatesInput | EquipeScalarWhereWithAggregatesInput[]
-    OR?: EquipeScalarWhereWithAggregatesInput[]
-    NOT?: EquipeScalarWhereWithAggregatesInput | EquipeScalarWhereWithAggregatesInput[]
-    id?: StringWithAggregatesFilter<"Equipe"> | string
-    nome?: StringWithAggregatesFilter<"Equipe"> | string
-    inativo?: BoolWithAggregatesFilter<"Equipe"> | boolean
-  }
-
-  export type MembroEquipeWhereInput = {
-    AND?: MembroEquipeWhereInput | MembroEquipeWhereInput[]
-    OR?: MembroEquipeWhereInput[]
-    NOT?: MembroEquipeWhereInput | MembroEquipeWhereInput[]
-    id?: StringFilter<"MembroEquipe"> | string
-    pessoa_id?: StringFilter<"MembroEquipe"> | string
-    equipe_id?: StringFilter<"MembroEquipe"> | string
-    proprietario?: BoolFilter<"MembroEquipe"> | boolean
-    equipe?: XOR<EquipeScalarRelationFilter, EquipeWhereInput>
-    pessoa?: XOR<PessoaScalarRelationFilter, PessoaWhereInput>
-  }
-
-  export type MembroEquipeOrderByWithRelationInput = {
-    id?: SortOrder
-    pessoa_id?: SortOrder
-    equipe_id?: SortOrder
-    proprietario?: SortOrder
-    equipe?: EquipeOrderByWithRelationInput
-    pessoa?: PessoaOrderByWithRelationInput
-  }
-
-  export type MembroEquipeWhereUniqueInput = Prisma.AtLeast<{
-    id?: string
-    pessoa_id_equipe_id?: MembroEquipePessoa_idEquipe_idCompoundUniqueInput
-    AND?: MembroEquipeWhereInput | MembroEquipeWhereInput[]
-    OR?: MembroEquipeWhereInput[]
-    NOT?: MembroEquipeWhereInput | MembroEquipeWhereInput[]
-    pessoa_id?: StringFilter<"MembroEquipe"> | string
-    equipe_id?: StringFilter<"MembroEquipe"> | string
-    proprietario?: BoolFilter<"MembroEquipe"> | boolean
-    equipe?: XOR<EquipeScalarRelationFilter, EquipeWhereInput>
-    pessoa?: XOR<PessoaScalarRelationFilter, PessoaWhereInput>
-  }, "id" | "pessoa_id_equipe_id">
-
-  export type MembroEquipeOrderByWithAggregationInput = {
-    id?: SortOrder
-    pessoa_id?: SortOrder
-    equipe_id?: SortOrder
-    proprietario?: SortOrder
-    _count?: MembroEquipeCountOrderByAggregateInput
-    _max?: MembroEquipeMaxOrderByAggregateInput
-    _min?: MembroEquipeMinOrderByAggregateInput
-  }
-
-  export type MembroEquipeScalarWhereWithAggregatesInput = {
-    AND?: MembroEquipeScalarWhereWithAggregatesInput | MembroEquipeScalarWhereWithAggregatesInput[]
-    OR?: MembroEquipeScalarWhereWithAggregatesInput[]
-    NOT?: MembroEquipeScalarWhereWithAggregatesInput | MembroEquipeScalarWhereWithAggregatesInput[]
-    id?: StringWithAggregatesFilter<"MembroEquipe"> | string
-    pessoa_id?: StringWithAggregatesFilter<"MembroEquipe"> | string
-    equipe_id?: StringWithAggregatesFilter<"MembroEquipe"> | string
-    proprietario?: BoolWithAggregatesFilter<"MembroEquipe"> | boolean
-  }
-
-  export type ProjetoWhereInput = {
-    AND?: ProjetoWhereInput | ProjetoWhereInput[]
-    OR?: ProjetoWhereInput[]
-    NOT?: ProjetoWhereInput | ProjetoWhereInput[]
-    id?: StringFilter<"Projeto"> | string
-    nome?: StringFilter<"Projeto"> | string
-    equipe_id?: StringFilter<"Projeto"> | string
-    inativo?: BoolFilter<"Projeto"> | boolean
-    gerente_id?: StringNullableFilter<"Projeto"> | string | null
-    equipe?: XOR<EquipeScalarRelationFilter, EquipeWhereInput>
-  }
-
-  export type ProjetoOrderByWithRelationInput = {
-    id?: SortOrder
-    nome?: SortOrder
-    equipe_id?: SortOrder
-    inativo?: SortOrder
-    gerente_id?: SortOrderInput | SortOrder
-    equipe?: EquipeOrderByWithRelationInput
-  }
-
-  export type ProjetoWhereUniqueInput = Prisma.AtLeast<{
-    id?: string
-    AND?: ProjetoWhereInput | ProjetoWhereInput[]
-    OR?: ProjetoWhereInput[]
-    NOT?: ProjetoWhereInput | ProjetoWhereInput[]
-    nome?: StringFilter<"Projeto"> | string
-    equipe_id?: StringFilter<"Projeto"> | string
-    inativo?: BoolFilter<"Projeto"> | boolean
-    gerente_id?: StringNullableFilter<"Projeto"> | string | null
-    equipe?: XOR<EquipeScalarRelationFilter, EquipeWhereInput>
-  }, "id">
-
-  export type ProjetoOrderByWithAggregationInput = {
-    id?: SortOrder
-    nome?: SortOrder
-    equipe_id?: SortOrder
-    inativo?: SortOrder
-    gerente_id?: SortOrderInput | SortOrder
-    _count?: ProjetoCountOrderByAggregateInput
-    _max?: ProjetoMaxOrderByAggregateInput
-    _min?: ProjetoMinOrderByAggregateInput
-  }
-
-  export type ProjetoScalarWhereWithAggregatesInput = {
-    AND?: ProjetoScalarWhereWithAggregatesInput | ProjetoScalarWhereWithAggregatesInput[]
-    OR?: ProjetoScalarWhereWithAggregatesInput[]
-    NOT?: ProjetoScalarWhereWithAggregatesInput | ProjetoScalarWhereWithAggregatesInput[]
-    id?: StringWithAggregatesFilter<"Projeto"> | string
-    nome?: StringWithAggregatesFilter<"Projeto"> | string
-    equipe_id?: StringWithAggregatesFilter<"Projeto"> | string
-    inativo?: BoolWithAggregatesFilter<"Projeto"> | boolean
-    gerente_id?: StringNullableWithAggregatesFilter<"Projeto"> | string | null
   }
 
   export type SalaWhereInput = {
@@ -11144,7 +6032,6 @@ export namespace Prisma {
     inativo?: BoolFilter<"Sala"> | boolean
     data_criacao?: DateTimeFilter<"Sala"> | Date | string
     data_alteracao?: DateTimeFilter<"Sala"> | Date | string
-    historias?: HistoriaListRelationFilter
     participantes?: ParticipanteSalaListRelationFilter
     proprietario?: XOR<PessoaScalarRelationFilter, PessoaWhereInput>
     votos?: VotoListRelationFilter
@@ -11159,7 +6046,6 @@ export namespace Prisma {
     inativo?: SortOrder
     data_criacao?: SortOrder
     data_alteracao?: SortOrder
-    historias?: HistoriaOrderByRelationAggregateInput
     participantes?: ParticipanteSalaOrderByRelationAggregateInput
     proprietario?: PessoaOrderByWithRelationInput
     votos?: VotoOrderByRelationAggregateInput
@@ -11167,21 +6053,20 @@ export namespace Prisma {
 
   export type SalaWhereUniqueInput = Prisma.AtLeast<{
     id?: string
+    codigo?: number
     AND?: SalaWhereInput | SalaWhereInput[]
     OR?: SalaWhereInput[]
     NOT?: SalaWhereInput | SalaWhereInput[]
-    codigo?: IntFilter<"Sala"> | number
     titulo?: StringFilter<"Sala"> | string
     criado_por?: StringFilter<"Sala"> | string
     senha?: StringNullableFilter<"Sala"> | string | null
     inativo?: BoolFilter<"Sala"> | boolean
     data_criacao?: DateTimeFilter<"Sala"> | Date | string
     data_alteracao?: DateTimeFilter<"Sala"> | Date | string
-    historias?: HistoriaListRelationFilter
     participantes?: ParticipanteSalaListRelationFilter
     proprietario?: XOR<PessoaScalarRelationFilter, PessoaWhereInput>
     votos?: VotoListRelationFilter
-  }, "id">
+  }, "id" | "codigo">
 
   export type SalaOrderByWithAggregationInput = {
     id?: SortOrder
@@ -11267,82 +6152,6 @@ export namespace Prisma {
     adicionado?: DateTimeWithAggregatesFilter<"ParticipanteSala"> | Date | string
   }
 
-  export type HistoriaWhereInput = {
-    AND?: HistoriaWhereInput | HistoriaWhereInput[]
-    OR?: HistoriaWhereInput[]
-    NOT?: HistoriaWhereInput | HistoriaWhereInput[]
-    id?: StringFilter<"Historia"> | string
-    titulo?: StringFilter<"Historia"> | string
-    descricao?: StringNullableFilter<"Historia"> | string | null
-    sala_id?: StringFilter<"Historia"> | string
-    criado_por?: StringFilter<"Historia"> | string
-    data_criacao?: DateTimeFilter<"Historia"> | Date | string
-    data_alteracao?: DateTimeFilter<"Historia"> | Date | string
-    finalizada?: BoolFilter<"Historia"> | boolean
-    criador?: XOR<PessoaScalarRelationFilter, PessoaWhereInput>
-    sala?: XOR<SalaScalarRelationFilter, SalaWhereInput>
-    votos?: VotoListRelationFilter
-  }
-
-  export type HistoriaOrderByWithRelationInput = {
-    id?: SortOrder
-    titulo?: SortOrder
-    descricao?: SortOrderInput | SortOrder
-    sala_id?: SortOrder
-    criado_por?: SortOrder
-    data_criacao?: SortOrder
-    data_alteracao?: SortOrder
-    finalizada?: SortOrder
-    criador?: PessoaOrderByWithRelationInput
-    sala?: SalaOrderByWithRelationInput
-    votos?: VotoOrderByRelationAggregateInput
-  }
-
-  export type HistoriaWhereUniqueInput = Prisma.AtLeast<{
-    id?: string
-    AND?: HistoriaWhereInput | HistoriaWhereInput[]
-    OR?: HistoriaWhereInput[]
-    NOT?: HistoriaWhereInput | HistoriaWhereInput[]
-    titulo?: StringFilter<"Historia"> | string
-    descricao?: StringNullableFilter<"Historia"> | string | null
-    sala_id?: StringFilter<"Historia"> | string
-    criado_por?: StringFilter<"Historia"> | string
-    data_criacao?: DateTimeFilter<"Historia"> | Date | string
-    data_alteracao?: DateTimeFilter<"Historia"> | Date | string
-    finalizada?: BoolFilter<"Historia"> | boolean
-    criador?: XOR<PessoaScalarRelationFilter, PessoaWhereInput>
-    sala?: XOR<SalaScalarRelationFilter, SalaWhereInput>
-    votos?: VotoListRelationFilter
-  }, "id">
-
-  export type HistoriaOrderByWithAggregationInput = {
-    id?: SortOrder
-    titulo?: SortOrder
-    descricao?: SortOrderInput | SortOrder
-    sala_id?: SortOrder
-    criado_por?: SortOrder
-    data_criacao?: SortOrder
-    data_alteracao?: SortOrder
-    finalizada?: SortOrder
-    _count?: HistoriaCountOrderByAggregateInput
-    _max?: HistoriaMaxOrderByAggregateInput
-    _min?: HistoriaMinOrderByAggregateInput
-  }
-
-  export type HistoriaScalarWhereWithAggregatesInput = {
-    AND?: HistoriaScalarWhereWithAggregatesInput | HistoriaScalarWhereWithAggregatesInput[]
-    OR?: HistoriaScalarWhereWithAggregatesInput[]
-    NOT?: HistoriaScalarWhereWithAggregatesInput | HistoriaScalarWhereWithAggregatesInput[]
-    id?: StringWithAggregatesFilter<"Historia"> | string
-    titulo?: StringWithAggregatesFilter<"Historia"> | string
-    descricao?: StringNullableWithAggregatesFilter<"Historia"> | string | null
-    sala_id?: StringWithAggregatesFilter<"Historia"> | string
-    criado_por?: StringWithAggregatesFilter<"Historia"> | string
-    data_criacao?: DateTimeWithAggregatesFilter<"Historia"> | Date | string
-    data_alteracao?: DateTimeWithAggregatesFilter<"Historia"> | Date | string
-    finalizada?: BoolWithAggregatesFilter<"Historia"> | boolean
-  }
-
   export type VotoWhereInput = {
     AND?: VotoWhereInput | VotoWhereInput[]
     OR?: VotoWhereInput[]
@@ -11350,10 +6159,8 @@ export namespace Prisma {
     id?: StringFilter<"Voto"> | string
     pessoa_id?: StringFilter<"Voto"> | string
     sala_id?: StringFilter<"Voto"> | string
-    historia_id?: StringFilter<"Voto"> | string
     valor?: IntFilter<"Voto"> | number
     data_voto?: DateTimeFilter<"Voto"> | Date | string
-    historia?: XOR<HistoriaScalarRelationFilter, HistoriaWhereInput>
     pessoa?: XOR<PessoaScalarRelationFilter, PessoaWhereInput>
     sala?: XOR<SalaScalarRelationFilter, SalaWhereInput>
   }
@@ -11362,35 +6169,30 @@ export namespace Prisma {
     id?: SortOrder
     pessoa_id?: SortOrder
     sala_id?: SortOrder
-    historia_id?: SortOrder
     valor?: SortOrder
     data_voto?: SortOrder
-    historia?: HistoriaOrderByWithRelationInput
     pessoa?: PessoaOrderByWithRelationInput
     sala?: SalaOrderByWithRelationInput
   }
 
   export type VotoWhereUniqueInput = Prisma.AtLeast<{
     id?: string
-    sala_id_historia_id_pessoa_id?: VotoSala_idHistoria_idPessoa_idCompoundUniqueInput
+    sala_id_pessoa_id?: VotoSala_idPessoa_idCompoundUniqueInput
     AND?: VotoWhereInput | VotoWhereInput[]
     OR?: VotoWhereInput[]
     NOT?: VotoWhereInput | VotoWhereInput[]
     pessoa_id?: StringFilter<"Voto"> | string
     sala_id?: StringFilter<"Voto"> | string
-    historia_id?: StringFilter<"Voto"> | string
     valor?: IntFilter<"Voto"> | number
     data_voto?: DateTimeFilter<"Voto"> | Date | string
-    historia?: XOR<HistoriaScalarRelationFilter, HistoriaWhereInput>
     pessoa?: XOR<PessoaScalarRelationFilter, PessoaWhereInput>
     sala?: XOR<SalaScalarRelationFilter, SalaWhereInput>
-  }, "id" | "sala_id_historia_id_pessoa_id">
+  }, "id" | "sala_id_pessoa_id">
 
   export type VotoOrderByWithAggregationInput = {
     id?: SortOrder
     pessoa_id?: SortOrder
     sala_id?: SortOrder
-    historia_id?: SortOrder
     valor?: SortOrder
     data_voto?: SortOrder
     _count?: VotoCountOrderByAggregateInput
@@ -11407,7 +6209,6 @@ export namespace Prisma {
     id?: StringWithAggregatesFilter<"Voto"> | string
     pessoa_id?: StringWithAggregatesFilter<"Voto"> | string
     sala_id?: StringWithAggregatesFilter<"Voto"> | string
-    historia_id?: StringWithAggregatesFilter<"Voto"> | string
     valor?: IntWithAggregatesFilter<"Voto"> | number
     data_voto?: DateTimeWithAggregatesFilter<"Voto"> | Date | string
   }
@@ -11422,11 +6223,8 @@ export namespace Prisma {
     codigo_confirmacao_hash?: string | null
     codigo_expiracao?: Date | string | null
     senha: string
-    ultima_senha: string
     inativo?: boolean
     data_criacao?: Date | string
-    historiasCriadas?: HistoriaCreateNestedManyWithoutCriadorInput
-    equipesMembro?: MembroEquipeCreateNestedManyWithoutPessoaInput
     participacoes?: ParticipanteSalaCreateNestedManyWithoutPessoaInput
     salasCriadas?: SalaCreateNestedManyWithoutProprietarioInput
     votos?: VotoCreateNestedManyWithoutPessoaInput
@@ -11442,11 +6240,8 @@ export namespace Prisma {
     codigo_confirmacao_hash?: string | null
     codigo_expiracao?: Date | string | null
     senha: string
-    ultima_senha: string
     inativo?: boolean
     data_criacao?: Date | string
-    historiasCriadas?: HistoriaUncheckedCreateNestedManyWithoutCriadorInput
-    equipesMembro?: MembroEquipeUncheckedCreateNestedManyWithoutPessoaInput
     participacoes?: ParticipanteSalaUncheckedCreateNestedManyWithoutPessoaInput
     salasCriadas?: SalaUncheckedCreateNestedManyWithoutProprietarioInput
     votos?: VotoUncheckedCreateNestedManyWithoutPessoaInput
@@ -11462,11 +6257,8 @@ export namespace Prisma {
     codigo_confirmacao_hash?: NullableStringFieldUpdateOperationsInput | string | null
     codigo_expiracao?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     senha?: StringFieldUpdateOperationsInput | string
-    ultima_senha?: StringFieldUpdateOperationsInput | string
     inativo?: BoolFieldUpdateOperationsInput | boolean
     data_criacao?: DateTimeFieldUpdateOperationsInput | Date | string
-    historiasCriadas?: HistoriaUpdateManyWithoutCriadorNestedInput
-    equipesMembro?: MembroEquipeUpdateManyWithoutPessoaNestedInput
     participacoes?: ParticipanteSalaUpdateManyWithoutPessoaNestedInput
     salasCriadas?: SalaUpdateManyWithoutProprietarioNestedInput
     votos?: VotoUpdateManyWithoutPessoaNestedInput
@@ -11482,11 +6274,8 @@ export namespace Prisma {
     codigo_confirmacao_hash?: NullableStringFieldUpdateOperationsInput | string | null
     codigo_expiracao?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     senha?: StringFieldUpdateOperationsInput | string
-    ultima_senha?: StringFieldUpdateOperationsInput | string
     inativo?: BoolFieldUpdateOperationsInput | boolean
     data_criacao?: DateTimeFieldUpdateOperationsInput | Date | string
-    historiasCriadas?: HistoriaUncheckedUpdateManyWithoutCriadorNestedInput
-    equipesMembro?: MembroEquipeUncheckedUpdateManyWithoutPessoaNestedInput
     participacoes?: ParticipanteSalaUncheckedUpdateManyWithoutPessoaNestedInput
     salasCriadas?: SalaUncheckedUpdateManyWithoutProprietarioNestedInput
     votos?: VotoUncheckedUpdateManyWithoutPessoaNestedInput
@@ -11502,7 +6291,6 @@ export namespace Prisma {
     codigo_confirmacao_hash?: string | null
     codigo_expiracao?: Date | string | null
     senha: string
-    ultima_senha: string
     inativo?: boolean
     data_criacao?: Date | string
   }
@@ -11517,7 +6305,6 @@ export namespace Prisma {
     codigo_confirmacao_hash?: NullableStringFieldUpdateOperationsInput | string | null
     codigo_expiracao?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     senha?: StringFieldUpdateOperationsInput | string
-    ultima_senha?: StringFieldUpdateOperationsInput | string
     inativo?: BoolFieldUpdateOperationsInput | boolean
     data_criacao?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -11532,161 +6319,8 @@ export namespace Prisma {
     codigo_confirmacao_hash?: NullableStringFieldUpdateOperationsInput | string | null
     codigo_expiracao?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     senha?: StringFieldUpdateOperationsInput | string
-    ultima_senha?: StringFieldUpdateOperationsInput | string
     inativo?: BoolFieldUpdateOperationsInput | boolean
     data_criacao?: DateTimeFieldUpdateOperationsInput | Date | string
-  }
-
-  export type EquipeCreateInput = {
-    id?: string
-    nome: string
-    inativo?: boolean
-    membros?: MembroEquipeCreateNestedManyWithoutEquipeInput
-    projetos?: ProjetoCreateNestedManyWithoutEquipeInput
-  }
-
-  export type EquipeUncheckedCreateInput = {
-    id?: string
-    nome: string
-    inativo?: boolean
-    membros?: MembroEquipeUncheckedCreateNestedManyWithoutEquipeInput
-    projetos?: ProjetoUncheckedCreateNestedManyWithoutEquipeInput
-  }
-
-  export type EquipeUpdateInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    nome?: StringFieldUpdateOperationsInput | string
-    inativo?: BoolFieldUpdateOperationsInput | boolean
-    membros?: MembroEquipeUpdateManyWithoutEquipeNestedInput
-    projetos?: ProjetoUpdateManyWithoutEquipeNestedInput
-  }
-
-  export type EquipeUncheckedUpdateInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    nome?: StringFieldUpdateOperationsInput | string
-    inativo?: BoolFieldUpdateOperationsInput | boolean
-    membros?: MembroEquipeUncheckedUpdateManyWithoutEquipeNestedInput
-    projetos?: ProjetoUncheckedUpdateManyWithoutEquipeNestedInput
-  }
-
-  export type EquipeCreateManyInput = {
-    id?: string
-    nome: string
-    inativo?: boolean
-  }
-
-  export type EquipeUpdateManyMutationInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    nome?: StringFieldUpdateOperationsInput | string
-    inativo?: BoolFieldUpdateOperationsInput | boolean
-  }
-
-  export type EquipeUncheckedUpdateManyInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    nome?: StringFieldUpdateOperationsInput | string
-    inativo?: BoolFieldUpdateOperationsInput | boolean
-  }
-
-  export type MembroEquipeCreateInput = {
-    id?: string
-    proprietario?: boolean
-    equipe: EquipeCreateNestedOneWithoutMembrosInput
-    pessoa: PessoaCreateNestedOneWithoutEquipesMembroInput
-  }
-
-  export type MembroEquipeUncheckedCreateInput = {
-    id?: string
-    pessoa_id: string
-    equipe_id: string
-    proprietario?: boolean
-  }
-
-  export type MembroEquipeUpdateInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    proprietario?: BoolFieldUpdateOperationsInput | boolean
-    equipe?: EquipeUpdateOneRequiredWithoutMembrosNestedInput
-    pessoa?: PessoaUpdateOneRequiredWithoutEquipesMembroNestedInput
-  }
-
-  export type MembroEquipeUncheckedUpdateInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    pessoa_id?: StringFieldUpdateOperationsInput | string
-    equipe_id?: StringFieldUpdateOperationsInput | string
-    proprietario?: BoolFieldUpdateOperationsInput | boolean
-  }
-
-  export type MembroEquipeCreateManyInput = {
-    id?: string
-    pessoa_id: string
-    equipe_id: string
-    proprietario?: boolean
-  }
-
-  export type MembroEquipeUpdateManyMutationInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    proprietario?: BoolFieldUpdateOperationsInput | boolean
-  }
-
-  export type MembroEquipeUncheckedUpdateManyInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    pessoa_id?: StringFieldUpdateOperationsInput | string
-    equipe_id?: StringFieldUpdateOperationsInput | string
-    proprietario?: BoolFieldUpdateOperationsInput | boolean
-  }
-
-  export type ProjetoCreateInput = {
-    id?: string
-    nome: string
-    inativo?: boolean
-    gerente_id?: string | null
-    equipe: EquipeCreateNestedOneWithoutProjetosInput
-  }
-
-  export type ProjetoUncheckedCreateInput = {
-    id?: string
-    nome: string
-    equipe_id: string
-    inativo?: boolean
-    gerente_id?: string | null
-  }
-
-  export type ProjetoUpdateInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    nome?: StringFieldUpdateOperationsInput | string
-    inativo?: BoolFieldUpdateOperationsInput | boolean
-    gerente_id?: NullableStringFieldUpdateOperationsInput | string | null
-    equipe?: EquipeUpdateOneRequiredWithoutProjetosNestedInput
-  }
-
-  export type ProjetoUncheckedUpdateInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    nome?: StringFieldUpdateOperationsInput | string
-    equipe_id?: StringFieldUpdateOperationsInput | string
-    inativo?: BoolFieldUpdateOperationsInput | boolean
-    gerente_id?: NullableStringFieldUpdateOperationsInput | string | null
-  }
-
-  export type ProjetoCreateManyInput = {
-    id?: string
-    nome: string
-    equipe_id: string
-    inativo?: boolean
-    gerente_id?: string | null
-  }
-
-  export type ProjetoUpdateManyMutationInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    nome?: StringFieldUpdateOperationsInput | string
-    inativo?: BoolFieldUpdateOperationsInput | boolean
-    gerente_id?: NullableStringFieldUpdateOperationsInput | string | null
-  }
-
-  export type ProjetoUncheckedUpdateManyInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    nome?: StringFieldUpdateOperationsInput | string
-    equipe_id?: StringFieldUpdateOperationsInput | string
-    inativo?: BoolFieldUpdateOperationsInput | boolean
-    gerente_id?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type SalaCreateInput = {
@@ -11697,7 +6331,6 @@ export namespace Prisma {
     inativo?: boolean
     data_criacao?: Date | string
     data_alteracao?: Date | string
-    historias?: HistoriaCreateNestedManyWithoutSalaInput
     participantes?: ParticipanteSalaCreateNestedManyWithoutSalaInput
     proprietario: PessoaCreateNestedOneWithoutSalasCriadasInput
     votos?: VotoCreateNestedManyWithoutSalaInput
@@ -11712,7 +6345,6 @@ export namespace Prisma {
     inativo?: boolean
     data_criacao?: Date | string
     data_alteracao?: Date | string
-    historias?: HistoriaUncheckedCreateNestedManyWithoutSalaInput
     participantes?: ParticipanteSalaUncheckedCreateNestedManyWithoutSalaInput
     votos?: VotoUncheckedCreateNestedManyWithoutSalaInput
   }
@@ -11725,7 +6357,6 @@ export namespace Prisma {
     inativo?: BoolFieldUpdateOperationsInput | boolean
     data_criacao?: DateTimeFieldUpdateOperationsInput | Date | string
     data_alteracao?: DateTimeFieldUpdateOperationsInput | Date | string
-    historias?: HistoriaUpdateManyWithoutSalaNestedInput
     participantes?: ParticipanteSalaUpdateManyWithoutSalaNestedInput
     proprietario?: PessoaUpdateOneRequiredWithoutSalasCriadasNestedInput
     votos?: VotoUpdateManyWithoutSalaNestedInput
@@ -11740,7 +6371,6 @@ export namespace Prisma {
     inativo?: BoolFieldUpdateOperationsInput | boolean
     data_criacao?: DateTimeFieldUpdateOperationsInput | Date | string
     data_alteracao?: DateTimeFieldUpdateOperationsInput | Date | string
-    historias?: HistoriaUncheckedUpdateManyWithoutSalaNestedInput
     participantes?: ParticipanteSalaUncheckedUpdateManyWithoutSalaNestedInput
     votos?: VotoUncheckedUpdateManyWithoutSalaNestedInput
   }
@@ -11824,90 +6454,10 @@ export namespace Prisma {
     adicionado?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
-  export type HistoriaCreateInput = {
-    id?: string
-    titulo: string
-    descricao?: string | null
-    data_criacao?: Date | string
-    data_alteracao?: Date | string
-    finalizada?: boolean
-    criador: PessoaCreateNestedOneWithoutHistoriasCriadasInput
-    sala: SalaCreateNestedOneWithoutHistoriasInput
-    votos?: VotoCreateNestedManyWithoutHistoriaInput
-  }
-
-  export type HistoriaUncheckedCreateInput = {
-    id?: string
-    titulo: string
-    descricao?: string | null
-    sala_id: string
-    criado_por: string
-    data_criacao?: Date | string
-    data_alteracao?: Date | string
-    finalizada?: boolean
-    votos?: VotoUncheckedCreateNestedManyWithoutHistoriaInput
-  }
-
-  export type HistoriaUpdateInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    titulo?: StringFieldUpdateOperationsInput | string
-    descricao?: NullableStringFieldUpdateOperationsInput | string | null
-    data_criacao?: DateTimeFieldUpdateOperationsInput | Date | string
-    data_alteracao?: DateTimeFieldUpdateOperationsInput | Date | string
-    finalizada?: BoolFieldUpdateOperationsInput | boolean
-    criador?: PessoaUpdateOneRequiredWithoutHistoriasCriadasNestedInput
-    sala?: SalaUpdateOneRequiredWithoutHistoriasNestedInput
-    votos?: VotoUpdateManyWithoutHistoriaNestedInput
-  }
-
-  export type HistoriaUncheckedUpdateInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    titulo?: StringFieldUpdateOperationsInput | string
-    descricao?: NullableStringFieldUpdateOperationsInput | string | null
-    sala_id?: StringFieldUpdateOperationsInput | string
-    criado_por?: StringFieldUpdateOperationsInput | string
-    data_criacao?: DateTimeFieldUpdateOperationsInput | Date | string
-    data_alteracao?: DateTimeFieldUpdateOperationsInput | Date | string
-    finalizada?: BoolFieldUpdateOperationsInput | boolean
-    votos?: VotoUncheckedUpdateManyWithoutHistoriaNestedInput
-  }
-
-  export type HistoriaCreateManyInput = {
-    id?: string
-    titulo: string
-    descricao?: string | null
-    sala_id: string
-    criado_por: string
-    data_criacao?: Date | string
-    data_alteracao?: Date | string
-    finalizada?: boolean
-  }
-
-  export type HistoriaUpdateManyMutationInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    titulo?: StringFieldUpdateOperationsInput | string
-    descricao?: NullableStringFieldUpdateOperationsInput | string | null
-    data_criacao?: DateTimeFieldUpdateOperationsInput | Date | string
-    data_alteracao?: DateTimeFieldUpdateOperationsInput | Date | string
-    finalizada?: BoolFieldUpdateOperationsInput | boolean
-  }
-
-  export type HistoriaUncheckedUpdateManyInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    titulo?: StringFieldUpdateOperationsInput | string
-    descricao?: NullableStringFieldUpdateOperationsInput | string | null
-    sala_id?: StringFieldUpdateOperationsInput | string
-    criado_por?: StringFieldUpdateOperationsInput | string
-    data_criacao?: DateTimeFieldUpdateOperationsInput | Date | string
-    data_alteracao?: DateTimeFieldUpdateOperationsInput | Date | string
-    finalizada?: BoolFieldUpdateOperationsInput | boolean
-  }
-
   export type VotoCreateInput = {
     id?: string
     valor: number
     data_voto?: Date | string
-    historia: HistoriaCreateNestedOneWithoutVotosInput
     pessoa: PessoaCreateNestedOneWithoutVotosInput
     sala: SalaCreateNestedOneWithoutVotosInput
   }
@@ -11916,7 +6466,6 @@ export namespace Prisma {
     id?: string
     pessoa_id: string
     sala_id: string
-    historia_id: string
     valor: number
     data_voto?: Date | string
   }
@@ -11925,7 +6474,6 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     valor?: IntFieldUpdateOperationsInput | number
     data_voto?: DateTimeFieldUpdateOperationsInput | Date | string
-    historia?: HistoriaUpdateOneRequiredWithoutVotosNestedInput
     pessoa?: PessoaUpdateOneRequiredWithoutVotosNestedInput
     sala?: SalaUpdateOneRequiredWithoutVotosNestedInput
   }
@@ -11934,7 +6482,6 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     pessoa_id?: StringFieldUpdateOperationsInput | string
     sala_id?: StringFieldUpdateOperationsInput | string
-    historia_id?: StringFieldUpdateOperationsInput | string
     valor?: IntFieldUpdateOperationsInput | number
     data_voto?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -11943,7 +6490,6 @@ export namespace Prisma {
     id?: string
     pessoa_id: string
     sala_id: string
-    historia_id: string
     valor: number
     data_voto?: Date | string
   }
@@ -11958,7 +6504,6 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     pessoa_id?: StringFieldUpdateOperationsInput | string
     sala_id?: StringFieldUpdateOperationsInput | string
-    historia_id?: StringFieldUpdateOperationsInput | string
     valor?: IntFieldUpdateOperationsInput | number
     data_voto?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -12020,18 +6565,6 @@ export namespace Prisma {
     not?: NestedDateTimeFilter<$PrismaModel> | Date | string
   }
 
-  export type HistoriaListRelationFilter = {
-    every?: HistoriaWhereInput
-    some?: HistoriaWhereInput
-    none?: HistoriaWhereInput
-  }
-
-  export type MembroEquipeListRelationFilter = {
-    every?: MembroEquipeWhereInput
-    some?: MembroEquipeWhereInput
-    none?: MembroEquipeWhereInput
-  }
-
   export type ParticipanteSalaListRelationFilter = {
     every?: ParticipanteSalaWhereInput
     some?: ParticipanteSalaWhereInput
@@ -12053,14 +6586,6 @@ export namespace Prisma {
   export type SortOrderInput = {
     sort: SortOrder
     nulls?: NullsOrder
-  }
-
-  export type HistoriaOrderByRelationAggregateInput = {
-    _count?: SortOrder
-  }
-
-  export type MembroEquipeOrderByRelationAggregateInput = {
-    _count?: SortOrder
   }
 
   export type ParticipanteSalaOrderByRelationAggregateInput = {
@@ -12085,7 +6610,6 @@ export namespace Prisma {
     codigo_confirmacao_hash?: SortOrder
     codigo_expiracao?: SortOrder
     senha?: SortOrder
-    ultima_senha?: SortOrder
     inativo?: SortOrder
     data_criacao?: SortOrder
   }
@@ -12100,7 +6624,6 @@ export namespace Prisma {
     codigo_confirmacao_hash?: SortOrder
     codigo_expiracao?: SortOrder
     senha?: SortOrder
-    ultima_senha?: SortOrder
     inativo?: SortOrder
     data_criacao?: SortOrder
   }
@@ -12115,7 +6638,6 @@ export namespace Prisma {
     codigo_confirmacao_hash?: SortOrder
     codigo_expiracao?: SortOrder
     senha?: SortOrder
-    ultima_senha?: SortOrder
     inativo?: SortOrder
     data_criacao?: SortOrder
   }
@@ -12192,94 +6714,6 @@ export namespace Prisma {
     _max?: NestedDateTimeFilter<$PrismaModel>
   }
 
-  export type ProjetoListRelationFilter = {
-    every?: ProjetoWhereInput
-    some?: ProjetoWhereInput
-    none?: ProjetoWhereInput
-  }
-
-  export type ProjetoOrderByRelationAggregateInput = {
-    _count?: SortOrder
-  }
-
-  export type EquipeCountOrderByAggregateInput = {
-    id?: SortOrder
-    nome?: SortOrder
-    inativo?: SortOrder
-  }
-
-  export type EquipeMaxOrderByAggregateInput = {
-    id?: SortOrder
-    nome?: SortOrder
-    inativo?: SortOrder
-  }
-
-  export type EquipeMinOrderByAggregateInput = {
-    id?: SortOrder
-    nome?: SortOrder
-    inativo?: SortOrder
-  }
-
-  export type EquipeScalarRelationFilter = {
-    is?: EquipeWhereInput
-    isNot?: EquipeWhereInput
-  }
-
-  export type PessoaScalarRelationFilter = {
-    is?: PessoaWhereInput
-    isNot?: PessoaWhereInput
-  }
-
-  export type MembroEquipePessoa_idEquipe_idCompoundUniqueInput = {
-    pessoa_id: string
-    equipe_id: string
-  }
-
-  export type MembroEquipeCountOrderByAggregateInput = {
-    id?: SortOrder
-    pessoa_id?: SortOrder
-    equipe_id?: SortOrder
-    proprietario?: SortOrder
-  }
-
-  export type MembroEquipeMaxOrderByAggregateInput = {
-    id?: SortOrder
-    pessoa_id?: SortOrder
-    equipe_id?: SortOrder
-    proprietario?: SortOrder
-  }
-
-  export type MembroEquipeMinOrderByAggregateInput = {
-    id?: SortOrder
-    pessoa_id?: SortOrder
-    equipe_id?: SortOrder
-    proprietario?: SortOrder
-  }
-
-  export type ProjetoCountOrderByAggregateInput = {
-    id?: SortOrder
-    nome?: SortOrder
-    equipe_id?: SortOrder
-    inativo?: SortOrder
-    gerente_id?: SortOrder
-  }
-
-  export type ProjetoMaxOrderByAggregateInput = {
-    id?: SortOrder
-    nome?: SortOrder
-    equipe_id?: SortOrder
-    inativo?: SortOrder
-    gerente_id?: SortOrder
-  }
-
-  export type ProjetoMinOrderByAggregateInput = {
-    id?: SortOrder
-    nome?: SortOrder
-    equipe_id?: SortOrder
-    inativo?: SortOrder
-    gerente_id?: SortOrder
-  }
-
   export type IntFilter<$PrismaModel = never> = {
     equals?: number | IntFieldRefInput<$PrismaModel>
     in?: number[] | ListIntFieldRefInput<$PrismaModel>
@@ -12289,6 +6723,11 @@ export namespace Prisma {
     gt?: number | IntFieldRefInput<$PrismaModel>
     gte?: number | IntFieldRefInput<$PrismaModel>
     not?: NestedIntFilter<$PrismaModel> | number
+  }
+
+  export type PessoaScalarRelationFilter = {
+    is?: PessoaWhereInput
+    isNot?: PessoaWhereInput
   }
 
   export type SalaCountOrderByAggregateInput = {
@@ -12379,47 +6818,8 @@ export namespace Prisma {
     adicionado?: SortOrder
   }
 
-  export type HistoriaCountOrderByAggregateInput = {
-    id?: SortOrder
-    titulo?: SortOrder
-    descricao?: SortOrder
-    sala_id?: SortOrder
-    criado_por?: SortOrder
-    data_criacao?: SortOrder
-    data_alteracao?: SortOrder
-    finalizada?: SortOrder
-  }
-
-  export type HistoriaMaxOrderByAggregateInput = {
-    id?: SortOrder
-    titulo?: SortOrder
-    descricao?: SortOrder
-    sala_id?: SortOrder
-    criado_por?: SortOrder
-    data_criacao?: SortOrder
-    data_alteracao?: SortOrder
-    finalizada?: SortOrder
-  }
-
-  export type HistoriaMinOrderByAggregateInput = {
-    id?: SortOrder
-    titulo?: SortOrder
-    descricao?: SortOrder
-    sala_id?: SortOrder
-    criado_por?: SortOrder
-    data_criacao?: SortOrder
-    data_alteracao?: SortOrder
-    finalizada?: SortOrder
-  }
-
-  export type HistoriaScalarRelationFilter = {
-    is?: HistoriaWhereInput
-    isNot?: HistoriaWhereInput
-  }
-
-  export type VotoSala_idHistoria_idPessoa_idCompoundUniqueInput = {
+  export type VotoSala_idPessoa_idCompoundUniqueInput = {
     sala_id: string
-    historia_id: string
     pessoa_id: string
   }
 
@@ -12427,7 +6827,6 @@ export namespace Prisma {
     id?: SortOrder
     pessoa_id?: SortOrder
     sala_id?: SortOrder
-    historia_id?: SortOrder
     valor?: SortOrder
     data_voto?: SortOrder
   }
@@ -12440,7 +6839,6 @@ export namespace Prisma {
     id?: SortOrder
     pessoa_id?: SortOrder
     sala_id?: SortOrder
-    historia_id?: SortOrder
     valor?: SortOrder
     data_voto?: SortOrder
   }
@@ -12449,27 +6847,12 @@ export namespace Prisma {
     id?: SortOrder
     pessoa_id?: SortOrder
     sala_id?: SortOrder
-    historia_id?: SortOrder
     valor?: SortOrder
     data_voto?: SortOrder
   }
 
   export type VotoSumOrderByAggregateInput = {
     valor?: SortOrder
-  }
-
-  export type HistoriaCreateNestedManyWithoutCriadorInput = {
-    create?: XOR<HistoriaCreateWithoutCriadorInput, HistoriaUncheckedCreateWithoutCriadorInput> | HistoriaCreateWithoutCriadorInput[] | HistoriaUncheckedCreateWithoutCriadorInput[]
-    connectOrCreate?: HistoriaCreateOrConnectWithoutCriadorInput | HistoriaCreateOrConnectWithoutCriadorInput[]
-    createMany?: HistoriaCreateManyCriadorInputEnvelope
-    connect?: HistoriaWhereUniqueInput | HistoriaWhereUniqueInput[]
-  }
-
-  export type MembroEquipeCreateNestedManyWithoutPessoaInput = {
-    create?: XOR<MembroEquipeCreateWithoutPessoaInput, MembroEquipeUncheckedCreateWithoutPessoaInput> | MembroEquipeCreateWithoutPessoaInput[] | MembroEquipeUncheckedCreateWithoutPessoaInput[]
-    connectOrCreate?: MembroEquipeCreateOrConnectWithoutPessoaInput | MembroEquipeCreateOrConnectWithoutPessoaInput[]
-    createMany?: MembroEquipeCreateManyPessoaInputEnvelope
-    connect?: MembroEquipeWhereUniqueInput | MembroEquipeWhereUniqueInput[]
   }
 
   export type ParticipanteSalaCreateNestedManyWithoutPessoaInput = {
@@ -12491,20 +6874,6 @@ export namespace Prisma {
     connectOrCreate?: VotoCreateOrConnectWithoutPessoaInput | VotoCreateOrConnectWithoutPessoaInput[]
     createMany?: VotoCreateManyPessoaInputEnvelope
     connect?: VotoWhereUniqueInput | VotoWhereUniqueInput[]
-  }
-
-  export type HistoriaUncheckedCreateNestedManyWithoutCriadorInput = {
-    create?: XOR<HistoriaCreateWithoutCriadorInput, HistoriaUncheckedCreateWithoutCriadorInput> | HistoriaCreateWithoutCriadorInput[] | HistoriaUncheckedCreateWithoutCriadorInput[]
-    connectOrCreate?: HistoriaCreateOrConnectWithoutCriadorInput | HistoriaCreateOrConnectWithoutCriadorInput[]
-    createMany?: HistoriaCreateManyCriadorInputEnvelope
-    connect?: HistoriaWhereUniqueInput | HistoriaWhereUniqueInput[]
-  }
-
-  export type MembroEquipeUncheckedCreateNestedManyWithoutPessoaInput = {
-    create?: XOR<MembroEquipeCreateWithoutPessoaInput, MembroEquipeUncheckedCreateWithoutPessoaInput> | MembroEquipeCreateWithoutPessoaInput[] | MembroEquipeUncheckedCreateWithoutPessoaInput[]
-    connectOrCreate?: MembroEquipeCreateOrConnectWithoutPessoaInput | MembroEquipeCreateOrConnectWithoutPessoaInput[]
-    createMany?: MembroEquipeCreateManyPessoaInputEnvelope
-    connect?: MembroEquipeWhereUniqueInput | MembroEquipeWhereUniqueInput[]
   }
 
   export type ParticipanteSalaUncheckedCreateNestedManyWithoutPessoaInput = {
@@ -12546,34 +6915,6 @@ export namespace Prisma {
 
   export type DateTimeFieldUpdateOperationsInput = {
     set?: Date | string
-  }
-
-  export type HistoriaUpdateManyWithoutCriadorNestedInput = {
-    create?: XOR<HistoriaCreateWithoutCriadorInput, HistoriaUncheckedCreateWithoutCriadorInput> | HistoriaCreateWithoutCriadorInput[] | HistoriaUncheckedCreateWithoutCriadorInput[]
-    connectOrCreate?: HistoriaCreateOrConnectWithoutCriadorInput | HistoriaCreateOrConnectWithoutCriadorInput[]
-    upsert?: HistoriaUpsertWithWhereUniqueWithoutCriadorInput | HistoriaUpsertWithWhereUniqueWithoutCriadorInput[]
-    createMany?: HistoriaCreateManyCriadorInputEnvelope
-    set?: HistoriaWhereUniqueInput | HistoriaWhereUniqueInput[]
-    disconnect?: HistoriaWhereUniqueInput | HistoriaWhereUniqueInput[]
-    delete?: HistoriaWhereUniqueInput | HistoriaWhereUniqueInput[]
-    connect?: HistoriaWhereUniqueInput | HistoriaWhereUniqueInput[]
-    update?: HistoriaUpdateWithWhereUniqueWithoutCriadorInput | HistoriaUpdateWithWhereUniqueWithoutCriadorInput[]
-    updateMany?: HistoriaUpdateManyWithWhereWithoutCriadorInput | HistoriaUpdateManyWithWhereWithoutCriadorInput[]
-    deleteMany?: HistoriaScalarWhereInput | HistoriaScalarWhereInput[]
-  }
-
-  export type MembroEquipeUpdateManyWithoutPessoaNestedInput = {
-    create?: XOR<MembroEquipeCreateWithoutPessoaInput, MembroEquipeUncheckedCreateWithoutPessoaInput> | MembroEquipeCreateWithoutPessoaInput[] | MembroEquipeUncheckedCreateWithoutPessoaInput[]
-    connectOrCreate?: MembroEquipeCreateOrConnectWithoutPessoaInput | MembroEquipeCreateOrConnectWithoutPessoaInput[]
-    upsert?: MembroEquipeUpsertWithWhereUniqueWithoutPessoaInput | MembroEquipeUpsertWithWhereUniqueWithoutPessoaInput[]
-    createMany?: MembroEquipeCreateManyPessoaInputEnvelope
-    set?: MembroEquipeWhereUniqueInput | MembroEquipeWhereUniqueInput[]
-    disconnect?: MembroEquipeWhereUniqueInput | MembroEquipeWhereUniqueInput[]
-    delete?: MembroEquipeWhereUniqueInput | MembroEquipeWhereUniqueInput[]
-    connect?: MembroEquipeWhereUniqueInput | MembroEquipeWhereUniqueInput[]
-    update?: MembroEquipeUpdateWithWhereUniqueWithoutPessoaInput | MembroEquipeUpdateWithWhereUniqueWithoutPessoaInput[]
-    updateMany?: MembroEquipeUpdateManyWithWhereWithoutPessoaInput | MembroEquipeUpdateManyWithWhereWithoutPessoaInput[]
-    deleteMany?: MembroEquipeScalarWhereInput | MembroEquipeScalarWhereInput[]
   }
 
   export type ParticipanteSalaUpdateManyWithoutPessoaNestedInput = {
@@ -12618,34 +6959,6 @@ export namespace Prisma {
     deleteMany?: VotoScalarWhereInput | VotoScalarWhereInput[]
   }
 
-  export type HistoriaUncheckedUpdateManyWithoutCriadorNestedInput = {
-    create?: XOR<HistoriaCreateWithoutCriadorInput, HistoriaUncheckedCreateWithoutCriadorInput> | HistoriaCreateWithoutCriadorInput[] | HistoriaUncheckedCreateWithoutCriadorInput[]
-    connectOrCreate?: HistoriaCreateOrConnectWithoutCriadorInput | HistoriaCreateOrConnectWithoutCriadorInput[]
-    upsert?: HistoriaUpsertWithWhereUniqueWithoutCriadorInput | HistoriaUpsertWithWhereUniqueWithoutCriadorInput[]
-    createMany?: HistoriaCreateManyCriadorInputEnvelope
-    set?: HistoriaWhereUniqueInput | HistoriaWhereUniqueInput[]
-    disconnect?: HistoriaWhereUniqueInput | HistoriaWhereUniqueInput[]
-    delete?: HistoriaWhereUniqueInput | HistoriaWhereUniqueInput[]
-    connect?: HistoriaWhereUniqueInput | HistoriaWhereUniqueInput[]
-    update?: HistoriaUpdateWithWhereUniqueWithoutCriadorInput | HistoriaUpdateWithWhereUniqueWithoutCriadorInput[]
-    updateMany?: HistoriaUpdateManyWithWhereWithoutCriadorInput | HistoriaUpdateManyWithWhereWithoutCriadorInput[]
-    deleteMany?: HistoriaScalarWhereInput | HistoriaScalarWhereInput[]
-  }
-
-  export type MembroEquipeUncheckedUpdateManyWithoutPessoaNestedInput = {
-    create?: XOR<MembroEquipeCreateWithoutPessoaInput, MembroEquipeUncheckedCreateWithoutPessoaInput> | MembroEquipeCreateWithoutPessoaInput[] | MembroEquipeUncheckedCreateWithoutPessoaInput[]
-    connectOrCreate?: MembroEquipeCreateOrConnectWithoutPessoaInput | MembroEquipeCreateOrConnectWithoutPessoaInput[]
-    upsert?: MembroEquipeUpsertWithWhereUniqueWithoutPessoaInput | MembroEquipeUpsertWithWhereUniqueWithoutPessoaInput[]
-    createMany?: MembroEquipeCreateManyPessoaInputEnvelope
-    set?: MembroEquipeWhereUniqueInput | MembroEquipeWhereUniqueInput[]
-    disconnect?: MembroEquipeWhereUniqueInput | MembroEquipeWhereUniqueInput[]
-    delete?: MembroEquipeWhereUniqueInput | MembroEquipeWhereUniqueInput[]
-    connect?: MembroEquipeWhereUniqueInput | MembroEquipeWhereUniqueInput[]
-    update?: MembroEquipeUpdateWithWhereUniqueWithoutPessoaInput | MembroEquipeUpdateWithWhereUniqueWithoutPessoaInput[]
-    updateMany?: MembroEquipeUpdateManyWithWhereWithoutPessoaInput | MembroEquipeUpdateManyWithWhereWithoutPessoaInput[]
-    deleteMany?: MembroEquipeScalarWhereInput | MembroEquipeScalarWhereInput[]
-  }
-
   export type ParticipanteSalaUncheckedUpdateManyWithoutPessoaNestedInput = {
     create?: XOR<ParticipanteSalaCreateWithoutPessoaInput, ParticipanteSalaUncheckedCreateWithoutPessoaInput> | ParticipanteSalaCreateWithoutPessoaInput[] | ParticipanteSalaUncheckedCreateWithoutPessoaInput[]
     connectOrCreate?: ParticipanteSalaCreateOrConnectWithoutPessoaInput | ParticipanteSalaCreateOrConnectWithoutPessoaInput[]
@@ -12688,139 +7001,6 @@ export namespace Prisma {
     deleteMany?: VotoScalarWhereInput | VotoScalarWhereInput[]
   }
 
-  export type MembroEquipeCreateNestedManyWithoutEquipeInput = {
-    create?: XOR<MembroEquipeCreateWithoutEquipeInput, MembroEquipeUncheckedCreateWithoutEquipeInput> | MembroEquipeCreateWithoutEquipeInput[] | MembroEquipeUncheckedCreateWithoutEquipeInput[]
-    connectOrCreate?: MembroEquipeCreateOrConnectWithoutEquipeInput | MembroEquipeCreateOrConnectWithoutEquipeInput[]
-    createMany?: MembroEquipeCreateManyEquipeInputEnvelope
-    connect?: MembroEquipeWhereUniqueInput | MembroEquipeWhereUniqueInput[]
-  }
-
-  export type ProjetoCreateNestedManyWithoutEquipeInput = {
-    create?: XOR<ProjetoCreateWithoutEquipeInput, ProjetoUncheckedCreateWithoutEquipeInput> | ProjetoCreateWithoutEquipeInput[] | ProjetoUncheckedCreateWithoutEquipeInput[]
-    connectOrCreate?: ProjetoCreateOrConnectWithoutEquipeInput | ProjetoCreateOrConnectWithoutEquipeInput[]
-    createMany?: ProjetoCreateManyEquipeInputEnvelope
-    connect?: ProjetoWhereUniqueInput | ProjetoWhereUniqueInput[]
-  }
-
-  export type MembroEquipeUncheckedCreateNestedManyWithoutEquipeInput = {
-    create?: XOR<MembroEquipeCreateWithoutEquipeInput, MembroEquipeUncheckedCreateWithoutEquipeInput> | MembroEquipeCreateWithoutEquipeInput[] | MembroEquipeUncheckedCreateWithoutEquipeInput[]
-    connectOrCreate?: MembroEquipeCreateOrConnectWithoutEquipeInput | MembroEquipeCreateOrConnectWithoutEquipeInput[]
-    createMany?: MembroEquipeCreateManyEquipeInputEnvelope
-    connect?: MembroEquipeWhereUniqueInput | MembroEquipeWhereUniqueInput[]
-  }
-
-  export type ProjetoUncheckedCreateNestedManyWithoutEquipeInput = {
-    create?: XOR<ProjetoCreateWithoutEquipeInput, ProjetoUncheckedCreateWithoutEquipeInput> | ProjetoCreateWithoutEquipeInput[] | ProjetoUncheckedCreateWithoutEquipeInput[]
-    connectOrCreate?: ProjetoCreateOrConnectWithoutEquipeInput | ProjetoCreateOrConnectWithoutEquipeInput[]
-    createMany?: ProjetoCreateManyEquipeInputEnvelope
-    connect?: ProjetoWhereUniqueInput | ProjetoWhereUniqueInput[]
-  }
-
-  export type MembroEquipeUpdateManyWithoutEquipeNestedInput = {
-    create?: XOR<MembroEquipeCreateWithoutEquipeInput, MembroEquipeUncheckedCreateWithoutEquipeInput> | MembroEquipeCreateWithoutEquipeInput[] | MembroEquipeUncheckedCreateWithoutEquipeInput[]
-    connectOrCreate?: MembroEquipeCreateOrConnectWithoutEquipeInput | MembroEquipeCreateOrConnectWithoutEquipeInput[]
-    upsert?: MembroEquipeUpsertWithWhereUniqueWithoutEquipeInput | MembroEquipeUpsertWithWhereUniqueWithoutEquipeInput[]
-    createMany?: MembroEquipeCreateManyEquipeInputEnvelope
-    set?: MembroEquipeWhereUniqueInput | MembroEquipeWhereUniqueInput[]
-    disconnect?: MembroEquipeWhereUniqueInput | MembroEquipeWhereUniqueInput[]
-    delete?: MembroEquipeWhereUniqueInput | MembroEquipeWhereUniqueInput[]
-    connect?: MembroEquipeWhereUniqueInput | MembroEquipeWhereUniqueInput[]
-    update?: MembroEquipeUpdateWithWhereUniqueWithoutEquipeInput | MembroEquipeUpdateWithWhereUniqueWithoutEquipeInput[]
-    updateMany?: MembroEquipeUpdateManyWithWhereWithoutEquipeInput | MembroEquipeUpdateManyWithWhereWithoutEquipeInput[]
-    deleteMany?: MembroEquipeScalarWhereInput | MembroEquipeScalarWhereInput[]
-  }
-
-  export type ProjetoUpdateManyWithoutEquipeNestedInput = {
-    create?: XOR<ProjetoCreateWithoutEquipeInput, ProjetoUncheckedCreateWithoutEquipeInput> | ProjetoCreateWithoutEquipeInput[] | ProjetoUncheckedCreateWithoutEquipeInput[]
-    connectOrCreate?: ProjetoCreateOrConnectWithoutEquipeInput | ProjetoCreateOrConnectWithoutEquipeInput[]
-    upsert?: ProjetoUpsertWithWhereUniqueWithoutEquipeInput | ProjetoUpsertWithWhereUniqueWithoutEquipeInput[]
-    createMany?: ProjetoCreateManyEquipeInputEnvelope
-    set?: ProjetoWhereUniqueInput | ProjetoWhereUniqueInput[]
-    disconnect?: ProjetoWhereUniqueInput | ProjetoWhereUniqueInput[]
-    delete?: ProjetoWhereUniqueInput | ProjetoWhereUniqueInput[]
-    connect?: ProjetoWhereUniqueInput | ProjetoWhereUniqueInput[]
-    update?: ProjetoUpdateWithWhereUniqueWithoutEquipeInput | ProjetoUpdateWithWhereUniqueWithoutEquipeInput[]
-    updateMany?: ProjetoUpdateManyWithWhereWithoutEquipeInput | ProjetoUpdateManyWithWhereWithoutEquipeInput[]
-    deleteMany?: ProjetoScalarWhereInput | ProjetoScalarWhereInput[]
-  }
-
-  export type MembroEquipeUncheckedUpdateManyWithoutEquipeNestedInput = {
-    create?: XOR<MembroEquipeCreateWithoutEquipeInput, MembroEquipeUncheckedCreateWithoutEquipeInput> | MembroEquipeCreateWithoutEquipeInput[] | MembroEquipeUncheckedCreateWithoutEquipeInput[]
-    connectOrCreate?: MembroEquipeCreateOrConnectWithoutEquipeInput | MembroEquipeCreateOrConnectWithoutEquipeInput[]
-    upsert?: MembroEquipeUpsertWithWhereUniqueWithoutEquipeInput | MembroEquipeUpsertWithWhereUniqueWithoutEquipeInput[]
-    createMany?: MembroEquipeCreateManyEquipeInputEnvelope
-    set?: MembroEquipeWhereUniqueInput | MembroEquipeWhereUniqueInput[]
-    disconnect?: MembroEquipeWhereUniqueInput | MembroEquipeWhereUniqueInput[]
-    delete?: MembroEquipeWhereUniqueInput | MembroEquipeWhereUniqueInput[]
-    connect?: MembroEquipeWhereUniqueInput | MembroEquipeWhereUniqueInput[]
-    update?: MembroEquipeUpdateWithWhereUniqueWithoutEquipeInput | MembroEquipeUpdateWithWhereUniqueWithoutEquipeInput[]
-    updateMany?: MembroEquipeUpdateManyWithWhereWithoutEquipeInput | MembroEquipeUpdateManyWithWhereWithoutEquipeInput[]
-    deleteMany?: MembroEquipeScalarWhereInput | MembroEquipeScalarWhereInput[]
-  }
-
-  export type ProjetoUncheckedUpdateManyWithoutEquipeNestedInput = {
-    create?: XOR<ProjetoCreateWithoutEquipeInput, ProjetoUncheckedCreateWithoutEquipeInput> | ProjetoCreateWithoutEquipeInput[] | ProjetoUncheckedCreateWithoutEquipeInput[]
-    connectOrCreate?: ProjetoCreateOrConnectWithoutEquipeInput | ProjetoCreateOrConnectWithoutEquipeInput[]
-    upsert?: ProjetoUpsertWithWhereUniqueWithoutEquipeInput | ProjetoUpsertWithWhereUniqueWithoutEquipeInput[]
-    createMany?: ProjetoCreateManyEquipeInputEnvelope
-    set?: ProjetoWhereUniqueInput | ProjetoWhereUniqueInput[]
-    disconnect?: ProjetoWhereUniqueInput | ProjetoWhereUniqueInput[]
-    delete?: ProjetoWhereUniqueInput | ProjetoWhereUniqueInput[]
-    connect?: ProjetoWhereUniqueInput | ProjetoWhereUniqueInput[]
-    update?: ProjetoUpdateWithWhereUniqueWithoutEquipeInput | ProjetoUpdateWithWhereUniqueWithoutEquipeInput[]
-    updateMany?: ProjetoUpdateManyWithWhereWithoutEquipeInput | ProjetoUpdateManyWithWhereWithoutEquipeInput[]
-    deleteMany?: ProjetoScalarWhereInput | ProjetoScalarWhereInput[]
-  }
-
-  export type EquipeCreateNestedOneWithoutMembrosInput = {
-    create?: XOR<EquipeCreateWithoutMembrosInput, EquipeUncheckedCreateWithoutMembrosInput>
-    connectOrCreate?: EquipeCreateOrConnectWithoutMembrosInput
-    connect?: EquipeWhereUniqueInput
-  }
-
-  export type PessoaCreateNestedOneWithoutEquipesMembroInput = {
-    create?: XOR<PessoaCreateWithoutEquipesMembroInput, PessoaUncheckedCreateWithoutEquipesMembroInput>
-    connectOrCreate?: PessoaCreateOrConnectWithoutEquipesMembroInput
-    connect?: PessoaWhereUniqueInput
-  }
-
-  export type EquipeUpdateOneRequiredWithoutMembrosNestedInput = {
-    create?: XOR<EquipeCreateWithoutMembrosInput, EquipeUncheckedCreateWithoutMembrosInput>
-    connectOrCreate?: EquipeCreateOrConnectWithoutMembrosInput
-    upsert?: EquipeUpsertWithoutMembrosInput
-    connect?: EquipeWhereUniqueInput
-    update?: XOR<XOR<EquipeUpdateToOneWithWhereWithoutMembrosInput, EquipeUpdateWithoutMembrosInput>, EquipeUncheckedUpdateWithoutMembrosInput>
-  }
-
-  export type PessoaUpdateOneRequiredWithoutEquipesMembroNestedInput = {
-    create?: XOR<PessoaCreateWithoutEquipesMembroInput, PessoaUncheckedCreateWithoutEquipesMembroInput>
-    connectOrCreate?: PessoaCreateOrConnectWithoutEquipesMembroInput
-    upsert?: PessoaUpsertWithoutEquipesMembroInput
-    connect?: PessoaWhereUniqueInput
-    update?: XOR<XOR<PessoaUpdateToOneWithWhereWithoutEquipesMembroInput, PessoaUpdateWithoutEquipesMembroInput>, PessoaUncheckedUpdateWithoutEquipesMembroInput>
-  }
-
-  export type EquipeCreateNestedOneWithoutProjetosInput = {
-    create?: XOR<EquipeCreateWithoutProjetosInput, EquipeUncheckedCreateWithoutProjetosInput>
-    connectOrCreate?: EquipeCreateOrConnectWithoutProjetosInput
-    connect?: EquipeWhereUniqueInput
-  }
-
-  export type EquipeUpdateOneRequiredWithoutProjetosNestedInput = {
-    create?: XOR<EquipeCreateWithoutProjetosInput, EquipeUncheckedCreateWithoutProjetosInput>
-    connectOrCreate?: EquipeCreateOrConnectWithoutProjetosInput
-    upsert?: EquipeUpsertWithoutProjetosInput
-    connect?: EquipeWhereUniqueInput
-    update?: XOR<XOR<EquipeUpdateToOneWithWhereWithoutProjetosInput, EquipeUpdateWithoutProjetosInput>, EquipeUncheckedUpdateWithoutProjetosInput>
-  }
-
-  export type HistoriaCreateNestedManyWithoutSalaInput = {
-    create?: XOR<HistoriaCreateWithoutSalaInput, HistoriaUncheckedCreateWithoutSalaInput> | HistoriaCreateWithoutSalaInput[] | HistoriaUncheckedCreateWithoutSalaInput[]
-    connectOrCreate?: HistoriaCreateOrConnectWithoutSalaInput | HistoriaCreateOrConnectWithoutSalaInput[]
-    createMany?: HistoriaCreateManySalaInputEnvelope
-    connect?: HistoriaWhereUniqueInput | HistoriaWhereUniqueInput[]
-  }
-
   export type ParticipanteSalaCreateNestedManyWithoutSalaInput = {
     create?: XOR<ParticipanteSalaCreateWithoutSalaInput, ParticipanteSalaUncheckedCreateWithoutSalaInput> | ParticipanteSalaCreateWithoutSalaInput[] | ParticipanteSalaUncheckedCreateWithoutSalaInput[]
     connectOrCreate?: ParticipanteSalaCreateOrConnectWithoutSalaInput | ParticipanteSalaCreateOrConnectWithoutSalaInput[]
@@ -12839,13 +7019,6 @@ export namespace Prisma {
     connectOrCreate?: VotoCreateOrConnectWithoutSalaInput | VotoCreateOrConnectWithoutSalaInput[]
     createMany?: VotoCreateManySalaInputEnvelope
     connect?: VotoWhereUniqueInput | VotoWhereUniqueInput[]
-  }
-
-  export type HistoriaUncheckedCreateNestedManyWithoutSalaInput = {
-    create?: XOR<HistoriaCreateWithoutSalaInput, HistoriaUncheckedCreateWithoutSalaInput> | HistoriaCreateWithoutSalaInput[] | HistoriaUncheckedCreateWithoutSalaInput[]
-    connectOrCreate?: HistoriaCreateOrConnectWithoutSalaInput | HistoriaCreateOrConnectWithoutSalaInput[]
-    createMany?: HistoriaCreateManySalaInputEnvelope
-    connect?: HistoriaWhereUniqueInput | HistoriaWhereUniqueInput[]
   }
 
   export type ParticipanteSalaUncheckedCreateNestedManyWithoutSalaInput = {
@@ -12868,20 +7041,6 @@ export namespace Prisma {
     decrement?: number
     multiply?: number
     divide?: number
-  }
-
-  export type HistoriaUpdateManyWithoutSalaNestedInput = {
-    create?: XOR<HistoriaCreateWithoutSalaInput, HistoriaUncheckedCreateWithoutSalaInput> | HistoriaCreateWithoutSalaInput[] | HistoriaUncheckedCreateWithoutSalaInput[]
-    connectOrCreate?: HistoriaCreateOrConnectWithoutSalaInput | HistoriaCreateOrConnectWithoutSalaInput[]
-    upsert?: HistoriaUpsertWithWhereUniqueWithoutSalaInput | HistoriaUpsertWithWhereUniqueWithoutSalaInput[]
-    createMany?: HistoriaCreateManySalaInputEnvelope
-    set?: HistoriaWhereUniqueInput | HistoriaWhereUniqueInput[]
-    disconnect?: HistoriaWhereUniqueInput | HistoriaWhereUniqueInput[]
-    delete?: HistoriaWhereUniqueInput | HistoriaWhereUniqueInput[]
-    connect?: HistoriaWhereUniqueInput | HistoriaWhereUniqueInput[]
-    update?: HistoriaUpdateWithWhereUniqueWithoutSalaInput | HistoriaUpdateWithWhereUniqueWithoutSalaInput[]
-    updateMany?: HistoriaUpdateManyWithWhereWithoutSalaInput | HistoriaUpdateManyWithWhereWithoutSalaInput[]
-    deleteMany?: HistoriaScalarWhereInput | HistoriaScalarWhereInput[]
   }
 
   export type ParticipanteSalaUpdateManyWithoutSalaNestedInput = {
@@ -12918,20 +7077,6 @@ export namespace Prisma {
     update?: VotoUpdateWithWhereUniqueWithoutSalaInput | VotoUpdateWithWhereUniqueWithoutSalaInput[]
     updateMany?: VotoUpdateManyWithWhereWithoutSalaInput | VotoUpdateManyWithWhereWithoutSalaInput[]
     deleteMany?: VotoScalarWhereInput | VotoScalarWhereInput[]
-  }
-
-  export type HistoriaUncheckedUpdateManyWithoutSalaNestedInput = {
-    create?: XOR<HistoriaCreateWithoutSalaInput, HistoriaUncheckedCreateWithoutSalaInput> | HistoriaCreateWithoutSalaInput[] | HistoriaUncheckedCreateWithoutSalaInput[]
-    connectOrCreate?: HistoriaCreateOrConnectWithoutSalaInput | HistoriaCreateOrConnectWithoutSalaInput[]
-    upsert?: HistoriaUpsertWithWhereUniqueWithoutSalaInput | HistoriaUpsertWithWhereUniqueWithoutSalaInput[]
-    createMany?: HistoriaCreateManySalaInputEnvelope
-    set?: HistoriaWhereUniqueInput | HistoriaWhereUniqueInput[]
-    disconnect?: HistoriaWhereUniqueInput | HistoriaWhereUniqueInput[]
-    delete?: HistoriaWhereUniqueInput | HistoriaWhereUniqueInput[]
-    connect?: HistoriaWhereUniqueInput | HistoriaWhereUniqueInput[]
-    update?: HistoriaUpdateWithWhereUniqueWithoutSalaInput | HistoriaUpdateWithWhereUniqueWithoutSalaInput[]
-    updateMany?: HistoriaUpdateManyWithWhereWithoutSalaInput | HistoriaUpdateManyWithWhereWithoutSalaInput[]
-    deleteMany?: HistoriaScalarWhereInput | HistoriaScalarWhereInput[]
   }
 
   export type ParticipanteSalaUncheckedUpdateManyWithoutSalaNestedInput = {
@@ -12990,82 +7135,6 @@ export namespace Prisma {
     update?: XOR<XOR<SalaUpdateToOneWithWhereWithoutParticipantesInput, SalaUpdateWithoutParticipantesInput>, SalaUncheckedUpdateWithoutParticipantesInput>
   }
 
-  export type PessoaCreateNestedOneWithoutHistoriasCriadasInput = {
-    create?: XOR<PessoaCreateWithoutHistoriasCriadasInput, PessoaUncheckedCreateWithoutHistoriasCriadasInput>
-    connectOrCreate?: PessoaCreateOrConnectWithoutHistoriasCriadasInput
-    connect?: PessoaWhereUniqueInput
-  }
-
-  export type SalaCreateNestedOneWithoutHistoriasInput = {
-    create?: XOR<SalaCreateWithoutHistoriasInput, SalaUncheckedCreateWithoutHistoriasInput>
-    connectOrCreate?: SalaCreateOrConnectWithoutHistoriasInput
-    connect?: SalaWhereUniqueInput
-  }
-
-  export type VotoCreateNestedManyWithoutHistoriaInput = {
-    create?: XOR<VotoCreateWithoutHistoriaInput, VotoUncheckedCreateWithoutHistoriaInput> | VotoCreateWithoutHistoriaInput[] | VotoUncheckedCreateWithoutHistoriaInput[]
-    connectOrCreate?: VotoCreateOrConnectWithoutHistoriaInput | VotoCreateOrConnectWithoutHistoriaInput[]
-    createMany?: VotoCreateManyHistoriaInputEnvelope
-    connect?: VotoWhereUniqueInput | VotoWhereUniqueInput[]
-  }
-
-  export type VotoUncheckedCreateNestedManyWithoutHistoriaInput = {
-    create?: XOR<VotoCreateWithoutHistoriaInput, VotoUncheckedCreateWithoutHistoriaInput> | VotoCreateWithoutHistoriaInput[] | VotoUncheckedCreateWithoutHistoriaInput[]
-    connectOrCreate?: VotoCreateOrConnectWithoutHistoriaInput | VotoCreateOrConnectWithoutHistoriaInput[]
-    createMany?: VotoCreateManyHistoriaInputEnvelope
-    connect?: VotoWhereUniqueInput | VotoWhereUniqueInput[]
-  }
-
-  export type PessoaUpdateOneRequiredWithoutHistoriasCriadasNestedInput = {
-    create?: XOR<PessoaCreateWithoutHistoriasCriadasInput, PessoaUncheckedCreateWithoutHistoriasCriadasInput>
-    connectOrCreate?: PessoaCreateOrConnectWithoutHistoriasCriadasInput
-    upsert?: PessoaUpsertWithoutHistoriasCriadasInput
-    connect?: PessoaWhereUniqueInput
-    update?: XOR<XOR<PessoaUpdateToOneWithWhereWithoutHistoriasCriadasInput, PessoaUpdateWithoutHistoriasCriadasInput>, PessoaUncheckedUpdateWithoutHistoriasCriadasInput>
-  }
-
-  export type SalaUpdateOneRequiredWithoutHistoriasNestedInput = {
-    create?: XOR<SalaCreateWithoutHistoriasInput, SalaUncheckedCreateWithoutHistoriasInput>
-    connectOrCreate?: SalaCreateOrConnectWithoutHistoriasInput
-    upsert?: SalaUpsertWithoutHistoriasInput
-    connect?: SalaWhereUniqueInput
-    update?: XOR<XOR<SalaUpdateToOneWithWhereWithoutHistoriasInput, SalaUpdateWithoutHistoriasInput>, SalaUncheckedUpdateWithoutHistoriasInput>
-  }
-
-  export type VotoUpdateManyWithoutHistoriaNestedInput = {
-    create?: XOR<VotoCreateWithoutHistoriaInput, VotoUncheckedCreateWithoutHistoriaInput> | VotoCreateWithoutHistoriaInput[] | VotoUncheckedCreateWithoutHistoriaInput[]
-    connectOrCreate?: VotoCreateOrConnectWithoutHistoriaInput | VotoCreateOrConnectWithoutHistoriaInput[]
-    upsert?: VotoUpsertWithWhereUniqueWithoutHistoriaInput | VotoUpsertWithWhereUniqueWithoutHistoriaInput[]
-    createMany?: VotoCreateManyHistoriaInputEnvelope
-    set?: VotoWhereUniqueInput | VotoWhereUniqueInput[]
-    disconnect?: VotoWhereUniqueInput | VotoWhereUniqueInput[]
-    delete?: VotoWhereUniqueInput | VotoWhereUniqueInput[]
-    connect?: VotoWhereUniqueInput | VotoWhereUniqueInput[]
-    update?: VotoUpdateWithWhereUniqueWithoutHistoriaInput | VotoUpdateWithWhereUniqueWithoutHistoriaInput[]
-    updateMany?: VotoUpdateManyWithWhereWithoutHistoriaInput | VotoUpdateManyWithWhereWithoutHistoriaInput[]
-    deleteMany?: VotoScalarWhereInput | VotoScalarWhereInput[]
-  }
-
-  export type VotoUncheckedUpdateManyWithoutHistoriaNestedInput = {
-    create?: XOR<VotoCreateWithoutHistoriaInput, VotoUncheckedCreateWithoutHistoriaInput> | VotoCreateWithoutHistoriaInput[] | VotoUncheckedCreateWithoutHistoriaInput[]
-    connectOrCreate?: VotoCreateOrConnectWithoutHistoriaInput | VotoCreateOrConnectWithoutHistoriaInput[]
-    upsert?: VotoUpsertWithWhereUniqueWithoutHistoriaInput | VotoUpsertWithWhereUniqueWithoutHistoriaInput[]
-    createMany?: VotoCreateManyHistoriaInputEnvelope
-    set?: VotoWhereUniqueInput | VotoWhereUniqueInput[]
-    disconnect?: VotoWhereUniqueInput | VotoWhereUniqueInput[]
-    delete?: VotoWhereUniqueInput | VotoWhereUniqueInput[]
-    connect?: VotoWhereUniqueInput | VotoWhereUniqueInput[]
-    update?: VotoUpdateWithWhereUniqueWithoutHistoriaInput | VotoUpdateWithWhereUniqueWithoutHistoriaInput[]
-    updateMany?: VotoUpdateManyWithWhereWithoutHistoriaInput | VotoUpdateManyWithWhereWithoutHistoriaInput[]
-    deleteMany?: VotoScalarWhereInput | VotoScalarWhereInput[]
-  }
-
-  export type HistoriaCreateNestedOneWithoutVotosInput = {
-    create?: XOR<HistoriaCreateWithoutVotosInput, HistoriaUncheckedCreateWithoutVotosInput>
-    connectOrCreate?: HistoriaCreateOrConnectWithoutVotosInput
-    connect?: HistoriaWhereUniqueInput
-  }
-
   export type PessoaCreateNestedOneWithoutVotosInput = {
     create?: XOR<PessoaCreateWithoutVotosInput, PessoaUncheckedCreateWithoutVotosInput>
     connectOrCreate?: PessoaCreateOrConnectWithoutVotosInput
@@ -13076,14 +7145,6 @@ export namespace Prisma {
     create?: XOR<SalaCreateWithoutVotosInput, SalaUncheckedCreateWithoutVotosInput>
     connectOrCreate?: SalaCreateOrConnectWithoutVotosInput
     connect?: SalaWhereUniqueInput
-  }
-
-  export type HistoriaUpdateOneRequiredWithoutVotosNestedInput = {
-    create?: XOR<HistoriaCreateWithoutVotosInput, HistoriaUncheckedCreateWithoutVotosInput>
-    connectOrCreate?: HistoriaCreateOrConnectWithoutVotosInput
-    upsert?: HistoriaUpsertWithoutVotosInput
-    connect?: HistoriaWhereUniqueInput
-    update?: XOR<XOR<HistoriaUpdateToOneWithWhereWithoutVotosInput, HistoriaUpdateWithoutVotosInput>, HistoriaUncheckedUpdateWithoutVotosInput>
   }
 
   export type PessoaUpdateOneRequiredWithoutVotosNestedInput = {
@@ -13276,60 +7337,6 @@ export namespace Prisma {
     not?: NestedFloatFilter<$PrismaModel> | number
   }
 
-  export type HistoriaCreateWithoutCriadorInput = {
-    id?: string
-    titulo: string
-    descricao?: string | null
-    data_criacao?: Date | string
-    data_alteracao?: Date | string
-    finalizada?: boolean
-    sala: SalaCreateNestedOneWithoutHistoriasInput
-    votos?: VotoCreateNestedManyWithoutHistoriaInput
-  }
-
-  export type HistoriaUncheckedCreateWithoutCriadorInput = {
-    id?: string
-    titulo: string
-    descricao?: string | null
-    sala_id: string
-    data_criacao?: Date | string
-    data_alteracao?: Date | string
-    finalizada?: boolean
-    votos?: VotoUncheckedCreateNestedManyWithoutHistoriaInput
-  }
-
-  export type HistoriaCreateOrConnectWithoutCriadorInput = {
-    where: HistoriaWhereUniqueInput
-    create: XOR<HistoriaCreateWithoutCriadorInput, HistoriaUncheckedCreateWithoutCriadorInput>
-  }
-
-  export type HistoriaCreateManyCriadorInputEnvelope = {
-    data: HistoriaCreateManyCriadorInput | HistoriaCreateManyCriadorInput[]
-    skipDuplicates?: boolean
-  }
-
-  export type MembroEquipeCreateWithoutPessoaInput = {
-    id?: string
-    proprietario?: boolean
-    equipe: EquipeCreateNestedOneWithoutMembrosInput
-  }
-
-  export type MembroEquipeUncheckedCreateWithoutPessoaInput = {
-    id?: string
-    equipe_id: string
-    proprietario?: boolean
-  }
-
-  export type MembroEquipeCreateOrConnectWithoutPessoaInput = {
-    where: MembroEquipeWhereUniqueInput
-    create: XOR<MembroEquipeCreateWithoutPessoaInput, MembroEquipeUncheckedCreateWithoutPessoaInput>
-  }
-
-  export type MembroEquipeCreateManyPessoaInputEnvelope = {
-    data: MembroEquipeCreateManyPessoaInput | MembroEquipeCreateManyPessoaInput[]
-    skipDuplicates?: boolean
-  }
-
   export type ParticipanteSalaCreateWithoutPessoaInput = {
     id?: string
     adicionado?: Date | string
@@ -13360,7 +7367,6 @@ export namespace Prisma {
     inativo?: boolean
     data_criacao?: Date | string
     data_alteracao?: Date | string
-    historias?: HistoriaCreateNestedManyWithoutSalaInput
     participantes?: ParticipanteSalaCreateNestedManyWithoutSalaInput
     votos?: VotoCreateNestedManyWithoutSalaInput
   }
@@ -13373,7 +7379,6 @@ export namespace Prisma {
     inativo?: boolean
     data_criacao?: Date | string
     data_alteracao?: Date | string
-    historias?: HistoriaUncheckedCreateNestedManyWithoutSalaInput
     participantes?: ParticipanteSalaUncheckedCreateNestedManyWithoutSalaInput
     votos?: VotoUncheckedCreateNestedManyWithoutSalaInput
   }
@@ -13392,14 +7397,12 @@ export namespace Prisma {
     id?: string
     valor: number
     data_voto?: Date | string
-    historia: HistoriaCreateNestedOneWithoutVotosInput
     sala: SalaCreateNestedOneWithoutVotosInput
   }
 
   export type VotoUncheckedCreateWithoutPessoaInput = {
     id?: string
     sala_id: string
-    historia_id: string
     valor: number
     data_voto?: Date | string
   }
@@ -13412,62 +7415,6 @@ export namespace Prisma {
   export type VotoCreateManyPessoaInputEnvelope = {
     data: VotoCreateManyPessoaInput | VotoCreateManyPessoaInput[]
     skipDuplicates?: boolean
-  }
-
-  export type HistoriaUpsertWithWhereUniqueWithoutCriadorInput = {
-    where: HistoriaWhereUniqueInput
-    update: XOR<HistoriaUpdateWithoutCriadorInput, HistoriaUncheckedUpdateWithoutCriadorInput>
-    create: XOR<HistoriaCreateWithoutCriadorInput, HistoriaUncheckedCreateWithoutCriadorInput>
-  }
-
-  export type HistoriaUpdateWithWhereUniqueWithoutCriadorInput = {
-    where: HistoriaWhereUniqueInput
-    data: XOR<HistoriaUpdateWithoutCriadorInput, HistoriaUncheckedUpdateWithoutCriadorInput>
-  }
-
-  export type HistoriaUpdateManyWithWhereWithoutCriadorInput = {
-    where: HistoriaScalarWhereInput
-    data: XOR<HistoriaUpdateManyMutationInput, HistoriaUncheckedUpdateManyWithoutCriadorInput>
-  }
-
-  export type HistoriaScalarWhereInput = {
-    AND?: HistoriaScalarWhereInput | HistoriaScalarWhereInput[]
-    OR?: HistoriaScalarWhereInput[]
-    NOT?: HistoriaScalarWhereInput | HistoriaScalarWhereInput[]
-    id?: StringFilter<"Historia"> | string
-    titulo?: StringFilter<"Historia"> | string
-    descricao?: StringNullableFilter<"Historia"> | string | null
-    sala_id?: StringFilter<"Historia"> | string
-    criado_por?: StringFilter<"Historia"> | string
-    data_criacao?: DateTimeFilter<"Historia"> | Date | string
-    data_alteracao?: DateTimeFilter<"Historia"> | Date | string
-    finalizada?: BoolFilter<"Historia"> | boolean
-  }
-
-  export type MembroEquipeUpsertWithWhereUniqueWithoutPessoaInput = {
-    where: MembroEquipeWhereUniqueInput
-    update: XOR<MembroEquipeUpdateWithoutPessoaInput, MembroEquipeUncheckedUpdateWithoutPessoaInput>
-    create: XOR<MembroEquipeCreateWithoutPessoaInput, MembroEquipeUncheckedCreateWithoutPessoaInput>
-  }
-
-  export type MembroEquipeUpdateWithWhereUniqueWithoutPessoaInput = {
-    where: MembroEquipeWhereUniqueInput
-    data: XOR<MembroEquipeUpdateWithoutPessoaInput, MembroEquipeUncheckedUpdateWithoutPessoaInput>
-  }
-
-  export type MembroEquipeUpdateManyWithWhereWithoutPessoaInput = {
-    where: MembroEquipeScalarWhereInput
-    data: XOR<MembroEquipeUpdateManyMutationInput, MembroEquipeUncheckedUpdateManyWithoutPessoaInput>
-  }
-
-  export type MembroEquipeScalarWhereInput = {
-    AND?: MembroEquipeScalarWhereInput | MembroEquipeScalarWhereInput[]
-    OR?: MembroEquipeScalarWhereInput[]
-    NOT?: MembroEquipeScalarWhereInput | MembroEquipeScalarWhereInput[]
-    id?: StringFilter<"MembroEquipe"> | string
-    pessoa_id?: StringFilter<"MembroEquipe"> | string
-    equipe_id?: StringFilter<"MembroEquipe"> | string
-    proprietario?: BoolFilter<"MembroEquipe"> | boolean
   }
 
   export type ParticipanteSalaUpsertWithWhereUniqueWithoutPessoaInput = {
@@ -13549,310 +7496,8 @@ export namespace Prisma {
     id?: StringFilter<"Voto"> | string
     pessoa_id?: StringFilter<"Voto"> | string
     sala_id?: StringFilter<"Voto"> | string
-    historia_id?: StringFilter<"Voto"> | string
     valor?: IntFilter<"Voto"> | number
     data_voto?: DateTimeFilter<"Voto"> | Date | string
-  }
-
-  export type MembroEquipeCreateWithoutEquipeInput = {
-    id?: string
-    proprietario?: boolean
-    pessoa: PessoaCreateNestedOneWithoutEquipesMembroInput
-  }
-
-  export type MembroEquipeUncheckedCreateWithoutEquipeInput = {
-    id?: string
-    pessoa_id: string
-    proprietario?: boolean
-  }
-
-  export type MembroEquipeCreateOrConnectWithoutEquipeInput = {
-    where: MembroEquipeWhereUniqueInput
-    create: XOR<MembroEquipeCreateWithoutEquipeInput, MembroEquipeUncheckedCreateWithoutEquipeInput>
-  }
-
-  export type MembroEquipeCreateManyEquipeInputEnvelope = {
-    data: MembroEquipeCreateManyEquipeInput | MembroEquipeCreateManyEquipeInput[]
-    skipDuplicates?: boolean
-  }
-
-  export type ProjetoCreateWithoutEquipeInput = {
-    id?: string
-    nome: string
-    inativo?: boolean
-    gerente_id?: string | null
-  }
-
-  export type ProjetoUncheckedCreateWithoutEquipeInput = {
-    id?: string
-    nome: string
-    inativo?: boolean
-    gerente_id?: string | null
-  }
-
-  export type ProjetoCreateOrConnectWithoutEquipeInput = {
-    where: ProjetoWhereUniqueInput
-    create: XOR<ProjetoCreateWithoutEquipeInput, ProjetoUncheckedCreateWithoutEquipeInput>
-  }
-
-  export type ProjetoCreateManyEquipeInputEnvelope = {
-    data: ProjetoCreateManyEquipeInput | ProjetoCreateManyEquipeInput[]
-    skipDuplicates?: boolean
-  }
-
-  export type MembroEquipeUpsertWithWhereUniqueWithoutEquipeInput = {
-    where: MembroEquipeWhereUniqueInput
-    update: XOR<MembroEquipeUpdateWithoutEquipeInput, MembroEquipeUncheckedUpdateWithoutEquipeInput>
-    create: XOR<MembroEquipeCreateWithoutEquipeInput, MembroEquipeUncheckedCreateWithoutEquipeInput>
-  }
-
-  export type MembroEquipeUpdateWithWhereUniqueWithoutEquipeInput = {
-    where: MembroEquipeWhereUniqueInput
-    data: XOR<MembroEquipeUpdateWithoutEquipeInput, MembroEquipeUncheckedUpdateWithoutEquipeInput>
-  }
-
-  export type MembroEquipeUpdateManyWithWhereWithoutEquipeInput = {
-    where: MembroEquipeScalarWhereInput
-    data: XOR<MembroEquipeUpdateManyMutationInput, MembroEquipeUncheckedUpdateManyWithoutEquipeInput>
-  }
-
-  export type ProjetoUpsertWithWhereUniqueWithoutEquipeInput = {
-    where: ProjetoWhereUniqueInput
-    update: XOR<ProjetoUpdateWithoutEquipeInput, ProjetoUncheckedUpdateWithoutEquipeInput>
-    create: XOR<ProjetoCreateWithoutEquipeInput, ProjetoUncheckedCreateWithoutEquipeInput>
-  }
-
-  export type ProjetoUpdateWithWhereUniqueWithoutEquipeInput = {
-    where: ProjetoWhereUniqueInput
-    data: XOR<ProjetoUpdateWithoutEquipeInput, ProjetoUncheckedUpdateWithoutEquipeInput>
-  }
-
-  export type ProjetoUpdateManyWithWhereWithoutEquipeInput = {
-    where: ProjetoScalarWhereInput
-    data: XOR<ProjetoUpdateManyMutationInput, ProjetoUncheckedUpdateManyWithoutEquipeInput>
-  }
-
-  export type ProjetoScalarWhereInput = {
-    AND?: ProjetoScalarWhereInput | ProjetoScalarWhereInput[]
-    OR?: ProjetoScalarWhereInput[]
-    NOT?: ProjetoScalarWhereInput | ProjetoScalarWhereInput[]
-    id?: StringFilter<"Projeto"> | string
-    nome?: StringFilter<"Projeto"> | string
-    equipe_id?: StringFilter<"Projeto"> | string
-    inativo?: BoolFilter<"Projeto"> | boolean
-    gerente_id?: StringNullableFilter<"Projeto"> | string | null
-  }
-
-  export type EquipeCreateWithoutMembrosInput = {
-    id?: string
-    nome: string
-    inativo?: boolean
-    projetos?: ProjetoCreateNestedManyWithoutEquipeInput
-  }
-
-  export type EquipeUncheckedCreateWithoutMembrosInput = {
-    id?: string
-    nome: string
-    inativo?: boolean
-    projetos?: ProjetoUncheckedCreateNestedManyWithoutEquipeInput
-  }
-
-  export type EquipeCreateOrConnectWithoutMembrosInput = {
-    where: EquipeWhereUniqueInput
-    create: XOR<EquipeCreateWithoutMembrosInput, EquipeUncheckedCreateWithoutMembrosInput>
-  }
-
-  export type PessoaCreateWithoutEquipesMembroInput = {
-    id?: string
-    nome: string
-    email: string
-    email_hash: string
-    email_confirmado?: boolean
-    codigo_confirmacao?: string | null
-    codigo_confirmacao_hash?: string | null
-    codigo_expiracao?: Date | string | null
-    senha: string
-    ultima_senha: string
-    inativo?: boolean
-    data_criacao?: Date | string
-    historiasCriadas?: HistoriaCreateNestedManyWithoutCriadorInput
-    participacoes?: ParticipanteSalaCreateNestedManyWithoutPessoaInput
-    salasCriadas?: SalaCreateNestedManyWithoutProprietarioInput
-    votos?: VotoCreateNestedManyWithoutPessoaInput
-  }
-
-  export type PessoaUncheckedCreateWithoutEquipesMembroInput = {
-    id?: string
-    nome: string
-    email: string
-    email_hash: string
-    email_confirmado?: boolean
-    codigo_confirmacao?: string | null
-    codigo_confirmacao_hash?: string | null
-    codigo_expiracao?: Date | string | null
-    senha: string
-    ultima_senha: string
-    inativo?: boolean
-    data_criacao?: Date | string
-    historiasCriadas?: HistoriaUncheckedCreateNestedManyWithoutCriadorInput
-    participacoes?: ParticipanteSalaUncheckedCreateNestedManyWithoutPessoaInput
-    salasCriadas?: SalaUncheckedCreateNestedManyWithoutProprietarioInput
-    votos?: VotoUncheckedCreateNestedManyWithoutPessoaInput
-  }
-
-  export type PessoaCreateOrConnectWithoutEquipesMembroInput = {
-    where: PessoaWhereUniqueInput
-    create: XOR<PessoaCreateWithoutEquipesMembroInput, PessoaUncheckedCreateWithoutEquipesMembroInput>
-  }
-
-  export type EquipeUpsertWithoutMembrosInput = {
-    update: XOR<EquipeUpdateWithoutMembrosInput, EquipeUncheckedUpdateWithoutMembrosInput>
-    create: XOR<EquipeCreateWithoutMembrosInput, EquipeUncheckedCreateWithoutMembrosInput>
-    where?: EquipeWhereInput
-  }
-
-  export type EquipeUpdateToOneWithWhereWithoutMembrosInput = {
-    where?: EquipeWhereInput
-    data: XOR<EquipeUpdateWithoutMembrosInput, EquipeUncheckedUpdateWithoutMembrosInput>
-  }
-
-  export type EquipeUpdateWithoutMembrosInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    nome?: StringFieldUpdateOperationsInput | string
-    inativo?: BoolFieldUpdateOperationsInput | boolean
-    projetos?: ProjetoUpdateManyWithoutEquipeNestedInput
-  }
-
-  export type EquipeUncheckedUpdateWithoutMembrosInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    nome?: StringFieldUpdateOperationsInput | string
-    inativo?: BoolFieldUpdateOperationsInput | boolean
-    projetos?: ProjetoUncheckedUpdateManyWithoutEquipeNestedInput
-  }
-
-  export type PessoaUpsertWithoutEquipesMembroInput = {
-    update: XOR<PessoaUpdateWithoutEquipesMembroInput, PessoaUncheckedUpdateWithoutEquipesMembroInput>
-    create: XOR<PessoaCreateWithoutEquipesMembroInput, PessoaUncheckedCreateWithoutEquipesMembroInput>
-    where?: PessoaWhereInput
-  }
-
-  export type PessoaUpdateToOneWithWhereWithoutEquipesMembroInput = {
-    where?: PessoaWhereInput
-    data: XOR<PessoaUpdateWithoutEquipesMembroInput, PessoaUncheckedUpdateWithoutEquipesMembroInput>
-  }
-
-  export type PessoaUpdateWithoutEquipesMembroInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    nome?: StringFieldUpdateOperationsInput | string
-    email?: StringFieldUpdateOperationsInput | string
-    email_hash?: StringFieldUpdateOperationsInput | string
-    email_confirmado?: BoolFieldUpdateOperationsInput | boolean
-    codigo_confirmacao?: NullableStringFieldUpdateOperationsInput | string | null
-    codigo_confirmacao_hash?: NullableStringFieldUpdateOperationsInput | string | null
-    codigo_expiracao?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    senha?: StringFieldUpdateOperationsInput | string
-    ultima_senha?: StringFieldUpdateOperationsInput | string
-    inativo?: BoolFieldUpdateOperationsInput | boolean
-    data_criacao?: DateTimeFieldUpdateOperationsInput | Date | string
-    historiasCriadas?: HistoriaUpdateManyWithoutCriadorNestedInput
-    participacoes?: ParticipanteSalaUpdateManyWithoutPessoaNestedInput
-    salasCriadas?: SalaUpdateManyWithoutProprietarioNestedInput
-    votos?: VotoUpdateManyWithoutPessoaNestedInput
-  }
-
-  export type PessoaUncheckedUpdateWithoutEquipesMembroInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    nome?: StringFieldUpdateOperationsInput | string
-    email?: StringFieldUpdateOperationsInput | string
-    email_hash?: StringFieldUpdateOperationsInput | string
-    email_confirmado?: BoolFieldUpdateOperationsInput | boolean
-    codigo_confirmacao?: NullableStringFieldUpdateOperationsInput | string | null
-    codigo_confirmacao_hash?: NullableStringFieldUpdateOperationsInput | string | null
-    codigo_expiracao?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    senha?: StringFieldUpdateOperationsInput | string
-    ultima_senha?: StringFieldUpdateOperationsInput | string
-    inativo?: BoolFieldUpdateOperationsInput | boolean
-    data_criacao?: DateTimeFieldUpdateOperationsInput | Date | string
-    historiasCriadas?: HistoriaUncheckedUpdateManyWithoutCriadorNestedInput
-    participacoes?: ParticipanteSalaUncheckedUpdateManyWithoutPessoaNestedInput
-    salasCriadas?: SalaUncheckedUpdateManyWithoutProprietarioNestedInput
-    votos?: VotoUncheckedUpdateManyWithoutPessoaNestedInput
-  }
-
-  export type EquipeCreateWithoutProjetosInput = {
-    id?: string
-    nome: string
-    inativo?: boolean
-    membros?: MembroEquipeCreateNestedManyWithoutEquipeInput
-  }
-
-  export type EquipeUncheckedCreateWithoutProjetosInput = {
-    id?: string
-    nome: string
-    inativo?: boolean
-    membros?: MembroEquipeUncheckedCreateNestedManyWithoutEquipeInput
-  }
-
-  export type EquipeCreateOrConnectWithoutProjetosInput = {
-    where: EquipeWhereUniqueInput
-    create: XOR<EquipeCreateWithoutProjetosInput, EquipeUncheckedCreateWithoutProjetosInput>
-  }
-
-  export type EquipeUpsertWithoutProjetosInput = {
-    update: XOR<EquipeUpdateWithoutProjetosInput, EquipeUncheckedUpdateWithoutProjetosInput>
-    create: XOR<EquipeCreateWithoutProjetosInput, EquipeUncheckedCreateWithoutProjetosInput>
-    where?: EquipeWhereInput
-  }
-
-  export type EquipeUpdateToOneWithWhereWithoutProjetosInput = {
-    where?: EquipeWhereInput
-    data: XOR<EquipeUpdateWithoutProjetosInput, EquipeUncheckedUpdateWithoutProjetosInput>
-  }
-
-  export type EquipeUpdateWithoutProjetosInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    nome?: StringFieldUpdateOperationsInput | string
-    inativo?: BoolFieldUpdateOperationsInput | boolean
-    membros?: MembroEquipeUpdateManyWithoutEquipeNestedInput
-  }
-
-  export type EquipeUncheckedUpdateWithoutProjetosInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    nome?: StringFieldUpdateOperationsInput | string
-    inativo?: BoolFieldUpdateOperationsInput | boolean
-    membros?: MembroEquipeUncheckedUpdateManyWithoutEquipeNestedInput
-  }
-
-  export type HistoriaCreateWithoutSalaInput = {
-    id?: string
-    titulo: string
-    descricao?: string | null
-    data_criacao?: Date | string
-    data_alteracao?: Date | string
-    finalizada?: boolean
-    criador: PessoaCreateNestedOneWithoutHistoriasCriadasInput
-    votos?: VotoCreateNestedManyWithoutHistoriaInput
-  }
-
-  export type HistoriaUncheckedCreateWithoutSalaInput = {
-    id?: string
-    titulo: string
-    descricao?: string | null
-    criado_por: string
-    data_criacao?: Date | string
-    data_alteracao?: Date | string
-    finalizada?: boolean
-    votos?: VotoUncheckedCreateNestedManyWithoutHistoriaInput
-  }
-
-  export type HistoriaCreateOrConnectWithoutSalaInput = {
-    where: HistoriaWhereUniqueInput
-    create: XOR<HistoriaCreateWithoutSalaInput, HistoriaUncheckedCreateWithoutSalaInput>
-  }
-
-  export type HistoriaCreateManySalaInputEnvelope = {
-    data: HistoriaCreateManySalaInput | HistoriaCreateManySalaInput[]
-    skipDuplicates?: boolean
   }
 
   export type ParticipanteSalaCreateWithoutSalaInput = {
@@ -13887,11 +7532,8 @@ export namespace Prisma {
     codigo_confirmacao_hash?: string | null
     codigo_expiracao?: Date | string | null
     senha: string
-    ultima_senha: string
     inativo?: boolean
     data_criacao?: Date | string
-    historiasCriadas?: HistoriaCreateNestedManyWithoutCriadorInput
-    equipesMembro?: MembroEquipeCreateNestedManyWithoutPessoaInput
     participacoes?: ParticipanteSalaCreateNestedManyWithoutPessoaInput
     votos?: VotoCreateNestedManyWithoutPessoaInput
   }
@@ -13906,11 +7548,8 @@ export namespace Prisma {
     codigo_confirmacao_hash?: string | null
     codigo_expiracao?: Date | string | null
     senha: string
-    ultima_senha: string
     inativo?: boolean
     data_criacao?: Date | string
-    historiasCriadas?: HistoriaUncheckedCreateNestedManyWithoutCriadorInput
-    equipesMembro?: MembroEquipeUncheckedCreateNestedManyWithoutPessoaInput
     participacoes?: ParticipanteSalaUncheckedCreateNestedManyWithoutPessoaInput
     votos?: VotoUncheckedCreateNestedManyWithoutPessoaInput
   }
@@ -13924,14 +7563,12 @@ export namespace Prisma {
     id?: string
     valor: number
     data_voto?: Date | string
-    historia: HistoriaCreateNestedOneWithoutVotosInput
     pessoa: PessoaCreateNestedOneWithoutVotosInput
   }
 
   export type VotoUncheckedCreateWithoutSalaInput = {
     id?: string
     pessoa_id: string
-    historia_id: string
     valor: number
     data_voto?: Date | string
   }
@@ -13944,22 +7581,6 @@ export namespace Prisma {
   export type VotoCreateManySalaInputEnvelope = {
     data: VotoCreateManySalaInput | VotoCreateManySalaInput[]
     skipDuplicates?: boolean
-  }
-
-  export type HistoriaUpsertWithWhereUniqueWithoutSalaInput = {
-    where: HistoriaWhereUniqueInput
-    update: XOR<HistoriaUpdateWithoutSalaInput, HistoriaUncheckedUpdateWithoutSalaInput>
-    create: XOR<HistoriaCreateWithoutSalaInput, HistoriaUncheckedCreateWithoutSalaInput>
-  }
-
-  export type HistoriaUpdateWithWhereUniqueWithoutSalaInput = {
-    where: HistoriaWhereUniqueInput
-    data: XOR<HistoriaUpdateWithoutSalaInput, HistoriaUncheckedUpdateWithoutSalaInput>
-  }
-
-  export type HistoriaUpdateManyWithWhereWithoutSalaInput = {
-    where: HistoriaScalarWhereInput
-    data: XOR<HistoriaUpdateManyMutationInput, HistoriaUncheckedUpdateManyWithoutSalaInput>
   }
 
   export type ParticipanteSalaUpsertWithWhereUniqueWithoutSalaInput = {
@@ -13999,11 +7620,8 @@ export namespace Prisma {
     codigo_confirmacao_hash?: NullableStringFieldUpdateOperationsInput | string | null
     codigo_expiracao?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     senha?: StringFieldUpdateOperationsInput | string
-    ultima_senha?: StringFieldUpdateOperationsInput | string
     inativo?: BoolFieldUpdateOperationsInput | boolean
     data_criacao?: DateTimeFieldUpdateOperationsInput | Date | string
-    historiasCriadas?: HistoriaUpdateManyWithoutCriadorNestedInput
-    equipesMembro?: MembroEquipeUpdateManyWithoutPessoaNestedInput
     participacoes?: ParticipanteSalaUpdateManyWithoutPessoaNestedInput
     votos?: VotoUpdateManyWithoutPessoaNestedInput
   }
@@ -14018,11 +7636,8 @@ export namespace Prisma {
     codigo_confirmacao_hash?: NullableStringFieldUpdateOperationsInput | string | null
     codigo_expiracao?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     senha?: StringFieldUpdateOperationsInput | string
-    ultima_senha?: StringFieldUpdateOperationsInput | string
     inativo?: BoolFieldUpdateOperationsInput | boolean
     data_criacao?: DateTimeFieldUpdateOperationsInput | Date | string
-    historiasCriadas?: HistoriaUncheckedUpdateManyWithoutCriadorNestedInput
-    equipesMembro?: MembroEquipeUncheckedUpdateManyWithoutPessoaNestedInput
     participacoes?: ParticipanteSalaUncheckedUpdateManyWithoutPessoaNestedInput
     votos?: VotoUncheckedUpdateManyWithoutPessoaNestedInput
   }
@@ -14053,11 +7668,8 @@ export namespace Prisma {
     codigo_confirmacao_hash?: string | null
     codigo_expiracao?: Date | string | null
     senha: string
-    ultima_senha: string
     inativo?: boolean
     data_criacao?: Date | string
-    historiasCriadas?: HistoriaCreateNestedManyWithoutCriadorInput
-    equipesMembro?: MembroEquipeCreateNestedManyWithoutPessoaInput
     salasCriadas?: SalaCreateNestedManyWithoutProprietarioInput
     votos?: VotoCreateNestedManyWithoutPessoaInput
   }
@@ -14072,11 +7684,8 @@ export namespace Prisma {
     codigo_confirmacao_hash?: string | null
     codigo_expiracao?: Date | string | null
     senha: string
-    ultima_senha: string
     inativo?: boolean
     data_criacao?: Date | string
-    historiasCriadas?: HistoriaUncheckedCreateNestedManyWithoutCriadorInput
-    equipesMembro?: MembroEquipeUncheckedCreateNestedManyWithoutPessoaInput
     salasCriadas?: SalaUncheckedCreateNestedManyWithoutProprietarioInput
     votos?: VotoUncheckedCreateNestedManyWithoutPessoaInput
   }
@@ -14094,7 +7703,6 @@ export namespace Prisma {
     inativo?: boolean
     data_criacao?: Date | string
     data_alteracao?: Date | string
-    historias?: HistoriaCreateNestedManyWithoutSalaInput
     proprietario: PessoaCreateNestedOneWithoutSalasCriadasInput
     votos?: VotoCreateNestedManyWithoutSalaInput
   }
@@ -14108,7 +7716,6 @@ export namespace Prisma {
     inativo?: boolean
     data_criacao?: Date | string
     data_alteracao?: Date | string
-    historias?: HistoriaUncheckedCreateNestedManyWithoutSalaInput
     votos?: VotoUncheckedCreateNestedManyWithoutSalaInput
   }
 
@@ -14138,11 +7745,8 @@ export namespace Prisma {
     codigo_confirmacao_hash?: NullableStringFieldUpdateOperationsInput | string | null
     codigo_expiracao?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     senha?: StringFieldUpdateOperationsInput | string
-    ultima_senha?: StringFieldUpdateOperationsInput | string
     inativo?: BoolFieldUpdateOperationsInput | boolean
     data_criacao?: DateTimeFieldUpdateOperationsInput | Date | string
-    historiasCriadas?: HistoriaUpdateManyWithoutCriadorNestedInput
-    equipesMembro?: MembroEquipeUpdateManyWithoutPessoaNestedInput
     salasCriadas?: SalaUpdateManyWithoutProprietarioNestedInput
     votos?: VotoUpdateManyWithoutPessoaNestedInput
   }
@@ -14157,11 +7761,8 @@ export namespace Prisma {
     codigo_confirmacao_hash?: NullableStringFieldUpdateOperationsInput | string | null
     codigo_expiracao?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     senha?: StringFieldUpdateOperationsInput | string
-    ultima_senha?: StringFieldUpdateOperationsInput | string
     inativo?: BoolFieldUpdateOperationsInput | boolean
     data_criacao?: DateTimeFieldUpdateOperationsInput | Date | string
-    historiasCriadas?: HistoriaUncheckedUpdateManyWithoutCriadorNestedInput
-    equipesMembro?: MembroEquipeUncheckedUpdateManyWithoutPessoaNestedInput
     salasCriadas?: SalaUncheckedUpdateManyWithoutProprietarioNestedInput
     votos?: VotoUncheckedUpdateManyWithoutPessoaNestedInput
   }
@@ -14185,7 +7786,6 @@ export namespace Prisma {
     inativo?: BoolFieldUpdateOperationsInput | boolean
     data_criacao?: DateTimeFieldUpdateOperationsInput | Date | string
     data_alteracao?: DateTimeFieldUpdateOperationsInput | Date | string
-    historias?: HistoriaUpdateManyWithoutSalaNestedInput
     proprietario?: PessoaUpdateOneRequiredWithoutSalasCriadasNestedInput
     votos?: VotoUpdateManyWithoutSalaNestedInput
   }
@@ -14199,237 +7799,7 @@ export namespace Prisma {
     inativo?: BoolFieldUpdateOperationsInput | boolean
     data_criacao?: DateTimeFieldUpdateOperationsInput | Date | string
     data_alteracao?: DateTimeFieldUpdateOperationsInput | Date | string
-    historias?: HistoriaUncheckedUpdateManyWithoutSalaNestedInput
     votos?: VotoUncheckedUpdateManyWithoutSalaNestedInput
-  }
-
-  export type PessoaCreateWithoutHistoriasCriadasInput = {
-    id?: string
-    nome: string
-    email: string
-    email_hash: string
-    email_confirmado?: boolean
-    codigo_confirmacao?: string | null
-    codigo_confirmacao_hash?: string | null
-    codigo_expiracao?: Date | string | null
-    senha: string
-    ultima_senha: string
-    inativo?: boolean
-    data_criacao?: Date | string
-    equipesMembro?: MembroEquipeCreateNestedManyWithoutPessoaInput
-    participacoes?: ParticipanteSalaCreateNestedManyWithoutPessoaInput
-    salasCriadas?: SalaCreateNestedManyWithoutProprietarioInput
-    votos?: VotoCreateNestedManyWithoutPessoaInput
-  }
-
-  export type PessoaUncheckedCreateWithoutHistoriasCriadasInput = {
-    id?: string
-    nome: string
-    email: string
-    email_hash: string
-    email_confirmado?: boolean
-    codigo_confirmacao?: string | null
-    codigo_confirmacao_hash?: string | null
-    codigo_expiracao?: Date | string | null
-    senha: string
-    ultima_senha: string
-    inativo?: boolean
-    data_criacao?: Date | string
-    equipesMembro?: MembroEquipeUncheckedCreateNestedManyWithoutPessoaInput
-    participacoes?: ParticipanteSalaUncheckedCreateNestedManyWithoutPessoaInput
-    salasCriadas?: SalaUncheckedCreateNestedManyWithoutProprietarioInput
-    votos?: VotoUncheckedCreateNestedManyWithoutPessoaInput
-  }
-
-  export type PessoaCreateOrConnectWithoutHistoriasCriadasInput = {
-    where: PessoaWhereUniqueInput
-    create: XOR<PessoaCreateWithoutHistoriasCriadasInput, PessoaUncheckedCreateWithoutHistoriasCriadasInput>
-  }
-
-  export type SalaCreateWithoutHistoriasInput = {
-    id?: string
-    codigo: number
-    titulo: string
-    senha?: string | null
-    inativo?: boolean
-    data_criacao?: Date | string
-    data_alteracao?: Date | string
-    participantes?: ParticipanteSalaCreateNestedManyWithoutSalaInput
-    proprietario: PessoaCreateNestedOneWithoutSalasCriadasInput
-    votos?: VotoCreateNestedManyWithoutSalaInput
-  }
-
-  export type SalaUncheckedCreateWithoutHistoriasInput = {
-    id?: string
-    codigo: number
-    titulo: string
-    criado_por: string
-    senha?: string | null
-    inativo?: boolean
-    data_criacao?: Date | string
-    data_alteracao?: Date | string
-    participantes?: ParticipanteSalaUncheckedCreateNestedManyWithoutSalaInput
-    votos?: VotoUncheckedCreateNestedManyWithoutSalaInput
-  }
-
-  export type SalaCreateOrConnectWithoutHistoriasInput = {
-    where: SalaWhereUniqueInput
-    create: XOR<SalaCreateWithoutHistoriasInput, SalaUncheckedCreateWithoutHistoriasInput>
-  }
-
-  export type VotoCreateWithoutHistoriaInput = {
-    id?: string
-    valor: number
-    data_voto?: Date | string
-    pessoa: PessoaCreateNestedOneWithoutVotosInput
-    sala: SalaCreateNestedOneWithoutVotosInput
-  }
-
-  export type VotoUncheckedCreateWithoutHistoriaInput = {
-    id?: string
-    pessoa_id: string
-    sala_id: string
-    valor: number
-    data_voto?: Date | string
-  }
-
-  export type VotoCreateOrConnectWithoutHistoriaInput = {
-    where: VotoWhereUniqueInput
-    create: XOR<VotoCreateWithoutHistoriaInput, VotoUncheckedCreateWithoutHistoriaInput>
-  }
-
-  export type VotoCreateManyHistoriaInputEnvelope = {
-    data: VotoCreateManyHistoriaInput | VotoCreateManyHistoriaInput[]
-    skipDuplicates?: boolean
-  }
-
-  export type PessoaUpsertWithoutHistoriasCriadasInput = {
-    update: XOR<PessoaUpdateWithoutHistoriasCriadasInput, PessoaUncheckedUpdateWithoutHistoriasCriadasInput>
-    create: XOR<PessoaCreateWithoutHistoriasCriadasInput, PessoaUncheckedCreateWithoutHistoriasCriadasInput>
-    where?: PessoaWhereInput
-  }
-
-  export type PessoaUpdateToOneWithWhereWithoutHistoriasCriadasInput = {
-    where?: PessoaWhereInput
-    data: XOR<PessoaUpdateWithoutHistoriasCriadasInput, PessoaUncheckedUpdateWithoutHistoriasCriadasInput>
-  }
-
-  export type PessoaUpdateWithoutHistoriasCriadasInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    nome?: StringFieldUpdateOperationsInput | string
-    email?: StringFieldUpdateOperationsInput | string
-    email_hash?: StringFieldUpdateOperationsInput | string
-    email_confirmado?: BoolFieldUpdateOperationsInput | boolean
-    codigo_confirmacao?: NullableStringFieldUpdateOperationsInput | string | null
-    codigo_confirmacao_hash?: NullableStringFieldUpdateOperationsInput | string | null
-    codigo_expiracao?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    senha?: StringFieldUpdateOperationsInput | string
-    ultima_senha?: StringFieldUpdateOperationsInput | string
-    inativo?: BoolFieldUpdateOperationsInput | boolean
-    data_criacao?: DateTimeFieldUpdateOperationsInput | Date | string
-    equipesMembro?: MembroEquipeUpdateManyWithoutPessoaNestedInput
-    participacoes?: ParticipanteSalaUpdateManyWithoutPessoaNestedInput
-    salasCriadas?: SalaUpdateManyWithoutProprietarioNestedInput
-    votos?: VotoUpdateManyWithoutPessoaNestedInput
-  }
-
-  export type PessoaUncheckedUpdateWithoutHistoriasCriadasInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    nome?: StringFieldUpdateOperationsInput | string
-    email?: StringFieldUpdateOperationsInput | string
-    email_hash?: StringFieldUpdateOperationsInput | string
-    email_confirmado?: BoolFieldUpdateOperationsInput | boolean
-    codigo_confirmacao?: NullableStringFieldUpdateOperationsInput | string | null
-    codigo_confirmacao_hash?: NullableStringFieldUpdateOperationsInput | string | null
-    codigo_expiracao?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-    senha?: StringFieldUpdateOperationsInput | string
-    ultima_senha?: StringFieldUpdateOperationsInput | string
-    inativo?: BoolFieldUpdateOperationsInput | boolean
-    data_criacao?: DateTimeFieldUpdateOperationsInput | Date | string
-    equipesMembro?: MembroEquipeUncheckedUpdateManyWithoutPessoaNestedInput
-    participacoes?: ParticipanteSalaUncheckedUpdateManyWithoutPessoaNestedInput
-    salasCriadas?: SalaUncheckedUpdateManyWithoutProprietarioNestedInput
-    votos?: VotoUncheckedUpdateManyWithoutPessoaNestedInput
-  }
-
-  export type SalaUpsertWithoutHistoriasInput = {
-    update: XOR<SalaUpdateWithoutHistoriasInput, SalaUncheckedUpdateWithoutHistoriasInput>
-    create: XOR<SalaCreateWithoutHistoriasInput, SalaUncheckedCreateWithoutHistoriasInput>
-    where?: SalaWhereInput
-  }
-
-  export type SalaUpdateToOneWithWhereWithoutHistoriasInput = {
-    where?: SalaWhereInput
-    data: XOR<SalaUpdateWithoutHistoriasInput, SalaUncheckedUpdateWithoutHistoriasInput>
-  }
-
-  export type SalaUpdateWithoutHistoriasInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    codigo?: IntFieldUpdateOperationsInput | number
-    titulo?: StringFieldUpdateOperationsInput | string
-    senha?: NullableStringFieldUpdateOperationsInput | string | null
-    inativo?: BoolFieldUpdateOperationsInput | boolean
-    data_criacao?: DateTimeFieldUpdateOperationsInput | Date | string
-    data_alteracao?: DateTimeFieldUpdateOperationsInput | Date | string
-    participantes?: ParticipanteSalaUpdateManyWithoutSalaNestedInput
-    proprietario?: PessoaUpdateOneRequiredWithoutSalasCriadasNestedInput
-    votos?: VotoUpdateManyWithoutSalaNestedInput
-  }
-
-  export type SalaUncheckedUpdateWithoutHistoriasInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    codigo?: IntFieldUpdateOperationsInput | number
-    titulo?: StringFieldUpdateOperationsInput | string
-    criado_por?: StringFieldUpdateOperationsInput | string
-    senha?: NullableStringFieldUpdateOperationsInput | string | null
-    inativo?: BoolFieldUpdateOperationsInput | boolean
-    data_criacao?: DateTimeFieldUpdateOperationsInput | Date | string
-    data_alteracao?: DateTimeFieldUpdateOperationsInput | Date | string
-    participantes?: ParticipanteSalaUncheckedUpdateManyWithoutSalaNestedInput
-    votos?: VotoUncheckedUpdateManyWithoutSalaNestedInput
-  }
-
-  export type VotoUpsertWithWhereUniqueWithoutHistoriaInput = {
-    where: VotoWhereUniqueInput
-    update: XOR<VotoUpdateWithoutHistoriaInput, VotoUncheckedUpdateWithoutHistoriaInput>
-    create: XOR<VotoCreateWithoutHistoriaInput, VotoUncheckedCreateWithoutHistoriaInput>
-  }
-
-  export type VotoUpdateWithWhereUniqueWithoutHistoriaInput = {
-    where: VotoWhereUniqueInput
-    data: XOR<VotoUpdateWithoutHistoriaInput, VotoUncheckedUpdateWithoutHistoriaInput>
-  }
-
-  export type VotoUpdateManyWithWhereWithoutHistoriaInput = {
-    where: VotoScalarWhereInput
-    data: XOR<VotoUpdateManyMutationInput, VotoUncheckedUpdateManyWithoutHistoriaInput>
-  }
-
-  export type HistoriaCreateWithoutVotosInput = {
-    id?: string
-    titulo: string
-    descricao?: string | null
-    data_criacao?: Date | string
-    data_alteracao?: Date | string
-    finalizada?: boolean
-    criador: PessoaCreateNestedOneWithoutHistoriasCriadasInput
-    sala: SalaCreateNestedOneWithoutHistoriasInput
-  }
-
-  export type HistoriaUncheckedCreateWithoutVotosInput = {
-    id?: string
-    titulo: string
-    descricao?: string | null
-    sala_id: string
-    criado_por: string
-    data_criacao?: Date | string
-    data_alteracao?: Date | string
-    finalizada?: boolean
-  }
-
-  export type HistoriaCreateOrConnectWithoutVotosInput = {
-    where: HistoriaWhereUniqueInput
-    create: XOR<HistoriaCreateWithoutVotosInput, HistoriaUncheckedCreateWithoutVotosInput>
   }
 
   export type PessoaCreateWithoutVotosInput = {
@@ -14442,11 +7812,8 @@ export namespace Prisma {
     codigo_confirmacao_hash?: string | null
     codigo_expiracao?: Date | string | null
     senha: string
-    ultima_senha: string
     inativo?: boolean
     data_criacao?: Date | string
-    historiasCriadas?: HistoriaCreateNestedManyWithoutCriadorInput
-    equipesMembro?: MembroEquipeCreateNestedManyWithoutPessoaInput
     participacoes?: ParticipanteSalaCreateNestedManyWithoutPessoaInput
     salasCriadas?: SalaCreateNestedManyWithoutProprietarioInput
   }
@@ -14461,11 +7828,8 @@ export namespace Prisma {
     codigo_confirmacao_hash?: string | null
     codigo_expiracao?: Date | string | null
     senha: string
-    ultima_senha: string
     inativo?: boolean
     data_criacao?: Date | string
-    historiasCriadas?: HistoriaUncheckedCreateNestedManyWithoutCriadorInput
-    equipesMembro?: MembroEquipeUncheckedCreateNestedManyWithoutPessoaInput
     participacoes?: ParticipanteSalaUncheckedCreateNestedManyWithoutPessoaInput
     salasCriadas?: SalaUncheckedCreateNestedManyWithoutProprietarioInput
   }
@@ -14483,7 +7847,6 @@ export namespace Prisma {
     inativo?: boolean
     data_criacao?: Date | string
     data_alteracao?: Date | string
-    historias?: HistoriaCreateNestedManyWithoutSalaInput
     participantes?: ParticipanteSalaCreateNestedManyWithoutSalaInput
     proprietario: PessoaCreateNestedOneWithoutSalasCriadasInput
   }
@@ -14497,46 +7860,12 @@ export namespace Prisma {
     inativo?: boolean
     data_criacao?: Date | string
     data_alteracao?: Date | string
-    historias?: HistoriaUncheckedCreateNestedManyWithoutSalaInput
     participantes?: ParticipanteSalaUncheckedCreateNestedManyWithoutSalaInput
   }
 
   export type SalaCreateOrConnectWithoutVotosInput = {
     where: SalaWhereUniqueInput
     create: XOR<SalaCreateWithoutVotosInput, SalaUncheckedCreateWithoutVotosInput>
-  }
-
-  export type HistoriaUpsertWithoutVotosInput = {
-    update: XOR<HistoriaUpdateWithoutVotosInput, HistoriaUncheckedUpdateWithoutVotosInput>
-    create: XOR<HistoriaCreateWithoutVotosInput, HistoriaUncheckedCreateWithoutVotosInput>
-    where?: HistoriaWhereInput
-  }
-
-  export type HistoriaUpdateToOneWithWhereWithoutVotosInput = {
-    where?: HistoriaWhereInput
-    data: XOR<HistoriaUpdateWithoutVotosInput, HistoriaUncheckedUpdateWithoutVotosInput>
-  }
-
-  export type HistoriaUpdateWithoutVotosInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    titulo?: StringFieldUpdateOperationsInput | string
-    descricao?: NullableStringFieldUpdateOperationsInput | string | null
-    data_criacao?: DateTimeFieldUpdateOperationsInput | Date | string
-    data_alteracao?: DateTimeFieldUpdateOperationsInput | Date | string
-    finalizada?: BoolFieldUpdateOperationsInput | boolean
-    criador?: PessoaUpdateOneRequiredWithoutHistoriasCriadasNestedInput
-    sala?: SalaUpdateOneRequiredWithoutHistoriasNestedInput
-  }
-
-  export type HistoriaUncheckedUpdateWithoutVotosInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    titulo?: StringFieldUpdateOperationsInput | string
-    descricao?: NullableStringFieldUpdateOperationsInput | string | null
-    sala_id?: StringFieldUpdateOperationsInput | string
-    criado_por?: StringFieldUpdateOperationsInput | string
-    data_criacao?: DateTimeFieldUpdateOperationsInput | Date | string
-    data_alteracao?: DateTimeFieldUpdateOperationsInput | Date | string
-    finalizada?: BoolFieldUpdateOperationsInput | boolean
   }
 
   export type PessoaUpsertWithoutVotosInput = {
@@ -14560,11 +7889,8 @@ export namespace Prisma {
     codigo_confirmacao_hash?: NullableStringFieldUpdateOperationsInput | string | null
     codigo_expiracao?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     senha?: StringFieldUpdateOperationsInput | string
-    ultima_senha?: StringFieldUpdateOperationsInput | string
     inativo?: BoolFieldUpdateOperationsInput | boolean
     data_criacao?: DateTimeFieldUpdateOperationsInput | Date | string
-    historiasCriadas?: HistoriaUpdateManyWithoutCriadorNestedInput
-    equipesMembro?: MembroEquipeUpdateManyWithoutPessoaNestedInput
     participacoes?: ParticipanteSalaUpdateManyWithoutPessoaNestedInput
     salasCriadas?: SalaUpdateManyWithoutProprietarioNestedInput
   }
@@ -14579,11 +7905,8 @@ export namespace Prisma {
     codigo_confirmacao_hash?: NullableStringFieldUpdateOperationsInput | string | null
     codigo_expiracao?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     senha?: StringFieldUpdateOperationsInput | string
-    ultima_senha?: StringFieldUpdateOperationsInput | string
     inativo?: BoolFieldUpdateOperationsInput | boolean
     data_criacao?: DateTimeFieldUpdateOperationsInput | Date | string
-    historiasCriadas?: HistoriaUncheckedUpdateManyWithoutCriadorNestedInput
-    equipesMembro?: MembroEquipeUncheckedUpdateManyWithoutPessoaNestedInput
     participacoes?: ParticipanteSalaUncheckedUpdateManyWithoutPessoaNestedInput
     salasCriadas?: SalaUncheckedUpdateManyWithoutProprietarioNestedInput
   }
@@ -14607,7 +7930,6 @@ export namespace Prisma {
     inativo?: BoolFieldUpdateOperationsInput | boolean
     data_criacao?: DateTimeFieldUpdateOperationsInput | Date | string
     data_alteracao?: DateTimeFieldUpdateOperationsInput | Date | string
-    historias?: HistoriaUpdateManyWithoutSalaNestedInput
     participantes?: ParticipanteSalaUpdateManyWithoutSalaNestedInput
     proprietario?: PessoaUpdateOneRequiredWithoutSalasCriadasNestedInput
   }
@@ -14621,24 +7943,7 @@ export namespace Prisma {
     inativo?: BoolFieldUpdateOperationsInput | boolean
     data_criacao?: DateTimeFieldUpdateOperationsInput | Date | string
     data_alteracao?: DateTimeFieldUpdateOperationsInput | Date | string
-    historias?: HistoriaUncheckedUpdateManyWithoutSalaNestedInput
     participantes?: ParticipanteSalaUncheckedUpdateManyWithoutSalaNestedInput
-  }
-
-  export type HistoriaCreateManyCriadorInput = {
-    id?: string
-    titulo: string
-    descricao?: string | null
-    sala_id: string
-    data_criacao?: Date | string
-    data_alteracao?: Date | string
-    finalizada?: boolean
-  }
-
-  export type MembroEquipeCreateManyPessoaInput = {
-    id?: string
-    equipe_id: string
-    proprietario?: boolean
   }
 
   export type ParticipanteSalaCreateManyPessoaInput = {
@@ -14660,59 +7965,8 @@ export namespace Prisma {
   export type VotoCreateManyPessoaInput = {
     id?: string
     sala_id: string
-    historia_id: string
     valor: number
     data_voto?: Date | string
-  }
-
-  export type HistoriaUpdateWithoutCriadorInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    titulo?: StringFieldUpdateOperationsInput | string
-    descricao?: NullableStringFieldUpdateOperationsInput | string | null
-    data_criacao?: DateTimeFieldUpdateOperationsInput | Date | string
-    data_alteracao?: DateTimeFieldUpdateOperationsInput | Date | string
-    finalizada?: BoolFieldUpdateOperationsInput | boolean
-    sala?: SalaUpdateOneRequiredWithoutHistoriasNestedInput
-    votos?: VotoUpdateManyWithoutHistoriaNestedInput
-  }
-
-  export type HistoriaUncheckedUpdateWithoutCriadorInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    titulo?: StringFieldUpdateOperationsInput | string
-    descricao?: NullableStringFieldUpdateOperationsInput | string | null
-    sala_id?: StringFieldUpdateOperationsInput | string
-    data_criacao?: DateTimeFieldUpdateOperationsInput | Date | string
-    data_alteracao?: DateTimeFieldUpdateOperationsInput | Date | string
-    finalizada?: BoolFieldUpdateOperationsInput | boolean
-    votos?: VotoUncheckedUpdateManyWithoutHistoriaNestedInput
-  }
-
-  export type HistoriaUncheckedUpdateManyWithoutCriadorInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    titulo?: StringFieldUpdateOperationsInput | string
-    descricao?: NullableStringFieldUpdateOperationsInput | string | null
-    sala_id?: StringFieldUpdateOperationsInput | string
-    data_criacao?: DateTimeFieldUpdateOperationsInput | Date | string
-    data_alteracao?: DateTimeFieldUpdateOperationsInput | Date | string
-    finalizada?: BoolFieldUpdateOperationsInput | boolean
-  }
-
-  export type MembroEquipeUpdateWithoutPessoaInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    proprietario?: BoolFieldUpdateOperationsInput | boolean
-    equipe?: EquipeUpdateOneRequiredWithoutMembrosNestedInput
-  }
-
-  export type MembroEquipeUncheckedUpdateWithoutPessoaInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    equipe_id?: StringFieldUpdateOperationsInput | string
-    proprietario?: BoolFieldUpdateOperationsInput | boolean
-  }
-
-  export type MembroEquipeUncheckedUpdateManyWithoutPessoaInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    equipe_id?: StringFieldUpdateOperationsInput | string
-    proprietario?: BoolFieldUpdateOperationsInput | boolean
   }
 
   export type ParticipanteSalaUpdateWithoutPessoaInput = {
@@ -14741,7 +7995,6 @@ export namespace Prisma {
     inativo?: BoolFieldUpdateOperationsInput | boolean
     data_criacao?: DateTimeFieldUpdateOperationsInput | Date | string
     data_alteracao?: DateTimeFieldUpdateOperationsInput | Date | string
-    historias?: HistoriaUpdateManyWithoutSalaNestedInput
     participantes?: ParticipanteSalaUpdateManyWithoutSalaNestedInput
     votos?: VotoUpdateManyWithoutSalaNestedInput
   }
@@ -14754,7 +8007,6 @@ export namespace Prisma {
     inativo?: BoolFieldUpdateOperationsInput | boolean
     data_criacao?: DateTimeFieldUpdateOperationsInput | Date | string
     data_alteracao?: DateTimeFieldUpdateOperationsInput | Date | string
-    historias?: HistoriaUncheckedUpdateManyWithoutSalaNestedInput
     participantes?: ParticipanteSalaUncheckedUpdateManyWithoutSalaNestedInput
     votos?: VotoUncheckedUpdateManyWithoutSalaNestedInput
   }
@@ -14773,14 +8025,12 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     valor?: IntFieldUpdateOperationsInput | number
     data_voto?: DateTimeFieldUpdateOperationsInput | Date | string
-    historia?: HistoriaUpdateOneRequiredWithoutVotosNestedInput
     sala?: SalaUpdateOneRequiredWithoutVotosNestedInput
   }
 
   export type VotoUncheckedUpdateWithoutPessoaInput = {
     id?: StringFieldUpdateOperationsInput | string
     sala_id?: StringFieldUpdateOperationsInput | string
-    historia_id?: StringFieldUpdateOperationsInput | string
     valor?: IntFieldUpdateOperationsInput | number
     data_voto?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -14788,71 +8038,8 @@ export namespace Prisma {
   export type VotoUncheckedUpdateManyWithoutPessoaInput = {
     id?: StringFieldUpdateOperationsInput | string
     sala_id?: StringFieldUpdateOperationsInput | string
-    historia_id?: StringFieldUpdateOperationsInput | string
     valor?: IntFieldUpdateOperationsInput | number
     data_voto?: DateTimeFieldUpdateOperationsInput | Date | string
-  }
-
-  export type MembroEquipeCreateManyEquipeInput = {
-    id?: string
-    pessoa_id: string
-    proprietario?: boolean
-  }
-
-  export type ProjetoCreateManyEquipeInput = {
-    id?: string
-    nome: string
-    inativo?: boolean
-    gerente_id?: string | null
-  }
-
-  export type MembroEquipeUpdateWithoutEquipeInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    proprietario?: BoolFieldUpdateOperationsInput | boolean
-    pessoa?: PessoaUpdateOneRequiredWithoutEquipesMembroNestedInput
-  }
-
-  export type MembroEquipeUncheckedUpdateWithoutEquipeInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    pessoa_id?: StringFieldUpdateOperationsInput | string
-    proprietario?: BoolFieldUpdateOperationsInput | boolean
-  }
-
-  export type MembroEquipeUncheckedUpdateManyWithoutEquipeInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    pessoa_id?: StringFieldUpdateOperationsInput | string
-    proprietario?: BoolFieldUpdateOperationsInput | boolean
-  }
-
-  export type ProjetoUpdateWithoutEquipeInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    nome?: StringFieldUpdateOperationsInput | string
-    inativo?: BoolFieldUpdateOperationsInput | boolean
-    gerente_id?: NullableStringFieldUpdateOperationsInput | string | null
-  }
-
-  export type ProjetoUncheckedUpdateWithoutEquipeInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    nome?: StringFieldUpdateOperationsInput | string
-    inativo?: BoolFieldUpdateOperationsInput | boolean
-    gerente_id?: NullableStringFieldUpdateOperationsInput | string | null
-  }
-
-  export type ProjetoUncheckedUpdateManyWithoutEquipeInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    nome?: StringFieldUpdateOperationsInput | string
-    inativo?: BoolFieldUpdateOperationsInput | boolean
-    gerente_id?: NullableStringFieldUpdateOperationsInput | string | null
-  }
-
-  export type HistoriaCreateManySalaInput = {
-    id?: string
-    titulo: string
-    descricao?: string | null
-    criado_por: string
-    data_criacao?: Date | string
-    data_alteracao?: Date | string
-    finalizada?: boolean
   }
 
   export type ParticipanteSalaCreateManySalaInput = {
@@ -14864,41 +8051,8 @@ export namespace Prisma {
   export type VotoCreateManySalaInput = {
     id?: string
     pessoa_id: string
-    historia_id: string
     valor: number
     data_voto?: Date | string
-  }
-
-  export type HistoriaUpdateWithoutSalaInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    titulo?: StringFieldUpdateOperationsInput | string
-    descricao?: NullableStringFieldUpdateOperationsInput | string | null
-    data_criacao?: DateTimeFieldUpdateOperationsInput | Date | string
-    data_alteracao?: DateTimeFieldUpdateOperationsInput | Date | string
-    finalizada?: BoolFieldUpdateOperationsInput | boolean
-    criador?: PessoaUpdateOneRequiredWithoutHistoriasCriadasNestedInput
-    votos?: VotoUpdateManyWithoutHistoriaNestedInput
-  }
-
-  export type HistoriaUncheckedUpdateWithoutSalaInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    titulo?: StringFieldUpdateOperationsInput | string
-    descricao?: NullableStringFieldUpdateOperationsInput | string | null
-    criado_por?: StringFieldUpdateOperationsInput | string
-    data_criacao?: DateTimeFieldUpdateOperationsInput | Date | string
-    data_alteracao?: DateTimeFieldUpdateOperationsInput | Date | string
-    finalizada?: BoolFieldUpdateOperationsInput | boolean
-    votos?: VotoUncheckedUpdateManyWithoutHistoriaNestedInput
-  }
-
-  export type HistoriaUncheckedUpdateManyWithoutSalaInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    titulo?: StringFieldUpdateOperationsInput | string
-    descricao?: NullableStringFieldUpdateOperationsInput | string | null
-    criado_por?: StringFieldUpdateOperationsInput | string
-    data_criacao?: DateTimeFieldUpdateOperationsInput | Date | string
-    data_alteracao?: DateTimeFieldUpdateOperationsInput | Date | string
-    finalizada?: BoolFieldUpdateOperationsInput | boolean
   }
 
   export type ParticipanteSalaUpdateWithoutSalaInput = {
@@ -14923,14 +8077,12 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     valor?: IntFieldUpdateOperationsInput | number
     data_voto?: DateTimeFieldUpdateOperationsInput | Date | string
-    historia?: HistoriaUpdateOneRequiredWithoutVotosNestedInput
     pessoa?: PessoaUpdateOneRequiredWithoutVotosNestedInput
   }
 
   export type VotoUncheckedUpdateWithoutSalaInput = {
     id?: StringFieldUpdateOperationsInput | string
     pessoa_id?: StringFieldUpdateOperationsInput | string
-    historia_id?: StringFieldUpdateOperationsInput | string
     valor?: IntFieldUpdateOperationsInput | number
     data_voto?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -14938,39 +8090,6 @@ export namespace Prisma {
   export type VotoUncheckedUpdateManyWithoutSalaInput = {
     id?: StringFieldUpdateOperationsInput | string
     pessoa_id?: StringFieldUpdateOperationsInput | string
-    historia_id?: StringFieldUpdateOperationsInput | string
-    valor?: IntFieldUpdateOperationsInput | number
-    data_voto?: DateTimeFieldUpdateOperationsInput | Date | string
-  }
-
-  export type VotoCreateManyHistoriaInput = {
-    id?: string
-    pessoa_id: string
-    sala_id: string
-    valor: number
-    data_voto?: Date | string
-  }
-
-  export type VotoUpdateWithoutHistoriaInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    valor?: IntFieldUpdateOperationsInput | number
-    data_voto?: DateTimeFieldUpdateOperationsInput | Date | string
-    pessoa?: PessoaUpdateOneRequiredWithoutVotosNestedInput
-    sala?: SalaUpdateOneRequiredWithoutVotosNestedInput
-  }
-
-  export type VotoUncheckedUpdateWithoutHistoriaInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    pessoa_id?: StringFieldUpdateOperationsInput | string
-    sala_id?: StringFieldUpdateOperationsInput | string
-    valor?: IntFieldUpdateOperationsInput | number
-    data_voto?: DateTimeFieldUpdateOperationsInput | Date | string
-  }
-
-  export type VotoUncheckedUpdateManyWithoutHistoriaInput = {
-    id?: StringFieldUpdateOperationsInput | string
-    pessoa_id?: StringFieldUpdateOperationsInput | string
-    sala_id?: StringFieldUpdateOperationsInput | string
     valor?: IntFieldUpdateOperationsInput | number
     data_voto?: DateTimeFieldUpdateOperationsInput | Date | string
   }

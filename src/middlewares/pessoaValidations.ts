@@ -1,4 +1,4 @@
-import { body } from "express-validator";
+import { body, param } from "express-validator";
 
 const pessoaCreateValidation = () => {
   return [
@@ -21,7 +21,7 @@ const pessoaCreateValidation = () => {
 
 const pessoaUpdateValidation = () => {
   return [
-    body("id").isUUID().withMessage("Id inválido"),
+    param("id").isUUID().withMessage("Id inválido"),
     body("nome")
       .isString()
       .withMessage("Nome deve ser uma string")
@@ -33,12 +33,12 @@ const pessoaUpdateValidation = () => {
       .withMessage("Informe um email válido")
       .normalizeEmail()
       .optional(),
-    body("senha")
-      .isString()
-      .withMessage("Senha deve ser uma string")
-      .isLength({ min: 6 })
-      .withMessage("Senha deve ter pelo menos 6 caracteres")
-      .optional(),
+    // body("senha")
+    //   .isString()
+    //   .withMessage("Senha deve ser uma string")
+    //   .isLength({ min: 6 })
+    //   .withMessage("Senha deve ter pelo menos 6 caracteres")
+    //   .optional(),
     body("inativo")
       .isBoolean()
       .withMessage("Inativo deve ser um valor booleano")

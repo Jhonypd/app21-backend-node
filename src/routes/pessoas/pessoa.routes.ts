@@ -1,0 +1,21 @@
+import { Router } from "express";
+import { validateHandler } from "../../middlewares/handleValidate";
+import { authGuard } from "../../middlewares/authGuard";
+import { pessoaController } from "../../controllers/pessoas/pessoa.controller";
+import { pessoaUpdateValidation } from "../../middlewares/pessoaValidations";
+
+const router = Router();
+
+router.put(
+  "/alterar/:id",
+  authGuard,
+  pessoaUpdateValidation(),
+  validateHandler,
+  pessoaController.alterar
+);
+
+router.get("/obterDadosConta/:id", authGuard, pessoaController.obterDadosConta);
+
+router.get("/obterDadosAlterar", authGuard, pessoaController.obterDadosAlterar);
+
+export default router;

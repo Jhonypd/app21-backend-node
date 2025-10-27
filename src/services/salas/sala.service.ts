@@ -21,13 +21,6 @@ const geradorCodigoUnico = async () => {
   return 1;
 };
 
-interface Response {
-  codigo: string;
-  mensagem: string | null;
-  detalhes: string | null;
-  resultadoOperacao: any;
-}
-
 export const criar = async ({
   titulo,
   senha,
