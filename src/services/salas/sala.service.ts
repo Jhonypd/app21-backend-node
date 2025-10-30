@@ -1,5 +1,7 @@
+import { hash } from "../../lib/hash";
 import { prismaClient as prisma } from "../../lib/prisma";
 import bcrypt from "bcrypt";
+import { salaRepository } from "../../repositories/sala.repository";
 
 interface CriarSalaProps {
   proprietarioId: string;
@@ -17,11 +19,11 @@ const geradorCodigoUnico = async () => {
   if (ultimoCodigo) {
     return ultimoCodigo.codigo + 1;
   }
-
+  debugger;
   return 1;
 };
 
-export const criar = async ({
+export const inserir = async ({
   titulo,
   senha,
   salaPrivada,
@@ -33,18 +35,16 @@ export const criar = async ({
   const codigo = await geradorCodigoUnico();
 
   let hashedSenha: string | null = null;
+
   if (senha) {
-    const saltRounds = 12;
-    hashedSenha = await bcrypt.hash(senha, saltRounds);
+    hashedSenha = await hash.senha(senha);
   }
 
-  const novaSala = await prisma.sala.create({
-    data: {
-      titulo,
-      codigo,
-      senha: hashedSenha,
-      criado_por: proprietarioId,
-    },
+  const novaSala = await salaRepository.inserir({
+    codigo,
+    titulo,
+    senha: hashedSenha,
+    criado_por: proprietarioId,
   });
 
   if (!novaSala) {
@@ -54,6 +54,6 @@ export const criar = async ({
   return novaSala;
 };
 
-export const listar = async () => {
-  return await prisma.sala.findMany({ include: { votos: true } });
+export const listar = async (proprietarioId: string) => {
+  return await salaRepository.listarTodos(proprietarioId);
 };
