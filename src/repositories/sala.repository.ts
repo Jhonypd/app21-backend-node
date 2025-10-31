@@ -29,9 +29,12 @@ export const salaRepository = {
   listarTodos: (pessoaId: string) =>
     prismaClient.sala.findMany({
       where: {
-        criado_por: pessoaId,
+        // criado_por: pessoaId,
         inativo: false,
-        // OR: [{ participantes: { some: { pessoa_id: pessoaId } } }],
+        OR: [
+          { criado_por: pessoaId },
+          { participantes: { some: { pessoa_id: pessoaId } } },
+        ],
       },
       select: {
         id: true,
