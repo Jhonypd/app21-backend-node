@@ -31,7 +31,7 @@ export const salaRepository = {
       where: {
         criado_por: pessoaId,
         inativo: false,
-        OR: [{ participantes: { some: { pessoa_id: pessoaId } } }],
+        // OR: [{ participantes: { some: { pessoa_id: pessoaId } } }],
       },
       select: {
         id: true,
