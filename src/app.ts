@@ -6,20 +6,35 @@ import socketEventos from "./sockets/index";
 import salas from "./routes/salas/sala.routes";
 import auth from "./routes/auth/auth.routes";
 import pessoas from "./routes/pessoas/pessoa.routes";
-
+import dotenv from "dotenv";
+dotenv.config();
 const app = express();
 const server = http.createServer(app);
 
-const io = new Server(server, { cors: { origin: "*" } });
+const io = new Server(server, {
+  cors: {
+    origin: process.env.FRONTEND_URL || "http://localhost:5005", // URL específica
+    methods: ["GET", "POST"],
+    credentials: true, // Se usar cookies/auth
+  },
+  connectionStateRecovery: {
+    maxDisconnectionDuration: 2 * 60 * 1000,
+  },
+});
 
-app.use(cors());
+app.use(
+  cors({
+    origin: process.env.FRONTEND_URL || "http://localhost:5005",
+    credentials: true,
+  })
+);
+
 app.use(express.json());
 
 app.use("/auth", auth);
 app.use("/pessoas", pessoas);
 app.use("/salas", salas);
-
-socketEventos(io);
+socketEventos(io, process.env.JWT_SECRET!);
 
 const PORT = 5005;
 server.listen(PORT, () => console.log(`Servidor rodando na porta ${PORT}`));

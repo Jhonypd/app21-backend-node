@@ -1,38 +1,53 @@
+import jwt from "jsonwebtoken";
 import { Server, Socket } from "socket.io";
-
-interface VotoData {
-  pessoa_id: string;
-  sala_id: string;
-  valor: string;
-}
+import { ClaimsAuthSala } from "../lib/jwt";
 
 interface EntrarSalaData {
-  sala_id: string;
-  pessoa_id: string;
+  token: string;
 }
 
-const socketEventos = (io: Server) => {
+// const jwtSecret = process.env.JWT_SECRET as string;
+
+const socketEventos = (io: Server, jwtSecret: string) => {
+  io.use((socket, next) => {
+    let token = socket.handshake.auth;
+
+    // 👇 Aqui fazemos a normalização pro Insomnia
+    if (typeof token === "object" && token?.token) {
+      token = token.token;
+    }
+
+    if (!token || typeof token !== "string") {
+      return next(new Error("Token não fornecido"));
+    }
+
+    try {
+      const decoded = jwt.verify(token, jwtSecret) as ClaimsAuthSala;
+      socket.data.usuario = decoded;
+      next();
+    } catch (error) {
+      console.error("Erro ao verificar token:", error);
+      next(new Error("Token inválido"));
+    }
+  });
+
   io.on("connection", (socket: Socket) => {
-    console.log("Usuário conectado:", socket.id);
+    console.log("Usuário conectado:", socket.data.usuario.Usu_na);
 
     socket.on("entrar_sala", (data: EntrarSalaData) => {
-      socket.join(data.sala_id);
-      io.to(data.sala_id).emit("usuario_entrou", data.pessoa_id);
-    });
+      const usuario = socket.data.usuario;
 
-    socket.on("votar", (data: VotoData) => {
-      io.to(data.sala_id).emit("novo_voto", {
-        usuario: data.pessoa_id,
-        valor: data.valor,
+      socket.join(usuario.Sala_Id);
+
+      io.to(usuario.Sala_Id).emit("usuario_entrou", {
+        pessoa_id: usuario.Usu_Id,
+        nome: usuario.Usu_na,
+        role: usuario.Role,
       });
     });
 
-    socket.on("revelar_votos", (sala_id: string) => {
-      io.to(sala_id).emit("votos_revelados");
-    });
-
     socket.on("disconnect", () => {
-      console.log("Usuário desconectado:", socket.id);
+      console.log("Usuário desconectado:", socket.data.usuario.Usu_na);
     });
   });
 };
