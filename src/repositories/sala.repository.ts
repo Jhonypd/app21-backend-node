@@ -18,13 +18,29 @@ export const salaRepository = {
       data: data,
     }),
 
-  obterPorId: (id: string) => prismaClient.sala.findUnique({ where: { id } }),
+  alterar: (id: string, criadoPor: string, data: SalaAlterarData) =>
+    prismaClient.sala.update({
+      where: { id, criado_por: criadoPor },
+      data: data,
+    }),
 
-  obterPorCodigo: (codigo: number) =>
-    prismaClient.sala.findUnique({ where: { codigo } }),
+  delete: (id: string, criadoPor: string) =>
+    prismaClient.sala.delete({ where: { id, criado_por: criadoPor } }),
 
-  alterar: (id: string, data: SalaAlterarData) =>
-    prismaClient.sala.update({ where: { id }, data: data }),
+  obterPorId: (id: string, criadoPor: string, comSenha: boolean) =>
+    prismaClient.sala.findUnique({
+      where: { id, criado_por: criadoPor },
+      omit: { senha: !comSenha },
+    }),
+
+  obterPorCodigo: (codigo: number, criadoPor: string, comSenha: boolean) =>
+    prismaClient.sala.findUnique({
+      where: { codigo, criado_por: criadoPor },
+      omit: { senha: !comSenha },
+      include: {
+        proprietario: { select: { id: true, nome: true, inativo: true } },
+      },
+    }),
 
   listarTodos: (pessoaId: string) =>
     prismaClient.sala.findMany({
@@ -44,7 +60,13 @@ export const salaRepository = {
         data_criacao: true,
         data_alteracao: true,
         inativo: true,
-        votos: { select: { id: true, valor: true } },
+        votos: {
+          select: {
+            id: true,
+            valor: true,
+            pessoa: { select: { id: true, nome: true, inativo: true } },
+          },
+        },
         proprietario: { select: { id: true, nome: true, inativo: true } },
         participantes: {
           select: {
@@ -56,6 +78,20 @@ export const salaRepository = {
                 inativo: true,
               },
             },
+          },
+        },
+      },
+    }),
+
+  obterMembroSala: (salaId: string, pessoaId: string) =>
+    prismaClient.participanteSala.findUnique({
+      where: { sala_id_pessoa_id: { sala_id: salaId, pessoa_id: pessoaId } },
+      include: {
+        pessoa: {
+          select: {
+            id: true,
+            nome: true,
+            inativo: true,
           },
         },
       },

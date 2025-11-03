@@ -42,12 +42,7 @@ export const pessoaRepository = {
       omit: { senha: true },
     }),
   // precisa adicionar a logica de ultima_senha
-  redefinirSenha: (
-    codigo: string,
-    senha: string,
-    id: string,
-    ultimaSenha: string
-  ) =>
+  redefinirSenha: (codigo: string, senha: string, id: string) =>
     prismaClient.pessoa.update({
       where: { codigo_confirmacao_hash: codigo, id, inativo: false },
       data: {

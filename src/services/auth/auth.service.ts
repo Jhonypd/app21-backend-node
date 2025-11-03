@@ -1,24 +1,29 @@
 import { pessoaRepository } from "../../repositories/pessoa.repository";
-import { Claims, geradorToken } from "../../lib/jwt";
+import {
+  Claims,
+  ClaimsAuthSala,
+  geradorToken,
+  geradorTokenSala,
+} from "../../lib/jwt";
 import { hash } from "../../lib/hash";
 import { criptografia } from "../../lib/criptografia";
 import emailService from "../mail/mail.service";
 import { codigos } from "../../lib/codigos";
-import { addHours, addMinutes, format } from "date-fns";
+import { pessoaService } from "../pessoas/pessoa.service";
 import { formatarParaDataLocal } from "../../utils/formatar-data";
+import { addHours, addMinutes, format } from "date-fns";
 import { ptBR } from "date-fns/locale";
+import { salaRepository } from "../../repositories/sala.repository";
+
+interface PessoaToken {
+  role: number;
+  id: string;
+  nome: string;
+}
 
 export const authService = {
-  async usuarioExiste(email: string) {
-    const emailHash = await hash.geradorCamposComuns(email);
-
-    const usuario = await pessoaRepository.obterPorEmail(emailHash);
-
-    return usuario ? usuario : false;
-  },
-
   async login(email: string, senha: string) {
-    const usuario = await this.usuarioExiste(email);
+    const usuario = await pessoaService.usuarioExiste(email);
 
     if (!usuario) throw new Error("Usuário não encontrado");
 
@@ -42,7 +47,7 @@ export const authService = {
       Usu_Id: usuario.id,
       Usu_na: criptografia.descriptografar(usuario.nome),
       email: criptografia.descriptografar(usuario.email),
-      Dt_Ex: format(addHours(new Date(), 5), "yyyy-MM-dd' 'HH:mm:ss", {
+      Dt_Ex: format(addHours(new Date(), 10), "yyyy-MM-dd' 'HH:mm:ss", {
         locale: ptBR,
       }),
       Idp: "pt-BR",
@@ -55,23 +60,7 @@ export const authService = {
   },
 
   async criarConta(nome: string, email: string, senha: string) {
-    const usuarioExistente = await this.usuarioExiste(email);
-
-    if (usuarioExistente) throw new Error("E-mail já cadastrado");
-
-    const senhaHash = await hash.senha(senha);
-
-    const codigo = await codigos.confirmarConta();
-
-    const novoUsuario = await pessoaRepository.inserir(
-      criptografia.criptografar(nome),
-      criptografia.criptografar(email),
-      await hash.geradorCamposComuns(email),
-      senhaHash,
-      criptografia.criptografar(codigo as string),
-      await hash.geradorCamposComuns(codigo as string),
-      addMinutes(new Date(), 30)
-    );
+    const novoUsuario = await pessoaService.inserir({ email, nome, senha });
 
     let emailEnviado = false;
     let erroEmail: string | null = null;
@@ -80,28 +69,26 @@ export const authService = {
       try {
         await emailService.sendEmailConfirmaConta(
           {
-            nome: criptografia.descriptografar(novoUsuario.nome), // Usa o nome original (não criptografado)
-            email: criptografia.descriptografar(novoUsuario.email!), // Usa o email original para envio
+            nome: criptografia.descriptografar(novoUsuario.usuario.nome),
+            email: criptografia.descriptografar(novoUsuario.usuario.email),
           },
-          `${
-            process.env.FRONTEND_URL
-          }/confirmarConta?codigo=${encodeURIComponent(
-            novoUsuario.codigo_confirmacao!
-          )}`
+          `${process.env.API_URL}/validaCodigoEmail?codigo=${encodeURIComponent(
+            novoUsuario.usuario.codigo_confirmacao!
+          )}&confirmarConta=true`
         );
 
         emailEnviado = true;
       } catch (emailError) {
         erroEmail = (emailError as Error).message;
-        console.error("Erro ao enviar email de boas-vindas:", emailError);
+        console.error("Erro ao enviar email de confirmação:", emailError);
       }
     }
 
-    return { id: novoUsuario.id, emailEnviado, erroEmail };
+    return { id: novoUsuario.usuario.id, emailEnviado, erroEmail };
   },
 
   async novoCodigo(email: string) {
-    const usuarioExistente = await this.usuarioExiste(email);
+    const usuarioExistente = await pessoaService.usuarioExiste(email);
 
     if (!usuarioExistente) {
       return;
@@ -111,7 +98,7 @@ export const authService = {
       return;
     }
 
-    const codigo = await codigos.confirmarConta();
+    const codigo = await codigos.codigoConfirmarConta();
 
     const usuario = await pessoaRepository.novoCodigo(
       await hash.geradorCamposComuns(email),
@@ -140,13 +127,13 @@ export const authService = {
   },
 
   async esqueciMinhaSenha(email: string) {
-    const usuarioExistente = await this.usuarioExiste(email);
+    const usuarioExistente = await pessoaService.usuarioExiste(email);
 
     if (!usuarioExistente) {
       return;
     }
 
-    const codigo = await codigos.confirmarConta();
+    const codigo = await codigos.codigoConfirmarConta();
 
     const usuario = await pessoaRepository.novoCodigo(
       await hash.geradorCamposComuns(email),
@@ -253,10 +240,81 @@ export const authService = {
     const redefineSenhaUsuario = await pessoaRepository.redefinirSenha(
       usuarioExistente.codigo_confirmacao_hash!,
       novaSenha,
-      id,
-      ultimaSenha?.senha as string
+      id
     );
 
     return redefineSenhaUsuario.id;
+  },
+
+  async loginSala(codigo: string, pessoaId: string, senha?: string) {
+    // Validações iniciais
+    if (!pessoaId) throw new Error("Id da pessoa não fornecido.");
+    if (!codigo) throw new Error("Código da sala não fornecido.");
+
+    // Buscar sala
+    const sala = await salaRepository.obterPorCodigo(
+      Number(codigo),
+      pessoaId,
+      false
+    );
+    if (!sala)
+      throw new Error("Sala não encontrada e/ou usuário sem permissão.");
+
+    const isCriador = pessoaId === sala.criado_por;
+    const membro = await salaRepository.obterMembroSala(sala.id, pessoaId);
+
+    // Verificação de acesso simplificada
+    if (!isCriador && !membro) {
+      throw new Error("Acesso negado à sala.");
+    }
+
+    // Lógica de senha mais clara
+    if (sala.senha) {
+      if (isCriador) {
+        // Criador acessa sem senha
+      } else if (!senha) {
+        throw new Error("Senha da sala é necessária.");
+      } else {
+        const senhaValida = await hash.compare(senha, sala.senha);
+        if (!senhaValida) throw new Error("Senha informada inválida.");
+      }
+    }
+
+    // Determinar role
+    let role: number;
+    let pessoaInfo: { id: string; nome: string };
+
+    if (isCriador) {
+      role = 1;
+      pessoaInfo = {
+        id: sala.proprietario.id,
+        nome: sala.proprietario.nome,
+      };
+    } else {
+      role = 2;
+      pessoaInfo = {
+        id: membro!.pessoa.id,
+        nome: membro!.pessoa.nome,
+      };
+    }
+
+    // Gerar token
+    const dataExpiracao = addHours(new Date(), 1);
+    const nomeDescriptografado = await criptografia.descriptografar(
+      pessoaInfo.nome
+    );
+
+    const tokenPayload: ClaimsAuthSala = {
+      Role: role,
+      Usu_Id: pessoaInfo.id,
+      Usu_na: nomeDescriptografado,
+      Sala_Id: sala.id,
+      Sala_titulo: sala.titulo,
+      Dt_Ex: format(dataExpiracao, "yyyy-MM-dd' 'HH:mm:ss", { locale: ptBR }),
+    };
+
+    const tokenSala = geradorTokenSala(tokenPayload);
+
+    return { tokenSala, dataExpiracao: tokenPayload.Dt_Ex };
   },
 };

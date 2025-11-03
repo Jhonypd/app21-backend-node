@@ -2,7 +2,7 @@ import { hash } from "./hash";
 import { prismaClient } from "./prisma";
 
 export const codigos = {
-  async confirmarConta() {
+  async codigoConfirmarConta() {
     let contadorVerificacoes = 0;
     let codigo: string | null = null;
 

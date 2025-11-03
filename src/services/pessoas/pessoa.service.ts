@@ -16,7 +16,46 @@ export interface AlterarPessoaData {
   codigo_expiracao?: Date;
 }
 
+export interface InserirPessoaData {
+  nome: string;
+  email: string;
+  senha: string;
+}
+
 export const pessoaService = {
+  async usuarioExiste(email: string) {
+    const emailHash = await hash.geradorCamposComuns(email);
+
+    const usuario = await pessoaRepository.obterPorEmail(emailHash);
+
+    return usuario ? usuario : false;
+  },
+
+  async inserir({ email, nome, senha }: InserirPessoaData) {
+    const usuarioExistente = await this.usuarioExiste(email);
+
+    if (usuarioExistente) throw new Error("E-mail já cadastrado");
+
+    const senhaHash = await hash.senha(senha);
+
+    const codigo = await codigos.codigoConfirmarConta();
+
+    const novoUsuario = await pessoaRepository.inserir(
+      criptografia.criptografar(nome),
+      criptografia.criptografar(email),
+      await hash.geradorCamposComuns(email),
+      senhaHash,
+      criptografia.criptografar(codigo as string),
+      await hash.geradorCamposComuns(codigo as string),
+      addMinutes(new Date(), 30)
+    );
+
+    if (!novoUsuario) {
+      throw new Error("Erro ao criar o usuário.");
+    }
+
+    return { usuario: novoUsuario };
+  },
   async alterar(id: string, data: AlterarPessoaData) {
     // Verifica se o usuário existe
     const usuarioExistente = await pessoaRepository.obterPorId(id, false);
@@ -43,11 +82,11 @@ export const pessoaService = {
       // Gera código de confirmação para novo email
 
       dadosAtualizacao.codigo_confirmacao_hash = await hash.geradorCamposComuns(
-        (await codigos.confirmarConta()) as string
+        (await codigos.codigoConfirmarConta()) as string
       );
       dadosAtualizacao.codigo_expiracao = addMinutes(new Date(), 30);
       dadosAtualizacao.codigo_confirmacao = criptografia.criptografar(
-        (await codigos.confirmarConta()) as string
+        (await codigos.codigoConfirmarConta()) as string
       );
 
       // Precisa revalidar o email
