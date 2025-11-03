@@ -145,6 +145,15 @@ exports.Prisma.SalaScalarFieldEnum = {
   data_alteracao: 'data_alteracao'
 };
 
+exports.Prisma.HistoriaSalaScalarFieldEnum = {
+  id: 'id',
+  sala_id: 'sala_id',
+  titulo: 'titulo',
+  descricao: 'descricao',
+  criado_por: 'criado_por',
+  data_criacao: 'data_criacao'
+};
+
 exports.Prisma.ParticipanteSalaScalarFieldEnum = {
   id: 'id',
   sala_id: 'sala_id',
@@ -156,6 +165,7 @@ exports.Prisma.VotoScalarFieldEnum = {
   id: 'id',
   pessoa_id: 'pessoa_id',
   sala_id: 'sala_id',
+  historia_id: 'historia_id',
   valor: 'valor',
   data_voto: 'data_voto'
 };
@@ -179,6 +189,7 @@ exports.Prisma.NullsOrder = {
 exports.Prisma.ModelName = {
   Pessoa: 'Pessoa',
   Sala: 'Sala',
+  HistoriaSala: 'HistoriaSala',
   ParticipanteSala: 'ParticipanteSala',
   Voto: 'Voto'
 };

@@ -117,6 +117,15 @@ exports.Prisma.SalaScalarFieldEnum = {
   data_alteracao: 'data_alteracao'
 };
 
+exports.Prisma.HistoriaSalaScalarFieldEnum = {
+  id: 'id',
+  sala_id: 'sala_id',
+  titulo: 'titulo',
+  descricao: 'descricao',
+  criado_por: 'criado_por',
+  data_criacao: 'data_criacao'
+};
+
 exports.Prisma.ParticipanteSalaScalarFieldEnum = {
   id: 'id',
   sala_id: 'sala_id',
@@ -128,6 +137,7 @@ exports.Prisma.VotoScalarFieldEnum = {
   id: 'id',
   pessoa_id: 'pessoa_id',
   sala_id: 'sala_id',
+  historia_id: 'historia_id',
   valor: 'valor',
   data_voto: 'data_voto'
 };
@@ -151,6 +161,7 @@ exports.Prisma.NullsOrder = {
 exports.Prisma.ModelName = {
   Pessoa: 'Pessoa',
   Sala: 'Sala',
+  HistoriaSala: 'HistoriaSala',
   ParticipanteSala: 'ParticipanteSala',
   Voto: 'Voto'
 };
@@ -165,7 +176,7 @@ const config = {
       "value": "prisma-client-js"
     },
     "output": {
-      "value": "C:\\Users\\OKEA\\OneDrive\\Documentos\\jhony\\app21-backend-node\\src\\lib\\generated\\prisma",
+      "value": "D:\\app21-backend-node\\src\\lib\\generated\\prisma",
       "fromEnvVar": null
     },
     "config": {
@@ -179,7 +190,7 @@ const config = {
       }
     ],
     "previewFeatures": [],
-    "sourceFilePath": "C:\\Users\\OKEA\\OneDrive\\Documentos\\jhony\\app21-backend-node\\prisma\\schema.prisma",
+    "sourceFilePath": "D:\\app21-backend-node\\prisma\\schema.prisma",
     "isCustomOutput": true
   },
   "relativeEnvPaths": {
@@ -193,7 +204,6 @@ const config = {
     "db"
   ],
   "activeProvider": "postgresql",
-  "postinstall": false,
   "inlineDatasources": {
     "db": {
       "url": {
@@ -202,13 +212,13 @@ const config = {
       }
     }
   },
-  "inlineSchema": "generator client {\n  provider = \"prisma-client-js\"\n  output   = \"../src/lib/generated/prisma\"\n}\n\ndatasource db {\n  provider = \"postgresql\"\n  url      = env(\"DATABASE_URL\")\n}\n\nmodel Pessoa {\n  id                      String             @id @default(uuid())\n  nome                    String\n  email                   String             @unique\n  email_hash              String             @unique\n  email_confirmado        Boolean            @default(false)\n  codigo_confirmacao      String?            @unique\n  codigo_confirmacao_hash String?            @unique\n  codigo_expiracao        DateTime?\n  senha                   String\n  inativo                 Boolean            @default(false)\n  data_criacao            DateTime           @default(now())\n  participacoes           ParticipanteSala[]\n  salasCriadas            Sala[]             @relation(\"SalasCriadasPorPessoa\")\n  votos                   Voto[]\n\n  @@index([email])\n  @@index([codigo_expiracao])\n}\n\nmodel Sala {\n  id             String             @id @default(uuid())\n  codigo         Int                @unique\n  titulo         String\n  criado_por     String\n  senha          String?\n  inativo        Boolean            @default(false)\n  data_criacao   DateTime           @default(now())\n  data_alteracao DateTime           @updatedAt\n  participantes  ParticipanteSala[]\n  proprietario   Pessoa             @relation(\"SalasCriadasPorPessoa\", fields: [criado_por], references: [id])\n  votos          Voto[]\n\n  @@index([criado_por])\n  @@index([codigo])\n}\n\nmodel ParticipanteSala {\n  id         String   @id @default(uuid())\n  sala_id    String\n  pessoa_id  String\n  adicionado DateTime @default(now())\n  pessoa     Pessoa   @relation(fields: [pessoa_id], references: [id])\n  sala       Sala     @relation(fields: [sala_id], references: [id])\n\n  @@unique([sala_id, pessoa_id])\n  @@index([sala_id])\n  @@index([pessoa_id])\n}\n\nmodel Voto {\n  id        String   @id @default(uuid())\n  pessoa_id String\n  sala_id   String\n  valor     Int\n  data_voto DateTime @default(now())\n  pessoa    Pessoa   @relation(fields: [pessoa_id], references: [id])\n  sala      Sala     @relation(fields: [sala_id], references: [id])\n\n  @@unique([sala_id, pessoa_id])\n  @@index([sala_id])\n  @@index([pessoa_id])\n}\n",
-  "inlineSchemaHash": "59ad8d52d0d3f439f3ff38c8adf8a89d0103e496cd1e9d5927d55376907884ee",
+  "inlineSchema": "generator client {\n  provider = \"prisma-client-js\"\n  output   = \"../src/lib/generated/prisma\"\n}\n\ndatasource db {\n  provider = \"postgresql\"\n  url      = env(\"DATABASE_URL\")\n}\n\nmodel Pessoa {\n  id                      String             @id @default(uuid())\n  nome                    String\n  email                   String             @unique\n  email_hash              String             @unique\n  email_confirmado        Boolean            @default(false)\n  codigo_confirmacao      String?            @unique\n  codigo_confirmacao_hash String?            @unique\n  codigo_expiracao        DateTime?\n  senha                   String\n  inativo                 Boolean            @default(false)\n  data_criacao            DateTime           @default(now())\n  participacoes           ParticipanteSala[]\n  salasCriadas            Sala[]             @relation(\"SalasCriadasPorPessoa\")\n  votos                   Voto[]\n\n  @@index([email])\n  @@index([codigo_expiracao])\n}\n\nmodel Sala {\n  id             String             @id @default(uuid())\n  codigo         Int                @unique\n  titulo         String\n  criado_por     String\n  senha          String?\n  inativo        Boolean            @default(false)\n  data_criacao   DateTime           @default(now())\n  data_alteracao DateTime?\n  participantes  ParticipanteSala[]\n  proprietario   Pessoa             @relation(\"SalasCriadasPorPessoa\", fields: [criado_por], references: [id])\n  votos          Voto[]\n  historias      HistoriaSala[]\n\n  @@index([criado_por])\n  @@index([codigo])\n}\n\nmodel HistoriaSala {\n  id           String   @id @default(uuid())\n  sala_id      String\n  titulo       String\n  descricao    String?\n  criado_por   String\n  data_criacao DateTime @default(now())\n  sala         Sala     @relation(fields: [sala_id], references: [id])\n}\n\nmodel ParticipanteSala {\n  id         String   @id @default(uuid())\n  sala_id    String\n  pessoa_id  String\n  adicionado DateTime @default(now())\n  pessoa     Pessoa   @relation(fields: [pessoa_id], references: [id])\n  sala       Sala     @relation(fields: [sala_id], references: [id])\n\n  @@unique([sala_id, pessoa_id])\n  @@index([sala_id])\n  @@index([pessoa_id])\n}\n\nmodel Voto {\n  id          String   @id @default(uuid())\n  pessoa_id   String\n  sala_id     String\n  historia_id String\n  valor       Int\n  data_voto   DateTime @default(now())\n  pessoa      Pessoa   @relation(fields: [pessoa_id], references: [id])\n  sala        Sala     @relation(fields: [sala_id], references: [id])\n\n  @@unique([sala_id, pessoa_id, historia_id])\n  @@index([sala_id, pessoa_id, historia_id])\n  @@index([sala_id])\n  @@index([pessoa_id])\n}\n",
+  "inlineSchemaHash": "9f222ac9dfe12248bd32e70351d5b3341bacc240f6728ded4436d0bc4572a5dd",
   "copyEngine": true
 }
 config.dirname = '/'
 
-config.runtimeDataModel = JSON.parse("{\"models\":{\"Pessoa\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"nome\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"email\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"email_hash\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"email_confirmado\",\"kind\":\"scalar\",\"type\":\"Boolean\"},{\"name\":\"codigo_confirmacao\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"codigo_confirmacao_hash\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"codigo_expiracao\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"senha\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"inativo\",\"kind\":\"scalar\",\"type\":\"Boolean\"},{\"name\":\"data_criacao\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"participacoes\",\"kind\":\"object\",\"type\":\"ParticipanteSala\",\"relationName\":\"ParticipanteSalaToPessoa\"},{\"name\":\"salasCriadas\",\"kind\":\"object\",\"type\":\"Sala\",\"relationName\":\"SalasCriadasPorPessoa\"},{\"name\":\"votos\",\"kind\":\"object\",\"type\":\"Voto\",\"relationName\":\"PessoaToVoto\"}],\"dbName\":null},\"Sala\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"codigo\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"titulo\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"criado_por\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"senha\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"inativo\",\"kind\":\"scalar\",\"type\":\"Boolean\"},{\"name\":\"data_criacao\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"data_alteracao\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"participantes\",\"kind\":\"object\",\"type\":\"ParticipanteSala\",\"relationName\":\"ParticipanteSalaToSala\"},{\"name\":\"proprietario\",\"kind\":\"object\",\"type\":\"Pessoa\",\"relationName\":\"SalasCriadasPorPessoa\"},{\"name\":\"votos\",\"kind\":\"object\",\"type\":\"Voto\",\"relationName\":\"SalaToVoto\"}],\"dbName\":null},\"ParticipanteSala\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"sala_id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"pessoa_id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"adicionado\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"pessoa\",\"kind\":\"object\",\"type\":\"Pessoa\",\"relationName\":\"ParticipanteSalaToPessoa\"},{\"name\":\"sala\",\"kind\":\"object\",\"type\":\"Sala\",\"relationName\":\"ParticipanteSalaToSala\"}],\"dbName\":null},\"Voto\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"pessoa_id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"sala_id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"valor\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"data_voto\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"pessoa\",\"kind\":\"object\",\"type\":\"Pessoa\",\"relationName\":\"PessoaToVoto\"},{\"name\":\"sala\",\"kind\":\"object\",\"type\":\"Sala\",\"relationName\":\"SalaToVoto\"}],\"dbName\":null}},\"enums\":{},\"types\":{}}")
+config.runtimeDataModel = JSON.parse("{\"models\":{\"Pessoa\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"nome\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"email\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"email_hash\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"email_confirmado\",\"kind\":\"scalar\",\"type\":\"Boolean\"},{\"name\":\"codigo_confirmacao\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"codigo_confirmacao_hash\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"codigo_expiracao\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"senha\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"inativo\",\"kind\":\"scalar\",\"type\":\"Boolean\"},{\"name\":\"data_criacao\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"participacoes\",\"kind\":\"object\",\"type\":\"ParticipanteSala\",\"relationName\":\"ParticipanteSalaToPessoa\"},{\"name\":\"salasCriadas\",\"kind\":\"object\",\"type\":\"Sala\",\"relationName\":\"SalasCriadasPorPessoa\"},{\"name\":\"votos\",\"kind\":\"object\",\"type\":\"Voto\",\"relationName\":\"PessoaToVoto\"}],\"dbName\":null},\"Sala\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"codigo\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"titulo\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"criado_por\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"senha\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"inativo\",\"kind\":\"scalar\",\"type\":\"Boolean\"},{\"name\":\"data_criacao\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"data_alteracao\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"participantes\",\"kind\":\"object\",\"type\":\"ParticipanteSala\",\"relationName\":\"ParticipanteSalaToSala\"},{\"name\":\"proprietario\",\"kind\":\"object\",\"type\":\"Pessoa\",\"relationName\":\"SalasCriadasPorPessoa\"},{\"name\":\"votos\",\"kind\":\"object\",\"type\":\"Voto\",\"relationName\":\"SalaToVoto\"},{\"name\":\"historias\",\"kind\":\"object\",\"type\":\"HistoriaSala\",\"relationName\":\"HistoriaSalaToSala\"}],\"dbName\":null},\"HistoriaSala\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"sala_id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"titulo\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"descricao\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"criado_por\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"data_criacao\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"sala\",\"kind\":\"object\",\"type\":\"Sala\",\"relationName\":\"HistoriaSalaToSala\"}],\"dbName\":null},\"ParticipanteSala\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"sala_id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"pessoa_id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"adicionado\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"pessoa\",\"kind\":\"object\",\"type\":\"Pessoa\",\"relationName\":\"ParticipanteSalaToPessoa\"},{\"name\":\"sala\",\"kind\":\"object\",\"type\":\"Sala\",\"relationName\":\"ParticipanteSalaToSala\"}],\"dbName\":null},\"Voto\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"pessoa_id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"sala_id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"historia_id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"valor\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"data_voto\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"pessoa\",\"kind\":\"object\",\"type\":\"Pessoa\",\"relationName\":\"PessoaToVoto\"},{\"name\":\"sala\",\"kind\":\"object\",\"type\":\"Sala\",\"relationName\":\"SalaToVoto\"}],\"dbName\":null}},\"enums\":{},\"types\":{}}")
 defineDmmfProperty(exports.Prisma, config.runtimeDataModel)
 config.engineWasm = {
   getRuntime: async () => require('./query_engine_bg.js'),

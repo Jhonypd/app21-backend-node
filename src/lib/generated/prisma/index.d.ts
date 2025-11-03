@@ -24,6 +24,11 @@ export type Pessoa = $Result.DefaultSelection<Prisma.$PessoaPayload>
  */
 export type Sala = $Result.DefaultSelection<Prisma.$SalaPayload>
 /**
+ * Model HistoriaSala
+ * 
+ */
+export type HistoriaSala = $Result.DefaultSelection<Prisma.$HistoriaSalaPayload>
+/**
  * Model ParticipanteSala
  * 
  */
@@ -171,6 +176,16 @@ export class PrismaClient<
     * ```
     */
   get sala(): Prisma.SalaDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.historiaSala`: Exposes CRUD operations for the **HistoriaSala** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more HistoriaSalas
+    * const historiaSalas = await prisma.historiaSala.findMany()
+    * ```
+    */
+  get historiaSala(): Prisma.HistoriaSalaDelegate<ExtArgs, ClientOptions>;
 
   /**
    * `prisma.participanteSala`: Exposes CRUD operations for the **ParticipanteSala** model.
@@ -634,6 +649,7 @@ export namespace Prisma {
   export const ModelName: {
     Pessoa: 'Pessoa',
     Sala: 'Sala',
+    HistoriaSala: 'HistoriaSala',
     ParticipanteSala: 'ParticipanteSala',
     Voto: 'Voto'
   };
@@ -654,7 +670,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "pessoa" | "sala" | "participanteSala" | "voto"
+      modelProps: "pessoa" | "sala" | "historiaSala" | "participanteSala" | "voto"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -803,6 +819,80 @@ export namespace Prisma {
           count: {
             args: Prisma.SalaCountArgs<ExtArgs>
             result: $Utils.Optional<SalaCountAggregateOutputType> | number
+          }
+        }
+      }
+      HistoriaSala: {
+        payload: Prisma.$HistoriaSalaPayload<ExtArgs>
+        fields: Prisma.HistoriaSalaFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.HistoriaSalaFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$HistoriaSalaPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.HistoriaSalaFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$HistoriaSalaPayload>
+          }
+          findFirst: {
+            args: Prisma.HistoriaSalaFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$HistoriaSalaPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.HistoriaSalaFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$HistoriaSalaPayload>
+          }
+          findMany: {
+            args: Prisma.HistoriaSalaFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$HistoriaSalaPayload>[]
+          }
+          create: {
+            args: Prisma.HistoriaSalaCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$HistoriaSalaPayload>
+          }
+          createMany: {
+            args: Prisma.HistoriaSalaCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.HistoriaSalaCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$HistoriaSalaPayload>[]
+          }
+          delete: {
+            args: Prisma.HistoriaSalaDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$HistoriaSalaPayload>
+          }
+          update: {
+            args: Prisma.HistoriaSalaUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$HistoriaSalaPayload>
+          }
+          deleteMany: {
+            args: Prisma.HistoriaSalaDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.HistoriaSalaUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.HistoriaSalaUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$HistoriaSalaPayload>[]
+          }
+          upsert: {
+            args: Prisma.HistoriaSalaUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$HistoriaSalaPayload>
+          }
+          aggregate: {
+            args: Prisma.HistoriaSalaAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateHistoriaSala>
+          }
+          groupBy: {
+            args: Prisma.HistoriaSalaGroupByArgs<ExtArgs>
+            result: $Utils.Optional<HistoriaSalaGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.HistoriaSalaCountArgs<ExtArgs>
+            result: $Utils.Optional<HistoriaSalaCountAggregateOutputType> | number
           }
         }
       }
@@ -1052,6 +1142,7 @@ export namespace Prisma {
   export type GlobalOmitConfig = {
     pessoa?: PessoaOmit
     sala?: SalaOmit
+    historiaSala?: HistoriaSalaOmit
     participanteSala?: ParticipanteSalaOmit
     voto?: VotoOmit
   }
@@ -1185,11 +1276,13 @@ export namespace Prisma {
   export type SalaCountOutputType = {
     participantes: number
     votos: number
+    historias: number
   }
 
   export type SalaCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     participantes?: boolean | SalaCountOutputTypeCountParticipantesArgs
     votos?: boolean | SalaCountOutputTypeCountVotosArgs
+    historias?: boolean | SalaCountOutputTypeCountHistoriasArgs
   }
 
   // Custom InputTypes
@@ -1215,6 +1308,13 @@ export namespace Prisma {
    */
   export type SalaCountOutputTypeCountVotosArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: VotoWhereInput
+  }
+
+  /**
+   * SalaCountOutputType without action
+   */
+  export type SalaCountOutputTypeCountHistoriasArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: HistoriaSalaWhereInput
   }
 
 
@@ -2617,7 +2717,7 @@ export namespace Prisma {
     senha: string | null
     inativo: boolean
     data_criacao: Date
-    data_alteracao: Date
+    data_alteracao: Date | null
     _count: SalaCountAggregateOutputType | null
     _avg: SalaAvgAggregateOutputType | null
     _sum: SalaSumAggregateOutputType | null
@@ -2651,6 +2751,7 @@ export namespace Prisma {
     participantes?: boolean | Sala$participantesArgs<ExtArgs>
     proprietario?: boolean | PessoaDefaultArgs<ExtArgs>
     votos?: boolean | Sala$votosArgs<ExtArgs>
+    historias?: boolean | Sala$historiasArgs<ExtArgs>
     _count?: boolean | SalaCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["sala"]>
 
@@ -2694,6 +2795,7 @@ export namespace Prisma {
     participantes?: boolean | Sala$participantesArgs<ExtArgs>
     proprietario?: boolean | PessoaDefaultArgs<ExtArgs>
     votos?: boolean | Sala$votosArgs<ExtArgs>
+    historias?: boolean | Sala$historiasArgs<ExtArgs>
     _count?: boolean | SalaCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type SalaIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -2709,6 +2811,7 @@ export namespace Prisma {
       participantes: Prisma.$ParticipanteSalaPayload<ExtArgs>[]
       proprietario: Prisma.$PessoaPayload<ExtArgs>
       votos: Prisma.$VotoPayload<ExtArgs>[]
+      historias: Prisma.$HistoriaSalaPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -2718,7 +2821,7 @@ export namespace Prisma {
       senha: string | null
       inativo: boolean
       data_criacao: Date
-      data_alteracao: Date
+      data_alteracao: Date | null
     }, ExtArgs["result"]["sala"]>
     composites: {}
   }
@@ -3116,6 +3219,7 @@ export namespace Prisma {
     participantes<T extends Sala$participantesArgs<ExtArgs> = {}>(args?: Subset<T, Sala$participantesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ParticipanteSalaPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     proprietario<T extends PessoaDefaultArgs<ExtArgs> = {}>(args?: Subset<T, PessoaDefaultArgs<ExtArgs>>): Prisma__PessoaClient<$Result.GetResult<Prisma.$PessoaPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
     votos<T extends Sala$votosArgs<ExtArgs> = {}>(args?: Subset<T, Sala$votosArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$VotoPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    historias<T extends Sala$historiasArgs<ExtArgs> = {}>(args?: Subset<T, Sala$historiasArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$HistoriaSalaPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -3597,6 +3701,30 @@ export namespace Prisma {
   }
 
   /**
+   * Sala.historias
+   */
+  export type Sala$historiasArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the HistoriaSala
+     */
+    select?: HistoriaSalaSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the HistoriaSala
+     */
+    omit?: HistoriaSalaOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: HistoriaSalaInclude<ExtArgs> | null
+    where?: HistoriaSalaWhereInput
+    orderBy?: HistoriaSalaOrderByWithRelationInput | HistoriaSalaOrderByWithRelationInput[]
+    cursor?: HistoriaSalaWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: HistoriaSalaScalarFieldEnum | HistoriaSalaScalarFieldEnum[]
+  }
+
+  /**
    * Sala without action
    */
   export type SalaDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -3612,6 +3740,1077 @@ export namespace Prisma {
      * Choose, which related nodes to fetch as well
      */
     include?: SalaInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model HistoriaSala
+   */
+
+  export type AggregateHistoriaSala = {
+    _count: HistoriaSalaCountAggregateOutputType | null
+    _min: HistoriaSalaMinAggregateOutputType | null
+    _max: HistoriaSalaMaxAggregateOutputType | null
+  }
+
+  export type HistoriaSalaMinAggregateOutputType = {
+    id: string | null
+    sala_id: string | null
+    titulo: string | null
+    descricao: string | null
+    criado_por: string | null
+    data_criacao: Date | null
+  }
+
+  export type HistoriaSalaMaxAggregateOutputType = {
+    id: string | null
+    sala_id: string | null
+    titulo: string | null
+    descricao: string | null
+    criado_por: string | null
+    data_criacao: Date | null
+  }
+
+  export type HistoriaSalaCountAggregateOutputType = {
+    id: number
+    sala_id: number
+    titulo: number
+    descricao: number
+    criado_por: number
+    data_criacao: number
+    _all: number
+  }
+
+
+  export type HistoriaSalaMinAggregateInputType = {
+    id?: true
+    sala_id?: true
+    titulo?: true
+    descricao?: true
+    criado_por?: true
+    data_criacao?: true
+  }
+
+  export type HistoriaSalaMaxAggregateInputType = {
+    id?: true
+    sala_id?: true
+    titulo?: true
+    descricao?: true
+    criado_por?: true
+    data_criacao?: true
+  }
+
+  export type HistoriaSalaCountAggregateInputType = {
+    id?: true
+    sala_id?: true
+    titulo?: true
+    descricao?: true
+    criado_por?: true
+    data_criacao?: true
+    _all?: true
+  }
+
+  export type HistoriaSalaAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which HistoriaSala to aggregate.
+     */
+    where?: HistoriaSalaWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of HistoriaSalas to fetch.
+     */
+    orderBy?: HistoriaSalaOrderByWithRelationInput | HistoriaSalaOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: HistoriaSalaWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` HistoriaSalas from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` HistoriaSalas.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned HistoriaSalas
+    **/
+    _count?: true | HistoriaSalaCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: HistoriaSalaMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: HistoriaSalaMaxAggregateInputType
+  }
+
+  export type GetHistoriaSalaAggregateType<T extends HistoriaSalaAggregateArgs> = {
+        [P in keyof T & keyof AggregateHistoriaSala]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateHistoriaSala[P]>
+      : GetScalarType<T[P], AggregateHistoriaSala[P]>
+  }
+
+
+
+
+  export type HistoriaSalaGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: HistoriaSalaWhereInput
+    orderBy?: HistoriaSalaOrderByWithAggregationInput | HistoriaSalaOrderByWithAggregationInput[]
+    by: HistoriaSalaScalarFieldEnum[] | HistoriaSalaScalarFieldEnum
+    having?: HistoriaSalaScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: HistoriaSalaCountAggregateInputType | true
+    _min?: HistoriaSalaMinAggregateInputType
+    _max?: HistoriaSalaMaxAggregateInputType
+  }
+
+  export type HistoriaSalaGroupByOutputType = {
+    id: string
+    sala_id: string
+    titulo: string
+    descricao: string | null
+    criado_por: string
+    data_criacao: Date
+    _count: HistoriaSalaCountAggregateOutputType | null
+    _min: HistoriaSalaMinAggregateOutputType | null
+    _max: HistoriaSalaMaxAggregateOutputType | null
+  }
+
+  type GetHistoriaSalaGroupByPayload<T extends HistoriaSalaGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<HistoriaSalaGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof HistoriaSalaGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], HistoriaSalaGroupByOutputType[P]>
+            : GetScalarType<T[P], HistoriaSalaGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type HistoriaSalaSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    sala_id?: boolean
+    titulo?: boolean
+    descricao?: boolean
+    criado_por?: boolean
+    data_criacao?: boolean
+    sala?: boolean | SalaDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["historiaSala"]>
+
+  export type HistoriaSalaSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    sala_id?: boolean
+    titulo?: boolean
+    descricao?: boolean
+    criado_por?: boolean
+    data_criacao?: boolean
+    sala?: boolean | SalaDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["historiaSala"]>
+
+  export type HistoriaSalaSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    sala_id?: boolean
+    titulo?: boolean
+    descricao?: boolean
+    criado_por?: boolean
+    data_criacao?: boolean
+    sala?: boolean | SalaDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["historiaSala"]>
+
+  export type HistoriaSalaSelectScalar = {
+    id?: boolean
+    sala_id?: boolean
+    titulo?: boolean
+    descricao?: boolean
+    criado_por?: boolean
+    data_criacao?: boolean
+  }
+
+  export type HistoriaSalaOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "sala_id" | "titulo" | "descricao" | "criado_por" | "data_criacao", ExtArgs["result"]["historiaSala"]>
+  export type HistoriaSalaInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    sala?: boolean | SalaDefaultArgs<ExtArgs>
+  }
+  export type HistoriaSalaIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    sala?: boolean | SalaDefaultArgs<ExtArgs>
+  }
+  export type HistoriaSalaIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    sala?: boolean | SalaDefaultArgs<ExtArgs>
+  }
+
+  export type $HistoriaSalaPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "HistoriaSala"
+    objects: {
+      sala: Prisma.$SalaPayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      sala_id: string
+      titulo: string
+      descricao: string | null
+      criado_por: string
+      data_criacao: Date
+    }, ExtArgs["result"]["historiaSala"]>
+    composites: {}
+  }
+
+  type HistoriaSalaGetPayload<S extends boolean | null | undefined | HistoriaSalaDefaultArgs> = $Result.GetResult<Prisma.$HistoriaSalaPayload, S>
+
+  type HistoriaSalaCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<HistoriaSalaFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: HistoriaSalaCountAggregateInputType | true
+    }
+
+  export interface HistoriaSalaDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['HistoriaSala'], meta: { name: 'HistoriaSala' } }
+    /**
+     * Find zero or one HistoriaSala that matches the filter.
+     * @param {HistoriaSalaFindUniqueArgs} args - Arguments to find a HistoriaSala
+     * @example
+     * // Get one HistoriaSala
+     * const historiaSala = await prisma.historiaSala.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends HistoriaSalaFindUniqueArgs>(args: SelectSubset<T, HistoriaSalaFindUniqueArgs<ExtArgs>>): Prisma__HistoriaSalaClient<$Result.GetResult<Prisma.$HistoriaSalaPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one HistoriaSala that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {HistoriaSalaFindUniqueOrThrowArgs} args - Arguments to find a HistoriaSala
+     * @example
+     * // Get one HistoriaSala
+     * const historiaSala = await prisma.historiaSala.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends HistoriaSalaFindUniqueOrThrowArgs>(args: SelectSubset<T, HistoriaSalaFindUniqueOrThrowArgs<ExtArgs>>): Prisma__HistoriaSalaClient<$Result.GetResult<Prisma.$HistoriaSalaPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first HistoriaSala that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {HistoriaSalaFindFirstArgs} args - Arguments to find a HistoriaSala
+     * @example
+     * // Get one HistoriaSala
+     * const historiaSala = await prisma.historiaSala.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends HistoriaSalaFindFirstArgs>(args?: SelectSubset<T, HistoriaSalaFindFirstArgs<ExtArgs>>): Prisma__HistoriaSalaClient<$Result.GetResult<Prisma.$HistoriaSalaPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first HistoriaSala that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {HistoriaSalaFindFirstOrThrowArgs} args - Arguments to find a HistoriaSala
+     * @example
+     * // Get one HistoriaSala
+     * const historiaSala = await prisma.historiaSala.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends HistoriaSalaFindFirstOrThrowArgs>(args?: SelectSubset<T, HistoriaSalaFindFirstOrThrowArgs<ExtArgs>>): Prisma__HistoriaSalaClient<$Result.GetResult<Prisma.$HistoriaSalaPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more HistoriaSalas that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {HistoriaSalaFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all HistoriaSalas
+     * const historiaSalas = await prisma.historiaSala.findMany()
+     * 
+     * // Get first 10 HistoriaSalas
+     * const historiaSalas = await prisma.historiaSala.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const historiaSalaWithIdOnly = await prisma.historiaSala.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends HistoriaSalaFindManyArgs>(args?: SelectSubset<T, HistoriaSalaFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$HistoriaSalaPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a HistoriaSala.
+     * @param {HistoriaSalaCreateArgs} args - Arguments to create a HistoriaSala.
+     * @example
+     * // Create one HistoriaSala
+     * const HistoriaSala = await prisma.historiaSala.create({
+     *   data: {
+     *     // ... data to create a HistoriaSala
+     *   }
+     * })
+     * 
+     */
+    create<T extends HistoriaSalaCreateArgs>(args: SelectSubset<T, HistoriaSalaCreateArgs<ExtArgs>>): Prisma__HistoriaSalaClient<$Result.GetResult<Prisma.$HistoriaSalaPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many HistoriaSalas.
+     * @param {HistoriaSalaCreateManyArgs} args - Arguments to create many HistoriaSalas.
+     * @example
+     * // Create many HistoriaSalas
+     * const historiaSala = await prisma.historiaSala.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends HistoriaSalaCreateManyArgs>(args?: SelectSubset<T, HistoriaSalaCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many HistoriaSalas and returns the data saved in the database.
+     * @param {HistoriaSalaCreateManyAndReturnArgs} args - Arguments to create many HistoriaSalas.
+     * @example
+     * // Create many HistoriaSalas
+     * const historiaSala = await prisma.historiaSala.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many HistoriaSalas and only return the `id`
+     * const historiaSalaWithIdOnly = await prisma.historiaSala.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends HistoriaSalaCreateManyAndReturnArgs>(args?: SelectSubset<T, HistoriaSalaCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$HistoriaSalaPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a HistoriaSala.
+     * @param {HistoriaSalaDeleteArgs} args - Arguments to delete one HistoriaSala.
+     * @example
+     * // Delete one HistoriaSala
+     * const HistoriaSala = await prisma.historiaSala.delete({
+     *   where: {
+     *     // ... filter to delete one HistoriaSala
+     *   }
+     * })
+     * 
+     */
+    delete<T extends HistoriaSalaDeleteArgs>(args: SelectSubset<T, HistoriaSalaDeleteArgs<ExtArgs>>): Prisma__HistoriaSalaClient<$Result.GetResult<Prisma.$HistoriaSalaPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one HistoriaSala.
+     * @param {HistoriaSalaUpdateArgs} args - Arguments to update one HistoriaSala.
+     * @example
+     * // Update one HistoriaSala
+     * const historiaSala = await prisma.historiaSala.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends HistoriaSalaUpdateArgs>(args: SelectSubset<T, HistoriaSalaUpdateArgs<ExtArgs>>): Prisma__HistoriaSalaClient<$Result.GetResult<Prisma.$HistoriaSalaPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more HistoriaSalas.
+     * @param {HistoriaSalaDeleteManyArgs} args - Arguments to filter HistoriaSalas to delete.
+     * @example
+     * // Delete a few HistoriaSalas
+     * const { count } = await prisma.historiaSala.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends HistoriaSalaDeleteManyArgs>(args?: SelectSubset<T, HistoriaSalaDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more HistoriaSalas.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {HistoriaSalaUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many HistoriaSalas
+     * const historiaSala = await prisma.historiaSala.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends HistoriaSalaUpdateManyArgs>(args: SelectSubset<T, HistoriaSalaUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more HistoriaSalas and returns the data updated in the database.
+     * @param {HistoriaSalaUpdateManyAndReturnArgs} args - Arguments to update many HistoriaSalas.
+     * @example
+     * // Update many HistoriaSalas
+     * const historiaSala = await prisma.historiaSala.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more HistoriaSalas and only return the `id`
+     * const historiaSalaWithIdOnly = await prisma.historiaSala.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends HistoriaSalaUpdateManyAndReturnArgs>(args: SelectSubset<T, HistoriaSalaUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$HistoriaSalaPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one HistoriaSala.
+     * @param {HistoriaSalaUpsertArgs} args - Arguments to update or create a HistoriaSala.
+     * @example
+     * // Update or create a HistoriaSala
+     * const historiaSala = await prisma.historiaSala.upsert({
+     *   create: {
+     *     // ... data to create a HistoriaSala
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the HistoriaSala we want to update
+     *   }
+     * })
+     */
+    upsert<T extends HistoriaSalaUpsertArgs>(args: SelectSubset<T, HistoriaSalaUpsertArgs<ExtArgs>>): Prisma__HistoriaSalaClient<$Result.GetResult<Prisma.$HistoriaSalaPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of HistoriaSalas.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {HistoriaSalaCountArgs} args - Arguments to filter HistoriaSalas to count.
+     * @example
+     * // Count the number of HistoriaSalas
+     * const count = await prisma.historiaSala.count({
+     *   where: {
+     *     // ... the filter for the HistoriaSalas we want to count
+     *   }
+     * })
+    **/
+    count<T extends HistoriaSalaCountArgs>(
+      args?: Subset<T, HistoriaSalaCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], HistoriaSalaCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a HistoriaSala.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {HistoriaSalaAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends HistoriaSalaAggregateArgs>(args: Subset<T, HistoriaSalaAggregateArgs>): Prisma.PrismaPromise<GetHistoriaSalaAggregateType<T>>
+
+    /**
+     * Group by HistoriaSala.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {HistoriaSalaGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends HistoriaSalaGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: HistoriaSalaGroupByArgs['orderBy'] }
+        : { orderBy?: HistoriaSalaGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, HistoriaSalaGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetHistoriaSalaGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the HistoriaSala model
+   */
+  readonly fields: HistoriaSalaFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for HistoriaSala.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__HistoriaSalaClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    sala<T extends SalaDefaultArgs<ExtArgs> = {}>(args?: Subset<T, SalaDefaultArgs<ExtArgs>>): Prisma__SalaClient<$Result.GetResult<Prisma.$SalaPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the HistoriaSala model
+   */
+  interface HistoriaSalaFieldRefs {
+    readonly id: FieldRef<"HistoriaSala", 'String'>
+    readonly sala_id: FieldRef<"HistoriaSala", 'String'>
+    readonly titulo: FieldRef<"HistoriaSala", 'String'>
+    readonly descricao: FieldRef<"HistoriaSala", 'String'>
+    readonly criado_por: FieldRef<"HistoriaSala", 'String'>
+    readonly data_criacao: FieldRef<"HistoriaSala", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * HistoriaSala findUnique
+   */
+  export type HistoriaSalaFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the HistoriaSala
+     */
+    select?: HistoriaSalaSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the HistoriaSala
+     */
+    omit?: HistoriaSalaOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: HistoriaSalaInclude<ExtArgs> | null
+    /**
+     * Filter, which HistoriaSala to fetch.
+     */
+    where: HistoriaSalaWhereUniqueInput
+  }
+
+  /**
+   * HistoriaSala findUniqueOrThrow
+   */
+  export type HistoriaSalaFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the HistoriaSala
+     */
+    select?: HistoriaSalaSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the HistoriaSala
+     */
+    omit?: HistoriaSalaOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: HistoriaSalaInclude<ExtArgs> | null
+    /**
+     * Filter, which HistoriaSala to fetch.
+     */
+    where: HistoriaSalaWhereUniqueInput
+  }
+
+  /**
+   * HistoriaSala findFirst
+   */
+  export type HistoriaSalaFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the HistoriaSala
+     */
+    select?: HistoriaSalaSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the HistoriaSala
+     */
+    omit?: HistoriaSalaOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: HistoriaSalaInclude<ExtArgs> | null
+    /**
+     * Filter, which HistoriaSala to fetch.
+     */
+    where?: HistoriaSalaWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of HistoriaSalas to fetch.
+     */
+    orderBy?: HistoriaSalaOrderByWithRelationInput | HistoriaSalaOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for HistoriaSalas.
+     */
+    cursor?: HistoriaSalaWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` HistoriaSalas from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` HistoriaSalas.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of HistoriaSalas.
+     */
+    distinct?: HistoriaSalaScalarFieldEnum | HistoriaSalaScalarFieldEnum[]
+  }
+
+  /**
+   * HistoriaSala findFirstOrThrow
+   */
+  export type HistoriaSalaFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the HistoriaSala
+     */
+    select?: HistoriaSalaSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the HistoriaSala
+     */
+    omit?: HistoriaSalaOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: HistoriaSalaInclude<ExtArgs> | null
+    /**
+     * Filter, which HistoriaSala to fetch.
+     */
+    where?: HistoriaSalaWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of HistoriaSalas to fetch.
+     */
+    orderBy?: HistoriaSalaOrderByWithRelationInput | HistoriaSalaOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for HistoriaSalas.
+     */
+    cursor?: HistoriaSalaWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` HistoriaSalas from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` HistoriaSalas.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of HistoriaSalas.
+     */
+    distinct?: HistoriaSalaScalarFieldEnum | HistoriaSalaScalarFieldEnum[]
+  }
+
+  /**
+   * HistoriaSala findMany
+   */
+  export type HistoriaSalaFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the HistoriaSala
+     */
+    select?: HistoriaSalaSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the HistoriaSala
+     */
+    omit?: HistoriaSalaOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: HistoriaSalaInclude<ExtArgs> | null
+    /**
+     * Filter, which HistoriaSalas to fetch.
+     */
+    where?: HistoriaSalaWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of HistoriaSalas to fetch.
+     */
+    orderBy?: HistoriaSalaOrderByWithRelationInput | HistoriaSalaOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing HistoriaSalas.
+     */
+    cursor?: HistoriaSalaWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` HistoriaSalas from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` HistoriaSalas.
+     */
+    skip?: number
+    distinct?: HistoriaSalaScalarFieldEnum | HistoriaSalaScalarFieldEnum[]
+  }
+
+  /**
+   * HistoriaSala create
+   */
+  export type HistoriaSalaCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the HistoriaSala
+     */
+    select?: HistoriaSalaSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the HistoriaSala
+     */
+    omit?: HistoriaSalaOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: HistoriaSalaInclude<ExtArgs> | null
+    /**
+     * The data needed to create a HistoriaSala.
+     */
+    data: XOR<HistoriaSalaCreateInput, HistoriaSalaUncheckedCreateInput>
+  }
+
+  /**
+   * HistoriaSala createMany
+   */
+  export type HistoriaSalaCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many HistoriaSalas.
+     */
+    data: HistoriaSalaCreateManyInput | HistoriaSalaCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * HistoriaSala createManyAndReturn
+   */
+  export type HistoriaSalaCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the HistoriaSala
+     */
+    select?: HistoriaSalaSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the HistoriaSala
+     */
+    omit?: HistoriaSalaOmit<ExtArgs> | null
+    /**
+     * The data used to create many HistoriaSalas.
+     */
+    data: HistoriaSalaCreateManyInput | HistoriaSalaCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: HistoriaSalaIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * HistoriaSala update
+   */
+  export type HistoriaSalaUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the HistoriaSala
+     */
+    select?: HistoriaSalaSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the HistoriaSala
+     */
+    omit?: HistoriaSalaOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: HistoriaSalaInclude<ExtArgs> | null
+    /**
+     * The data needed to update a HistoriaSala.
+     */
+    data: XOR<HistoriaSalaUpdateInput, HistoriaSalaUncheckedUpdateInput>
+    /**
+     * Choose, which HistoriaSala to update.
+     */
+    where: HistoriaSalaWhereUniqueInput
+  }
+
+  /**
+   * HistoriaSala updateMany
+   */
+  export type HistoriaSalaUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update HistoriaSalas.
+     */
+    data: XOR<HistoriaSalaUpdateManyMutationInput, HistoriaSalaUncheckedUpdateManyInput>
+    /**
+     * Filter which HistoriaSalas to update
+     */
+    where?: HistoriaSalaWhereInput
+    /**
+     * Limit how many HistoriaSalas to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * HistoriaSala updateManyAndReturn
+   */
+  export type HistoriaSalaUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the HistoriaSala
+     */
+    select?: HistoriaSalaSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the HistoriaSala
+     */
+    omit?: HistoriaSalaOmit<ExtArgs> | null
+    /**
+     * The data used to update HistoriaSalas.
+     */
+    data: XOR<HistoriaSalaUpdateManyMutationInput, HistoriaSalaUncheckedUpdateManyInput>
+    /**
+     * Filter which HistoriaSalas to update
+     */
+    where?: HistoriaSalaWhereInput
+    /**
+     * Limit how many HistoriaSalas to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: HistoriaSalaIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * HistoriaSala upsert
+   */
+  export type HistoriaSalaUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the HistoriaSala
+     */
+    select?: HistoriaSalaSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the HistoriaSala
+     */
+    omit?: HistoriaSalaOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: HistoriaSalaInclude<ExtArgs> | null
+    /**
+     * The filter to search for the HistoriaSala to update in case it exists.
+     */
+    where: HistoriaSalaWhereUniqueInput
+    /**
+     * In case the HistoriaSala found by the `where` argument doesn't exist, create a new HistoriaSala with this data.
+     */
+    create: XOR<HistoriaSalaCreateInput, HistoriaSalaUncheckedCreateInput>
+    /**
+     * In case the HistoriaSala was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<HistoriaSalaUpdateInput, HistoriaSalaUncheckedUpdateInput>
+  }
+
+  /**
+   * HistoriaSala delete
+   */
+  export type HistoriaSalaDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the HistoriaSala
+     */
+    select?: HistoriaSalaSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the HistoriaSala
+     */
+    omit?: HistoriaSalaOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: HistoriaSalaInclude<ExtArgs> | null
+    /**
+     * Filter which HistoriaSala to delete.
+     */
+    where: HistoriaSalaWhereUniqueInput
+  }
+
+  /**
+   * HistoriaSala deleteMany
+   */
+  export type HistoriaSalaDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which HistoriaSalas to delete
+     */
+    where?: HistoriaSalaWhereInput
+    /**
+     * Limit how many HistoriaSalas to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * HistoriaSala without action
+   */
+  export type HistoriaSalaDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the HistoriaSala
+     */
+    select?: HistoriaSalaSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the HistoriaSala
+     */
+    omit?: HistoriaSalaOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: HistoriaSalaInclude<ExtArgs> | null
   }
 
 
@@ -4692,6 +5891,7 @@ export namespace Prisma {
     id: string | null
     pessoa_id: string | null
     sala_id: string | null
+    historia_id: string | null
     valor: number | null
     data_voto: Date | null
   }
@@ -4700,6 +5900,7 @@ export namespace Prisma {
     id: string | null
     pessoa_id: string | null
     sala_id: string | null
+    historia_id: string | null
     valor: number | null
     data_voto: Date | null
   }
@@ -4708,6 +5909,7 @@ export namespace Prisma {
     id: number
     pessoa_id: number
     sala_id: number
+    historia_id: number
     valor: number
     data_voto: number
     _all: number
@@ -4726,6 +5928,7 @@ export namespace Prisma {
     id?: true
     pessoa_id?: true
     sala_id?: true
+    historia_id?: true
     valor?: true
     data_voto?: true
   }
@@ -4734,6 +5937,7 @@ export namespace Prisma {
     id?: true
     pessoa_id?: true
     sala_id?: true
+    historia_id?: true
     valor?: true
     data_voto?: true
   }
@@ -4742,6 +5946,7 @@ export namespace Prisma {
     id?: true
     pessoa_id?: true
     sala_id?: true
+    historia_id?: true
     valor?: true
     data_voto?: true
     _all?: true
@@ -4837,6 +6042,7 @@ export namespace Prisma {
     id: string
     pessoa_id: string
     sala_id: string
+    historia_id: string
     valor: number
     data_voto: Date
     _count: VotoCountAggregateOutputType | null
@@ -4864,6 +6070,7 @@ export namespace Prisma {
     id?: boolean
     pessoa_id?: boolean
     sala_id?: boolean
+    historia_id?: boolean
     valor?: boolean
     data_voto?: boolean
     pessoa?: boolean | PessoaDefaultArgs<ExtArgs>
@@ -4874,6 +6081,7 @@ export namespace Prisma {
     id?: boolean
     pessoa_id?: boolean
     sala_id?: boolean
+    historia_id?: boolean
     valor?: boolean
     data_voto?: boolean
     pessoa?: boolean | PessoaDefaultArgs<ExtArgs>
@@ -4884,6 +6092,7 @@ export namespace Prisma {
     id?: boolean
     pessoa_id?: boolean
     sala_id?: boolean
+    historia_id?: boolean
     valor?: boolean
     data_voto?: boolean
     pessoa?: boolean | PessoaDefaultArgs<ExtArgs>
@@ -4894,11 +6103,12 @@ export namespace Prisma {
     id?: boolean
     pessoa_id?: boolean
     sala_id?: boolean
+    historia_id?: boolean
     valor?: boolean
     data_voto?: boolean
   }
 
-  export type VotoOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "pessoa_id" | "sala_id" | "valor" | "data_voto", ExtArgs["result"]["voto"]>
+  export type VotoOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "pessoa_id" | "sala_id" | "historia_id" | "valor" | "data_voto", ExtArgs["result"]["voto"]>
   export type VotoInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     pessoa?: boolean | PessoaDefaultArgs<ExtArgs>
     sala?: boolean | SalaDefaultArgs<ExtArgs>
@@ -4922,6 +6132,7 @@ export namespace Prisma {
       id: string
       pessoa_id: string
       sala_id: string
+      historia_id: string
       valor: number
       data_voto: Date
     }, ExtArgs["result"]["voto"]>
@@ -5352,6 +6563,7 @@ export namespace Prisma {
     readonly id: FieldRef<"Voto", 'String'>
     readonly pessoa_id: FieldRef<"Voto", 'String'>
     readonly sala_id: FieldRef<"Voto", 'String'>
+    readonly historia_id: FieldRef<"Voto", 'String'>
     readonly valor: FieldRef<"Voto", 'Int'>
     readonly data_voto: FieldRef<"Voto", 'DateTime'>
   }
@@ -5813,6 +7025,18 @@ export namespace Prisma {
   export type SalaScalarFieldEnum = (typeof SalaScalarFieldEnum)[keyof typeof SalaScalarFieldEnum]
 
 
+  export const HistoriaSalaScalarFieldEnum: {
+    id: 'id',
+    sala_id: 'sala_id',
+    titulo: 'titulo',
+    descricao: 'descricao',
+    criado_por: 'criado_por',
+    data_criacao: 'data_criacao'
+  };
+
+  export type HistoriaSalaScalarFieldEnum = (typeof HistoriaSalaScalarFieldEnum)[keyof typeof HistoriaSalaScalarFieldEnum]
+
+
   export const ParticipanteSalaScalarFieldEnum: {
     id: 'id',
     sala_id: 'sala_id',
@@ -5827,6 +7051,7 @@ export namespace Prisma {
     id: 'id',
     pessoa_id: 'pessoa_id',
     sala_id: 'sala_id',
+    historia_id: 'historia_id',
     valor: 'valor',
     data_voto: 'data_voto'
   };
@@ -6031,10 +7256,11 @@ export namespace Prisma {
     senha?: StringNullableFilter<"Sala"> | string | null
     inativo?: BoolFilter<"Sala"> | boolean
     data_criacao?: DateTimeFilter<"Sala"> | Date | string
-    data_alteracao?: DateTimeFilter<"Sala"> | Date | string
+    data_alteracao?: DateTimeNullableFilter<"Sala"> | Date | string | null
     participantes?: ParticipanteSalaListRelationFilter
     proprietario?: XOR<PessoaScalarRelationFilter, PessoaWhereInput>
     votos?: VotoListRelationFilter
+    historias?: HistoriaSalaListRelationFilter
   }
 
   export type SalaOrderByWithRelationInput = {
@@ -6045,10 +7271,11 @@ export namespace Prisma {
     senha?: SortOrderInput | SortOrder
     inativo?: SortOrder
     data_criacao?: SortOrder
-    data_alteracao?: SortOrder
+    data_alteracao?: SortOrderInput | SortOrder
     participantes?: ParticipanteSalaOrderByRelationAggregateInput
     proprietario?: PessoaOrderByWithRelationInput
     votos?: VotoOrderByRelationAggregateInput
+    historias?: HistoriaSalaOrderByRelationAggregateInput
   }
 
   export type SalaWhereUniqueInput = Prisma.AtLeast<{
@@ -6062,10 +7289,11 @@ export namespace Prisma {
     senha?: StringNullableFilter<"Sala"> | string | null
     inativo?: BoolFilter<"Sala"> | boolean
     data_criacao?: DateTimeFilter<"Sala"> | Date | string
-    data_alteracao?: DateTimeFilter<"Sala"> | Date | string
+    data_alteracao?: DateTimeNullableFilter<"Sala"> | Date | string | null
     participantes?: ParticipanteSalaListRelationFilter
     proprietario?: XOR<PessoaScalarRelationFilter, PessoaWhereInput>
     votos?: VotoListRelationFilter
+    historias?: HistoriaSalaListRelationFilter
   }, "id" | "codigo">
 
   export type SalaOrderByWithAggregationInput = {
@@ -6076,7 +7304,7 @@ export namespace Prisma {
     senha?: SortOrderInput | SortOrder
     inativo?: SortOrder
     data_criacao?: SortOrder
-    data_alteracao?: SortOrder
+    data_alteracao?: SortOrderInput | SortOrder
     _count?: SalaCountOrderByAggregateInput
     _avg?: SalaAvgOrderByAggregateInput
     _max?: SalaMaxOrderByAggregateInput
@@ -6095,7 +7323,67 @@ export namespace Prisma {
     senha?: StringNullableWithAggregatesFilter<"Sala"> | string | null
     inativo?: BoolWithAggregatesFilter<"Sala"> | boolean
     data_criacao?: DateTimeWithAggregatesFilter<"Sala"> | Date | string
-    data_alteracao?: DateTimeWithAggregatesFilter<"Sala"> | Date | string
+    data_alteracao?: DateTimeNullableWithAggregatesFilter<"Sala"> | Date | string | null
+  }
+
+  export type HistoriaSalaWhereInput = {
+    AND?: HistoriaSalaWhereInput | HistoriaSalaWhereInput[]
+    OR?: HistoriaSalaWhereInput[]
+    NOT?: HistoriaSalaWhereInput | HistoriaSalaWhereInput[]
+    id?: StringFilter<"HistoriaSala"> | string
+    sala_id?: StringFilter<"HistoriaSala"> | string
+    titulo?: StringFilter<"HistoriaSala"> | string
+    descricao?: StringNullableFilter<"HistoriaSala"> | string | null
+    criado_por?: StringFilter<"HistoriaSala"> | string
+    data_criacao?: DateTimeFilter<"HistoriaSala"> | Date | string
+    sala?: XOR<SalaScalarRelationFilter, SalaWhereInput>
+  }
+
+  export type HistoriaSalaOrderByWithRelationInput = {
+    id?: SortOrder
+    sala_id?: SortOrder
+    titulo?: SortOrder
+    descricao?: SortOrderInput | SortOrder
+    criado_por?: SortOrder
+    data_criacao?: SortOrder
+    sala?: SalaOrderByWithRelationInput
+  }
+
+  export type HistoriaSalaWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    AND?: HistoriaSalaWhereInput | HistoriaSalaWhereInput[]
+    OR?: HistoriaSalaWhereInput[]
+    NOT?: HistoriaSalaWhereInput | HistoriaSalaWhereInput[]
+    sala_id?: StringFilter<"HistoriaSala"> | string
+    titulo?: StringFilter<"HistoriaSala"> | string
+    descricao?: StringNullableFilter<"HistoriaSala"> | string | null
+    criado_por?: StringFilter<"HistoriaSala"> | string
+    data_criacao?: DateTimeFilter<"HistoriaSala"> | Date | string
+    sala?: XOR<SalaScalarRelationFilter, SalaWhereInput>
+  }, "id">
+
+  export type HistoriaSalaOrderByWithAggregationInput = {
+    id?: SortOrder
+    sala_id?: SortOrder
+    titulo?: SortOrder
+    descricao?: SortOrderInput | SortOrder
+    criado_por?: SortOrder
+    data_criacao?: SortOrder
+    _count?: HistoriaSalaCountOrderByAggregateInput
+    _max?: HistoriaSalaMaxOrderByAggregateInput
+    _min?: HistoriaSalaMinOrderByAggregateInput
+  }
+
+  export type HistoriaSalaScalarWhereWithAggregatesInput = {
+    AND?: HistoriaSalaScalarWhereWithAggregatesInput | HistoriaSalaScalarWhereWithAggregatesInput[]
+    OR?: HistoriaSalaScalarWhereWithAggregatesInput[]
+    NOT?: HistoriaSalaScalarWhereWithAggregatesInput | HistoriaSalaScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"HistoriaSala"> | string
+    sala_id?: StringWithAggregatesFilter<"HistoriaSala"> | string
+    titulo?: StringWithAggregatesFilter<"HistoriaSala"> | string
+    descricao?: StringNullableWithAggregatesFilter<"HistoriaSala"> | string | null
+    criado_por?: StringWithAggregatesFilter<"HistoriaSala"> | string
+    data_criacao?: DateTimeWithAggregatesFilter<"HistoriaSala"> | Date | string
   }
 
   export type ParticipanteSalaWhereInput = {
@@ -6159,6 +7447,7 @@ export namespace Prisma {
     id?: StringFilter<"Voto"> | string
     pessoa_id?: StringFilter<"Voto"> | string
     sala_id?: StringFilter<"Voto"> | string
+    historia_id?: StringFilter<"Voto"> | string
     valor?: IntFilter<"Voto"> | number
     data_voto?: DateTimeFilter<"Voto"> | Date | string
     pessoa?: XOR<PessoaScalarRelationFilter, PessoaWhereInput>
@@ -6169,6 +7458,7 @@ export namespace Prisma {
     id?: SortOrder
     pessoa_id?: SortOrder
     sala_id?: SortOrder
+    historia_id?: SortOrder
     valor?: SortOrder
     data_voto?: SortOrder
     pessoa?: PessoaOrderByWithRelationInput
@@ -6177,22 +7467,24 @@ export namespace Prisma {
 
   export type VotoWhereUniqueInput = Prisma.AtLeast<{
     id?: string
-    sala_id_pessoa_id?: VotoSala_idPessoa_idCompoundUniqueInput
+    sala_id_pessoa_id_historia_id?: VotoSala_idPessoa_idHistoria_idCompoundUniqueInput
     AND?: VotoWhereInput | VotoWhereInput[]
     OR?: VotoWhereInput[]
     NOT?: VotoWhereInput | VotoWhereInput[]
     pessoa_id?: StringFilter<"Voto"> | string
     sala_id?: StringFilter<"Voto"> | string
+    historia_id?: StringFilter<"Voto"> | string
     valor?: IntFilter<"Voto"> | number
     data_voto?: DateTimeFilter<"Voto"> | Date | string
     pessoa?: XOR<PessoaScalarRelationFilter, PessoaWhereInput>
     sala?: XOR<SalaScalarRelationFilter, SalaWhereInput>
-  }, "id" | "sala_id_pessoa_id">
+  }, "id" | "sala_id_pessoa_id_historia_id">
 
   export type VotoOrderByWithAggregationInput = {
     id?: SortOrder
     pessoa_id?: SortOrder
     sala_id?: SortOrder
+    historia_id?: SortOrder
     valor?: SortOrder
     data_voto?: SortOrder
     _count?: VotoCountOrderByAggregateInput
@@ -6209,6 +7501,7 @@ export namespace Prisma {
     id?: StringWithAggregatesFilter<"Voto"> | string
     pessoa_id?: StringWithAggregatesFilter<"Voto"> | string
     sala_id?: StringWithAggregatesFilter<"Voto"> | string
+    historia_id?: StringWithAggregatesFilter<"Voto"> | string
     valor?: IntWithAggregatesFilter<"Voto"> | number
     data_voto?: DateTimeWithAggregatesFilter<"Voto"> | Date | string
   }
@@ -6330,10 +7623,11 @@ export namespace Prisma {
     senha?: string | null
     inativo?: boolean
     data_criacao?: Date | string
-    data_alteracao?: Date | string
+    data_alteracao?: Date | string | null
     participantes?: ParticipanteSalaCreateNestedManyWithoutSalaInput
     proprietario: PessoaCreateNestedOneWithoutSalasCriadasInput
     votos?: VotoCreateNestedManyWithoutSalaInput
+    historias?: HistoriaSalaCreateNestedManyWithoutSalaInput
   }
 
   export type SalaUncheckedCreateInput = {
@@ -6344,9 +7638,10 @@ export namespace Prisma {
     senha?: string | null
     inativo?: boolean
     data_criacao?: Date | string
-    data_alteracao?: Date | string
+    data_alteracao?: Date | string | null
     participantes?: ParticipanteSalaUncheckedCreateNestedManyWithoutSalaInput
     votos?: VotoUncheckedCreateNestedManyWithoutSalaInput
+    historias?: HistoriaSalaUncheckedCreateNestedManyWithoutSalaInput
   }
 
   export type SalaUpdateInput = {
@@ -6356,10 +7651,11 @@ export namespace Prisma {
     senha?: NullableStringFieldUpdateOperationsInput | string | null
     inativo?: BoolFieldUpdateOperationsInput | boolean
     data_criacao?: DateTimeFieldUpdateOperationsInput | Date | string
-    data_alteracao?: DateTimeFieldUpdateOperationsInput | Date | string
+    data_alteracao?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     participantes?: ParticipanteSalaUpdateManyWithoutSalaNestedInput
     proprietario?: PessoaUpdateOneRequiredWithoutSalasCriadasNestedInput
     votos?: VotoUpdateManyWithoutSalaNestedInput
+    historias?: HistoriaSalaUpdateManyWithoutSalaNestedInput
   }
 
   export type SalaUncheckedUpdateInput = {
@@ -6370,9 +7666,10 @@ export namespace Prisma {
     senha?: NullableStringFieldUpdateOperationsInput | string | null
     inativo?: BoolFieldUpdateOperationsInput | boolean
     data_criacao?: DateTimeFieldUpdateOperationsInput | Date | string
-    data_alteracao?: DateTimeFieldUpdateOperationsInput | Date | string
+    data_alteracao?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     participantes?: ParticipanteSalaUncheckedUpdateManyWithoutSalaNestedInput
     votos?: VotoUncheckedUpdateManyWithoutSalaNestedInput
+    historias?: HistoriaSalaUncheckedUpdateManyWithoutSalaNestedInput
   }
 
   export type SalaCreateManyInput = {
@@ -6383,7 +7680,7 @@ export namespace Prisma {
     senha?: string | null
     inativo?: boolean
     data_criacao?: Date | string
-    data_alteracao?: Date | string
+    data_alteracao?: Date | string | null
   }
 
   export type SalaUpdateManyMutationInput = {
@@ -6393,7 +7690,7 @@ export namespace Prisma {
     senha?: NullableStringFieldUpdateOperationsInput | string | null
     inativo?: BoolFieldUpdateOperationsInput | boolean
     data_criacao?: DateTimeFieldUpdateOperationsInput | Date | string
-    data_alteracao?: DateTimeFieldUpdateOperationsInput | Date | string
+    data_alteracao?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
   export type SalaUncheckedUpdateManyInput = {
@@ -6404,7 +7701,69 @@ export namespace Prisma {
     senha?: NullableStringFieldUpdateOperationsInput | string | null
     inativo?: BoolFieldUpdateOperationsInput | boolean
     data_criacao?: DateTimeFieldUpdateOperationsInput | Date | string
-    data_alteracao?: DateTimeFieldUpdateOperationsInput | Date | string
+    data_alteracao?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  }
+
+  export type HistoriaSalaCreateInput = {
+    id?: string
+    titulo: string
+    descricao?: string | null
+    criado_por: string
+    data_criacao?: Date | string
+    sala: SalaCreateNestedOneWithoutHistoriasInput
+  }
+
+  export type HistoriaSalaUncheckedCreateInput = {
+    id?: string
+    sala_id: string
+    titulo: string
+    descricao?: string | null
+    criado_por: string
+    data_criacao?: Date | string
+  }
+
+  export type HistoriaSalaUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    titulo?: StringFieldUpdateOperationsInput | string
+    descricao?: NullableStringFieldUpdateOperationsInput | string | null
+    criado_por?: StringFieldUpdateOperationsInput | string
+    data_criacao?: DateTimeFieldUpdateOperationsInput | Date | string
+    sala?: SalaUpdateOneRequiredWithoutHistoriasNestedInput
+  }
+
+  export type HistoriaSalaUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    sala_id?: StringFieldUpdateOperationsInput | string
+    titulo?: StringFieldUpdateOperationsInput | string
+    descricao?: NullableStringFieldUpdateOperationsInput | string | null
+    criado_por?: StringFieldUpdateOperationsInput | string
+    data_criacao?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type HistoriaSalaCreateManyInput = {
+    id?: string
+    sala_id: string
+    titulo: string
+    descricao?: string | null
+    criado_por: string
+    data_criacao?: Date | string
+  }
+
+  export type HistoriaSalaUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    titulo?: StringFieldUpdateOperationsInput | string
+    descricao?: NullableStringFieldUpdateOperationsInput | string | null
+    criado_por?: StringFieldUpdateOperationsInput | string
+    data_criacao?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type HistoriaSalaUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    sala_id?: StringFieldUpdateOperationsInput | string
+    titulo?: StringFieldUpdateOperationsInput | string
+    descricao?: NullableStringFieldUpdateOperationsInput | string | null
+    criado_por?: StringFieldUpdateOperationsInput | string
+    data_criacao?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type ParticipanteSalaCreateInput = {
@@ -6456,6 +7815,7 @@ export namespace Prisma {
 
   export type VotoCreateInput = {
     id?: string
+    historia_id: string
     valor: number
     data_voto?: Date | string
     pessoa: PessoaCreateNestedOneWithoutVotosInput
@@ -6466,12 +7826,14 @@ export namespace Prisma {
     id?: string
     pessoa_id: string
     sala_id: string
+    historia_id: string
     valor: number
     data_voto?: Date | string
   }
 
   export type VotoUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
+    historia_id?: StringFieldUpdateOperationsInput | string
     valor?: IntFieldUpdateOperationsInput | number
     data_voto?: DateTimeFieldUpdateOperationsInput | Date | string
     pessoa?: PessoaUpdateOneRequiredWithoutVotosNestedInput
@@ -6482,6 +7844,7 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     pessoa_id?: StringFieldUpdateOperationsInput | string
     sala_id?: StringFieldUpdateOperationsInput | string
+    historia_id?: StringFieldUpdateOperationsInput | string
     valor?: IntFieldUpdateOperationsInput | number
     data_voto?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -6490,12 +7853,14 @@ export namespace Prisma {
     id?: string
     pessoa_id: string
     sala_id: string
+    historia_id: string
     valor: number
     data_voto?: Date | string
   }
 
   export type VotoUpdateManyMutationInput = {
     id?: StringFieldUpdateOperationsInput | string
+    historia_id?: StringFieldUpdateOperationsInput | string
     valor?: IntFieldUpdateOperationsInput | number
     data_voto?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -6504,6 +7869,7 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     pessoa_id?: StringFieldUpdateOperationsInput | string
     sala_id?: StringFieldUpdateOperationsInput | string
+    historia_id?: StringFieldUpdateOperationsInput | string
     valor?: IntFieldUpdateOperationsInput | number
     data_voto?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -6730,6 +8096,16 @@ export namespace Prisma {
     isNot?: PessoaWhereInput
   }
 
+  export type HistoriaSalaListRelationFilter = {
+    every?: HistoriaSalaWhereInput
+    some?: HistoriaSalaWhereInput
+    none?: HistoriaSalaWhereInput
+  }
+
+  export type HistoriaSalaOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
   export type SalaCountOrderByAggregateInput = {
     id?: SortOrder
     codigo?: SortOrder
@@ -6792,6 +8168,33 @@ export namespace Prisma {
     isNot?: SalaWhereInput
   }
 
+  export type HistoriaSalaCountOrderByAggregateInput = {
+    id?: SortOrder
+    sala_id?: SortOrder
+    titulo?: SortOrder
+    descricao?: SortOrder
+    criado_por?: SortOrder
+    data_criacao?: SortOrder
+  }
+
+  export type HistoriaSalaMaxOrderByAggregateInput = {
+    id?: SortOrder
+    sala_id?: SortOrder
+    titulo?: SortOrder
+    descricao?: SortOrder
+    criado_por?: SortOrder
+    data_criacao?: SortOrder
+  }
+
+  export type HistoriaSalaMinOrderByAggregateInput = {
+    id?: SortOrder
+    sala_id?: SortOrder
+    titulo?: SortOrder
+    descricao?: SortOrder
+    criado_por?: SortOrder
+    data_criacao?: SortOrder
+  }
+
   export type ParticipanteSalaSala_idPessoa_idCompoundUniqueInput = {
     sala_id: string
     pessoa_id: string
@@ -6818,15 +8221,17 @@ export namespace Prisma {
     adicionado?: SortOrder
   }
 
-  export type VotoSala_idPessoa_idCompoundUniqueInput = {
+  export type VotoSala_idPessoa_idHistoria_idCompoundUniqueInput = {
     sala_id: string
     pessoa_id: string
+    historia_id: string
   }
 
   export type VotoCountOrderByAggregateInput = {
     id?: SortOrder
     pessoa_id?: SortOrder
     sala_id?: SortOrder
+    historia_id?: SortOrder
     valor?: SortOrder
     data_voto?: SortOrder
   }
@@ -6839,6 +8244,7 @@ export namespace Prisma {
     id?: SortOrder
     pessoa_id?: SortOrder
     sala_id?: SortOrder
+    historia_id?: SortOrder
     valor?: SortOrder
     data_voto?: SortOrder
   }
@@ -6847,6 +8253,7 @@ export namespace Prisma {
     id?: SortOrder
     pessoa_id?: SortOrder
     sala_id?: SortOrder
+    historia_id?: SortOrder
     valor?: SortOrder
     data_voto?: SortOrder
   }
@@ -7021,6 +8428,13 @@ export namespace Prisma {
     connect?: VotoWhereUniqueInput | VotoWhereUniqueInput[]
   }
 
+  export type HistoriaSalaCreateNestedManyWithoutSalaInput = {
+    create?: XOR<HistoriaSalaCreateWithoutSalaInput, HistoriaSalaUncheckedCreateWithoutSalaInput> | HistoriaSalaCreateWithoutSalaInput[] | HistoriaSalaUncheckedCreateWithoutSalaInput[]
+    connectOrCreate?: HistoriaSalaCreateOrConnectWithoutSalaInput | HistoriaSalaCreateOrConnectWithoutSalaInput[]
+    createMany?: HistoriaSalaCreateManySalaInputEnvelope
+    connect?: HistoriaSalaWhereUniqueInput | HistoriaSalaWhereUniqueInput[]
+  }
+
   export type ParticipanteSalaUncheckedCreateNestedManyWithoutSalaInput = {
     create?: XOR<ParticipanteSalaCreateWithoutSalaInput, ParticipanteSalaUncheckedCreateWithoutSalaInput> | ParticipanteSalaCreateWithoutSalaInput[] | ParticipanteSalaUncheckedCreateWithoutSalaInput[]
     connectOrCreate?: ParticipanteSalaCreateOrConnectWithoutSalaInput | ParticipanteSalaCreateOrConnectWithoutSalaInput[]
@@ -7033,6 +8447,13 @@ export namespace Prisma {
     connectOrCreate?: VotoCreateOrConnectWithoutSalaInput | VotoCreateOrConnectWithoutSalaInput[]
     createMany?: VotoCreateManySalaInputEnvelope
     connect?: VotoWhereUniqueInput | VotoWhereUniqueInput[]
+  }
+
+  export type HistoriaSalaUncheckedCreateNestedManyWithoutSalaInput = {
+    create?: XOR<HistoriaSalaCreateWithoutSalaInput, HistoriaSalaUncheckedCreateWithoutSalaInput> | HistoriaSalaCreateWithoutSalaInput[] | HistoriaSalaUncheckedCreateWithoutSalaInput[]
+    connectOrCreate?: HistoriaSalaCreateOrConnectWithoutSalaInput | HistoriaSalaCreateOrConnectWithoutSalaInput[]
+    createMany?: HistoriaSalaCreateManySalaInputEnvelope
+    connect?: HistoriaSalaWhereUniqueInput | HistoriaSalaWhereUniqueInput[]
   }
 
   export type IntFieldUpdateOperationsInput = {
@@ -7079,6 +8500,20 @@ export namespace Prisma {
     deleteMany?: VotoScalarWhereInput | VotoScalarWhereInput[]
   }
 
+  export type HistoriaSalaUpdateManyWithoutSalaNestedInput = {
+    create?: XOR<HistoriaSalaCreateWithoutSalaInput, HistoriaSalaUncheckedCreateWithoutSalaInput> | HistoriaSalaCreateWithoutSalaInput[] | HistoriaSalaUncheckedCreateWithoutSalaInput[]
+    connectOrCreate?: HistoriaSalaCreateOrConnectWithoutSalaInput | HistoriaSalaCreateOrConnectWithoutSalaInput[]
+    upsert?: HistoriaSalaUpsertWithWhereUniqueWithoutSalaInput | HistoriaSalaUpsertWithWhereUniqueWithoutSalaInput[]
+    createMany?: HistoriaSalaCreateManySalaInputEnvelope
+    set?: HistoriaSalaWhereUniqueInput | HistoriaSalaWhereUniqueInput[]
+    disconnect?: HistoriaSalaWhereUniqueInput | HistoriaSalaWhereUniqueInput[]
+    delete?: HistoriaSalaWhereUniqueInput | HistoriaSalaWhereUniqueInput[]
+    connect?: HistoriaSalaWhereUniqueInput | HistoriaSalaWhereUniqueInput[]
+    update?: HistoriaSalaUpdateWithWhereUniqueWithoutSalaInput | HistoriaSalaUpdateWithWhereUniqueWithoutSalaInput[]
+    updateMany?: HistoriaSalaUpdateManyWithWhereWithoutSalaInput | HistoriaSalaUpdateManyWithWhereWithoutSalaInput[]
+    deleteMany?: HistoriaSalaScalarWhereInput | HistoriaSalaScalarWhereInput[]
+  }
+
   export type ParticipanteSalaUncheckedUpdateManyWithoutSalaNestedInput = {
     create?: XOR<ParticipanteSalaCreateWithoutSalaInput, ParticipanteSalaUncheckedCreateWithoutSalaInput> | ParticipanteSalaCreateWithoutSalaInput[] | ParticipanteSalaUncheckedCreateWithoutSalaInput[]
     connectOrCreate?: ParticipanteSalaCreateOrConnectWithoutSalaInput | ParticipanteSalaCreateOrConnectWithoutSalaInput[]
@@ -7105,6 +8540,34 @@ export namespace Prisma {
     update?: VotoUpdateWithWhereUniqueWithoutSalaInput | VotoUpdateWithWhereUniqueWithoutSalaInput[]
     updateMany?: VotoUpdateManyWithWhereWithoutSalaInput | VotoUpdateManyWithWhereWithoutSalaInput[]
     deleteMany?: VotoScalarWhereInput | VotoScalarWhereInput[]
+  }
+
+  export type HistoriaSalaUncheckedUpdateManyWithoutSalaNestedInput = {
+    create?: XOR<HistoriaSalaCreateWithoutSalaInput, HistoriaSalaUncheckedCreateWithoutSalaInput> | HistoriaSalaCreateWithoutSalaInput[] | HistoriaSalaUncheckedCreateWithoutSalaInput[]
+    connectOrCreate?: HistoriaSalaCreateOrConnectWithoutSalaInput | HistoriaSalaCreateOrConnectWithoutSalaInput[]
+    upsert?: HistoriaSalaUpsertWithWhereUniqueWithoutSalaInput | HistoriaSalaUpsertWithWhereUniqueWithoutSalaInput[]
+    createMany?: HistoriaSalaCreateManySalaInputEnvelope
+    set?: HistoriaSalaWhereUniqueInput | HistoriaSalaWhereUniqueInput[]
+    disconnect?: HistoriaSalaWhereUniqueInput | HistoriaSalaWhereUniqueInput[]
+    delete?: HistoriaSalaWhereUniqueInput | HistoriaSalaWhereUniqueInput[]
+    connect?: HistoriaSalaWhereUniqueInput | HistoriaSalaWhereUniqueInput[]
+    update?: HistoriaSalaUpdateWithWhereUniqueWithoutSalaInput | HistoriaSalaUpdateWithWhereUniqueWithoutSalaInput[]
+    updateMany?: HistoriaSalaUpdateManyWithWhereWithoutSalaInput | HistoriaSalaUpdateManyWithWhereWithoutSalaInput[]
+    deleteMany?: HistoriaSalaScalarWhereInput | HistoriaSalaScalarWhereInput[]
+  }
+
+  export type SalaCreateNestedOneWithoutHistoriasInput = {
+    create?: XOR<SalaCreateWithoutHistoriasInput, SalaUncheckedCreateWithoutHistoriasInput>
+    connectOrCreate?: SalaCreateOrConnectWithoutHistoriasInput
+    connect?: SalaWhereUniqueInput
+  }
+
+  export type SalaUpdateOneRequiredWithoutHistoriasNestedInput = {
+    create?: XOR<SalaCreateWithoutHistoriasInput, SalaUncheckedCreateWithoutHistoriasInput>
+    connectOrCreate?: SalaCreateOrConnectWithoutHistoriasInput
+    upsert?: SalaUpsertWithoutHistoriasInput
+    connect?: SalaWhereUniqueInput
+    update?: XOR<XOR<SalaUpdateToOneWithWhereWithoutHistoriasInput, SalaUpdateWithoutHistoriasInput>, SalaUncheckedUpdateWithoutHistoriasInput>
   }
 
   export type PessoaCreateNestedOneWithoutParticipacoesInput = {
@@ -7366,9 +8829,10 @@ export namespace Prisma {
     senha?: string | null
     inativo?: boolean
     data_criacao?: Date | string
-    data_alteracao?: Date | string
+    data_alteracao?: Date | string | null
     participantes?: ParticipanteSalaCreateNestedManyWithoutSalaInput
     votos?: VotoCreateNestedManyWithoutSalaInput
+    historias?: HistoriaSalaCreateNestedManyWithoutSalaInput
   }
 
   export type SalaUncheckedCreateWithoutProprietarioInput = {
@@ -7378,9 +8842,10 @@ export namespace Prisma {
     senha?: string | null
     inativo?: boolean
     data_criacao?: Date | string
-    data_alteracao?: Date | string
+    data_alteracao?: Date | string | null
     participantes?: ParticipanteSalaUncheckedCreateNestedManyWithoutSalaInput
     votos?: VotoUncheckedCreateNestedManyWithoutSalaInput
+    historias?: HistoriaSalaUncheckedCreateNestedManyWithoutSalaInput
   }
 
   export type SalaCreateOrConnectWithoutProprietarioInput = {
@@ -7395,6 +8860,7 @@ export namespace Prisma {
 
   export type VotoCreateWithoutPessoaInput = {
     id?: string
+    historia_id: string
     valor: number
     data_voto?: Date | string
     sala: SalaCreateNestedOneWithoutVotosInput
@@ -7403,6 +8869,7 @@ export namespace Prisma {
   export type VotoUncheckedCreateWithoutPessoaInput = {
     id?: string
     sala_id: string
+    historia_id: string
     valor: number
     data_voto?: Date | string
   }
@@ -7470,7 +8937,7 @@ export namespace Prisma {
     senha?: StringNullableFilter<"Sala"> | string | null
     inativo?: BoolFilter<"Sala"> | boolean
     data_criacao?: DateTimeFilter<"Sala"> | Date | string
-    data_alteracao?: DateTimeFilter<"Sala"> | Date | string
+    data_alteracao?: DateTimeNullableFilter<"Sala"> | Date | string | null
   }
 
   export type VotoUpsertWithWhereUniqueWithoutPessoaInput = {
@@ -7496,6 +8963,7 @@ export namespace Prisma {
     id?: StringFilter<"Voto"> | string
     pessoa_id?: StringFilter<"Voto"> | string
     sala_id?: StringFilter<"Voto"> | string
+    historia_id?: StringFilter<"Voto"> | string
     valor?: IntFilter<"Voto"> | number
     data_voto?: DateTimeFilter<"Voto"> | Date | string
   }
@@ -7561,6 +9029,7 @@ export namespace Prisma {
 
   export type VotoCreateWithoutSalaInput = {
     id?: string
+    historia_id: string
     valor: number
     data_voto?: Date | string
     pessoa: PessoaCreateNestedOneWithoutVotosInput
@@ -7569,6 +9038,7 @@ export namespace Prisma {
   export type VotoUncheckedCreateWithoutSalaInput = {
     id?: string
     pessoa_id: string
+    historia_id: string
     valor: number
     data_voto?: Date | string
   }
@@ -7580,6 +9050,32 @@ export namespace Prisma {
 
   export type VotoCreateManySalaInputEnvelope = {
     data: VotoCreateManySalaInput | VotoCreateManySalaInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type HistoriaSalaCreateWithoutSalaInput = {
+    id?: string
+    titulo: string
+    descricao?: string | null
+    criado_por: string
+    data_criacao?: Date | string
+  }
+
+  export type HistoriaSalaUncheckedCreateWithoutSalaInput = {
+    id?: string
+    titulo: string
+    descricao?: string | null
+    criado_por: string
+    data_criacao?: Date | string
+  }
+
+  export type HistoriaSalaCreateOrConnectWithoutSalaInput = {
+    where: HistoriaSalaWhereUniqueInput
+    create: XOR<HistoriaSalaCreateWithoutSalaInput, HistoriaSalaUncheckedCreateWithoutSalaInput>
+  }
+
+  export type HistoriaSalaCreateManySalaInputEnvelope = {
+    data: HistoriaSalaCreateManySalaInput | HistoriaSalaCreateManySalaInput[]
     skipDuplicates?: boolean
   }
 
@@ -7658,6 +9154,102 @@ export namespace Prisma {
     data: XOR<VotoUpdateManyMutationInput, VotoUncheckedUpdateManyWithoutSalaInput>
   }
 
+  export type HistoriaSalaUpsertWithWhereUniqueWithoutSalaInput = {
+    where: HistoriaSalaWhereUniqueInput
+    update: XOR<HistoriaSalaUpdateWithoutSalaInput, HistoriaSalaUncheckedUpdateWithoutSalaInput>
+    create: XOR<HistoriaSalaCreateWithoutSalaInput, HistoriaSalaUncheckedCreateWithoutSalaInput>
+  }
+
+  export type HistoriaSalaUpdateWithWhereUniqueWithoutSalaInput = {
+    where: HistoriaSalaWhereUniqueInput
+    data: XOR<HistoriaSalaUpdateWithoutSalaInput, HistoriaSalaUncheckedUpdateWithoutSalaInput>
+  }
+
+  export type HistoriaSalaUpdateManyWithWhereWithoutSalaInput = {
+    where: HistoriaSalaScalarWhereInput
+    data: XOR<HistoriaSalaUpdateManyMutationInput, HistoriaSalaUncheckedUpdateManyWithoutSalaInput>
+  }
+
+  export type HistoriaSalaScalarWhereInput = {
+    AND?: HistoriaSalaScalarWhereInput | HistoriaSalaScalarWhereInput[]
+    OR?: HistoriaSalaScalarWhereInput[]
+    NOT?: HistoriaSalaScalarWhereInput | HistoriaSalaScalarWhereInput[]
+    id?: StringFilter<"HistoriaSala"> | string
+    sala_id?: StringFilter<"HistoriaSala"> | string
+    titulo?: StringFilter<"HistoriaSala"> | string
+    descricao?: StringNullableFilter<"HistoriaSala"> | string | null
+    criado_por?: StringFilter<"HistoriaSala"> | string
+    data_criacao?: DateTimeFilter<"HistoriaSala"> | Date | string
+  }
+
+  export type SalaCreateWithoutHistoriasInput = {
+    id?: string
+    codigo: number
+    titulo: string
+    senha?: string | null
+    inativo?: boolean
+    data_criacao?: Date | string
+    data_alteracao?: Date | string | null
+    participantes?: ParticipanteSalaCreateNestedManyWithoutSalaInput
+    proprietario: PessoaCreateNestedOneWithoutSalasCriadasInput
+    votos?: VotoCreateNestedManyWithoutSalaInput
+  }
+
+  export type SalaUncheckedCreateWithoutHistoriasInput = {
+    id?: string
+    codigo: number
+    titulo: string
+    criado_por: string
+    senha?: string | null
+    inativo?: boolean
+    data_criacao?: Date | string
+    data_alteracao?: Date | string | null
+    participantes?: ParticipanteSalaUncheckedCreateNestedManyWithoutSalaInput
+    votos?: VotoUncheckedCreateNestedManyWithoutSalaInput
+  }
+
+  export type SalaCreateOrConnectWithoutHistoriasInput = {
+    where: SalaWhereUniqueInput
+    create: XOR<SalaCreateWithoutHistoriasInput, SalaUncheckedCreateWithoutHistoriasInput>
+  }
+
+  export type SalaUpsertWithoutHistoriasInput = {
+    update: XOR<SalaUpdateWithoutHistoriasInput, SalaUncheckedUpdateWithoutHistoriasInput>
+    create: XOR<SalaCreateWithoutHistoriasInput, SalaUncheckedCreateWithoutHistoriasInput>
+    where?: SalaWhereInput
+  }
+
+  export type SalaUpdateToOneWithWhereWithoutHistoriasInput = {
+    where?: SalaWhereInput
+    data: XOR<SalaUpdateWithoutHistoriasInput, SalaUncheckedUpdateWithoutHistoriasInput>
+  }
+
+  export type SalaUpdateWithoutHistoriasInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    codigo?: IntFieldUpdateOperationsInput | number
+    titulo?: StringFieldUpdateOperationsInput | string
+    senha?: NullableStringFieldUpdateOperationsInput | string | null
+    inativo?: BoolFieldUpdateOperationsInput | boolean
+    data_criacao?: DateTimeFieldUpdateOperationsInput | Date | string
+    data_alteracao?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    participantes?: ParticipanteSalaUpdateManyWithoutSalaNestedInput
+    proprietario?: PessoaUpdateOneRequiredWithoutSalasCriadasNestedInput
+    votos?: VotoUpdateManyWithoutSalaNestedInput
+  }
+
+  export type SalaUncheckedUpdateWithoutHistoriasInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    codigo?: IntFieldUpdateOperationsInput | number
+    titulo?: StringFieldUpdateOperationsInput | string
+    criado_por?: StringFieldUpdateOperationsInput | string
+    senha?: NullableStringFieldUpdateOperationsInput | string | null
+    inativo?: BoolFieldUpdateOperationsInput | boolean
+    data_criacao?: DateTimeFieldUpdateOperationsInput | Date | string
+    data_alteracao?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    participantes?: ParticipanteSalaUncheckedUpdateManyWithoutSalaNestedInput
+    votos?: VotoUncheckedUpdateManyWithoutSalaNestedInput
+  }
+
   export type PessoaCreateWithoutParticipacoesInput = {
     id?: string
     nome: string
@@ -7702,9 +9294,10 @@ export namespace Prisma {
     senha?: string | null
     inativo?: boolean
     data_criacao?: Date | string
-    data_alteracao?: Date | string
+    data_alteracao?: Date | string | null
     proprietario: PessoaCreateNestedOneWithoutSalasCriadasInput
     votos?: VotoCreateNestedManyWithoutSalaInput
+    historias?: HistoriaSalaCreateNestedManyWithoutSalaInput
   }
 
   export type SalaUncheckedCreateWithoutParticipantesInput = {
@@ -7715,8 +9308,9 @@ export namespace Prisma {
     senha?: string | null
     inativo?: boolean
     data_criacao?: Date | string
-    data_alteracao?: Date | string
+    data_alteracao?: Date | string | null
     votos?: VotoUncheckedCreateNestedManyWithoutSalaInput
+    historias?: HistoriaSalaUncheckedCreateNestedManyWithoutSalaInput
   }
 
   export type SalaCreateOrConnectWithoutParticipantesInput = {
@@ -7785,9 +9379,10 @@ export namespace Prisma {
     senha?: NullableStringFieldUpdateOperationsInput | string | null
     inativo?: BoolFieldUpdateOperationsInput | boolean
     data_criacao?: DateTimeFieldUpdateOperationsInput | Date | string
-    data_alteracao?: DateTimeFieldUpdateOperationsInput | Date | string
+    data_alteracao?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     proprietario?: PessoaUpdateOneRequiredWithoutSalasCriadasNestedInput
     votos?: VotoUpdateManyWithoutSalaNestedInput
+    historias?: HistoriaSalaUpdateManyWithoutSalaNestedInput
   }
 
   export type SalaUncheckedUpdateWithoutParticipantesInput = {
@@ -7798,8 +9393,9 @@ export namespace Prisma {
     senha?: NullableStringFieldUpdateOperationsInput | string | null
     inativo?: BoolFieldUpdateOperationsInput | boolean
     data_criacao?: DateTimeFieldUpdateOperationsInput | Date | string
-    data_alteracao?: DateTimeFieldUpdateOperationsInput | Date | string
+    data_alteracao?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     votos?: VotoUncheckedUpdateManyWithoutSalaNestedInput
+    historias?: HistoriaSalaUncheckedUpdateManyWithoutSalaNestedInput
   }
 
   export type PessoaCreateWithoutVotosInput = {
@@ -7846,9 +9442,10 @@ export namespace Prisma {
     senha?: string | null
     inativo?: boolean
     data_criacao?: Date | string
-    data_alteracao?: Date | string
+    data_alteracao?: Date | string | null
     participantes?: ParticipanteSalaCreateNestedManyWithoutSalaInput
     proprietario: PessoaCreateNestedOneWithoutSalasCriadasInput
+    historias?: HistoriaSalaCreateNestedManyWithoutSalaInput
   }
 
   export type SalaUncheckedCreateWithoutVotosInput = {
@@ -7859,8 +9456,9 @@ export namespace Prisma {
     senha?: string | null
     inativo?: boolean
     data_criacao?: Date | string
-    data_alteracao?: Date | string
+    data_alteracao?: Date | string | null
     participantes?: ParticipanteSalaUncheckedCreateNestedManyWithoutSalaInput
+    historias?: HistoriaSalaUncheckedCreateNestedManyWithoutSalaInput
   }
 
   export type SalaCreateOrConnectWithoutVotosInput = {
@@ -7929,9 +9527,10 @@ export namespace Prisma {
     senha?: NullableStringFieldUpdateOperationsInput | string | null
     inativo?: BoolFieldUpdateOperationsInput | boolean
     data_criacao?: DateTimeFieldUpdateOperationsInput | Date | string
-    data_alteracao?: DateTimeFieldUpdateOperationsInput | Date | string
+    data_alteracao?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     participantes?: ParticipanteSalaUpdateManyWithoutSalaNestedInput
     proprietario?: PessoaUpdateOneRequiredWithoutSalasCriadasNestedInput
+    historias?: HistoriaSalaUpdateManyWithoutSalaNestedInput
   }
 
   export type SalaUncheckedUpdateWithoutVotosInput = {
@@ -7942,8 +9541,9 @@ export namespace Prisma {
     senha?: NullableStringFieldUpdateOperationsInput | string | null
     inativo?: BoolFieldUpdateOperationsInput | boolean
     data_criacao?: DateTimeFieldUpdateOperationsInput | Date | string
-    data_alteracao?: DateTimeFieldUpdateOperationsInput | Date | string
+    data_alteracao?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     participantes?: ParticipanteSalaUncheckedUpdateManyWithoutSalaNestedInput
+    historias?: HistoriaSalaUncheckedUpdateManyWithoutSalaNestedInput
   }
 
   export type ParticipanteSalaCreateManyPessoaInput = {
@@ -7959,12 +9559,13 @@ export namespace Prisma {
     senha?: string | null
     inativo?: boolean
     data_criacao?: Date | string
-    data_alteracao?: Date | string
+    data_alteracao?: Date | string | null
   }
 
   export type VotoCreateManyPessoaInput = {
     id?: string
     sala_id: string
+    historia_id: string
     valor: number
     data_voto?: Date | string
   }
@@ -7994,9 +9595,10 @@ export namespace Prisma {
     senha?: NullableStringFieldUpdateOperationsInput | string | null
     inativo?: BoolFieldUpdateOperationsInput | boolean
     data_criacao?: DateTimeFieldUpdateOperationsInput | Date | string
-    data_alteracao?: DateTimeFieldUpdateOperationsInput | Date | string
+    data_alteracao?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     participantes?: ParticipanteSalaUpdateManyWithoutSalaNestedInput
     votos?: VotoUpdateManyWithoutSalaNestedInput
+    historias?: HistoriaSalaUpdateManyWithoutSalaNestedInput
   }
 
   export type SalaUncheckedUpdateWithoutProprietarioInput = {
@@ -8006,9 +9608,10 @@ export namespace Prisma {
     senha?: NullableStringFieldUpdateOperationsInput | string | null
     inativo?: BoolFieldUpdateOperationsInput | boolean
     data_criacao?: DateTimeFieldUpdateOperationsInput | Date | string
-    data_alteracao?: DateTimeFieldUpdateOperationsInput | Date | string
+    data_alteracao?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     participantes?: ParticipanteSalaUncheckedUpdateManyWithoutSalaNestedInput
     votos?: VotoUncheckedUpdateManyWithoutSalaNestedInput
+    historias?: HistoriaSalaUncheckedUpdateManyWithoutSalaNestedInput
   }
 
   export type SalaUncheckedUpdateManyWithoutProprietarioInput = {
@@ -8018,11 +9621,12 @@ export namespace Prisma {
     senha?: NullableStringFieldUpdateOperationsInput | string | null
     inativo?: BoolFieldUpdateOperationsInput | boolean
     data_criacao?: DateTimeFieldUpdateOperationsInput | Date | string
-    data_alteracao?: DateTimeFieldUpdateOperationsInput | Date | string
+    data_alteracao?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
   export type VotoUpdateWithoutPessoaInput = {
     id?: StringFieldUpdateOperationsInput | string
+    historia_id?: StringFieldUpdateOperationsInput | string
     valor?: IntFieldUpdateOperationsInput | number
     data_voto?: DateTimeFieldUpdateOperationsInput | Date | string
     sala?: SalaUpdateOneRequiredWithoutVotosNestedInput
@@ -8031,6 +9635,7 @@ export namespace Prisma {
   export type VotoUncheckedUpdateWithoutPessoaInput = {
     id?: StringFieldUpdateOperationsInput | string
     sala_id?: StringFieldUpdateOperationsInput | string
+    historia_id?: StringFieldUpdateOperationsInput | string
     valor?: IntFieldUpdateOperationsInput | number
     data_voto?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -8038,6 +9643,7 @@ export namespace Prisma {
   export type VotoUncheckedUpdateManyWithoutPessoaInput = {
     id?: StringFieldUpdateOperationsInput | string
     sala_id?: StringFieldUpdateOperationsInput | string
+    historia_id?: StringFieldUpdateOperationsInput | string
     valor?: IntFieldUpdateOperationsInput | number
     data_voto?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -8051,8 +9657,17 @@ export namespace Prisma {
   export type VotoCreateManySalaInput = {
     id?: string
     pessoa_id: string
+    historia_id: string
     valor: number
     data_voto?: Date | string
+  }
+
+  export type HistoriaSalaCreateManySalaInput = {
+    id?: string
+    titulo: string
+    descricao?: string | null
+    criado_por: string
+    data_criacao?: Date | string
   }
 
   export type ParticipanteSalaUpdateWithoutSalaInput = {
@@ -8075,6 +9690,7 @@ export namespace Prisma {
 
   export type VotoUpdateWithoutSalaInput = {
     id?: StringFieldUpdateOperationsInput | string
+    historia_id?: StringFieldUpdateOperationsInput | string
     valor?: IntFieldUpdateOperationsInput | number
     data_voto?: DateTimeFieldUpdateOperationsInput | Date | string
     pessoa?: PessoaUpdateOneRequiredWithoutVotosNestedInput
@@ -8083,6 +9699,7 @@ export namespace Prisma {
   export type VotoUncheckedUpdateWithoutSalaInput = {
     id?: StringFieldUpdateOperationsInput | string
     pessoa_id?: StringFieldUpdateOperationsInput | string
+    historia_id?: StringFieldUpdateOperationsInput | string
     valor?: IntFieldUpdateOperationsInput | number
     data_voto?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -8090,8 +9707,33 @@ export namespace Prisma {
   export type VotoUncheckedUpdateManyWithoutSalaInput = {
     id?: StringFieldUpdateOperationsInput | string
     pessoa_id?: StringFieldUpdateOperationsInput | string
+    historia_id?: StringFieldUpdateOperationsInput | string
     valor?: IntFieldUpdateOperationsInput | number
     data_voto?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type HistoriaSalaUpdateWithoutSalaInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    titulo?: StringFieldUpdateOperationsInput | string
+    descricao?: NullableStringFieldUpdateOperationsInput | string | null
+    criado_por?: StringFieldUpdateOperationsInput | string
+    data_criacao?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type HistoriaSalaUncheckedUpdateWithoutSalaInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    titulo?: StringFieldUpdateOperationsInput | string
+    descricao?: NullableStringFieldUpdateOperationsInput | string | null
+    criado_por?: StringFieldUpdateOperationsInput | string
+    data_criacao?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type HistoriaSalaUncheckedUpdateManyWithoutSalaInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    titulo?: StringFieldUpdateOperationsInput | string
+    descricao?: NullableStringFieldUpdateOperationsInput | string | null
+    criado_por?: StringFieldUpdateOperationsInput | string
+    data_criacao?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
 
