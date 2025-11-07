@@ -13,6 +13,7 @@ export const authController = {
       }
 
       const resultado = await authService.login(email, senha);
+
       return res.status(200).json(
         respostaSucesso({
           resultado,
@@ -47,6 +48,7 @@ export const authController = {
           mensagem: resultado.emailEnviado
             ? "Usuário criado com sucesso"
             : "Usuário criado, mas email de confirmação não pôde ser enviado",
+          tipoRetorno: resultado.emailEnviado ? 1 : 0,
         })
       );
     } catch (error: any) {

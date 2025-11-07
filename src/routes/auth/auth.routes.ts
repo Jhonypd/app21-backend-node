@@ -15,6 +15,7 @@ router.post(
   validateHandler,
   authController.login
 );
+
 router.post(
   "/criarConta",
   pessoaCreateValidation(),
