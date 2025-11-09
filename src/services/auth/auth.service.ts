@@ -41,12 +41,12 @@ export const authService = {
 
     const senhaValida = await hash.compare(senha, usuario.senha as string);
 
-    if (!senhaValida) throw new Error("Senha inválida");
+    if (!senhaValida) throw new Error("Usuario e/ou senha inválido(s)");
 
     const tokenPayload = {
       Usu_Id: usuario.id,
       Usu_na: criptografia.descriptografar(usuario.nome),
-      email: criptografia.descriptografar(usuario.email),
+      Email: criptografia.descriptografar(usuario.email),
       Dt_Ex: format(addHours(new Date(), 10), "yyyy-MM-dd' 'HH:mm:ss", {
         locale: ptBR,
       }),

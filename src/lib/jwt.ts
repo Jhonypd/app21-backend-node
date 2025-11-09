@@ -6,7 +6,7 @@ const jwtSecret = process.env.JWT_SECRET as string;
 export interface Claims extends jwt.JwtPayload {
   Usu_Id: string;
   Usu_na: string;
-  email: string;
+  Email: string;
   Idp: string;
   iss: string;
   aud: string;
@@ -25,7 +25,7 @@ export interface ClaimsAuthSala extends jwt.JwtPayload {
 export const geradorToken = ({
   Usu_Id,
   Usu_na,
-  email,
+  Email,
   Idp,
   aud,
   iss,
@@ -38,7 +38,7 @@ export const geradorToken = ({
 
   const expiresIn = duracaoEmMinutos ? duracaoEmMinutos + 1 : 1;
 
-  return jwt.sign({ Usu_Id, Usu_na, email, Dt_Ex, Idp }, jwtSecret, {
+  return jwt.sign({ Usu_Id, Usu_na, Email, Dt_Ex, Idp }, jwtSecret, {
     expiresIn: `${expiresIn}m`,
     audience: aud,
     issuer: iss,
