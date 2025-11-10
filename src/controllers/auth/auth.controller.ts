@@ -72,7 +72,7 @@ export const authController = {
       return res.status(200).json(
         respostaSucesso({
           mensagem:
-            "Você receberá um email de confirmação se houver conta associada a este endereço",
+            "Você receberá um email de confirmação se houver uma conta associada a este endereço",
         })
       );
     } catch (error: any) {
