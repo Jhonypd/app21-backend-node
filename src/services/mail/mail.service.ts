@@ -1,4 +1,3 @@
-// services/emailService.ts
 import nodemailer from "nodemailer";
 import path from "path";
 import ejs from "ejs";
@@ -48,7 +47,6 @@ class EmailService {
       };
 
       const result = await this.transporter.sendMail(mailOptions);
-      console.log("Email enviado:", result.messageId);
       return result;
     } catch (error) {
       console.error("Erro ao enviar email:", error);
@@ -70,7 +68,7 @@ class EmailService {
       linkConfirmacao: linkConfirmacao,
     });
 
-    return this.sendEmail(user.email, "Confirmação de Conta - App21", html);
+    return this.sendEmail(user.email, "Confirmação de Conta", html);
   }
   // Email de confirmação de alteração de e-mail
   async sendEmailConfirmaAlteracao(

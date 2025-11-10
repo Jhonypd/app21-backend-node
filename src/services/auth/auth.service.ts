@@ -72,7 +72,9 @@ export const authService = {
             nome: criptografia.descriptografar(novoUsuario.usuario.nome),
             email: criptografia.descriptografar(novoUsuario.usuario.email),
           },
-          `${process.env.API_URL}/validaCodigoEmail?codigo=${encodeURIComponent(
+          `${
+            process.env.FRONTEND_URL
+          }/validaCodigoEmail?codigo=${encodeURIComponent(
             novoUsuario.usuario.codigo_confirmacao!
           )}&confirmarConta=true`
         );
