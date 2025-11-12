@@ -13,8 +13,11 @@ const server = http.createServer(app);
 
 const io = new Server(server, {
   cors: {
-    origin: process.env.FRONTEND_URL || "http://localhost:5005", // URL específica
-    methods: ["GET", "POST"],
+    origin:
+      process.env.FRONTEND_URL ||
+      "http://192.168.0.156" ||
+      "http://localhost:5005", // URL específica
+    methods: ["GET", "POST", "PUT", "DELETE"],
     credentials: true, // Se usar cookies/auth
   },
   connectionStateRecovery: {
@@ -24,8 +27,14 @@ const io = new Server(server, {
 
 app.use(
   cors({
-    origin: process.env.FRONTEND_URL || "http://localhost:5005",
+    origin:
+      process.env.FRONTEND_URL ||
+      "http://192.168.0.156" ||
+      "http://localhost:5005",
+    // allowedHeaders: ["Content-Type", "Authorization"],
     credentials: true,
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    optionsSuccessStatus: 200,
   })
 );
 
