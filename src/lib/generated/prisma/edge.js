@@ -176,7 +176,7 @@ const config = {
       "value": "prisma-client-js"
     },
     "output": {
-      "value": "D:\\app21-backend-node\\src\\lib\\generated\\prisma",
+      "value": "C:\\Users\\OKEA\\OneDrive\\Documentos\\jhony\\app21-backend-node\\src\\lib\\generated\\prisma",
       "fromEnvVar": null
     },
     "config": {
@@ -190,7 +190,7 @@ const config = {
       }
     ],
     "previewFeatures": [],
-    "sourceFilePath": "D:\\app21-backend-node\\prisma\\schema.prisma",
+    "sourceFilePath": "C:\\Users\\OKEA\\OneDrive\\Documentos\\jhony\\app21-backend-node\\prisma\\schema.prisma",
     "isCustomOutput": true
   },
   "relativeEnvPaths": {
@@ -204,6 +204,7 @@ const config = {
     "db"
   ],
   "activeProvider": "postgresql",
+  "postinstall": false,
   "inlineDatasources": {
     "db": {
       "url": {
