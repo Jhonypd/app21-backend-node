@@ -15,7 +15,7 @@ const io = new Server(server, {
   cors: {
     origin:
       process.env.FRONTEND_URL ||
-      "http://192.168.0.156" ||
+      "http://192.168.2.99" ||
       "http://localhost:5005", // URL específica
     methods: ["GET", "POST", "PUT", "DELETE"],
     credentials: true, // Se usar cookies/auth
@@ -29,7 +29,7 @@ app.use(
   cors({
     origin:
       process.env.FRONTEND_URL ||
-      "http://192.168.0.156" ||
+      "http://192.168.2.99" ||
       "http://localhost:5005",
     // allowedHeaders: ["Content-Type", "Authorization"],
     credentials: true,
