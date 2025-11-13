@@ -45,5 +45,5 @@ app.use("/pessoas", pessoas);
 app.use("/salas", salas);
 socketEventos(io, process.env.JWT_SECRET!);
 
-const PORT = 5005;
+const PORT = process.env.PORT || 5005;
 server.listen(PORT, () => console.log(`Servidor rodando na porta ${PORT}`));

@@ -65,7 +65,7 @@ export const authGuard = async (
     req.user = {
       Usu_Id: user.id,
       Usu_na: await criptografia.descriptografar(user.nome),
-      email: await criptografia.descriptografar(user.email),
+      Email: await criptografia.descriptografar(user.email),
       Dt_Ex: decoded.Dt_Ex,
       Idp: decoded.Idp,
       iss: decoded.iss,
