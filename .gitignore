@@ -4,9 +4,6 @@ node_modules
 
 dist
 
-./src/lib/generated/prisma
-src/lib/generated/prisma/edge.js
-src/lib/generated/prisma/index.js
-src/lib/generated/prisma/wasm.js
+src/lib/generated/prisma
 
 ./src/lib/generated/prisma
