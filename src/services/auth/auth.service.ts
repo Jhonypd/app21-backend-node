@@ -53,7 +53,10 @@ export const authService = {
 
     const token = geradorToken({ ...tokenPayload, Ss_Id: novaSessao.id });
     const refreshToken = await refreshTokenService.gerar(usuario.id);
-    return { token, refreshToken, dataExpiracao: tokenPayload.Dt_Ex };
+    return {
+      tokenAcesso: { token, dataExpiracao: tokenPayload.Dt_Ex },
+      refreshToken,
+    };
   },
 
   async criarConta(nome: string, email: string, senha: string) {

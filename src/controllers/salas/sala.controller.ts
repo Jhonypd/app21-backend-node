@@ -71,7 +71,7 @@ export const salaController = {
     try {
       const pessoaId = req.user?.Usu_Id as string;
 
-      const pagina = Number(req.query.pagina) || 0;
+      const pagina = Number(req.query.pagina) || 1;
       const itensPagina = Number(req.query.itensPagina) || 5;
 
       const salas = await salaService.listar(pessoaId, pagina, itensPagina);

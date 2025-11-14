@@ -42,20 +42,20 @@ export const authGuard = async (
     const decoded = jwt.verify(token, jwtSecret) as Claims;
 
     // SESSION VALIDATION
-    const sessao = await sessionUsuarioService.buscarSessaoAtiva(
-      decoded.session_id
-    );
+    const sessao = await sessionUsuarioService.buscarSessaoAtiva(decoded.Ss_Id);
 
     if (!sessao) {
       return res.status(401).json({ mensagem: "Sessão inválida." });
     }
 
     if (sessao.revogado_em) {
-      return res.status(401).json({ mensagem: "Sessão expirada ou revogada." });
+      return res.status(401).json({
+        mensagem: "Sessão expirada ou usuario logado em outro dispositivo.",
+      });
     }
 
     if (sessao.expiracao < new Date()) {
-      return res.status(401).json({ mensagem: "Sessão expirada." });
+      return res.status(401).json({ mensagem: "Sua sessão expirou." });
     }
 
     // LOAD USER
