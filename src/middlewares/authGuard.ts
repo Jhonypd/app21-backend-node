@@ -1,9 +1,9 @@
 import { NextFunction, Request, Response } from "express";
 import { prismaClient } from "../lib/prisma";
-
-import jwt from "jsonwebtoken";
+import jwt, { TokenExpiredError } from "jsonwebtoken";
 import { Claims } from "../lib/jwt";
 import { criptografia } from "../lib/criptografia";
+import { sessionUsuarioService } from "../services/auth/session-usuario.service";
 
 declare global {
   namespace Express {
@@ -20,17 +20,45 @@ export const authGuard = async (
   res: Response,
   next: NextFunction
 ) => {
-  const authHeader = req.headers.authorization;
+  let token: string | undefined;
 
-  if (!authHeader) {
-    return res.status(401).json({ mensagem: "Token não informado." });
+  // Authorization
+  const authHeader = req.headers.authorization;
+  if (authHeader) {
+    const [, t] = authHeader.split(" ");
+    token = t;
   }
 
-  const [, token] = authHeader.split(" ");
+  // Cookie
+  if (!token && req.cookies?.access_token) {
+    token = req.cookies.access_token;
+  }
+
+  if (!token) {
+    return res.status(401).json({ mensagem: "Token não informado." });
+  }
 
   try {
     const decoded = jwt.verify(token, jwtSecret) as Claims;
 
+    // SESSION VALIDATION
+    const sessao = await sessionUsuarioService.buscarSessaoAtiva(
+      decoded.session_id
+    );
+
+    if (!sessao) {
+      return res.status(401).json({ mensagem: "Sessão inválida." });
+    }
+
+    if (sessao.revogado_em) {
+      return res.status(401).json({ mensagem: "Sessão expirada ou revogada." });
+    }
+
+    if (sessao.expiracao < new Date()) {
+      return res.status(401).json({ mensagem: "Sessão expirada." });
+    }
+
+    // LOAD USER
     const user = await prismaClient.pessoa.findUnique({
       where: { id: decoded.Usu_Id },
       select: {
@@ -39,28 +67,15 @@ export const authGuard = async (
         email: true,
         inativo: true,
         email_confirmado: true,
-        codigo_expiracao: true,
       },
     });
 
-    if (user?.inativo) {
-      return res.status(403).json({
-        mensagem:
-          "Usuário sem permissão de acesso. Você precisa entrar em contato com o administrador.",
-      });
-    }
-
-    if (user?.codigo_expiracao && user.codigo_expiracao < new Date()) {
-      return res.status(403).json({
-        mensagem: "Você precisa confirmar seu e-mail para continuar.",
-      });
-    }
-
-    if (!user) {
-      return res
-        .status(401)
-        .json({ errors: ["Usuário não encontrado no banco."] });
-    }
+    if (!user)
+      return res.status(401).json({ mensagem: "Usuário não encontrado." });
+    if (user.inativo)
+      return res.status(403).json({ mensagem: "Usuário inativo." });
+    if (!user.email_confirmado)
+      return res.status(403).json({ mensagem: "E-mail não confirmado." });
 
     req.user = {
       Usu_Id: user.id,
@@ -70,10 +85,12 @@ export const authGuard = async (
       Idp: decoded.Idp,
       iss: decoded.iss,
       aud: decoded.aud,
+      Ss_Id: decoded.Ss_Id,
     };
+
     next();
   } catch (error) {
-    console.error("Erro na autenticação:", error);
-    res.status(401).json({ errors: ["Erro interno de autenticação."] });
+    console.error(error);
+    return res.status(401).json({ mensagem: "Token inválido." });
   }
 };

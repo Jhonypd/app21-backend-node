@@ -6,6 +6,7 @@ import {
   pessoaLoginValidation,
   pessoaRedefinirSenhaValidation,
 } from "../../middlewares/pessoaValidations";
+import { refreshTokenController } from "../../controllers/auth/refreshToken.controller";
 
 const router = Router();
 
@@ -42,6 +43,13 @@ router.put(
   pessoaRedefinirSenhaValidation(),
   validateHandler,
   authController.redefinirSenha
+);
+
+router.post("/refresh", validateHandler, refreshTokenController.renovar);
+router.post(
+  "/refresh/revogar",
+  validateHandler,
+  refreshTokenController.revogar
 );
 
 export default router;

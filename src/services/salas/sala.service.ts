@@ -1,8 +1,9 @@
 import { hash } from "../../lib/hash";
-import { prismaClient as prisma } from "../../lib/prisma";
-import bcrypt from "bcrypt";
 import { salaRepository } from "../../repositories/sala.repository";
 import { criptografia } from "../../lib/criptografia";
+import { addHours, format } from "date-fns";
+import { ClaimsAuthSala, geradorTokenSala } from "../../lib/jwt";
+import { ptBR, tr } from "date-fns/locale";
 
 interface CriarSalaProps {
   pessoaId: string;
@@ -17,42 +18,51 @@ export interface AlterarSalaProps {
 }
 
 export const salaService = {
-  async geradorCodigoUnico() {
-    const ultimoCodigo = await prisma.sala.findFirst({
-      select: { codigo: true },
-      orderBy: { codigo: "desc" },
-    });
+  async geradorCodigoUnico(tamanho: number = 6): Promise<string> {
+    const ALFABETO = "ABCDEFGHJKMNPQRSTUVWXYZ23456789";
+    let codigo = "";
 
-    if (ultimoCodigo) {
-      return ultimoCodigo.codigo + 1;
+    for (let i = 0; i < tamanho; i++) {
+      const index = Math.floor(Math.random() * ALFABETO.length);
+      codigo += ALFABETO[index];
     }
-    return 1;
+
+    return codigo;
   },
 
   async inserir({ titulo, senha, salaPrivada, pessoaId }: CriarSalaProps) {
+    const MAX_TENTATIVAS = 3;
+
     if (salaPrivada && !senha) {
       throw new Error("Senha é obrigatória para salas privadas.");
     }
-    const codigo = await this.geradorCodigoUnico();
 
     let hashedSenha: string | null = null;
 
     if (senha) {
       hashedSenha = await hash.senha(senha);
     }
+    for (let i = 0; i < MAX_TENTATIVAS; i++) {
+      const codigo = await this.geradorCodigoUnico();
 
-    const novaSala = await salaRepository.inserir({
-      codigo,
-      titulo,
-      senha: hashedSenha,
-      criado_por: pessoaId,
-    });
+      try {
+        const novaSala = await salaRepository.inserir({
+          codigo,
+          titulo,
+          senha: hashedSenha,
+          criado_por: pessoaId,
+        });
 
-    if (!novaSala) {
-      throw new Error("Erro ao criar a sala.");
+        return novaSala;
+      } catch (error: any) {
+        if (error.code === "P2002" && error.meta?.target?.includes("codigo")) {
+          continue;
+        }
+
+        throw error;
+      }
     }
-
-    return novaSala;
+    throw new Error("Chave única não pôde ser gerada. Tente novamente.");
   },
 
   async alterar(id: string, pessoaId: string, data: AlterarSalaProps) {
@@ -97,12 +107,16 @@ export const salaService = {
     return salaDeletada.id;
   },
 
-  async listar(pessoaId: string) {
+  async listar(pessoaId: string, pagina: number, itensPagina: number) {
     if (!pessoaId) {
       throw new Error("Id da pessoa é obrigatório");
     }
 
-    const salas = await salaRepository.listarTodos(pessoaId);
+    const salas = await salaRepository.listarTodos(
+      pessoaId,
+      pagina,
+      itensPagina
+    );
     const salaFormatada = salas.map((sala) => {
       return {
         ...sala,
@@ -127,11 +141,7 @@ export const salaService = {
   },
 
   async obterPorCodigo(codigo: string, pessoaId: string) {
-    const sala = await salaRepository.obterPorCodigo(
-      Number(codigo),
-      pessoaId,
-      true
-    );
+    const sala = await salaRepository.obterPorCodigo(codigo, pessoaId, true);
 
     if (!sala) {
       throw new Error("Sala não encontrada");
@@ -146,5 +156,74 @@ export const salaService = {
       throw new Error("Sala não encontrada");
     }
     return sala;
+  },
+
+  async loginSala(codigo: string, pessoaId: string, senha?: string) {
+    // Validações iniciais
+    if (!pessoaId) throw new Error("Id da pessoa não fornecido.");
+    if (!codigo) throw new Error("Código da sala não fornecido.");
+
+    // Buscar sala
+    const sala = await salaRepository.obterPorCodigo(codigo, pessoaId, false);
+    if (!sala)
+      throw new Error("Sala não encontrada e/ou usuário sem permissão.");
+
+    const isCriador = pessoaId === sala.criado_por;
+    const membro = await salaRepository.obterMembroSala(sala.id, pessoaId);
+
+    // Verificação de acesso simplificada
+    if (!isCriador && !membro) {
+      throw new Error("Acesso negado à sala.");
+    }
+
+    // Lógica de senha mais clara
+    if (sala.senha) {
+      if (isCriador) {
+        // Criador acessa sem senha
+      } else if (!senha) {
+        throw new Error("Senha da sala é necessária.");
+      } else {
+        const senhaValida = await hash.compare(senha, sala.senha);
+        if (!senhaValida) throw new Error("Senha informada inválida.");
+      }
+    }
+
+    // Determinar role
+    let role: number;
+    let pessoaInfo: { id: string; nome: string };
+
+    if (isCriador) {
+      role = 1;
+      pessoaInfo = {
+        id: sala.proprietario.id,
+        nome: sala.proprietario.nome,
+      };
+    } else {
+      role = 2;
+      pessoaInfo = {
+        id: membro!.pessoa.id,
+        nome: membro!.pessoa.nome,
+      };
+    }
+
+    // Gerar token
+    const dataExpiracao = addHours(new Date(), 1);
+    const nomeDescriptografado = await criptografia.descriptografar(
+      pessoaInfo.nome
+    );
+
+    const tokenPayload: ClaimsAuthSala = {
+      Role: role,
+      Usu_Id: pessoaInfo.id,
+      Usu_na: nomeDescriptografado,
+      Sala_Id: sala.id,
+      Sala_titulo: sala.titulo,
+      Dt_Ex: format(dataExpiracao, "yyyy-MM-dd' 'HH:mm:ss", { locale: ptBR }),
+      Ss_Id: "", // pensar em como gerar ou atribuir esse Ss_Id
+    };
+
+    const tokenSala = geradorTokenSala(tokenPayload);
+
+    return { tokenSala, dataExpiracao: tokenPayload.Dt_Ex };
   },
 };

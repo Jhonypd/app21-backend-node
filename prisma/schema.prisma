@@ -23,6 +23,8 @@ model Pessoa {
   participacoes           ParticipanteSala[]
   salasCriadas            Sala[]             @relation("SalasCriadasPorPessoa")
   votos                   Voto[]
+  refreshTokens           RefreshToken[]
+  sessaoUsuarios          SessaoUsuario[]
 
   @@index([email])
   @@index([codigo_expiracao])
@@ -30,7 +32,7 @@ model Pessoa {
 
 model Sala {
   id             String             @id @default(uuid())
-  codigo         Int                @unique
+  codigo         String             @unique
   titulo         String
   criado_por     String
   senha          String?
@@ -83,4 +85,26 @@ model Voto {
   @@index([sala_id, pessoa_id, historia_id])
   @@index([sala_id])
   @@index([pessoa_id])
+}
+
+model RefreshToken {
+  id          String    @id @default(uuid())
+  token       String    @unique
+  userId      String
+  usuario     Pessoa    @relation(fields: [userId], references: [id])
+  expiracao   DateTime
+  criado_em   DateTime  @default(now())
+  revogado_em DateTime?
+
+  @@index([userId])
+}
+
+model SessaoUsuario {
+  id          String    @id @default(uuid())
+  usuario_id  String
+  criado_em   DateTime  @default(now())
+  expiracao   DateTime
+  revogado_em DateTime?
+
+  usuario Pessoa @relation(fields: [usuario_id], references: [id])
 }

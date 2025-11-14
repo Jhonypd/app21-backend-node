@@ -1,0 +1,2 @@
+-- AlterTable
+ALTER TABLE "Sala" ALTER COLUMN "codigo" SET DATA TYPE TEXT;

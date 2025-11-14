@@ -1,7 +1,6 @@
 import { Request, Response } from "express";
 import { salaService } from "../../services/salas/sala.service";
 import { respostaErro, respostaSucesso } from "../../utils/response";
-import { authService } from "../../services/auth/auth.service";
 
 export const salaController = {
   async criarSalas(req: Request, res: Response) {
@@ -71,7 +70,11 @@ export const salaController = {
   async listarSalas(req: Request, res: Response) {
     try {
       const pessoaId = req.user?.Usu_Id as string;
-      const salas = await salaService.listar(pessoaId);
+
+      const pagina = Number(req.query.pagina) || 0;
+      const itensPagina = Number(req.query.itensPagina) || 5;
+
+      const salas = await salaService.listar(pessoaId, pagina, itensPagina);
 
       res.json(respostaSucesso({ resultado: { salas: salas } }));
     } catch (error: any) {
@@ -105,7 +108,7 @@ export const salaController = {
     try {
       const pessoa = req.user;
       const { codigo } = req.body;
-      const { tokenSala, dataExpiracao } = await authService.loginSala(
+      const { tokenSala, dataExpiracao } = await salaService.loginSala(
         codigo,
         pessoa?.Usu_Id as string
       );

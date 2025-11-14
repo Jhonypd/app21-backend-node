@@ -18,7 +18,8 @@ const io = new Server(server, {
       "http://192.168.2.99" ||
       "http://localhost:5005", // URL específica
     methods: ["GET", "POST", "PUT", "DELETE"],
-    credentials: true, // Se usar cookies/auth
+    credentials: true,
+    allowedHeaders: ["Content-Type", "Authorization"],
   },
   connectionStateRecovery: {
     maxDisconnectionDuration: 2 * 60 * 1000,
@@ -30,10 +31,10 @@ app.use(
     origin:
       process.env.FRONTEND_URL ||
       "http://192.168.2.99" ||
-      "http://localhost:5005",
-    // allowedHeaders: ["Content-Type", "Authorization"],
+      "http://localhost:3000",
+    allowedHeaders: ["Content-Type", "Authorization"],
     credentials: true,
-    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    methods: ["GET", "POST", "PUT", "DELETE"],
     optionsSuccessStatus: 200,
   })
 );

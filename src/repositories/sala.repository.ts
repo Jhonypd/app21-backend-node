@@ -1,7 +1,7 @@
 import { prismaClient } from "../lib/prisma";
 
 interface SalaInserirData {
-  codigo: number;
+  codigo: string;
   titulo: string;
   senha?: string | null;
   criado_por: string;
@@ -33,7 +33,7 @@ export const salaRepository = {
       omit: { senha: !comSenha },
     }),
 
-  obterPorCodigo: (codigo: number, criadoPor: string, comSenha: boolean) =>
+  obterPorCodigo: (codigo: string, criadoPor: string, comSenha: boolean) =>
     prismaClient.sala.findUnique({
       where: { codigo, criado_por: criadoPor },
       omit: { senha: !comSenha },
@@ -42,7 +42,7 @@ export const salaRepository = {
       },
     }),
 
-  listarTodos: (pessoaId: string) =>
+  listarTodos: (pessoaId: string, pagina: number, itensPagina: number) =>
     prismaClient.sala.findMany({
       where: {
         // criado_por: pessoaId,
@@ -81,6 +81,8 @@ export const salaRepository = {
           },
         },
       },
+      take: itensPagina,
+      skip: (pagina - 1) * itensPagina,
     }),
 
   obterMembroSala: (salaId: string, pessoaId: string) =>

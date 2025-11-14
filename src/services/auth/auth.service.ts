@@ -1,10 +1,5 @@
 import { pessoaRepository } from "../../repositories/pessoa.repository";
-import {
-  Claims,
-  ClaimsAuthSala,
-  geradorToken,
-  geradorTokenSala,
-} from "../../lib/jwt";
+import { Claims, geradorToken } from "../../lib/jwt";
 import { hash } from "../../lib/hash";
 import { criptografia } from "../../lib/criptografia";
 import emailService from "../mail/mail.service";
@@ -13,13 +8,8 @@ import { pessoaService } from "../pessoas/pessoa.service";
 import { formatarParaDataLocal } from "../../utils/formatar-data";
 import { addHours, addMinutes, format } from "date-fns";
 import { ptBR } from "date-fns/locale";
-import { salaRepository } from "../../repositories/sala.repository";
-
-interface PessoaToken {
-  role: number;
-  id: string;
-  nome: string;
-}
+import { refreshTokenService } from "./refresh-token.service";
+import { sessionUsuarioService } from "./session-usuario.service";
 
 export const authService = {
   async login(email: string, senha: string) {
@@ -55,8 +45,15 @@ export const authService = {
       iss: "App21",
     } as Claims;
 
-    const token = geradorToken({ ...tokenPayload });
-    return { token, dataExpiracao: tokenPayload.Dt_Ex };
+    await sessionUsuarioService.invalidarSessao(usuario.id);
+    const novaSessao = await sessionUsuarioService.criarSessao(
+      usuario.id,
+      new Date(tokenPayload.Dt_Ex)
+    );
+
+    const token = geradorToken({ ...tokenPayload, Ss_Id: novaSessao.id });
+    const refreshToken = await refreshTokenService.gerar(usuario.id);
+    return { token, refreshToken, dataExpiracao: tokenPayload.Dt_Ex };
   },
 
   async criarConta(nome: string, email: string, senha: string) {
@@ -246,77 +243,5 @@ export const authService = {
     );
 
     return redefineSenhaUsuario.id;
-  },
-
-  async loginSala(codigo: string, pessoaId: string, senha?: string) {
-    // Validações iniciais
-    if (!pessoaId) throw new Error("Id da pessoa não fornecido.");
-    if (!codigo) throw new Error("Código da sala não fornecido.");
-
-    // Buscar sala
-    const sala = await salaRepository.obterPorCodigo(
-      Number(codigo),
-      pessoaId,
-      false
-    );
-    if (!sala)
-      throw new Error("Sala não encontrada e/ou usuário sem permissão.");
-
-    const isCriador = pessoaId === sala.criado_por;
-    const membro = await salaRepository.obterMembroSala(sala.id, pessoaId);
-
-    // Verificação de acesso simplificada
-    if (!isCriador && !membro) {
-      throw new Error("Acesso negado à sala.");
-    }
-
-    // Lógica de senha mais clara
-    if (sala.senha) {
-      if (isCriador) {
-        // Criador acessa sem senha
-      } else if (!senha) {
-        throw new Error("Senha da sala é necessária.");
-      } else {
-        const senhaValida = await hash.compare(senha, sala.senha);
-        if (!senhaValida) throw new Error("Senha informada inválida.");
-      }
-    }
-
-    // Determinar role
-    let role: number;
-    let pessoaInfo: { id: string; nome: string };
-
-    if (isCriador) {
-      role = 1;
-      pessoaInfo = {
-        id: sala.proprietario.id,
-        nome: sala.proprietario.nome,
-      };
-    } else {
-      role = 2;
-      pessoaInfo = {
-        id: membro!.pessoa.id,
-        nome: membro!.pessoa.nome,
-      };
-    }
-
-    // Gerar token
-    const dataExpiracao = addHours(new Date(), 1);
-    const nomeDescriptografado = await criptografia.descriptografar(
-      pessoaInfo.nome
-    );
-
-    const tokenPayload: ClaimsAuthSala = {
-      Role: role,
-      Usu_Id: pessoaInfo.id,
-      Usu_na: nomeDescriptografado,
-      Sala_Id: sala.id,
-      Sala_titulo: sala.titulo,
-      Dt_Ex: format(dataExpiracao, "yyyy-MM-dd' 'HH:mm:ss", { locale: ptBR }),
-    };
-
-    const tokenSala = geradorTokenSala(tokenPayload);
-
-    return { tokenSala, dataExpiracao: tokenPayload.Dt_Ex };
   },
 };
