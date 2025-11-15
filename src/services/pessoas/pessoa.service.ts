@@ -5,6 +5,7 @@ import { formatarParaDataLocal } from "../../utils/formatar-data";
 import emailService from "../mail/mail.service";
 import { codigos } from "../../lib/codigos";
 import { addMinutes } from "date-fns";
+import { el } from "date-fns/locale";
 
 export interface AlterarPessoaData {
   nome?: string;
@@ -23,16 +24,21 @@ export interface InserirPessoaData {
 }
 
 export const pessoaService = {
-  async usuarioExiste(email: string) {
-    const emailHash = await hash.geradorCamposComuns(email);
+  async usuarioExistePorEmailOuId(email?: string | null, id?: string | null) {
+    if (!email && !id) return false;
 
-    const usuario = await pessoaRepository.obterPorEmail(emailHash);
-
-    return usuario ? usuario : false;
+    if (id && !email) {
+      const usuario = await pessoaRepository.obterPorId(id, false);
+      return usuario ? usuario : false;
+    } else if (!id && email) {
+      const emailHash = await hash.geradorCamposComuns(email);
+      const usuario = await pessoaRepository.obterPorEmail(emailHash);
+      return usuario ? usuario : false;
+    }
   },
 
   async inserir({ email, nome, senha }: InserirPessoaData) {
-    const usuarioExistente = await this.usuarioExiste(email);
+    const usuarioExistente = await this.usuarioExistePorEmailOuId(email);
 
     if (usuarioExistente) throw new Error("E-mail já cadastrado");
 
@@ -162,9 +168,8 @@ export const pessoaService = {
     return {
       id: usuario.id,
       nome: criptografia.descriptografar(usuario.nome),
-      email: usuario.email ? criptografia.descriptografar(usuario.email) : null,
+      email: usuario.email && criptografia.descriptografar(usuario.email),
       inativo: usuario.inativo,
-      data_criacao: formatarParaDataLocal(usuario.data_criacao),
       email_confirmado: usuario.email_confirmado,
     };
   },

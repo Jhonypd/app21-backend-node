@@ -1,9 +1,8 @@
 import { NextFunction, Request, Response } from "express";
-import { prismaClient } from "../lib/prisma";
-import jwt, { TokenExpiredError } from "jsonwebtoken";
+import jwt from "jsonwebtoken";
 import { Claims } from "../lib/jwt";
-import { criptografia } from "../lib/criptografia";
 import { sessionUsuarioService } from "../services/auth/session-usuario.service";
+import { pessoaService } from "../services/pessoas/pessoa.service";
 
 declare global {
   namespace Express {
@@ -58,29 +57,19 @@ export const authGuard = async (
       return res.status(401).json({ mensagem: "Sua sessão expirou." });
     }
 
-    // LOAD USER
-    const user = await prismaClient.pessoa.findUnique({
-      where: { id: decoded.Usu_Id },
-      select: {
-        id: true,
-        nome: true,
-        email: true,
-        inativo: true,
-        email_confirmado: true,
-      },
-    });
+    const pessoa = await pessoaService.obterDadosConta(decoded.Usu_Id);
 
-    if (!user)
+    if (!pessoa)
       return res.status(401).json({ mensagem: "Usuário não encontrado." });
-    if (user.inativo)
+    if (pessoa.inativo)
       return res.status(403).json({ mensagem: "Usuário inativo." });
-    if (!user.email_confirmado)
+    if (!pessoa.email_confirmado)
       return res.status(403).json({ mensagem: "E-mail não confirmado." });
 
     req.user = {
-      Usu_Id: user.id,
-      Usu_na: await criptografia.descriptografar(user.nome),
-      Email: await criptografia.descriptografar(user.email),
+      Usu_Id: pessoa.id,
+      Usu_na: pessoa.nome,
+      Email: pessoa.email,
       Dt_Ex: decoded.Dt_Ex,
       Idp: decoded.Idp,
       iss: decoded.iss,

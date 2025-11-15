@@ -1,4 +1,4 @@
-import { addHours, format } from "date-fns";
+import { addDays, addHours, format } from "date-fns";
 import {
   ClaimsRefreshToken,
   decodeToken,
@@ -8,12 +8,13 @@ import { ptBR } from "date-fns/locale";
 import { RefreshTokenRepository } from "../../repositories/refresh-token.repository";
 
 export const refreshTokenService = {
-  async gerar(userId: string) {
+  async gerar(userId: string, sessionId: string) {
     const dataTokenRefresh = {
       Usu_Id: userId,
-      Dt_Ex: format(addHours(new Date(), 10), "yyyy-MM-dd' 'HH:mm:ss", {
+      Dt_Ex: format(addDays(new Date(), 3), "yyyy-MM-dd' 'HH:mm:ss", {
         locale: ptBR,
       }),
+      Ss_Id: sessionId,
     } as ClaimsRefreshToken;
 
     const gerarRefreshToken = await geradorRefreshToken(dataTokenRefresh);
@@ -23,7 +24,7 @@ export const refreshTokenService = {
       gerarRefreshToken,
       new Date(dataTokenRefresh.Dt_Ex)
     );
-
+    console.table(refreshToken);
     return refreshToken;
   },
 
@@ -35,8 +36,8 @@ export const refreshTokenService = {
     if (!buscaRefreshTokenBanco) return null;
     if (buscaRefreshTokenBanco.revogado_em) return null;
     if (buscaRefreshTokenBanco.expiracao < new Date()) return null;
-    const decode = decodeToken(token, {} as ClaimsRefreshToken);
-
+    const decode = decodeToken<ClaimsRefreshToken>(token);
+    console.table(decode);
     return decode;
   },
   async revogar(token: string) {

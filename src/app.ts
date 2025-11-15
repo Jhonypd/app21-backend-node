@@ -57,6 +57,13 @@ const io = new Server(server, {
 
 socketEventos(io, process.env.JWT_SECRET!);
 
+const DEV_PORT = 5007;
+
+const PORT =
+  process.env.NODE_ENV === "production" ? process.env.PORT || 5006 : DEV_PORT;
+
+console.log(
+  `Servidor rodando em modo ${process.env.NODE_ENV} na porta ${PORT}`
+);
 // Start
-const PORT = process.env.PORT || 5006;
 server.listen(PORT, () => console.log(`Servidor rodando na porta ${PORT}`));

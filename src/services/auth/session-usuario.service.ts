@@ -7,7 +7,10 @@ export const sessionUsuarioService = {
   },
 
   async invalidarSessao(usuarioId: string) {
-    await sessionUsuarioRepository.invalidarSessoesAtivas(usuarioId);
+    const sessao = await sessionUsuarioRepository.invalidarSessoesAtivas(
+      usuarioId
+    );
+    return sessao;
   },
 
   async buscarSessaoAtiva(usuarioId: string) {

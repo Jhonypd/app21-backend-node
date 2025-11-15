@@ -13,7 +13,7 @@ import { sessionUsuarioService } from "./session-usuario.service";
 
 export const authService = {
   async login(email: string, senha: string) {
-    const usuario = await pessoaService.usuarioExiste(email);
+    const usuario = await pessoaService.usuarioExistePorEmailOuId(email, null);
 
     if (!usuario) throw new Error("Usuário não encontrado");
 
@@ -37,7 +37,7 @@ export const authService = {
       Usu_Id: usuario.id,
       Usu_na: criptografia.descriptografar(usuario.nome),
       Email: criptografia.descriptografar(usuario.email),
-      Dt_Ex: format(addHours(new Date(), 10), "yyyy-MM-dd' 'HH:mm:ss", {
+      Dt_Ex: format(addMinutes(new Date(), 15), "yyyy-MM-dd' 'HH:mm:ss", {
         locale: ptBR,
       }),
       Idp: "pt-BR",
@@ -52,10 +52,20 @@ export const authService = {
     );
 
     const token = geradorToken({ ...tokenPayload, Ss_Id: novaSessao.id });
-    const refreshToken = await refreshTokenService.gerar(usuario.id);
+    const refreshToken = await refreshTokenService.gerar(
+      usuario.id,
+      novaSessao.id
+    );
     return {
       tokenAcesso: { token, dataExpiracao: tokenPayload.Dt_Ex },
-      refreshToken,
+      refreshToken: {
+        token: refreshToken.token,
+        dataExpiracao: format(
+          new Date(refreshToken.expiracao),
+          "yyyy-MM-dd' 'HH:mm:ss",
+          { locale: ptBR }
+        ),
+      },
     };
   },
 
@@ -90,15 +100,18 @@ export const authService = {
   },
 
   async novoCodigo(email: string) {
-    const usuarioExistente = await pessoaService.usuarioExiste(email);
+    const usuarioExistente = await pessoaService.usuarioExistePorEmailOuId(
+      email,
+      null
+    );
 
     if (!usuarioExistente) {
       return;
     }
 
-    if (!usuarioExistente.codigo_confirmacao) {
-      return;
-    }
+    // if (!usuarioExistente) {
+    //   return;
+    // }
 
     const codigo = await codigos.codigoConfirmarConta();
 
@@ -129,7 +142,9 @@ export const authService = {
   },
 
   async esqueciMinhaSenha(email: string) {
-    const usuarioExistente = await pessoaService.usuarioExiste(email);
+    const usuarioExistente = await pessoaService.usuarioExistePorEmailOuId(
+      email
+    );
 
     if (!usuarioExistente) {
       return;

@@ -26,16 +26,16 @@ export interface ClaimsAuthSala extends jwt.JwtPayload {
 
 export interface ClaimsRefreshToken extends jwt.JwtPayload {
   Usu_Id: string;
+  Ss_Id: string;
   Dt_Ex: string;
 }
 
-export const decodeToken = (
-  token: string,
-  claims: Claims | ClaimsAuthSala | ClaimsRefreshToken
-) => {
-  const decoded = jwt.verify(token, jwtSecret) as typeof claims;
+type ClaimsType = Claims | ClaimsAuthSala | ClaimsRefreshToken;
+
+export function decodeToken<T extends ClaimsType>(token: string): T {
+  const decoded = jwt.verify(token, jwtSecret) as T;
   return decoded;
-};
+}
 
 export const geradorToken = ({
   Usu_Id,
@@ -88,7 +88,11 @@ export const geradorTokenSala = ({
   );
 };
 
-export const geradorRefreshToken = ({ Usu_Id, Dt_Ex }: ClaimsRefreshToken) => {
+export const geradorRefreshToken = ({
+  Usu_Id,
+  Dt_Ex,
+  Ss_Id,
+}: ClaimsRefreshToken) => {
   const agora = new Date();
   const dataExpiracao = new Date(Dt_Ex);
 
@@ -96,7 +100,7 @@ export const geradorRefreshToken = ({ Usu_Id, Dt_Ex }: ClaimsRefreshToken) => {
 
   const expiresIn = duracaoEmMinutos ? duracaoEmMinutos + 1 : 1;
 
-  return jwt.sign({ Usu_Id, Dt_Ex: Dt_Ex }, jwtSecret, {
+  return jwt.sign({ Usu_Id, Dt_Ex: Dt_Ex, Ss_Id }, jwtSecret, {
     expiresIn: `${expiresIn}m`,
     algorithm: "HS256",
   });
