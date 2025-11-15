@@ -35,7 +35,7 @@ export const authService = {
 
     const tokenPayload = {
       Usu_Id: usuario.id,
-      Usu_na: criptografia.descriptografar(usuario.nome),
+      Usu_Na: criptografia.descriptografar(usuario.nome),
       Email: criptografia.descriptografar(usuario.email),
       Dt_Ex: format(addMinutes(new Date(), 15), "yyyy-MM-dd' 'HH:mm:ss", {
         locale: ptBR,

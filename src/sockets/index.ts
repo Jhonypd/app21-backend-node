@@ -32,7 +32,7 @@ const socketEventos = (io: Server, jwtSecret: string) => {
   });
 
   io.on("connection", (socket: Socket) => {
-    console.log("Usuário conectado:", socket.data.usuario.Usu_na);
+    console.log("Usuário conectado:", socket.data.usuario.Usu_Na);
 
     socket.on("entrar_sala", (data: EntrarSalaData) => {
       const usuario = socket.data.usuario;
@@ -41,13 +41,13 @@ const socketEventos = (io: Server, jwtSecret: string) => {
 
       io.to(usuario.Sala_Id).emit("usuario_entrou", {
         pessoa_id: usuario.Usu_Id,
-        nome: usuario.Usu_na,
+        nome: usuario.Usu_Na,
         role: usuario.Role,
       });
     });
 
     socket.on("disconnect", () => {
-      console.log("Usuário desconectado:", socket.data.usuario.Usu_na);
+      console.log("Usuário desconectado:", socket.data.usuario.Usu_Na);
     });
   });
 };

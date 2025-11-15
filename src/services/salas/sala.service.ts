@@ -215,7 +215,7 @@ export const salaService = {
     const tokenPayload: ClaimsAuthSala = {
       Role: role,
       Usu_Id: pessoaInfo.id,
-      Usu_na: nomeDescriptografado,
+      Usu_Na: nomeDescriptografado,
       Sala_Id: sala.id,
       Sala_titulo: sala.titulo,
       Dt_Ex: format(dataExpiracao, "yyyy-MM-dd' 'HH:mm:ss", { locale: ptBR }),

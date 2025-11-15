@@ -1,5 +1,6 @@
 import { addDays, addMinutes, format } from "date-fns";
 import {
+  Claims,
   ClaimsRefreshToken,
   decodeToken,
   geradorRefreshToken,
@@ -60,7 +61,7 @@ export const refreshTokenService = {
 
     const novoAccessToken = {
       Usu_Id: dadosUsuarioNovoToken.id,
-      Usu_na: criptografia.descriptografar(dadosUsuarioNovoToken.nome),
+      Usu_Na: criptografia.descriptografar(dadosUsuarioNovoToken.nome),
       Email: criptografia.descriptografar(dadosUsuarioNovoToken.email),
       Dt_Ex: format(addMinutes(new Date(), 15), "yyyy-MM-dd' 'HH:mm:ss", {
         locale: ptBR,
@@ -69,7 +70,7 @@ export const refreshTokenService = {
       Idp: "pt-BR",
       aud: "App21",
       iss: "App21",
-    };
+    } as Claims;
 
     const accessToken = geradorToken(novoAccessToken);
 
