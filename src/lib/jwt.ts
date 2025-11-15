@@ -5,7 +5,7 @@ const jwtSecret = process.env.JWT_SECRET as string;
 
 export interface Claims extends jwt.JwtPayload {
   Usu_Id: string;
-  Usu_na: string;
+  Usu_Na: string;
   Email: string;
   Idp: string;
   iss: string;
@@ -17,7 +17,7 @@ export interface Claims extends jwt.JwtPayload {
 export interface ClaimsAuthSala extends jwt.JwtPayload {
   Role: number; // 1 - participante, 2 - administrador
   Usu_Id: string;
-  Usu_na: string;
+  Usu_Na: string;
   Sala_Id: string;
   Sala_titulo: string;
   Dt_Ex: string;
@@ -39,7 +39,7 @@ export function decodeToken<T extends ClaimsType>(token: string): T {
 
 export const geradorToken = ({
   Usu_Id,
-  Usu_na,
+  Usu_Na,
   Email,
   Idp,
   aud,
@@ -54,7 +54,7 @@ export const geradorToken = ({
 
   const expiresIn = duracaoEmMinutos ? duracaoEmMinutos + 1 : 1;
 
-  return jwt.sign({ Usu_Id, Usu_na, Email, Dt_Ex, Idp, Ss_Id }, jwtSecret, {
+  return jwt.sign({ Usu_Id, Usu_Na, Email, Dt_Ex, Idp, Ss_Id }, jwtSecret, {
     expiresIn: `${expiresIn}m`,
     audience: aud,
     issuer: iss,
@@ -64,7 +64,7 @@ export const geradorToken = ({
 
 export const geradorTokenSala = ({
   Usu_Id,
-  Usu_na,
+  Usu_Na,
   Sala_Id,
   Sala_titulo,
   Dt_Ex,
@@ -79,7 +79,7 @@ export const geradorTokenSala = ({
   const expiresIn = duracaoEmMinutos ? duracaoEmMinutos + 1 : 1;
 
   return jwt.sign(
-    { Usu_Id, Usu_na, Role, Sala_Id, Sala_titulo, Dt_Ex, Ss_Id },
+    { Usu_Id, Usu_Na, Role, Sala_Id, Sala_titulo, Dt_Ex, Ss_Id },
     jwtSecret,
     {
       expiresIn: `${expiresIn}m`,
