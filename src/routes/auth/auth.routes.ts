@@ -17,6 +17,14 @@ router.post(
   authController.login
 );
 
+router.post("/refresh", validateHandler, refreshTokenController.renovar);
+
+router.post(
+  "/refresh/revogar",
+  validateHandler,
+  refreshTokenController.revogar
+);
+
 router.post(
   "/criarConta",
   pessoaCreateValidation(),
@@ -43,13 +51,6 @@ router.put(
   pessoaRedefinirSenhaValidation(),
   validateHandler,
   authController.redefinirSenha
-);
-
-router.post("/refresh", validateHandler, refreshTokenController.renovar);
-router.post(
-  "/refresh/revogar",
-  validateHandler,
-  refreshTokenController.revogar
 );
 
 export default router;

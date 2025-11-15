@@ -6,7 +6,7 @@ import emailService from "../mail/mail.service";
 import { codigos } from "../../lib/codigos";
 import { pessoaService } from "../pessoas/pessoa.service";
 import { formatarParaDataLocal } from "../../utils/formatar-data";
-import { addHours, addMinutes, format } from "date-fns";
+import { addMinutes, format } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import { refreshTokenService } from "./refresh-token.service";
 import { sessionUsuarioService } from "./session-usuario.service";

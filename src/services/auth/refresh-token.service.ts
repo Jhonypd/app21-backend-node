@@ -1,11 +1,15 @@
-import { addDays, addHours, format } from "date-fns";
+import { addDays, addMinutes, format } from "date-fns";
 import {
   ClaimsRefreshToken,
   decodeToken,
   geradorRefreshToken,
+  geradorToken,
 } from "../../lib/jwt";
 import { ptBR } from "date-fns/locale";
 import { RefreshTokenRepository } from "../../repositories/refresh-token.repository";
+import { pessoaService } from "../pessoas/pessoa.service";
+import { sessionUsuarioService } from "./session-usuario.service";
+import { criptografia } from "../../lib/criptografia";
 
 export const refreshTokenService = {
   async gerar(userId: string, sessionId: string) {
@@ -33,12 +37,45 @@ export const refreshTokenService = {
       token
     );
 
-    if (!buscaRefreshTokenBanco) return null;
-    if (buscaRefreshTokenBanco.revogado_em) return null;
-    if (buscaRefreshTokenBanco.expiracao < new Date()) return null;
+    if (!buscaRefreshTokenBanco) throw new Error("Refresh token inválido");
+    if (buscaRefreshTokenBanco.revogado_em)
+      throw new Error("Refresh token inválido");
+    if (buscaRefreshTokenBanco.expiracao < new Date())
+      throw new Error("Refresh token expirado");
     const decode = decodeToken<ClaimsRefreshToken>(token);
+
     console.table(decode);
-    return decode;
+
+    const dadosUsuarioNovoToken = await pessoaService.usuarioExistePorEmailOuId(
+      undefined,
+      decode.Usu_Id
+    );
+
+    if (!dadosUsuarioNovoToken)
+      throw new Error("Usuário não encontrado para renovar token");
+
+    const sessionAtiva = await sessionUsuarioService.buscarSessaoAtiva(
+      decode.Ss_Id
+    );
+
+    const novoAccessToken = {
+      Usu_Id: dadosUsuarioNovoToken.id,
+      Usu_na: criptografia.descriptografar(dadosUsuarioNovoToken.nome),
+      Email: criptografia.descriptografar(dadosUsuarioNovoToken.email),
+      Dt_Ex: format(addMinutes(new Date(), 15), "yyyy-MM-dd' 'HH:mm:ss", {
+        locale: ptBR,
+      }),
+      Ss_Id: sessionAtiva?.id as string,
+      Idp: "pt-BR",
+      aud: "App21",
+      iss: "App21",
+    };
+
+    const accessToken = geradorToken(novoAccessToken);
+
+    return {
+      tokenAcesso: { token: accessToken, dataExpiracao: novoAccessToken.Dt_Ex },
+    };
   },
   async revogar(token: string) {
     return RefreshTokenRepository.revogar(token);

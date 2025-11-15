@@ -14,7 +14,7 @@ router.put(
   pessoaController.alterar
 );
 
-router.get("/obterDadosConta/:id", authGuard, pessoaController.obterDadosConta);
+router.get("/obterDadosConta", authGuard, pessoaController.obterDadosConta);
 
 router.get("/obterDadosAlterar", authGuard, pessoaController.obterDadosAlterar);
 

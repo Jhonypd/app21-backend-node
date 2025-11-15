@@ -55,9 +55,9 @@ export const pessoaController = {
 
   async obterDadosConta(req: Request, res: Response) {
     try {
-      const { id } = req.params;
+      const pessoaId = req.user?.Usu_Id as string;
 
-      const dados = await pessoaService.obterDadosConta(id);
+      const dados = await pessoaService.obterDadosConta(pessoaId);
 
       return res
         .status(200)
