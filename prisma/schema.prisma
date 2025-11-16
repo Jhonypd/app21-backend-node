@@ -21,10 +21,9 @@ model Pessoa {
   inativo                 Boolean            @default(false)
   data_criacao            DateTime           @default(now())
   participacoes           ParticipanteSala[]
-  salasCriadas            Sala[]             @relation("SalasCriadasPorPessoa")
+  salas_criadas           Sala[]             @relation("SalasCriadasPorPessoa")
   votos                   Voto[]
-  refreshTokens           RefreshToken[]
-  sessaoUsuarios          SessaoUsuario[]
+  sessao_usuario          SessaoPessoa[]
 
   @@index([email])
   @@index([codigo_expiracao])
@@ -89,22 +88,28 @@ model Voto {
 
 model RefreshToken {
   id          String    @id @default(uuid())
-  token       String    @unique
-  userId      String
-  usuario     Pessoa    @relation(fields: [userId], references: [id])
+  token_hash  String    @unique
+  sessao_id   String    @unique
   expiracao   DateTime
   criado_em   DateTime  @default(now())
   revogado_em DateTime?
 
-  @@index([userId])
+  sessao SessaoPessoa @relation(fields: [sessao_id], references: [id])
 }
 
-model SessaoUsuario {
-  id          String    @id @default(uuid())
-  usuario_id  String
-  criado_em   DateTime  @default(now())
-  expiracao   DateTime
-  revogado_em DateTime?
+model SessaoPessoa {
+  id               String    @id @default(uuid())
+  pessoa_id        String
+  criado_em        DateTime  @default(now())
+  expiracao        DateTime
+  ultimo_acesso_em DateTime  @default(now())
+  revogado_em      DateTime?
+  ip               String?
+  user_agent       String?
 
-  usuario Pessoa @relation(fields: [usuario_id], references: [id])
+  refreshToken RefreshToken? // ✔ 1 sessão → 1 refresh token
+
+  pessoa Pessoa @relation(fields: [pessoa_id], references: [id])
+
+  @@index([pessoa_id])
 }
