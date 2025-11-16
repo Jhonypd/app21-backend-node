@@ -9,13 +9,13 @@ import { formatarParaDataLocal } from "../../utils/formatar-data";
 import { addMinutes, format } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import { refreshTokenService } from "./refresh-token.service";
-import { sessionUsuarioService } from "./session-usuario.service";
+import { sessaoUsuarioService } from "./sessao-usuario.service";
 
 export const authService = {
   async login(email: string, senha: string) {
     const usuario = await pessoaService.usuarioExistePorEmailOuId(email, null);
 
-    if (!usuario) throw new Error("Usuário não encontrado");
+    if (!usuario) throw new Error("Usuario e/ou senha inválido(s)");
 
     if (usuario.inativo) {
       throw new Error(
@@ -45,8 +45,10 @@ export const authService = {
       iss: "App21",
     } as Claims;
 
-    await sessionUsuarioService.invalidarSessao(usuario.id);
-    const novaSessao = await sessionUsuarioService.criarSessao(
+    await sessaoUsuarioService.invalidarSessao(usuario.id);
+    await refreshTokenService.revogarPorUsuarioId(usuario.id);
+
+    const novaSessao = await sessaoUsuarioService.criarSessao(
       usuario.id,
       new Date(tokenPayload.Dt_Ex)
     );

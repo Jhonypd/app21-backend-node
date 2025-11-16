@@ -1,8 +1,9 @@
 import { NextFunction, Request, Response } from "express";
 import jwt from "jsonwebtoken";
 import { Claims } from "../lib/jwt";
-import { sessionUsuarioService } from "../services/auth/session-usuario.service";
+import { sessaoUsuarioService } from "../services/auth/sessao-usuario.service";
 import { pessoaService } from "../services/pessoas/pessoa.service";
+import { respostaErro } from "../utils/response";
 
 declare global {
   namespace Express {
@@ -34,37 +35,68 @@ export const authGuard = async (
   }
 
   if (!token) {
-    return res.status(401).json({ mensagem: "Token não informado." });
+    return res
+      .status(401)
+      .json(
+        respostaErro({ mensagem: "Token não informado.", codigoRetorno: 401 })
+      );
   }
 
   try {
     const decoded = jwt.verify(token, jwtSecret) as Claims;
 
     // SESSION VALIDATION
-    const sessao = await sessionUsuarioService.buscarSessaoAtiva(decoded.Ss_Id);
+    const sessao = await sessaoUsuarioService.buscarSessaoAtiva(decoded.Ss_Id);
 
     if (!sessao) {
-      return res.status(401).json({ mensagem: "Sessão inválida." });
+      return res
+        .status(401)
+        .json({ mensagem: "Sessão inválida.", codigoRetorno: 401 });
     }
 
     if (sessao.revogado_em) {
-      return res.status(401).json({
-        mensagem: "Sessão expirada ou usuario logado em outro dispositivo.",
-      });
+      return res.status(401).json(
+        respostaErro({
+          mensagem: "Sessão expirada ou usuario logado em outro dispositivo.",
+          codigoRetorno: 401,
+        })
+      );
     }
 
     if (sessao.expiracao < new Date()) {
-      return res.status(401).json({ mensagem: "Sua sessão expirou." });
+      return res
+        .status(401)
+        .json(
+          respostaErro({ mensagem: "Sua sessão expirou.", codigoRetorno: 401 })
+        );
     }
 
     const pessoa = await pessoaService.obterDadosConta(decoded.Usu_Id);
 
     if (!pessoa)
-      return res.status(401).json({ mensagem: "Usuário não encontrado." });
+      return res
+        .status(401)
+        .json(
+          respostaErro({
+            mensagem: "Usuário não encontrado.",
+            codigoRetorno: 401,
+          })
+        );
     if (pessoa.inativo)
-      return res.status(403).json({ mensagem: "Usuário inativo." });
+      return res
+        .status(403)
+        .json(
+          respostaErro({ mensagem: "Usuário inativo.", codigoRetorno: 403 })
+        );
     if (!pessoa.email_confirmado)
-      return res.status(403).json({ mensagem: "E-mail não confirmado." });
+      return res
+        .status(403)
+        .json(
+          respostaErro({
+            mensagem: "E-mail não confirmado.",
+            codigoRetorno: 403,
+          })
+        );
 
     req.user = {
       Usu_Id: pessoa.id,
@@ -80,6 +112,8 @@ export const authGuard = async (
     next();
   } catch (error) {
     console.error(error);
-    return res.status(401).json({ mensagem: "Token inválido." });
+    return res
+      .status(401)
+      .json(respostaErro({ mensagem: "Token inválido.", codigoRetorno: 401 }));
   }
 };

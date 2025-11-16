@@ -25,18 +25,17 @@ export interface InserirPessoaData {
 
 export const pessoaService = {
   async usuarioExistePorEmailOuId(email?: string | null, id?: string | null) {
-    if (!email && !id) return false;
-
-    if (id && !email) {
-      const usuario = await pessoaRepository.obterPorId(id, false);
-      return usuario ? usuario : false;
-    } else if (!id && email) {
-      const emailHash = await hash.geradorCamposComuns(email);
-      const usuario = await pessoaRepository.obterPorEmail(emailHash);
-      return usuario ? usuario : false;
+    if (id) {
+      return (await pessoaRepository.obterPorId(id, false)) ?? null;
     }
-  },
 
+    if (email) {
+      const emailHash = await hash.geradorCamposComuns(email);
+      return (await pessoaRepository.obterPorEmail(emailHash)) ?? null;
+    }
+
+    return null;
+  },
   async inserir({ email, nome, senha }: InserirPessoaData) {
     const usuarioExistente = await this.usuarioExistePorEmailOuId(email);
 

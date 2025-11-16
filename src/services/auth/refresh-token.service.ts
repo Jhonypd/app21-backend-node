@@ -9,7 +9,7 @@ import {
 import { ptBR } from "date-fns/locale";
 import { RefreshTokenRepository } from "../../repositories/refresh-token.repository";
 import { pessoaService } from "../pessoas/pessoa.service";
-import { sessionUsuarioService } from "./session-usuario.service";
+import { sessaoUsuarioService } from "./sessao-usuario.service";
 import { criptografia } from "../../lib/criptografia";
 
 export const refreshTokenService = {
@@ -45,8 +45,6 @@ export const refreshTokenService = {
       throw new Error("Refresh token expirado");
     const decode = decodeToken<ClaimsRefreshToken>(token);
 
-    console.table(decode);
-
     const dadosUsuarioNovoToken = await pessoaService.usuarioExistePorEmailOuId(
       undefined,
       decode.Usu_Id
@@ -55,7 +53,7 @@ export const refreshTokenService = {
     if (!dadosUsuarioNovoToken)
       throw new Error("Usuário não encontrado para renovar token");
 
-    const sessionAtiva = await sessionUsuarioService.buscarSessaoAtiva(
+    const sessaoAtiva = await sessaoUsuarioService.buscarSessaoAtiva(
       decode.Ss_Id
     );
 
@@ -66,7 +64,7 @@ export const refreshTokenService = {
       Dt_Ex: format(addMinutes(new Date(), 15), "yyyy-MM-dd' 'HH:mm:ss", {
         locale: ptBR,
       }),
-      Ss_Id: sessionAtiva?.id as string,
+      Ss_Id: sessaoAtiva?.id as string,
       Idp: "pt-BR",
       aud: "App21",
       iss: "App21",
@@ -80,5 +78,9 @@ export const refreshTokenService = {
   },
   async revogar(token: string) {
     return RefreshTokenRepository.revogar(token);
+  },
+
+  async revogarPorUsuarioId(usuarioId: string) {
+    return RefreshTokenRepository.revogarPorUsuarioId(usuarioId);
   },
 };

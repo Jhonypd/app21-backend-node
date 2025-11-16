@@ -1,6 +1,6 @@
-import { sessionUsuarioRepository } from "../../repositories/session-usuario.repository";
+import { sessionUsuarioRepository } from "../../repositories/sessao-usuario.repository";
 
-export const sessionUsuarioService = {
+export const sessaoUsuarioService = {
   async criarSessao(usuarioId: string, expiracao: Date) {
     const sessao = await sessionUsuarioRepository.criar(usuarioId, expiracao);
     return sessao;

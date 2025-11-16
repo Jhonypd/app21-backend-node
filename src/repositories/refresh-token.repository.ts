@@ -19,4 +19,9 @@ export const RefreshTokenRepository = {
       where: { token },
       data: { revogado_em: new Date() },
     }),
+  revogarPorUsuarioId: (userId: string) =>
+    prismaClient.refreshToken.updateMany({
+      where: { userId, revogado_em: null },
+      data: { revogado_em: new Date() },
+    }),
 };
