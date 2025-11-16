@@ -17,12 +17,16 @@ router.post(
   authController.login
 );
 
-router.post("/refresh", validateHandler, refreshTokenController.renovar);
+router.post(
+  "/refresh",
+  validateHandler,
+  refreshTokenController.renovarAccessToken
+);
 
 router.post(
   "/refresh/revogar",
   validateHandler,
-  refreshTokenController.revogar
+  refreshTokenController.encerrarSessao
 );
 
 router.post(

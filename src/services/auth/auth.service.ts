@@ -6,37 +6,37 @@ import emailService from "../mail/mail.service";
 import { codigos } from "../../lib/codigos";
 import { pessoaService } from "../pessoas/pessoa.service";
 import { formatarParaDataLocal } from "../../utils/formatar-data";
-import { addMinutes, format } from "date-fns";
+import { addDays, addMinutes, format } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import { refreshTokenService } from "./refresh-token.service";
 import { sessaoUsuarioService } from "./sessao-usuario.service";
 
 export const authService = {
   async login(email: string, senha: string) {
-    const usuario = await pessoaService.usuarioExistePorEmailOuId(email, null);
+    const pessoa = await pessoaService.usuarioExistePorEmailOuId(email, null);
 
-    if (!usuario) throw new Error("Usuario e/ou senha inválido(s)");
+    if (!pessoa) throw new Error("Usuario e/ou senha inválido(s)");
 
-    if (usuario.inativo) {
+    if (pessoa.inativo) {
       throw new Error(
         "Usuário sem permissão de acesso, entre em contato com o administrador."
       );
     }
 
-    if (usuario.email_confirmado === false) {
+    if (pessoa.email_confirmado === false) {
       throw new Error(
         "E-mail não confirmado. Por favor, confirme seu e-mail para continuar."
       );
     }
 
-    const senhaValida = await hash.compare(senha, usuario.senha as string);
+    const senhaValida = await hash.compare(senha, pessoa.senha as string);
 
     if (!senhaValida) throw new Error("Usuario e/ou senha inválido(s)");
 
     const tokenPayload = {
-      Usu_Id: usuario.id,
-      Usu_Na: criptografia.descriptografar(usuario.nome),
-      Email: criptografia.descriptografar(usuario.email),
+      Usu_Id: pessoa.id,
+      Usu_Na: criptografia.descriptografar(pessoa.nome),
+      Email: criptografia.descriptografar(pessoa.email),
       Dt_Ex: format(addMinutes(new Date(), 15), "yyyy-MM-dd' 'HH:mm:ss", {
         locale: ptBR,
       }),
@@ -45,29 +45,22 @@ export const authService = {
       iss: "App21",
     } as Claims;
 
-    await sessaoUsuarioService.invalidarSessao(usuario.id);
-    await refreshTokenService.revogarPorUsuarioId(usuario.id);
+    await refreshTokenService.revogarTodasRefreshTokensPorPessoaId(pessoa.id);
+    await sessaoUsuarioService.invalidarSessaoPorPessoaId(pessoa.id);
 
     const novaSessao = await sessaoUsuarioService.criarSessao(
-      usuario.id,
-      new Date(tokenPayload.Dt_Ex)
+      pessoa.id,
+      addDays(new Date(), 3)
     );
 
     const token = geradorToken({ ...tokenPayload, Ss_Id: novaSessao.id });
-    const refreshToken = await refreshTokenService.gerar(
-      usuario.id,
+    const refreshToken = await refreshTokenService.gerarRefreshToken(
+      pessoa.id,
       novaSessao.id
     );
     return {
       tokenAcesso: { token, dataExpiracao: tokenPayload.Dt_Ex },
-      refreshToken: {
-        token: refreshToken.token,
-        dataExpiracao: format(
-          new Date(refreshToken.expiracao),
-          "yyyy-MM-dd' 'HH:mm:ss",
-          { locale: ptBR }
-        ),
-      },
+      refreshToken,
     };
   },
 

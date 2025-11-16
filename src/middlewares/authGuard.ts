@@ -46,12 +46,16 @@ export const authGuard = async (
     const decoded = jwt.verify(token, jwtSecret) as Claims;
 
     // SESSION VALIDATION
-    const sessao = await sessaoUsuarioService.buscarSessaoAtiva(decoded.Ss_Id);
+    const sessao = await sessaoUsuarioService.buscarSessaoAtivaPorId(
+      decoded.Ss_Id
+    );
 
     if (!sessao) {
       return res
         .status(401)
-        .json({ mensagem: "Sessão inválida.", codigoRetorno: 401 });
+        .json(
+          respostaErro({ mensagem: "Sessão inválida.", codigoRetorno: 401 })
+        );
     }
 
     if (sessao.revogado_em) {
@@ -74,14 +78,12 @@ export const authGuard = async (
     const pessoa = await pessoaService.obterDadosConta(decoded.Usu_Id);
 
     if (!pessoa)
-      return res
-        .status(401)
-        .json(
-          respostaErro({
-            mensagem: "Usuário não encontrado.",
-            codigoRetorno: 401,
-          })
-        );
+      return res.status(401).json(
+        respostaErro({
+          mensagem: "Usuário não encontrado.",
+          codigoRetorno: 401,
+        })
+      );
     if (pessoa.inativo)
       return res
         .status(403)
@@ -89,14 +91,12 @@ export const authGuard = async (
           respostaErro({ mensagem: "Usuário inativo.", codigoRetorno: 403 })
         );
     if (!pessoa.email_confirmado)
-      return res
-        .status(403)
-        .json(
-          respostaErro({
-            mensagem: "E-mail não confirmado.",
-            codigoRetorno: 403,
-          })
-        );
+      return res.status(403).json(
+        respostaErro({
+          mensagem: "E-mail não confirmado.",
+          codigoRetorno: 403,
+        })
+      );
 
     req.user = {
       Usu_Id: pessoa.id,

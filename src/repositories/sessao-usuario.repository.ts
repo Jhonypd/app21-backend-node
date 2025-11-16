@@ -1,27 +1,34 @@
 import { prismaClient } from "../lib/prisma";
 
 export const sessionUsuarioRepository = {
-  criar: (usuarioId: string, expiracao: Date) =>
-    prismaClient.sessaoUsuario.create({
+  criar: (pessoaId: string, expiracao: Date) =>
+    prismaClient.sessaoPessoa.create({
       data: {
-        usuario_id: usuarioId,
+        pessoa_id: pessoaId,
         expiracao,
       },
     }),
 
-  invalidarSessoesAtivas: (usuarioId: string) =>
-    prismaClient.sessaoUsuario.updateMany({
+  deleteSessoesPorPessoaId: (pessoaId: string) =>
+    prismaClient.sessaoPessoa.deleteMany({
       where: {
-        usuario_id: usuarioId,
-        revogado_em: null,
-      },
-      data: {
-        revogado_em: new Date(),
+        pessoa_id: pessoaId,
       },
     }),
 
-  buscarSessao: (id: string) =>
-    prismaClient.sessaoUsuario.findUnique({
-      where: { id },
+  buscarSessaoAtivaPorId: (id: string) =>
+    prismaClient.sessaoPessoa.findUnique({
+      where: { id, revogado_em: null },
+    }),
+
+  invalidarSessaoPorId: (sessaoId: string) =>
+    prismaClient.sessaoPessoa.update({
+      where: { id: sessaoId },
+      data: { revogado_em: new Date() },
+    }),
+
+  buscarTodasSessoesAtivasPorPessoaId: (pessoaId: string) =>
+    prismaClient.sessaoPessoa.findMany({
+      where: { pessoa_id: pessoaId },
     }),
 };

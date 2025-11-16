@@ -1,27 +1,25 @@
 import { prismaClient } from "../lib/prisma";
 
 export const RefreshTokenRepository = {
-  criar: (userId: string, token: string, expiracao: Date) =>
+  criar: (sessao_id: string, token: string, expiracao: Date) =>
     prismaClient.refreshToken.create({
       data: {
-        userId,
-        token,
+        sessao_id,
+        token_hash: token,
         expiracao,
       },
     }),
 
-  buscarPorToken: (token: string) =>
+  deletarPorId: (id: string) =>
+    prismaClient.refreshToken.delete({ where: { id } }),
+
+  buscarPorSessaoId: (sessao_id: string) =>
     prismaClient.refreshToken.findUnique({
-      where: { token },
+      where: { sessao_id },
     }),
-  revogar: (token: string) =>
-    prismaClient.refreshToken.update({
-      where: { token },
-      data: { revogado_em: new Date() },
-    }),
-  revogarPorUsuarioId: (userId: string) =>
-    prismaClient.refreshToken.updateMany({
-      where: { userId, revogado_em: null },
-      data: { revogado_em: new Date() },
+
+  deletarTodosPorSessaoId: (sessao_id: string) =>
+    prismaClient.refreshToken.deleteMany({
+      where: { sessao_id },
     }),
 };

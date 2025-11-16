@@ -1,20 +1,42 @@
 import { sessionUsuarioRepository } from "../../repositories/sessao-usuario.repository";
+import { refreshTokenService } from "./refresh-token.service";
 
 export const sessaoUsuarioService = {
-  async criarSessao(usuarioId: string, expiracao: Date) {
-    const sessao = await sessionUsuarioRepository.criar(usuarioId, expiracao);
+  async criarSessao(pessoaId: string, expiracao: Date) {
+    const sessao = await sessionUsuarioRepository.criar(pessoaId, expiracao);
     return sessao;
   },
 
-  async invalidarSessao(usuarioId: string) {
-    const sessao = await sessionUsuarioRepository.invalidarSessoesAtivas(
-      usuarioId
+  async invalidarSessaoPorPessoaId(pessoaId: string) {
+    const sessao = await sessionUsuarioRepository.deleteSessoesPorPessoaId(
+      pessoaId
     );
     return sessao;
   },
 
-  async buscarSessaoAtiva(usuarioId: string) {
-    const sessao = await sessionUsuarioRepository.buscarSessao(usuarioId);
+  async invalidarSessaoRefreshToken(sessaoId: string, refreshToken: string) {
+    const sessao = await sessionUsuarioRepository.invalidarSessaoPorId(
+      sessaoId
+    );
+
+    if (!sessao) {
+      throw new Error("Sessão não encontrada ou já foi encerrada");
+    }
+
+    await refreshTokenService.revogarRefreshTokenPorSessaoId(sessaoId);
     return sessao;
+  },
+
+  async buscarSessaoAtivaPorId(id: string) {
+    const sessao = await sessionUsuarioRepository.buscarSessaoAtivaPorId(id);
+    return sessao;
+  },
+
+  async buscarSessoesAtivasPorPessoaId(pessoaId: string) {
+    const sessoes =
+      await sessionUsuarioRepository.buscarTodasSessoesAtivasPorPessoaId(
+        pessoaId
+      );
+    return sessoes;
   },
 };
