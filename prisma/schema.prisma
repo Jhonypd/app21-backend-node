@@ -9,42 +9,49 @@ datasource db {
 }
 
 model Pessoa {
-  id                      String             @id @default(uuid())
+  id                      String    @id @default(uuid())
   nome                    String
-  email                   String             @unique
-  email_hash              String             @unique
-  email_confirmado        Boolean            @default(false)
-  codigo_confirmacao      String?            @unique
-  codigo_confirmacao_hash String?            @unique
+  email                   String    @unique
+  email_hash              String    @unique
+  email_confirmado        Boolean   @default(false)
+  codigo_confirmacao      String?   @unique
+  codigo_confirmacao_hash String?   @unique
   codigo_expiracao        DateTime?
   senha                   String
-  inativo                 Boolean            @default(false)
-  data_criacao            DateTime           @default(now())
-  participacoes           ParticipanteSala[]
-  salas_criadas           Sala[]             @relation("SalasCriadasPorPessoa")
-  votos                   Voto[]
-  sessao_usuario          SessaoPessoa[]
+  inativo                 Boolean   @default(false)
+  data_criacao            DateTime  @default(now())
+
+  participacoes  ParticipanteSala[]
+  salas_criadas  Sala[]             @relation("SalasCriadasPorPessoa")
+  votos          Voto[]
+  sessao_usuario SessaoPessoa[]
 
   @@index([email])
   @@index([codigo_expiracao])
 }
 
 model Sala {
-  id             String             @id @default(uuid())
-  codigo         String             @unique
+  id             String    @id @default(uuid())
+  codigo         String    @unique
   titulo         String
   criado_por     String
   senha          String?
-  inativo        Boolean            @default(false)
-  data_criacao   DateTime           @default(now())
+  inativo        Boolean   @default(false)
+  data_criacao   DateTime  @default(now())
   data_alteracao DateTime?
-  participantes  ParticipanteSala[]
-  proprietario   Pessoa             @relation("SalasCriadasPorPessoa", fields: [criado_por], references: [id])
-  votos          Voto[]
-  historias      HistoriaSala[]
+
+  // CAMPOS NOVOS PARA SUPORTAR A TELA
+  historia_atual_id String?
+  votos_revelados   Boolean @default(false)
+
+  participantes ParticipanteSala[]
+  proprietario  Pessoa             @relation("SalasCriadasPorPessoa", fields: [criado_por], references: [id])
+  votos         Voto[]
+  historias     HistoriaSala[]
 
   @@index([criado_por])
   @@index([codigo])
+  @@index([historia_atual_id])
 }
 
 model HistoriaSala {
@@ -55,6 +62,8 @@ model HistoriaSala {
   criado_por   String
   data_criacao DateTime @default(now())
   sala         Sala     @relation(fields: [sala_id], references: [id])
+
+  @@index([sala_id])
 }
 
 model ParticipanteSala {
@@ -62,9 +71,12 @@ model ParticipanteSala {
   sala_id    String
   pessoa_id  String
   adicionado DateTime @default(now())
-  pessoa     Pessoa   @relation(fields: [pessoa_id], references: [id])
-  sala       Sala     @relation(fields: [sala_id], references: [id])
-  tipo_participacao Int @default(0)
+
+  // NOVO: estado em tempo real
+  online Boolean @default(false)
+
+  pessoa Pessoa @relation(fields: [pessoa_id], references: [id])
+  sala   Sala   @relation(fields: [sala_id], references: [id])
 
   @@unique([sala_id, pessoa_id])
   @@index([sala_id])
@@ -78,8 +90,9 @@ model Voto {
   historia_id String
   valor       Int
   data_voto   DateTime @default(now())
-  pessoa      Pessoa   @relation(fields: [pessoa_id], references: [id])
-  sala        Sala     @relation(fields: [sala_id], references: [id])
+
+  pessoa Pessoa @relation(fields: [pessoa_id], references: [id])
+  sala   Sala   @relation(fields: [sala_id], references: [id])
 
   @@unique([sala_id, pessoa_id, historia_id])
   @@index([sala_id, pessoa_id, historia_id])
@@ -108,9 +121,8 @@ model SessaoPessoa {
   ip               String?
   user_agent       String?
 
-  refreshToken RefreshToken? // ✔ 1 sessão → 1 refresh token
-
-  pessoa Pessoa @relation(fields: [pessoa_id], references: [id])
+  refreshToken RefreshToken?
+  pessoa       Pessoa        @relation(fields: [pessoa_id], references: [id])
 
   @@index([pessoa_id])
 }

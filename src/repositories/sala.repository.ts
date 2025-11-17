@@ -39,6 +39,37 @@ export const salaRepository = {
       omit: { senha: !comSenha },
       include: {
         proprietario: { select: { id: true, nome: true, inativo: true } },
+        participantes: {
+          select: {
+            pessoa: {
+              select: {
+                id: true,
+                nome: true,
+                inativo: true,
+              },
+            },
+          },
+        },
+        historias: {
+          select: {
+            id: true,
+            titulo: true,
+            descricao: true,
+          },
+        },
+        votos: {
+          select: {
+            id: true,
+            pessoa_id: true,
+            valor: true,
+            pessoa: {
+              select: {
+                nome: true,
+                inativo: true,
+              },
+            },
+          },
+        },
       },
     }),
 

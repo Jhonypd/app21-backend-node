@@ -148,7 +148,38 @@ export const salaService = {
     if (!sala) {
       throw new Error("Sala não encontrada");
     }
-    return sala;
+
+    const { senha, ...restante } = sala;
+
+    return {
+      ...restante,
+      proprietario: {
+        ...sala.proprietario,
+        nome: criptografia.descriptografar(sala.proprietario.nome),
+      },
+      participantes: [
+        ...sala.participantes.map((participante) => {
+          return {
+            ...participante.pessoa,
+          };
+        }),
+        {
+          ...sala.proprietario,
+          nome: criptografia.descriptografar(sala.proprietario.nome),
+        },
+      ],
+      votos: [
+        ...sala.votos.map((voto) => {
+          return {
+            ...voto,
+            pessoa: {
+              nome: criptografia.descriptografar(voto.pessoa.nome),
+              inativo: voto.pessoa.inativo,
+            },
+          };
+        }),
+      ],
+    };
   },
 
   async obterPorId(id: string, pessoaId: string) {
@@ -173,10 +204,17 @@ export const salaService = {
 
     // Buscar sala
     const sala = await salaRepository.obterPorCodigo(codigo, pessoaId, false);
-    if (!sala)
+
+    if (!sala) {
       throw new Error("Sala não encontrada e/ou usuário sem permissão.");
+    }
+
+    // console.log(sala);
 
     const isCriador = pessoaId === sala.criado_por;
+
+    console.log(isCriador);
+
     const membro = await salaRepository.obterMembroSala(sala.id, pessoaId);
 
     // Verificação de acesso simplificada
