@@ -60,6 +60,7 @@ export const salaRepository = {
         data_criacao: true,
         data_alteracao: true,
         inativo: true,
+        senha: true,
         votos: {
           select: {
             id: true,

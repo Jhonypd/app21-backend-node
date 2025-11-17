@@ -36,11 +36,11 @@ router.delete(
 );
 
 router.post(
-  "/loginSala",
+  "/entrar",
   salaLoginValidations(),
   validateHandler,
   authGuard,
-  salaController.loginSala
+  salaController.entrarSala
 );
 
 router.get(

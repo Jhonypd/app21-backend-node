@@ -7,6 +7,7 @@ export const validateHandler = (
   res: Response,
   next: NextFunction
 ) => {
+  console.table(req.body);
   const errors = validationResult(req);
 
   if (errors.isEmpty()) {

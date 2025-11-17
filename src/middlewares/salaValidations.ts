@@ -17,9 +17,9 @@ const salaInserirValidations = () => {
       .isBoolean()
       .withMessage("O campo salaPrivada deve ser um valor válido")
       .optional(),
-    body("pessoaId")
-      .isUUID()
-      .withMessage("O campo pessoaId deve ser um id válido"),
+    // body("pessoaId")
+    //   .isUUID()
+    //   .withMessage("O campo pessoaId deve ser um id válido"),
   ];
 };
 

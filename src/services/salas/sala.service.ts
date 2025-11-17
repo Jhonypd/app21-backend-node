@@ -118,8 +118,10 @@ export const salaService = {
       itensPagina
     );
     const salaFormatada = salas.map((sala) => {
+      const { senha, ...restant } = sala;
       return {
-        ...sala,
+        ...restant,
+        privada: sala.senha ? true : false,
         votos: [
           ...sala.votos.map((voto) => {
             return {
@@ -158,10 +160,16 @@ export const salaService = {
     return sala;
   },
 
-  async loginSala(codigo: string, pessoaId: string, senha?: string) {
+  async entrarSala(
+    codigo: string,
+    pessoaId: string,
+    SessaoId: string,
+    senha?: string
+  ) {
     // Validações iniciais
     if (!pessoaId) throw new Error("Id da pessoa não fornecido.");
     if (!codigo) throw new Error("Código da sala não fornecido.");
+    if (!SessaoId) throw new Error("Id da sessão do usuario não fornecido.");
 
     // Buscar sala
     const sala = await salaRepository.obterPorCodigo(codigo, pessoaId, false);
@@ -181,7 +189,7 @@ export const salaService = {
       if (isCriador) {
         // Criador acessa sem senha
       } else if (!senha) {
-        throw new Error("Senha da sala é necessária.");
+        throw new Error("Informe a senha para acessar a sala.");
       } else {
         const senhaValida = await hash.compare(senha, sala.senha);
         if (!senhaValida) throw new Error("Senha informada inválida.");
@@ -207,7 +215,7 @@ export const salaService = {
     }
 
     // Gerar token
-    const dataExpiracao = addHours(new Date(), 1);
+    const dataExpiracao = addHours(new Date(), 6);
     const nomeDescriptografado = await criptografia.descriptografar(
       pessoaInfo.nome
     );
@@ -219,7 +227,7 @@ export const salaService = {
       Sala_Id: sala.id,
       Sala_titulo: sala.titulo,
       Dt_Ex: format(dataExpiracao, "yyyy-MM-dd' 'HH:mm:ss", { locale: ptBR }),
-      Ss_Id: "", // pensar em como gerar ou atribuir esse Ss_Id
+      Ss_Id: SessaoId,
     };
 
     const tokenSala = geradorTokenSala(tokenPayload);

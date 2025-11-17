@@ -64,6 +64,7 @@ model ParticipanteSala {
   adicionado DateTime @default(now())
   pessoa     Pessoa   @relation(fields: [pessoa_id], references: [id])
   sala       Sala     @relation(fields: [sala_id], references: [id])
+  tipo_participacao Int @default(0)
 
   @@unique([sala_id, pessoa_id])
   @@index([sala_id])

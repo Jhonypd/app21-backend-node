@@ -2,20 +2,10 @@ import jwt from "jsonwebtoken";
 import { Server, Socket } from "socket.io";
 import { ClaimsAuthSala } from "../lib/jwt";
 
-interface EntrarSalaData {
-  token: string;
-}
-
-// const jwtSecret = process.env.JWT_SECRET as string;
-
 const socketEventos = (io: Server, jwtSecret: string) => {
+  // Autenticação WebSocket
   io.use((socket, next) => {
-    let token = socket.handshake.auth;
-
-    // 👇 Aqui fazemos a normalização pro Insomnia
-    if (typeof token === "object" && token?.token) {
-      token = token.token;
-    }
+    const { token } = socket.handshake.auth ?? {};
 
     if (!token || typeof token !== "string") {
       return next(new Error("Token não fornecido"));
@@ -31,23 +21,25 @@ const socketEventos = (io: Server, jwtSecret: string) => {
     }
   });
 
+  // Conexão
   io.on("connection", (socket: Socket) => {
-    console.log("Usuário conectado:", socket.data.usuario.Usu_Na);
+    const user = socket.data.usuario;
 
-    socket.on("entrar_sala", (data: EntrarSalaData) => {
-      const usuario = socket.data.usuario;
+    console.log("Usuário conectado:", user.Usu_Na);
 
-      socket.join(usuario.Sala_Id);
+    // Entrar na sala
+    socket.on("entrar_sala", () => {
+      socket.join(user.Sala_Id);
 
-      io.to(usuario.Sala_Id).emit("usuario_entrou", {
-        pessoa_id: usuario.Usu_Id,
-        nome: usuario.Usu_Na,
-        role: usuario.Role,
+      io.to(user.Sala_Id).emit("usuario_entrou", {
+        pessoa_id: user.Usu_Id,
+        nome: user.Usu_Na,
+        role: user.Role,
       });
     });
 
     socket.on("disconnect", () => {
-      console.log("Usuário desconectado:", socket.data.usuario.Usu_Na);
+      console.log("Usuário desconectado:", user.Usu_Na);
     });
   });
 };

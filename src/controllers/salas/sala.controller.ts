@@ -7,7 +7,7 @@ export const salaController = {
     try {
       const { titulo, senha, salaPrivada } = req.body;
       const pessoaId = req.user?.Usu_Id as string;
-
+      console.log({ reqBody: req.body, pessoaId });
       const sala = await salaService.inserir({
         titulo,
         senha,
@@ -104,13 +104,15 @@ export const salaController = {
     }
   },
 
-  async loginSala(req: Request, res: Response) {
+  async entrarSala(req: Request, res: Response) {
     try {
       const pessoa = req.user;
-      const { codigo } = req.body;
-      const { tokenSala, dataExpiracao } = await salaService.loginSala(
+      const { codigo, senha } = req.body;
+      const { tokenSala, dataExpiracao } = await salaService.entrarSala(
         codigo,
-        pessoa?.Usu_Id as string
+        pessoa?.Usu_Id as string,
+        pessoa?.Ss_Id as string,
+        senha
       );
       res.json(
         respostaSucesso({

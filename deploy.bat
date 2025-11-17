@@ -98,8 +98,11 @@ echo %C_SECTION%─────────────────────�
 
 xcopy dist %DEST_DIR%\dist\ /E /I /Y > nul
 echo %C_OK%[OK] dist copiada.%C_RESET%
+IF EXIST src\lib\generated\prisma (
+    xcopy src\lib\generated\prisma %DEST_DIR%\dist\lib\generated\prisma\ /E /I /Y > nul
+    echo - Pasta gerada do Prisma copiada.
+)
 echo.
-
 
 REM ===========================================================================
 REM 5. COPIAR NODE_MODULES
