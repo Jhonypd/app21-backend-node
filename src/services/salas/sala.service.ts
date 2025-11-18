@@ -118,25 +118,45 @@ export const salaService = {
       itensPagina
     );
     const salaFormatada = salas.map((sala) => {
-      const { senha, ...restant } = sala;
+      const { senha, sessoes, ...restant } = sala;
+      // Coletar todos os votos das sessões ativas
+      const votos =
+        sala.sessoes?.flatMap(
+          (sessao) =>
+            sessao.historias?.flatMap(
+              (historia) =>
+                historia.votos?.map((voto) => ({
+                  ...voto,
+                  pessoa: {
+                    ...voto.pessoa,
+                    nome: criptografia.descriptografar(voto.pessoa.nome),
+                  },
+                })) || []
+            ) || []
+        ) || [];
+
       return {
         ...restant,
         privada: sala.senha ? true : false,
-        votos: [
-          ...sala.votos.map((voto) => {
-            return {
-              ...voto,
-              pessoa: {
-                ...voto.pessoa,
-                nome: criptografia.descriptografar(voto.pessoa.nome),
-              },
-            };
-          }),
-        ],
+        votos,
         proprietario: {
           ...sala.proprietario,
           nome: criptografia.descriptografar(sala.proprietario.nome),
         },
+        participantes: [
+          ...sala.participantes.map((participante) => {
+            return {
+              ...participante.pessoa,
+              nome: criptografia.descriptografar(participante.pessoa.nome),
+              inativo: participante.pessoa.inativo,
+            };
+          }),
+          {
+            ...sala.proprietario,
+            nome: criptografia.descriptografar(sala.proprietario.nome),
+            inativo: sala.proprietario.inativo,
+          },
+        ],
       };
     });
     return salaFormatada;
@@ -150,6 +170,22 @@ export const salaService = {
     }
 
     const { senha, ...restante } = sala;
+
+    // Coletar todos os votos das sessões ativas
+    const votos =
+      sala.sessoes?.flatMap(
+        (sessao) =>
+          sessao.historias?.flatMap(
+            (historia) =>
+              historia.votos?.map((voto) => ({
+                ...voto,
+                pessoa: {
+                  nome: criptografia.descriptografar(voto.pessoa.nome),
+                  inativo: voto.pessoa.inativo,
+                },
+              })) || []
+          ) || []
+      ) || [];
 
     return {
       ...restante,
@@ -168,17 +204,7 @@ export const salaService = {
           nome: criptografia.descriptografar(sala.proprietario.nome),
         },
       ],
-      votos: [
-        ...sala.votos.map((voto) => {
-          return {
-            ...voto,
-            pessoa: {
-              nome: criptografia.descriptografar(voto.pessoa.nome),
-              inativo: voto.pessoa.inativo,
-            },
-          };
-        }),
-      ],
+      votos,
     };
   },
 
@@ -188,7 +214,42 @@ export const salaService = {
     if (!sala) {
       throw new Error("Sala não encontrada");
     }
-    return sala;
+
+    // Coletar todos os votos das sessões ativas
+    const votos =
+      sala.sessoes?.flatMap(
+        (sessao) =>
+          sessao.historias?.flatMap(
+            (historia) =>
+              historia.votos?.map((voto) => ({
+                ...voto,
+                pessoa: {
+                  nome: criptografia.descriptografar(voto.pessoa.nome),
+                  inativo: voto.pessoa.inativo,
+                },
+              })) || []
+          ) || []
+      ) || [];
+
+    return {
+      ...sala,
+      proprietario: {
+        ...sala.proprietario,
+        nome: criptografia.descriptografar(sala.proprietario.nome),
+      },
+      participantes: [
+        ...sala.participantes.map((participante) => ({
+          ...participante.pessoa,
+          nome: criptografia.descriptografar(participante.pessoa.nome),
+        })),
+        {
+          ...sala.proprietario,
+          nome: criptografia.descriptografar(sala.proprietario.nome),
+        },
+      ],
+      votos,
+      sessaoAtiva: sala.sessoes?.[0] || null,
+    };
   },
 
   async entrarSala(

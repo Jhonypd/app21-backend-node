@@ -1,26 +1,237 @@
 import { prismaClient } from "../lib/prisma";
+
 interface VotoInserirData {
-  idHistoria: string;
-  idPessoa: string;
-  valorVoto: number;
-  idSala: string;
+  historia_sessao_id: string;
+  pessoa_id: string;
+  valor: number;
 }
+
+interface VotoAtualizarData {
+  valor: number;
+}
+
 export const votosRepository = {
   inserir: (voto: VotoInserirData) =>
     prismaClient.voto.create({
       data: {
-        sala_id: voto.idSala,
-        historia_id: voto.idHistoria,
-        pessoa_id: voto.idPessoa,
-        valor: voto.valorVoto,
+        historia_sessao_id: voto.historia_sessao_id,
+        pessoa_id: voto.pessoa_id,
+        valor: voto.valor,
+      },
+      include: {
+        pessoa: {
+          select: {
+            id: true,
+            nome: true,
+            inativo: true,
+          },
+        },
+        historiaSessao: {
+          include: {
+            sessao: {
+              select: {
+                id: true,
+                sala_id: true,
+              },
+            },
+            historia: {
+              select: {
+                id: true,
+                titulo: true,
+                descricao: true,
+              },
+            },
+          },
+        },
       },
     }),
 
-  obterVotoPorHistoriaEPessoa: (idHistoria: string, idPessoa: string) =>
-    prismaClient.voto.findFirst({
+  atualizar: (
+    historia_sessao_id: string,
+    pessoa_id: string,
+    data: VotoAtualizarData
+  ) =>
+    prismaClient.voto.update({
       where: {
-        historia_id: idHistoria,
-        pessoa_id: idPessoa,
+        historia_sessao_id_pessoa_id: {
+          historia_sessao_id,
+          pessoa_id,
+        },
+      },
+      data: {
+        valor: data.valor,
+        data_voto: new Date(),
+      },
+      include: {
+        pessoa: {
+          select: {
+            id: true,
+            nome: true,
+            inativo: true,
+          },
+        },
+        historiaSessao: {
+          include: {
+            sessao: {
+              select: {
+                id: true,
+                sala_id: true,
+              },
+            },
+            historia: {
+              select: {
+                id: true,
+                titulo: true,
+                descricao: true,
+              },
+            },
+          },
+        },
+      },
+    }),
+
+  obterVotoPorHistoriaSessaoEPessoa: (
+    historia_sessao_id: string,
+    pessoa_id: string
+  ) =>
+    prismaClient.voto.findUnique({
+      where: {
+        historia_sessao_id_pessoa_id: {
+          historia_sessao_id,
+          pessoa_id,
+        },
+      },
+      include: {
+        pessoa: {
+          select: {
+            id: true,
+            nome: true,
+            inativo: true,
+          },
+        },
+        historiaSessao: {
+          include: {
+            sessao: {
+              select: {
+                id: true,
+                sala_id: true,
+              },
+            },
+            historia: {
+              select: {
+                id: true,
+                titulo: true,
+                descricao: true,
+              },
+            },
+          },
+        },
+      },
+    }),
+
+  obterVotosPorHistoriaSessao: (historia_sessao_id: string) =>
+    prismaClient.voto.findMany({
+      where: {
+        historia_sessao_id,
+      },
+      include: {
+        pessoa: {
+          select: {
+            id: true,
+            nome: true,
+            inativo: true,
+          },
+        },
+        historiaSessao: {
+          include: {
+            sessao: {
+              select: {
+                id: true,
+                sala_id: true,
+              },
+            },
+            historia: {
+              select: {
+                id: true,
+                titulo: true,
+                descricao: true,
+              },
+            },
+          },
+        },
+      },
+      orderBy: {
+        data_voto: "asc",
+      },
+    }),
+
+  obterVotosPorSessao: (sessao_id: string) =>
+    prismaClient.voto.findMany({
+      where: {
+        historiaSessao: {
+          sessao_id,
+        },
+      },
+      include: {
+        pessoa: {
+          select: {
+            id: true,
+            nome: true,
+            inativo: true,
+          },
+        },
+        historiaSessao: {
+          include: {
+            sessao: {
+              select: {
+                id: true,
+                sala_id: true,
+              },
+            },
+            historia: {
+              select: {
+                id: true,
+                titulo: true,
+                descricao: true,
+              },
+            },
+          },
+        },
+      },
+      orderBy: {
+        data_voto: "asc",
+      },
+    }),
+
+  deletarVotosPorHistoriaSessao: (historia_sessao_id: string) =>
+    prismaClient.voto.deleteMany({
+      where: {
+        historia_sessao_id,
+      },
+    }),
+
+  deletarVotosPorSessao: (sessao_id: string) =>
+    prismaClient.voto.deleteMany({
+      where: {
+        historiaSessao: {
+          sessao_id,
+        },
+      },
+    }),
+
+  contarVotosPorHistoriaSessao: (historia_sessao_id: string) =>
+    prismaClient.voto.count({
+      where: {
+        historia_sessao_id,
+      },
+    }),
+
+  contarVotosPorSessao: (sessao_id: string) =>
+    prismaClient.voto.count({
+      where: {
+        historiaSessao: {
+          sessao_id,
+        },
       },
     }),
 };

@@ -7,6 +7,8 @@ import socketEventos from "./sockets/index";
 import salas from "./routes/salas/sala.routes";
 import auth from "./routes/auth/auth.routes";
 import pessoas from "./routes/pessoas/pessoa.routes";
+import sessoes from "./routes/sessoes/sessao-sala.routes";
+import votos from "./routes/votos/votos.routes";
 import dotenv from "dotenv";
 
 dotenv.config();
@@ -17,7 +19,8 @@ const server = http.createServer(app);
 // Lista real de origins permitidos
 const allowedOrigins = [
   process.env.FRONTEND_URL,
-  "http://192.168.2.99",
+  "http://192.168.2.99:3000",
+  "http://192.168.2.53:3000",
   "http://localhost:3000",
 ].filter(Boolean) as string[];
 
@@ -41,6 +44,8 @@ app.use(cookieParser());
 app.use("/auth", auth);
 app.use("/pessoas", pessoas);
 app.use("/salas", salas);
+app.use("/sessoes", sessoes);
+app.use("/sessoes", votos);
 
 // SOCKET.IO
 const io = new Server(server, {

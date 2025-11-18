@@ -1,0 +1,105 @@
+import { prismaClient } from "../lib/prisma";
+
+interface ParticipanteSessaoInserirData {
+  sessao_id: string;
+  pessoa_id: string;
+  autorizado?: boolean;
+}
+
+export const participanteSessaoRepository = {
+  inserir: (data: ParticipanteSessaoInserirData) =>
+    prismaClient.participanteSessao.create({
+      data: {
+        sessao_id: data.sessao_id,
+        pessoa_id: data.pessoa_id,
+        autorizado: data.autorizado ?? false,
+      },
+      include: {
+        pessoa: {
+          select: {
+            id: true,
+            nome: true,
+            inativo: true,
+          },
+        },
+        sessao: {
+          select: {
+            id: true,
+            sala_id: true,
+            ativa: true,
+          },
+        },
+      },
+    }),
+
+  obterPorSessaoEPessoa: (sessao_id: string, pessoa_id: string) =>
+    prismaClient.participanteSessao.findUnique({
+      where: {
+        sessao_id_pessoa_id: {
+          sessao_id,
+          pessoa_id,
+        },
+      },
+      include: {
+        pessoa: {
+          select: {
+            id: true,
+            nome: true,
+            inativo: true,
+          },
+        },
+      },
+    }),
+
+  obterParticipantesPorSessao: (sessao_id: string) =>
+    prismaClient.participanteSessao.findMany({
+      where: {
+        sessao_id,
+      },
+      include: {
+        pessoa: {
+          select: {
+            id: true,
+            nome: true,
+            inativo: true,
+          },
+        },
+      },
+    }),
+
+  atualizarAutorizacao: (
+    sessao_id: string,
+    pessoa_id: string,
+    autorizado: boolean
+  ) =>
+    prismaClient.participanteSessao.update({
+      where: {
+        sessao_id_pessoa_id: {
+          sessao_id,
+          pessoa_id,
+        },
+      },
+      data: {
+        autorizado,
+      },
+      include: {
+        pessoa: {
+          select: {
+            id: true,
+            nome: true,
+            inativo: true,
+          },
+        },
+      },
+    }),
+
+  deletar: (sessao_id: string, pessoa_id: string) =>
+    prismaClient.participanteSessao.delete({
+      where: {
+        sessao_id_pessoa_id: {
+          sessao_id,
+          pessoa_id,
+        },
+      },
+    }),
+};

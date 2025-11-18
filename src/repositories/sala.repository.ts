@@ -31,6 +31,72 @@ export const salaRepository = {
     prismaClient.sala.findUnique({
       where: { id, criado_por: criadoPor },
       omit: { senha: !comSenha },
+      include: {
+        proprietario: { select: { id: true, nome: true, inativo: true } },
+        participantes: {
+          select: {
+            pessoa: {
+              select: {
+                id: true,
+                nome: true,
+                inativo: true,
+              },
+            },
+          },
+        },
+        historias: {
+          select: {
+            id: true,
+            titulo: true,
+            descricao: true,
+          },
+        },
+        sessoes: {
+          where: {
+            ativa: true,
+          },
+          select: {
+            id: true,
+            criada_em: true,
+            participantes: {
+              include: {
+                pessoa: {
+                  select: {
+                    id: true,
+                    nome: true,
+                    inativo: true,
+                  },
+                },
+              },
+            },
+            historias: {
+              include: {
+                historia: {
+                  select: {
+                    id: true,
+                    titulo: true,
+                    descricao: true,
+                  },
+                },
+                votos: {
+                  include: {
+                    pessoa: {
+                      select: {
+                        id: true,
+                        nome: true,
+                        inativo: true,
+                      },
+                    },
+                  },
+                  orderBy: {
+                    data_voto: "asc",
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
     }),
 
   obterPorCodigo: (codigo: string, criadoPor: string, comSenha: boolean) =>
@@ -57,15 +123,35 @@ export const salaRepository = {
             descricao: true,
           },
         },
-        votos: {
+        sessoes: {
+          where: {
+            ativa: true,
+          },
           select: {
             id: true,
-            pessoa_id: true,
-            valor: true,
-            pessoa: {
+            criada_em: true,
+            historias: {
               select: {
-                nome: true,
-                inativo: true,
+                id: true,
+                historia: {
+                  select: {
+                    id: true,
+                    titulo: true,
+                  },
+                },
+                votos: {
+                  select: {
+                    id: true,
+                    pessoa_id: true,
+                    valor: true,
+                    pessoa: {
+                      select: {
+                        nome: true,
+                        inativo: true,
+                      },
+                    },
+                  },
+                },
               },
             },
           },
@@ -92,11 +178,24 @@ export const salaRepository = {
         data_alteracao: true,
         inativo: true,
         senha: true,
-        votos: {
+        sessoes: {
+          where: {
+            ativa: true,
+          },
           select: {
             id: true,
-            valor: true,
-            pessoa: { select: { id: true, nome: true, inativo: true } },
+            historias: {
+              select: {
+                id: true,
+                votos: {
+                  select: {
+                    id: true,
+                    valor: true,
+                    pessoa: { select: { id: true, nome: true, inativo: true } },
+                  },
+                },
+              },
+            },
           },
         },
         proprietario: { select: { id: true, nome: true, inativo: true } },
