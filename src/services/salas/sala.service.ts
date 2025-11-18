@@ -270,11 +270,7 @@ export const salaService = {
       throw new Error("Sala não encontrada e/ou usuário sem permissão.");
     }
 
-    // console.log(sala);
-
     const isCriador = pessoaId === sala.criado_por;
-
-    console.log(isCriador);
 
     const membro = await salaRepository.obterMembroSala(sala.id, pessoaId);
 
