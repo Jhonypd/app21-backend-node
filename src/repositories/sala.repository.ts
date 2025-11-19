@@ -27,7 +27,7 @@ export const salaRepository = {
   delete: (id: string, criadoPor: string) =>
     prismaClient.sala.delete({ where: { id, criado_por: criadoPor } }),
 
-  obterPorId: (id: string, criadoPor: string, comSenha: boolean) =>
+  obterPorId: (id: string, comSenha: boolean, criadoPor?: string) =>
     prismaClient.sala.findUnique({
       where: { id, criado_por: criadoPor },
       omit: { senha: !comSenha },
@@ -205,7 +205,6 @@ export const salaRepository = {
             pessoa: {
               select: {
                 nome: true,
-                id: true,
                 inativo: true,
               },
             },

@@ -4,6 +4,7 @@ import { criptografia } from "../../lib/criptografia";
 import { addHours, format } from "date-fns";
 import { ClaimsAuthSala, geradorTokenSala } from "../../lib/jwt";
 import { ptBR, tr } from "date-fns/locale";
+import { participanteSalaService } from "../participantes/participante-sala.service";
 
 interface CriarSalaProps {
   pessoaId: string;
@@ -53,7 +54,15 @@ export const salaService = {
           criado_por: pessoaId,
         });
 
-        return novaSala;
+        if (novaSala) {
+          await participanteSalaService.adicionarParticipanteASala(
+            novaSala.id,
+            pessoaId,
+            true
+          );
+        }
+
+        return novaSala.id;
       } catch (error: any) {
         if (error.code === "P2002" && error.meta?.target?.includes("codigo")) {
           continue;
@@ -70,7 +79,7 @@ export const salaService = {
       throw new Error("Dados para alteração não fornecidos.");
     }
 
-    const salaExistente = await salaRepository.obterPorId(id, pessoaId, true);
+    const salaExistente = await salaRepository.obterPorId(id, true, pessoaId);
 
     if (!salaExistente) {
       throw new Error("Sala não encontrada.");
@@ -95,7 +104,7 @@ export const salaService = {
   },
 
   async delete(id: string, pessoaId: string) {
-    const salaExistente = await salaRepository.obterPorId(id, pessoaId, true);
+    const salaExistente = await salaRepository.obterPorId(id, true, pessoaId);
     if (!salaExistente) {
       throw new Error("Sala não encontrada.");
     }
@@ -118,7 +127,7 @@ export const salaService = {
       itensPagina
     );
     const salaFormatada = salas.map((sala) => {
-      const { senha, sessoes, ...restant } = sala;
+      const { senha, ...restant } = sala;
       // Coletar todos os votos das sessões ativas
       const votos =
         sala.sessoes?.flatMap(
@@ -151,11 +160,6 @@ export const salaService = {
               inativo: participante.pessoa.inativo,
             };
           }),
-          {
-            ...sala.proprietario,
-            nome: criptografia.descriptografar(sala.proprietario.nome),
-            inativo: sala.proprietario.inativo,
-          },
         ],
       };
     });
@@ -197,19 +201,16 @@ export const salaService = {
         ...sala.participantes.map((participante) => {
           return {
             ...participante.pessoa,
+            nome: criptografia.descriptografar(participante.pessoa.nome),
           };
         }),
-        {
-          ...sala.proprietario,
-          nome: criptografia.descriptografar(sala.proprietario.nome),
-        },
       ],
       votos,
     };
   },
 
   async obterPorId(id: string, pessoaId: string) {
-    const sala = await salaRepository.obterPorId(id, pessoaId, true);
+    const sala = await salaRepository.obterPorId(id, true, pessoaId);
 
     if (!sala) {
       throw new Error("Sala não encontrada");
@@ -301,6 +302,12 @@ export const salaService = {
         id: sala.proprietario.id,
         nome: sala.proprietario.nome,
       };
+
+      await participanteSalaService.alterarParticipanteSalaOnline(
+        sala.id,
+        sala.proprietario.id,
+        true
+      );
     } else {
       role = 2;
       pessoaInfo = {

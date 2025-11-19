@@ -18,4 +18,10 @@ router.get("/obterDadosConta", authGuard, pessoaController.obterDadosConta);
 
 router.get("/obterDadosAlterar", authGuard, pessoaController.obterDadosAlterar);
 
+router.get(
+  "/listarPorNomeOuEmail",
+  authGuard,
+  pessoaController.listarPorNomeOuEmail
+);
+
 export default router;

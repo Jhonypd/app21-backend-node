@@ -75,7 +75,7 @@ export const pessoaRepository = {
       },
     }),
 
-  obterPorId: (id: string, withPassword: boolean) =>
+  obterPorId: (id: string, comSenha: boolean) =>
     prismaClient.pessoa.findUnique({
       where: { id },
       select: {
@@ -86,17 +86,32 @@ export const pessoaRepository = {
         data_criacao: true,
         inativo: true,
         email_confirmado: true,
-        senha: withPassword ? true : false,
+        senha: comSenha ? true : false,
       },
     }),
 
-  obterTodosPorEquipe: (equipeId: string, inativo: boolean) =>
+  obterTodosPorNomeOuEmail: (valorPesquisa: string, salaId?: string) =>
     prismaClient.pessoa.findMany({
-      where: { inativo },
+      where: {
+        inativo: false,
+        OR: [
+          { nome: { contains: valorPesquisa, mode: "insensitive" } },
+          { email_hash: { contains: valorPesquisa, mode: "insensitive" } },
+        ],
+        NOT: [
+          {
+            participacoes: {
+              some: { sala_id: salaId, membro_permanente: false },
+            },
+          },
+          {},
+        ],
+      },
       select: {
         id: true,
         nome: true,
         inativo: true,
+        email: true,
       },
       orderBy: { nome: "asc" },
     }),

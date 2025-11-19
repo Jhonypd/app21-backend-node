@@ -66,4 +66,19 @@ export const pessoaController = {
       return res.status(400).json(respostaErro({ mensagem: error.message }));
     }
   },
+
+  async listarPorNomeOuEmail(req: Request, res: Response) {
+    try {
+      // aceita tanto `q` quanto `termo` e garante string padrão
+      const termo =
+        ((req.query.q ?? req.query.termo) as string | undefined) ?? "";
+      const salaId = req.query.salaId as string | undefined;
+
+      const pessoas = await pessoaService.listarPorNomeOuEmail(termo, salaId);
+
+      return res.status(200).json(respostaSucesso({ resultado: { pessoas } }));
+    } catch (error: any) {
+      return res.status(400).json(respostaErro({ mensagem: error.message }));
+    }
+  },
 };

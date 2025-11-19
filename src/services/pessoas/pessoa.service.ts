@@ -172,4 +172,18 @@ export const pessoaService = {
       email_confirmado: usuario.email_confirmado,
     };
   },
+
+  async listarPorNomeOuEmail(valorPesquisa: string, salaId?: string) {
+    const valorPesquisaHasheado = await hash.geradorCamposComuns(valorPesquisa);
+
+    const pessoas = await pessoaRepository.obterTodosPorNomeOuEmail(
+      valorPesquisaHasheado,
+      salaId
+    );
+
+    return pessoas.map((pessoa) => ({
+      id: pessoa.id,
+      nome: criptografia.descriptografar(pessoa.nome),
+    }));
+  },
 };
