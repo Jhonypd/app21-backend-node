@@ -1,3 +1,4 @@
+import { criptografia } from "../../lib/criptografia";
 import { participanteSalaRepository } from "../../repositories/participante-sala.repository";
 import { pessoaRepository } from "../../repositories/pessoa.repository";
 import { salaRepository } from "../../repositories/sala.repository";
@@ -77,7 +78,16 @@ export const participanteSalaService = {
   },
 
   async listarParticipantesDaSala(sala_id: string) {
-    return participanteSalaRepository.obterTodosParticipantesPorSala(sala_id);
+    const participantes =
+      await participanteSalaRepository.obterTodosParticipantesPorSala(sala_id);
+
+    return {
+      ...participantes,
+      nome: participantes.map((p) => ({
+        ...p.pessoa,
+        nome: criptografia.descriptografar(p.pessoa.nome),
+      })),
+    };
   },
 
   async alterarParticipanteSalaMembroPermanente(

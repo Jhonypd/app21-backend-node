@@ -7,7 +7,7 @@ import { votosRepository } from "../../repositories/votos.repository";
 export const sessaoSalaService = {
   async criarSessao(sala_id: string, pessoa_id: string) {
     // Verificar se a sala existe e se o usuário tem permissão
-    const sala = await salaRepository.obterPorId(sala_id, pessoa_id, false);
+    const sala = await salaRepository.obterPorId(sala_id, false, pessoa_id);
     if (!sala) {
       throw new Error("Sala não encontrada ou sem permissão.");
     }
@@ -28,6 +28,26 @@ export const sessaoSalaService = {
     return novaSessao;
   },
 
+  async encerrarSessao(sala_id: string, sessao_id: string, pessoa_id: string) {
+    const sessaoAtiva = await sessaoSalaRepository.obterSessaoAtivaPorSala(
+      sala_id
+    );
+
+    if (!sessaoAtiva) {
+      throw new Error("Nenhuma sessão ativa encontrada para esta sala.");
+    }
+
+    if (sessaoAtiva.sala.criado_por !== pessoa_id) {
+      throw new Error("Apenas o criador da sala pode encerrar a sessão.");
+    }
+
+    const sessaoEncerrada = await sessaoSalaRepository.desativarSessoesPorSala(
+      sessao_id
+    );
+
+    return sessaoEncerrada.id;
+  },
+
   async obterSessaoPorId(sessao_id: string, pessoa_id: string) {
     const sessao = await sessaoSalaRepository.obterPorId(sessao_id);
     if (!sessao) {
@@ -37,9 +57,10 @@ export const sessaoSalaService = {
     // Verificar se o usuário tem acesso à sala
     const sala = await salaRepository.obterPorId(
       sessao.sala.id,
-      pessoa_id,
-      false
+      false,
+      pessoa_id
     );
+
     if (!sala) {
       throw new Error("Sem permissão para acessar esta sessão.");
     }
@@ -47,9 +68,10 @@ export const sessaoSalaService = {
     return sessao;
   },
 
-  async obterSessaoAtivaPorSala(sala_id: string, pessoa_id: string) {
+  async obterSessaoAtivaPorSala(sala_id: string, pessoa_id?: string) {
     // Verificar se a sala existe e se o usuário tem permissão
-    const sala = await salaRepository.obterPorId(sala_id, pessoa_id, false);
+    const sala = await salaRepository.obterPorId(sala_id, false, pessoa_id);
+
     if (!sala) {
       throw new Error("Sala não encontrada ou sem permissão.");
     }

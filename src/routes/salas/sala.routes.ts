@@ -72,5 +72,11 @@ router.post(
   authGuard,
   sessaoSalaController.criarSessao
 );
+router.post(
+  "/:id/sessoes",
+  validateHandler,
+  authGuard,
+  sessaoSalaController.encerrarSessao
+);
 
 export default router;

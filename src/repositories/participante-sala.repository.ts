@@ -29,6 +29,15 @@ export const participanteSalaRepository = {
   obterTodosParticipantesPorSala: (sala_id: string) =>
     prismaClient.participanteSala.findMany({
       where: { sala_id },
+      include: {
+        pessoa: {
+          select: {
+            id: true,
+            nome: true,
+            inativo: true,
+          },
+        },
+      },
     }),
 
   alterarParticipanteSalaMembroPermanente: (

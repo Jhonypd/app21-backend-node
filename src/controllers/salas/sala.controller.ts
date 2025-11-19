@@ -7,7 +7,7 @@ export const salaController = {
     try {
       const { titulo, senha, salaPrivada } = req.body;
       const pessoaId = req.user?.Usu_Id as string;
-      console.log({ reqBody: req.body, pessoaId });
+
       const sala = await salaService.inserir({
         titulo,
         senha,
@@ -17,7 +17,7 @@ export const salaController = {
 
       res.status(201).json(
         respostaSucesso({
-          resultado: { id: sala.id },
+          resultado: { id: sala },
           mensagem: "Sala criada com sucesso.",
         })
       );

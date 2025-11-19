@@ -99,7 +99,7 @@ export const salaRepository = {
       },
     }),
 
-  obterPorCodigo: (codigo: string, criadoPor: string, comSenha: boolean) =>
+  obterPorCodigo: (codigo: string, comSenha: boolean, criadoPor?: string) =>
     prismaClient.sala.findUnique({
       where: { codigo, criado_por: criadoPor },
       omit: { senha: !comSenha },

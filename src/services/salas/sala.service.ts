@@ -3,8 +3,10 @@ import { salaRepository } from "../../repositories/sala.repository";
 import { criptografia } from "../../lib/criptografia";
 import { addHours, format } from "date-fns";
 import { ClaimsAuthSala, geradorTokenSala } from "../../lib/jwt";
-import { ptBR, tr } from "date-fns/locale";
+import { is, ptBR, tr } from "date-fns/locale";
 import { participanteSalaService } from "../participantes/participante-sala.service";
+import { sessaoSalaService } from "../sessoes/sessao-sala.service";
+import { participanteSessaoRepository } from "../../repositories/participante-sessao.repository";
 
 interface CriarSalaProps {
   pessoaId: string;
@@ -167,7 +169,7 @@ export const salaService = {
   },
 
   async obterPorCodigo(codigo: string, pessoaId: string) {
-    const sala = await salaRepository.obterPorCodigo(codigo, pessoaId, true);
+    const sala = await salaRepository.obterPorCodigo(codigo, true, pessoaId);
 
     if (!sala) {
       throw new Error("Sala não encontrada");
@@ -256,34 +258,45 @@ export const salaService = {
   async entrarSala(
     codigo: string,
     pessoaId: string,
-    SessaoId: string,
+    SessaoPessoaId: string,
     senha?: string
   ) {
     // Validações iniciais
     if (!pessoaId) throw new Error("Id da pessoa não fornecido.");
     if (!codigo) throw new Error("Código da sala não fornecido.");
-    if (!SessaoId) throw new Error("Id da sessão do usuario não fornecido.");
+    if (!SessaoPessoaId)
+      throw new Error("Id da sessão do usuario não fornecido.");
 
     // Buscar sala
-    const sala = await salaRepository.obterPorCodigo(codigo, pessoaId, false);
+    const sala = await salaRepository.obterPorCodigo(codigo, false, pessoaId);
 
     if (!sala) {
       throw new Error("Sala não encontrada e/ou usuário sem permissão.");
     }
 
+    // const sessaoAtiva = sala.sessoes.find((s) => s.id);
+    const sessaoAtiva = await sessaoSalaService.obterSessaoAtivaPorSala(
+      sala.id
+    );
+
     const isCriador = pessoaId === sala.criado_por;
 
-    const membro = await salaRepository.obterMembroSala(sala.id, pessoaId);
+    // const membro = await salaRepository.obterMembroSala(sala.id, pessoaId);
+    const membrosParticipantes =
+      await participanteSalaService.listarParticipantesDaSala(sala.id);
+
+    const isParticipante = membrosParticipantes.find(
+      (m) => m.pessoa_id === pessoaId
+    );
 
     // Verificação de acesso simplificada
-    if (!isCriador && !membro) {
+    if (!isCriador && !isParticipante) {
       throw new Error("Acesso negado à sala.");
     }
 
     // Lógica de senha mais clara
     if (sala.senha) {
       if (isCriador) {
-        // Criador acessa sem senha
       } else if (!senha) {
         throw new Error("Informe a senha para acessar a sala.");
       } else {
@@ -292,12 +305,18 @@ export const salaService = {
       }
     }
 
+    if (sessaoAtiva?.ativa && isCriador) {
+    }
+
     // Determinar role
     let role: number;
     let pessoaInfo: { id: string; nome: string };
 
+    const verificaSessaoAtivaUsuarioLogado =
+      await participanteSessaoRepository.atualizarAutorizacao;
+
     if (isCriador) {
-      role = 1;
+      role = 0; // Criador
       pessoaInfo = {
         id: sala.proprietario.id,
         nome: sala.proprietario.nome,
@@ -308,12 +327,25 @@ export const salaService = {
         sala.proprietario.id,
         true
       );
-    } else {
-      role = 2;
+
+      if (sessaoAtiva?.ativa) {
+        await sessaoSalaService.criarSessao(sala.id, pessoaId);
+      }
+    } else if (isParticipante && !isCriador) {
+      role = 1; // Participante
       pessoaInfo = {
-        id: membro!.pessoa.id,
-        nome: membro!.pessoa.nome,
+        id: isParticipante.pessoa.id,
+        nome: isParticipante.pessoa.nome,
       };
+    } else {
+      role = 2; // Visitante
+      pessoaInfo = {
+        id: isParticipante?.pessoa.id as string,
+        nome: isParticipante?.pessoa.nome as string,
+      };
+    }
+
+    if (role === 1) {
     }
 
     // Gerar token
@@ -329,7 +361,7 @@ export const salaService = {
       Sala_Id: sala.id,
       Sala_titulo: sala.titulo,
       Dt_Ex: format(dataExpiracao, "yyyy-MM-dd' 'HH:mm:ss", { locale: ptBR }),
-      Ss_Id: SessaoId,
+      Ss_Id: SessaoPessoaId,
     };
 
     const tokenSala = geradorTokenSala(tokenPayload);
