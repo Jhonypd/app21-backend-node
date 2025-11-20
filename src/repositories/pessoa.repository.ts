@@ -101,7 +101,7 @@ export const pessoaRepository = {
         NOT: [
           {
             participacoes: {
-              some: { sala_id: salaId, membro_permanente: false },
+              some: { sala_id: salaId },
             },
           },
           {},

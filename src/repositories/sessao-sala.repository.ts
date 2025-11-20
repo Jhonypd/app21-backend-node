@@ -165,10 +165,10 @@ export const sessaoSalaRepository = {
       },
     }),
 
-  desativarSessoesPorSala: (id: string) =>
-    prismaClient.sessaoSala.update({
+  desativarSessoesPorSala: (sala_id: string) =>
+    prismaClient.sessaoSala.updateMany({
       where: {
-        id,
+        sala_id,
         ativa: true,
       },
       data: {

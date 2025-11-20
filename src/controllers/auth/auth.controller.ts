@@ -6,6 +6,8 @@ export const authController = {
   async login(req: Request, res: Response) {
     try {
       const { email, senha } = req.body;
+      const ip = req.ip;
+      const userAgent = req.get("User-Agent") || "";
       if (!email || !senha) {
         return res
           .status(400)

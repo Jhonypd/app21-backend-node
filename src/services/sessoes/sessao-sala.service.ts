@@ -4,13 +4,26 @@ import { salaRepository } from "../../repositories/sala.repository";
 import { historiaSessaoRepository } from "../../repositories/historia-sessao.repository";
 import { votosRepository } from "../../repositories/votos.repository";
 import { participanteSalaRepository } from "../../repositories/participante-sala.repository";
+import { pessoaRepository } from "../../repositories/pessoa.repository";
+import emailService from "../mail/mail.service";
+import { criptografia } from "../../lib/criptografia";
 
 export const sessaoSalaService = {
   async criarSessao(sala_id: string, pessoa_id: string, visitantes?: string[]) {
-    // Verificar se a sala existe e se o usuário é o dono
+    // Verificar se a sala existe
     const sala = await salaRepository.obterPorId(sala_id, false, pessoa_id);
-    if (!sala || sala.criado_por !== pessoa_id) {
-      throw new Error("Apenas o dono pode criar sessão.");
+    if (!sala) {
+      throw new Error("Sala não encontrada.");
+    }
+
+    // Verificar se o usuário é dono (tipo 0) ou administrador (tipo 1)
+    const isDono = sala.criado_por === pessoa_id;
+    const participanteSala =
+      await participanteSalaRepository.obterPorSalaEPessoa(sala_id, pessoa_id);
+    const isAdmin = participanteSala?.tipo === 1;
+
+    if (!isDono && !isAdmin) {
+      throw new Error("Apenas o dono ou administrador podem criar sessão.");
     }
 
     // Desativar sessões ativas anteriores da sala
@@ -41,7 +54,7 @@ export const sessaoSalaService = {
           await participanteSessaoRepository.inserir({
             sessao_id: novaSessao.id,
             pessoa_id: visitanteId,
-            autorizado: false, // Visitantes não autorizados por padrão
+            autorizado: false,
           });
         }
       }
@@ -63,11 +76,9 @@ export const sessaoSalaService = {
       throw new Error("Apenas o criador da sala pode encerrar a sessão.");
     }
 
-    const sessaoEncerrada = await sessaoSalaRepository.desativarSessoesPorSala(
-      sessao_id
-    );
+    await sessaoSalaRepository.desativarSessoesPorSala(sala_id);
 
-    return sessaoEncerrada.id;
+    return sessao_id;
   },
 
   async obterSessaoPorId(sessao_id: string, pessoa_id: string) {
@@ -208,6 +219,12 @@ export const sessaoSalaService = {
       await participanteSalaRepository.obterTodosParticipantesPorSala(sala_id);
     const idsPermantentes = permanentes.map((p) => p.pessoa_id);
 
+    // Buscar dados do anfitrião (dono)
+    const anfitriao = await pessoaRepository.obterPorId(dono_id, false);
+    if (!anfitriao) {
+      throw new Error("Anfitrião não encontrado.");
+    }
+
     const participantesCriados = [];
 
     for (const pessoaId of pessoa_ids) {
@@ -229,6 +246,32 @@ export const sessaoSalaService = {
           autorizado: false, // Visitantes não autorizados por padrão
         });
         participantesCriados.push(participante);
+
+        // Buscar dados do visitante para enviar email
+        const visitante = await pessoaRepository.obterPorId(pessoaId, false);
+        if (visitante && visitante.email) {
+          try {
+            // Descriptografar dados para o email
+            const nomeVisitante = criptografia.descriptografar(visitante.nome);
+            const emailVisitante = criptografia.descriptografar(
+              visitante.email
+            );
+            const nomeAnfitriao = criptografia.descriptografar(anfitriao.nome);
+
+            // Enviar email de convite
+            await emailService.sendEmailConviteSessao(
+              { nome: nomeVisitante, email: emailVisitante },
+              { titulo: sala.titulo, codigo: sala.codigo },
+              { nome: nomeAnfitriao }
+            );
+          } catch (error) {
+            console.error(
+              `Erro ao enviar email para visitante ${pessoaId}:`,
+              error
+            );
+            // Não bloqueia a adição do visitante se o email falhar
+          }
+        }
       }
     }
 

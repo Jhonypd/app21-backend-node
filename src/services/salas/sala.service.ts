@@ -303,17 +303,13 @@ export const salaService = {
 
     // TIPO 0 (Dono) ou TIPO 1 (Administrador): Pode criar sessão
     if (tipoAcesso === 0 || tipoAcesso === 1) {
-      if (!sessaoAtiva && tipoAcesso === 0) {
-        // Apenas dono pode criar sessão
+      if (!sessaoAtiva) {
+        // Dono e Administrador podem criar sessão
         await sessaoSalaService.criarSessao(sala.id, pessoaId, visitantes);
         // Recarregar sessão ativa após criação
         sessaoAtiva = await sessaoSalaService.obterSessaoAtivaPorSala(
           sala.id,
           pessoaId
-        );
-      } else if (!sessaoAtiva && tipoAcesso === 1) {
-        throw new Error(
-          "Não há sessão ativa no momento. Apenas o dono pode criar sessão."
         );
       }
       // ParticipanteSessao já foi criado automaticamente em criarSessao

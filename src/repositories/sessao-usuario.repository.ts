@@ -1,11 +1,13 @@
 import { prismaClient } from "../lib/prisma";
 
 export const sessionUsuarioRepository = {
-  criar: (pessoaId: string, expiracao: Date) =>
+  criar: (pessoaId: string, expiracao: Date, ip?: string, userAgent?: string) =>
     prismaClient.sessaoPessoa.create({
       data: {
         pessoa_id: pessoaId,
         expiracao,
+        ip,
+        user_agent: userAgent,
       },
     }),
 

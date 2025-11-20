@@ -2,8 +2,18 @@ import { sessionUsuarioRepository } from "../../repositories/sessao-usuario.repo
 import { refreshTokenService } from "./refresh-token.service";
 
 export const sessaoUsuarioService = {
-  async criarSessao(pessoaId: string, expiracao: Date) {
-    const sessao = await sessionUsuarioRepository.criar(pessoaId, expiracao);
+  async criarSessao(
+    pessoaId: string,
+    expiracao: Date,
+    ip?: string,
+    userAgent?: string
+  ) {
+    const sessao = await sessionUsuarioRepository.criar(
+      pessoaId,
+      expiracao,
+      ip,
+      userAgent
+    );
     return sessao;
   },
 

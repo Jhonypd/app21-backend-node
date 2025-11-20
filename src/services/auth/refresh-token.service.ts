@@ -32,7 +32,6 @@ export const refreshTokenService = {
       refreshTokenHash,
       new Date(dataTokenRefresh.Dt_Ex)
     );
-    console.table(refreshToken);
 
     return { token: gerarRefreshToken, dataExpiracao: dataTokenRefresh.Dt_Ex };
   },
@@ -69,8 +68,6 @@ export const refreshTokenService = {
     const sessaoAtiva = await sessaoUsuarioService.buscarSessaoAtivaPorId(
       refreshTokenDecoded.Ss_Id
     );
-
-    console.log("Sessao ativa:", sessaoAtiva);
 
     if (!sessaoAtiva)
       throw new Error("Sessão inválida para renovar token de acesso");

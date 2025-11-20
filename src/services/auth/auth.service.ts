@@ -12,7 +12,7 @@ import { refreshTokenService } from "./refresh-token.service";
 import { sessaoUsuarioService } from "./sessao-usuario.service";
 
 export const authService = {
-  async login(email: string, senha: string) {
+  async login(email: string, senha: string, ip?: string, userAgent?: string) {
     const pessoa = await pessoaService.usuarioExistePorEmailOuId(email, null);
 
     if (!pessoa) throw new Error("Usuario e/ou senha inválido(s)");
@@ -50,7 +50,9 @@ export const authService = {
 
     const novaSessao = await sessaoUsuarioService.criarSessao(
       pessoa.id,
-      addDays(new Date(), 3)
+      addDays(new Date(), 3),
+      ip,
+      userAgent
     );
 
     const token = geradorToken({ ...tokenPayload, Ss_Id: novaSessao.id });

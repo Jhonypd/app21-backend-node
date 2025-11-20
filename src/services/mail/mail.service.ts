@@ -106,24 +106,26 @@ class EmailService {
     return this.sendEmail(user.email, "Recuperação de Senha - App21", html);
   }
 
-  // Email de convite para sala
-  async sendEmailConviteSala(
-    user: { nome: string; email: string },
-    sala: { nome: string },
-    inviter: string
+  // Email de convite para sessão de votação
+  async sendEmailConviteSessao(
+    visitante: { nome: string; email: string },
+    sala: { titulo: string; codigo: string },
+    anfitriao: { nome: string }
   ) {
-    const roomLink = `${process.env.FRONTEND_URL}/salas/join`;
+    const linkSala = `${process.env.FRONTEND_URL}/salas/${sala.codigo}`;
 
-    const html = await this.renderTemplate("room-invite", {
-      nome: user.nome,
-      salaNome: sala.nome,
-      inviterNome: inviter,
-      roomLink,
+    const html = await this.renderTemplate("email-convite-sessao", {
+      nomeVisitante: visitante.nome,
+      nomeAnfitriao: anfitriao.nome,
+      salaTitulo: sala.titulo,
+      salaCodigo: sala.codigo,
+      linkSala,
+      ano: new Date().getFullYear(),
     });
 
     return this.sendEmail(
-      user.email,
-      `Convite para a sala: ${sala.nome}`,
+      visitante.email,
+      `Convite para sessão - ${sala.titulo}`,
       html
     );
   }
