@@ -7,7 +7,7 @@ export const participanteSalaService = {
   async adicionarParticipanteASala(
     sala_id: string,
     pessoa_id: string,
-    membro_permanente = false
+    tipo: number = 2
   ) {
     const pessoaExiste = await pessoaRepository.obterPorId(pessoa_id, false);
 
@@ -38,7 +38,7 @@ export const participanteSalaService = {
     const participante = await participanteSalaRepository.inserir({
       sala_id,
       pessoa_id,
-      membro_permanente,
+      tipo,
     });
 
     if (!participante) {
@@ -82,43 +82,16 @@ export const participanteSalaService = {
       await participanteSalaRepository.obterTodosParticipantesPorSala(sala_id);
 
     return {
-      ...participantes,
-      nome: participantes.map((p) => ({
-        ...p.pessoa,
-        nome: criptografia.descriptografar(p.pessoa.nome),
-      })),
+      participantes: [
+        {
+          ...participantes,
+          nome: participantes.map((p) => ({
+            ...p.pessoa,
+            nome: criptografia.descriptografar(p.pessoa.nome),
+          })),
+        },
+      ],
     };
-  },
-
-  async alterarParticipanteSalaMembroPermanente(
-    sala_id: string,
-    pessoa_id: string,
-    membro_permanente: boolean
-  ) {
-    const pessoaExiste = await pessoaRepository.obterPorId(pessoa_id, false);
-
-    const salaExiste = await salaRepository.obterPorId(
-      sala_id,
-      false,
-      pessoa_id
-    );
-
-    if (!salaExiste) {
-      throw new Error("Sala não encontrada");
-    }
-
-    if (!pessoaExiste) {
-      throw new Error("Pessoa não encontrada");
-    }
-
-    const participante =
-      await participanteSalaRepository.alterarParticipanteSalaMembroPermanente(
-        salaExiste.id,
-        pessoaExiste.id,
-        membro_permanente
-      );
-
-    return participante.id;
   },
 
   async alterarParticipanteSalaOnline(

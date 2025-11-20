@@ -3,17 +3,13 @@ import { prismaClient } from "../lib/prisma";
 interface ParticipanteSalaInserirData {
   sala_id: string;
   pessoa_id: string;
-  membro_permanente: boolean;
+  tipo?: number; // 0 = dono, 1 = admin, 2 = participante
 }
 
 export const participanteSalaRepository = {
-  inserir: ({
-    sala_id,
-    pessoa_id,
-    membro_permanente = false,
-  }: ParticipanteSalaInserirData) =>
+  inserir: ({ sala_id, pessoa_id, tipo = 2 }: ParticipanteSalaInserirData) =>
     prismaClient.participanteSala.create({
-      data: { sala_id, pessoa_id, membro_permanente },
+      data: { sala_id, pessoa_id, tipo },
     }),
 
   remover: (sala_id: string, pessoa_id: string) =>
@@ -24,6 +20,15 @@ export const participanteSalaRepository = {
   obterPorSalaEPessoa: (sala_id: string, pessoa_id: string) =>
     prismaClient.participanteSala.findUnique({
       where: { sala_id_pessoa_id: { sala_id, pessoa_id } },
+      include: {
+        pessoa: {
+          select: {
+            id: true,
+            nome: true,
+            inativo: true,
+          },
+        },
+      },
     }),
 
   obterTodosParticipantesPorSala: (sala_id: string) =>
@@ -38,16 +43,6 @@ export const participanteSalaRepository = {
           },
         },
       },
-    }),
-
-  alterarParticipanteSalaMembroPermanente: (
-    sala_id: string,
-    pessoa_id: string,
-    membro_permanente: boolean
-  ) =>
-    prismaClient.participanteSala.update({
-      where: { sala_id_pessoa_id: { sala_id, pessoa_id } },
-      data: { membro_permanente },
     }),
 
   alterarParticipanteSalaOnline: (

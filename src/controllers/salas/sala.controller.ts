@@ -107,16 +107,23 @@ export const salaController = {
   async entrarSala(req: Request, res: Response) {
     try {
       const pessoa = req.user;
-      const { codigo, senha } = req.body;
-      const { tokenSala, dataExpiracao } = await salaService.entrarSala(
+      const { codigo, senha, visitantes } = req.body; // visitantes é opcional (array de IDs)
+
+      const { tokenSala, dataExpiracao, role } = await salaService.entrarSala(
         codigo,
         pessoa?.Usu_Id as string,
         pessoa?.Ss_Id as string,
-        senha
+        senha,
+        visitantes
       );
+
       res.json(
         respostaSucesso({
-          resultado: { tokenSala: tokenSala, dataExpiracao: dataExpiracao },
+          resultado: {
+            tokenSala,
+            dataExpiracao,
+            role,
+          },
           mensagem: "Login na sala realizado com sucesso.",
         })
       );

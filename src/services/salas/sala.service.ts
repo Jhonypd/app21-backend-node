@@ -3,10 +3,12 @@ import { salaRepository } from "../../repositories/sala.repository";
 import { criptografia } from "../../lib/criptografia";
 import { addHours, format } from "date-fns";
 import { ClaimsAuthSala, geradorTokenSala } from "../../lib/jwt";
-import { is, ptBR, tr } from "date-fns/locale";
+import { ptBR } from "date-fns/locale";
 import { participanteSalaService } from "../participantes/participante-sala.service";
 import { sessaoSalaService } from "../sessoes/sessao-sala.service";
-import { participanteSessaoRepository } from "../../repositories/participante-sessao.repository";
+import { participanteSalaRepository } from "../../repositories/participante-sala.repository";
+import { pessoaRepository } from "../../repositories/pessoa.repository";
+import { determinarTipoAcesso } from "../../helpers/determinar-tipo-acesso";
 
 interface CriarSalaProps {
   pessoaId: string;
@@ -56,11 +58,12 @@ export const salaService = {
           criado_por: pessoaId,
         });
 
+        // Dono é adicionado automaticamente como ParticipanteSala (tipo 0)
         if (novaSala) {
           await participanteSalaService.adicionarParticipanteASala(
             novaSala.id,
             pessoaId,
-            true
+            0
           );
         }
 
@@ -258,114 +261,123 @@ export const salaService = {
   async entrarSala(
     codigo: string,
     pessoaId: string,
-    SessaoPessoaId: string,
-    senha?: string
+    sessaoPessoaId: string,
+    senha?: string,
+    visitantes?: string[]
   ) {
     // Validações iniciais
     if (!pessoaId) throw new Error("Id da pessoa não fornecido.");
     if (!codigo) throw new Error("Código da sala não fornecido.");
-    if (!SessaoPessoaId)
-      throw new Error("Id da sessão do usuario não fornecido.");
+    if (!sessaoPessoaId)
+      throw new Error("Id da sessão do usuário não fornecido.");
 
-    // Buscar sala
-    const sala = await salaRepository.obterPorCodigo(codigo, false, pessoaId);
-
+    // Buscar sala com sessões ativas (sem filtro de criador para permitir visitantes)
+    const sala = await salaRepository.obterPorCodigo(codigo, true, undefined);
     if (!sala) {
-      throw new Error("Sala não encontrada e/ou usuário sem permissão.");
+      throw new Error("Sala não encontrada.");
     }
 
-    // const sessaoAtiva = sala.sessoes.find((s) => s.id);
-    const sessaoAtiva = await sessaoSalaService.obterSessaoAtivaPorSala(
-      sala.id
-    );
+    // Determinar tipo de acesso (0=Dono, 1=Admin, 2=Participante, 3=Visitante, null=Sem acesso)
+    const tipoAcesso = await determinarTipoAcesso(sala, pessoaId);
 
-    const isCriador = pessoaId === sala.criado_por;
-
-    // const membro = await salaRepository.obterMembroSala(sala.id, pessoaId);
-    const membrosParticipantes =
-      await participanteSalaService.listarParticipantesDaSala(sala.id);
-
-    const isParticipante = membrosParticipantes.find(
-      (m) => m.pessoa_id === pessoaId
-    );
-
-    // Verificação de acesso simplificada
-    if (!isCriador && !isParticipante) {
-      throw new Error("Acesso negado à sala.");
+    if (tipoAcesso === null) {
+      throw new Error("Você não tem permissão para acessar esta sala.");
     }
 
-    // Lógica de senha mais clara
-    if (sala.senha) {
-      if (isCriador) {
-      } else if (!senha) {
+    // Validar senha (exceto para dono e administrador)
+    if (sala.senha && tipoAcesso !== 0 && tipoAcesso !== 1) {
+      if (!senha) {
         throw new Error("Informe a senha para acessar a sala.");
-      } else {
-        const senhaValida = await hash.compare(senha, sala.senha);
-        if (!senhaValida) throw new Error("Senha informada inválida.");
+      }
+      const senhaValida = await hash.compare(senha, sala.senha);
+      if (!senhaValida) {
+        throw new Error("Senha informada inválida.");
       }
     }
 
-    if (sessaoAtiva?.ativa && isCriador) {
-    }
+    // Obter sessão ativa
+    let sessaoAtiva = await sessaoSalaService.obterSessaoAtivaPorSala(
+      sala.id,
+      pessoaId
+    );
 
-    // Determinar role
-    let role: number;
-    let pessoaInfo: { id: string; nome: string };
+    // TIPO 0 (Dono) ou TIPO 1 (Administrador): Pode criar sessão
+    if (tipoAcesso === 0 || tipoAcesso === 1) {
+      if (!sessaoAtiva && tipoAcesso === 0) {
+        // Apenas dono pode criar sessão
+        await sessaoSalaService.criarSessao(sala.id, pessoaId, visitantes);
+        // Recarregar sessão ativa após criação
+        sessaoAtiva = await sessaoSalaService.obterSessaoAtivaPorSala(
+          sala.id,
+          pessoaId
+        );
+      } else if (!sessaoAtiva && tipoAcesso === 1) {
+        throw new Error(
+          "Não há sessão ativa no momento. Apenas o dono pode criar sessão."
+        );
+      }
+      // ParticipanteSessao já foi criado automaticamente em criarSessao
 
-    const verificaSessaoAtivaUsuarioLogado =
-      await participanteSessaoRepository.atualizarAutorizacao;
-
-    if (isCriador) {
-      role = 0; // Criador
-      pessoaInfo = {
-        id: sala.proprietario.id,
-        nome: sala.proprietario.nome,
-      };
-
-      await participanteSalaService.alterarParticipanteSalaOnline(
+      // Marca como online em ParticipanteSala
+      await participanteSalaRepository.alterarParticipanteSalaOnline(
         sala.id,
-        sala.proprietario.id,
+        pessoaId,
         true
       );
-
-      if (sessaoAtiva?.ativa) {
-        await sessaoSalaService.criarSessao(sala.id, pessoaId);
+    }
+    // TIPO 2 (Participante): Requer sessão ativa
+    else if (tipoAcesso === 2) {
+      if (!sessaoAtiva || !sessaoAtiva.ativa) {
+        throw new Error(
+          "Não há sessão ativa no momento. Aguarde o dono abrir a sessão."
+        );
       }
-    } else if (isParticipante && !isCriador) {
-      role = 1; // Participante
-      pessoaInfo = {
-        id: isParticipante.pessoa.id,
-        nome: isParticipante.pessoa.nome,
-      };
-    } else {
-      role = 2; // Visitante
-      pessoaInfo = {
-        id: isParticipante?.pessoa.id as string,
-        nome: isParticipante?.pessoa.nome as string,
-      };
+
+      // ParticipanteSessao já foi criado automaticamente quando sessão foi aberta
+      // Apenas marca como online
+      await participanteSalaRepository.alterarParticipanteSalaOnline(
+        sala.id,
+        pessoaId,
+        true
+      );
+    }
+    // TIPO 3 (Visitante): Requer sessão ativa E ParticipanteSessao pré-existente
+    else if (tipoAcesso === 3) {
+      if (!sessaoAtiva || !sessaoAtiva.ativa) {
+        throw new Error("Não há sessão ativa no momento.");
+      }
+
+      // Visitante já tem ParticipanteSessao (criado pelo dono)
+      // Validado em determinarTipoAcesso - se chegou aqui, tem permissão
+      // Não marca online em ParticipanteSala pois visitante não tem
     }
 
-    if (role === 1) {
-    }
+    // Buscar informações da pessoa
+    const pessoa = await pessoaRepository.obterPorId(pessoaId, false);
+    if (!pessoa) throw new Error("Pessoa não encontrada.");
 
     // Gerar token
     const dataExpiracao = addHours(new Date(), 6);
     const nomeDescriptografado = await criptografia.descriptografar(
-      pessoaInfo.nome
+      pessoa.nome
     );
 
     const tokenPayload: ClaimsAuthSala = {
-      Role: role,
-      Usu_Id: pessoaInfo.id,
+      Role: tipoAcesso,
+      Usu_Id: pessoaId,
       Usu_Na: nomeDescriptografado,
       Sala_Id: sala.id,
       Sala_titulo: sala.titulo,
       Dt_Ex: format(dataExpiracao, "yyyy-MM-dd' 'HH:mm:ss", { locale: ptBR }),
-      Ss_Id: SessaoPessoaId,
+      Ss_Id: sessaoPessoaId,
     };
 
     const tokenSala = geradorTokenSala(tokenPayload);
 
-    return { tokenSala, dataExpiracao: tokenPayload.Dt_Ex };
+    return {
+      tokenSala,
+      dataExpiracao: tokenPayload.Dt_Ex,
+      role: tipoAcesso,
+    };
   },
 };

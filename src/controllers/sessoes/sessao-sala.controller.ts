@@ -122,4 +122,45 @@ export const sessaoSalaController = {
       res.status(500).json(respostaErro({ mensagem: error.message }));
     }
   },
+
+  async adicionarVisitantes(req: Request, res: Response) {
+    try {
+      const sala_id = req.params.id;
+      const { pessoa_ids } = req.body; // Array de IDs
+      const dono_id = req.user?.Usu_Id as string;
+
+      const participantes = await sessaoSalaService.adicionarVisitantes(
+        sala_id,
+        pessoa_ids,
+        dono_id
+      );
+
+      res.json(
+        respostaSucesso({
+          resultado: { participantes },
+          mensagem: "Visitantes adicionados com sucesso.",
+        })
+      );
+    } catch (error: any) {
+      res.status(500).json(respostaErro({ mensagem: error.message }));
+    }
+  },
+
+  async removerVisitante(req: Request, res: Response) {
+    try {
+      const sala_id = req.params.id;
+      const pessoa_id = req.params.pessoaId;
+      const dono_id = req.user?.Usu_Id as string;
+
+      await sessaoSalaService.removerVisitante(sala_id, pessoa_id, dono_id);
+
+      res.json(
+        respostaSucesso({
+          mensagem: "Visitante removido com sucesso.",
+        })
+      );
+    } catch (error: any) {
+      res.status(500).json(respostaErro({ mensagem: error.message }));
+    }
+  },
 };
