@@ -7,6 +7,7 @@ import {
   pessoaRedefinirSenhaValidation,
 } from "../../middlewares/pessoaValidations";
 import { refreshTokenController } from "../../controllers/auth/refreshToken.controller";
+import { authGuard } from "../../middlewares/authGuard";
 
 const router = Router();
 
@@ -25,6 +26,7 @@ router.post(
 
 router.post(
   "/refresh/revogar",
+  authGuard,
   validateHandler,
   refreshTokenController.encerrarSessao
 );

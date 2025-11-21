@@ -14,7 +14,7 @@ export const authController = {
           .json(respostaErro({ mensagem: "Email e senha são obrigatórios" }));
       }
 
-      const resultado = await authService.login(email, senha);
+      const resultado = await authService.login(email, senha, ip, userAgent);
 
       return res.status(200).json(
         respostaSucesso({
@@ -121,8 +121,11 @@ export const authController = {
           .json(respostaErro({ mensagem: "Código é obrigatório" }));
       }
 
+      // Decodifica o código caso venha encoded da URL
+      const codigoDecodificado = decodeURIComponent(codigo as string);
+
       const resultado = await authService.validaCodigoConfirmacaoEmail(
-        codigo as string,
+        codigoDecodificado,
         confirmarConta === "true" ? true : false
       );
 

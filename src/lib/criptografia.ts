@@ -13,18 +13,33 @@ export const criptografia = {
       }
     );
 
-    return iv.toString(CryptoJS.enc.Hex) + ":" + encrypted.toString();
+    // Converter para Base64 URL-safe (substitui +/ por -_ e remove =)
+    const encryptedBase64 = encrypted
+      .toString()
+      .replace(/\+/g, "-")
+      .replace(/\//g, "_")
+      .replace(/=/g, "");
+
+    return iv.toString(CryptoJS.enc.Hex) + ":" + encryptedBase64;
   },
 
   descriptografar(value: string) {
     try {
       const parts = value.split(":");
       if (parts.length !== 2) {
+        console.error("Formato inválido. Valor recebido:", value);
         throw new Error("Formato de dados criptografados inválido");
       }
 
       const iv = CryptoJS.enc.Hex.parse(parts[0]);
-      const encrypted = parts[1];
+
+      // Converter de volta de Base64 URL-safe para Base64 padrão
+      let encrypted = parts[1].replace(/-/g, "+").replace(/_/g, "/");
+
+      // Adicionar padding se necessário
+      while (encrypted.length % 4) {
+        encrypted += "=";
+      }
 
       const bytes = CryptoJS.AES.decrypt(
         encrypted,
@@ -47,6 +62,7 @@ export const criptografia = {
       return decrypted;
     } catch (error) {
       console.error("Erro na descriptografia:", error);
+      console.error("Valor que causou o erro:", value);
       throw new Error("Não foi possível descriptografar os dados");
     }
   },

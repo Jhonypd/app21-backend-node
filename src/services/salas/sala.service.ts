@@ -348,7 +348,7 @@ export const salaService = {
       throw new Error("Sala não encontrada.");
     }
 
-    // Determinar tipo de acesso (0=Dono, 1=Fixo, 2=Visitante, null=Sem acesso)
+    // Determinar tipo de acesso (0=Dono, 1=Admin, 2=Membro, 3=Visitante, null=Sem acesso)
     const tipoAcesso = await determinarTipoAcesso(sala, pessoaId);
 
     if (tipoAcesso === null) {
@@ -390,13 +390,33 @@ export const salaService = {
         );
       }
     }
-    // TIPO 2 (Visitante): Requer sessão ativa E ParticipanteSessao pré-existente
+    // TIPO 2 (Membro): Requer sessão ativa, entra automaticamente
     else if (tipoAcesso === 2) {
+      if (!sessaoAtiva || !sessaoAtiva.ativa) {
+        throw new Error(
+          "Não há sessão ativa no momento. Aguarde o dono ou admin iniciar uma sessão."
+        );
+      }
+
+      // Membro entra automaticamente na sessão
+      // ParticipanteSessao deve ser criado/atualizado
+      const participanteSala =
+        await participanteSalaRepository.obterPorSalaEPessoa(sala.id, pessoaId);
+      if (participanteSala) {
+        await participanteSalaRepository.alterarParticipanteSalaOnline(
+          sala.id,
+          pessoaId,
+          true
+        );
+      }
+    }
+    // TIPO 3 (Visitante): Requer sessão ativa E ParticipanteSessao pré-existente
+    else if (tipoAcesso === 3) {
       if (!sessaoAtiva || !sessaoAtiva.ativa) {
         throw new Error("Não há sessão ativa no momento.");
       }
 
-      // Visitante já tem ParticipanteSessao (criado pelo dono)
+      // Visitante já tem ParticipanteSessao (criado pelo dono/admin)
       // Validado em determinarTipoAcesso - se chegou aqui, tem permissão
       // Não marca online em ParticipanteSala pois visitante não tem
     }

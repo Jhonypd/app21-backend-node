@@ -81,7 +81,7 @@ export const authService = {
           },
           `${
             process.env.FRONTEND_URL
-          }/validaCodigoEmail?codigo=${encodeURIComponent(
+          }/confirmacao-email?codigo=${encodeURIComponent(
             novoUsuario.usuario.codigo_confirmacao!
           )}&confirmarConta=true`
         );
@@ -129,9 +129,11 @@ export const authService = {
           nome: criptografia.descriptografar(usuario.nome),
           email: criptografia.descriptografar(usuario.email),
         },
-        `${process.env.FRONTEND_URL}/confirmarConta?codigo=${encodeURIComponent(
+        `${
+          process.env.FRONTEND_URL
+        }/confirmacao-email?codigo=${encodeURIComponent(
           usuario.codigo_confirmacao!
-        )}`
+        )}&confirmarConta=true`
       );
     } catch (emailError) {
       console.error("Erro ao enviar email de boas-vindas:", emailError);
@@ -181,6 +183,8 @@ export const authService = {
     codigo: string,
     confirmarConta: boolean = false
   ) {
+    // O código que vem da URL já está criptografado (é o codigo_confirmacao do banco)
+    // Precisamos descriptografar para obter o UUID original e então gerar o hash
     const codigoDescriptografado = criptografia.descriptografar(codigo);
 
     const usuarioNovoExistente = await pessoaRepository.validaCodigoEmailExiste(
