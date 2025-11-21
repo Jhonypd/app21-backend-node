@@ -124,4 +124,183 @@ export const participanteSalaService = {
 
     return participante.id;
   },
+
+  /**
+   * Adiciona um participante permanente à sala
+   * Permissões: Dono (0) pode adicionar role 1 ou 2, Admin (1) pode adicionar apenas role 2
+   */
+  async adicionarParticipante(
+    sala_id: string,
+    pessoa_id_solicitante: string,
+    pessoa_id_adicionar: string,
+    role: 1 | 2
+  ) {
+    // Buscar sala
+    const sala = await salaRepository.obterPorId(sala_id, false, undefined);
+    if (!sala) {
+      throw new Error("Sala não encontrada");
+    }
+
+    // Verificar permissão do solicitante
+    const isDono = sala.criado_por === pessoa_id_solicitante;
+    const participanteSolicitante =
+      await participanteSalaRepository.obterPorSalaEPessoa(
+        sala_id,
+        pessoa_id_solicitante
+      );
+    const isAdmin = participanteSolicitante?.role === 1;
+
+    if (!isDono && !isAdmin) {
+      throw new Error(
+        "Apenas o dono ou administradores podem adicionar participantes"
+      );
+    }
+
+    // Admin só pode adicionar membros (role 2)
+    if (isAdmin && !isDono && role === 1) {
+      throw new Error("Apenas o dono pode adicionar administradores");
+    }
+
+    // Verificar se pessoa existe
+    const pessoaAdicionar = await pessoaRepository.obterPorId(
+      pessoa_id_adicionar,
+      false
+    );
+    if (!pessoaAdicionar) {
+      throw new Error("Pessoa não encontrada");
+    }
+
+    // Verificar se já é participante
+    const participanteExistente =
+      await participanteSalaRepository.obterPorSalaEPessoa(
+        sala_id,
+        pessoa_id_adicionar
+      );
+    if (participanteExistente) {
+      throw new Error("Esta pessoa já é participante da sala");
+    }
+
+    // Adicionar participante
+    const participante = await participanteSalaRepository.inserir({
+      sala_id,
+      pessoa_id: pessoa_id_adicionar,
+      tipo: role,
+    });
+
+    return {
+      id: participante.id,
+      pessoa: {
+        id: pessoaAdicionar.id,
+        nome: criptografia.descriptografar(pessoaAdicionar.nome),
+        inativo: pessoaAdicionar.inativo,
+      },
+      role,
+    };
+  },
+
+  /**
+   * Remove um participante permanente da sala
+   * Permissões: Dono (0) e Admin (1) podem remover, mas não podem remover o dono ou outros admins
+   */
+  async removerParticipante(
+    sala_id: string,
+    pessoa_id_solicitante: string,
+    pessoa_id_remover: string
+  ) {
+    // Buscar sala
+    const sala = await salaRepository.obterPorId(sala_id, false, undefined);
+    if (!sala) {
+      throw new Error("Sala não encontrada");
+    }
+
+    // Não pode remover o dono
+    if (sala.criado_por === pessoa_id_remover) {
+      throw new Error("Não é possível remover o dono da sala");
+    }
+
+    // Verificar permissão do solicitante
+    const isDono = sala.criado_por === pessoa_id_solicitante;
+    const participanteSolicitante =
+      await participanteSalaRepository.obterPorSalaEPessoa(
+        sala_id,
+        pessoa_id_solicitante
+      );
+    const isAdmin = participanteSolicitante?.role === 1;
+
+    if (!isDono && !isAdmin) {
+      throw new Error(
+        "Apenas o dono ou administradores podem remover participantes"
+      );
+    }
+
+    // Buscar participante a ser removido
+    const participanteRemover =
+      await participanteSalaRepository.obterPorSalaEPessoa(
+        sala_id,
+        pessoa_id_remover
+      );
+    if (!participanteRemover) {
+      throw new Error("Participante não encontrado na sala");
+    }
+
+    // Admin não pode remover outro admin
+    if (isAdmin && !isDono && participanteRemover.role === 1) {
+      throw new Error(
+        "Administradores não podem remover outros administradores"
+      );
+    }
+
+    // Remover participante
+    await participanteSalaRepository.remover(sala_id, pessoa_id_remover);
+
+    return { sucesso: true };
+  },
+
+  /**
+   * Altera o role de um participante (promover ou rebaixar)
+   * Permissões: Apenas o dono (0) pode alterar roles
+   */
+  async alterarRoleParticipante(
+    sala_id: string,
+    pessoa_id_solicitante: string,
+    pessoa_id_alterar: string,
+    novo_role: 1 | 2
+  ) {
+    // Buscar sala
+    const sala = await salaRepository.obterPorId(sala_id, false, undefined);
+    if (!sala) {
+      throw new Error("Sala não encontrada");
+    }
+
+    // Apenas o dono pode alterar roles
+    if (sala.criado_por !== pessoa_id_solicitante) {
+      throw new Error("Apenas o dono pode promover ou rebaixar participantes");
+    }
+
+    // Não pode alterar role do próprio dono
+    if (sala.criado_por === pessoa_id_alterar) {
+      throw new Error("Não é possível alterar o role do dono");
+    }
+
+    // Buscar participante
+    const participante = await participanteSalaRepository.obterPorSalaEPessoa(
+      sala_id,
+      pessoa_id_alterar
+    );
+    if (!participante) {
+      throw new Error("Participante não encontrado na sala");
+    }
+
+    // Alterar role
+    const participanteAtualizado = await participanteSalaRepository.alterarRole(
+      sala_id,
+      pessoa_id_alterar,
+      novo_role
+    );
+
+    return {
+      id: participanteAtualizado.id,
+      role: novo_role,
+    };
+  },
 };

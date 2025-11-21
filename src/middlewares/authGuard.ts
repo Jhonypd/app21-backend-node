@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from "express";
 import jwt from "jsonwebtoken";
-import { Claims } from "../lib/jwt";
+import { Claims, ClaimsAuthSala } from "../lib/jwt";
 import { sessaoUsuarioService } from "../services/auth/sessao-usuario.service";
 import { pessoaService } from "../services/pessoas/pessoa.service";
 import { respostaErro } from "../utils/response";
@@ -9,6 +9,7 @@ declare global {
   namespace Express {
     interface Request {
       user?: Claims;
+      sala?: ClaimsAuthSala;
     }
   }
 }
@@ -21,9 +22,15 @@ export const authGuard = async (
   next: NextFunction
 ) => {
   let token: string | undefined;
+  let tokenSala: string | undefined;
 
   // Authorization
   const authHeader = req.headers.authorization;
+  const authSala = req.headers["x-token-sala"] as string | undefined;
+
+  if (authSala) {
+    tokenSala = authSala;
+  }
   if (authHeader) {
     const [, t] = authHeader.split(" ");
     token = t;
@@ -46,11 +53,11 @@ export const authGuard = async (
     const decoded = jwt.verify(token, jwtSecret) as Claims;
 
     // SESSION VALIDATION
-    const sessao = await sessaoUsuarioService.buscarSessaoAtivaPorId(
+    const sessaoUsuario = await sessaoUsuarioService.buscarSessaoAtivaPorId(
       decoded.Ss_Id
     );
 
-    if (!sessao) {
+    if (!sessaoUsuario) {
       return res
         .status(401)
         .json(
@@ -58,7 +65,7 @@ export const authGuard = async (
         );
     }
 
-    if (sessao.revogado_em) {
+    if (sessaoUsuario.revogado_em) {
       return res.status(401).json(
         respostaErro({
           mensagem: "Sessão expirada ou usuario logado em outro dispositivo.",
@@ -67,7 +74,7 @@ export const authGuard = async (
       );
     }
 
-    if (sessao.expiracao < new Date()) {
+    if (sessaoUsuario.expiracao < new Date()) {
       return res
         .status(401)
         .json(
@@ -108,6 +115,31 @@ export const authGuard = async (
       aud: decoded.aud,
       Ss_Id: decoded.Ss_Id,
     };
+
+    // Se token de sala está presente, apenas decodifica sem validar
+    // A validação será feita por salaAuthGuard quando necessário
+    if (tokenSala) {
+      try {
+        const decodedTokenSala = jwt.verify(
+          tokenSala,
+          jwtSecret
+        ) as ClaimsAuthSala;
+
+        req.sala = {
+          Sala_Id: decodedTokenSala.Sala_Id,
+          Sala_titulo: decodedTokenSala.Sala_titulo,
+          Role: decodedTokenSala.Role,
+          Ss_Sl_Id: decodedTokenSala.Ss_Sl_Id,
+          Dt_Ex: decodedTokenSala.Dt_Ex,
+          Usu_Id: decodedTokenSala.Usu_Id,
+          Usu_Na: decodedTokenSala.Usu_Na,
+        };
+      } catch (error) {
+        // Token inválido, mas não bloqueia a requisição
+        // Apenas não anexa req.sala
+        console.warn("Token de sala inválido, ignorando:", error);
+      }
+    }
 
     next();
   } catch (error) {

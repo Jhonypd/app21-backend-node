@@ -234,4 +234,19 @@ export const votosRepository = {
         },
       },
     }),
+
+  /**
+   * Conta total de votos em uma sala (para validação de exclusão)
+   * Conta votos através de HistoriaSessao → SessaoSala → Sala
+   */
+  contarPorSala: (sala_id: string) =>
+    prismaClient.voto.count({
+      where: {
+        historiaSessao: {
+          sessao: {
+            sala_id,
+          },
+        },
+      },
+    }),
 };

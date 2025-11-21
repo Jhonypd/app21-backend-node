@@ -15,13 +15,13 @@ export interface Claims extends jwt.JwtPayload {
 }
 
 export interface ClaimsAuthSala extends jwt.JwtPayload {
-  Role: number; // 1 - participante, 2 - administrador
+  Role: 0 | 1 | 2 | 3; // 0 = Dono (Owner), 1 = Admin, 2 = Membro (Member), 3 = Visitante (Guest)
   Usu_Id: string;
   Usu_Na: string;
   Sala_Id: string;
   Sala_titulo: string;
   Dt_Ex: string;
-  Ss_Id: string;
+  Ss_Sl_Id: string; // ID da SessaoSala (sessão ativa da sala)
 }
 
 export interface ClaimsRefreshToken extends jwt.JwtPayload {
@@ -69,7 +69,7 @@ export const geradorTokenSala = ({
   Sala_titulo,
   Dt_Ex,
   Role,
-  Ss_Id,
+  Ss_Sl_Id,
 }: ClaimsAuthSala) => {
   const agora = new Date();
   const dataExpiracao = new Date(Dt_Ex);
@@ -79,7 +79,7 @@ export const geradorTokenSala = ({
   const expiresIn = duracaoEmMinutos ? duracaoEmMinutos + 1 : 1;
 
   return jwt.sign(
-    { Usu_Id, Usu_Na, Role, Sala_Id, Sala_titulo, Dt_Ex, Ss_Id },
+    { Usu_Id, Usu_Na, Role, Sala_Id, Sala_titulo, Dt_Ex, Ss_Sl_Id },
     jwtSecret,
     {
       expiresIn: `${expiresIn}m`,

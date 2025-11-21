@@ -3,6 +3,7 @@ import { salaController } from "../../controllers/salas/sala.controller";
 import { sessaoSalaController } from "../../controllers/sessoes/sessao-sala.controller";
 import { participanteSalaController } from "../../controllers/participantes/participante-sala.controller";
 import { authGuard } from "../../middlewares/authGuard";
+import { salaAuthGuard } from "../../middlewares/salaAuthGuard";
 import { salaPermissaoGuard } from "../../middlewares/salaPermissaoGuard";
 import {
   salaAlterarValidations,
@@ -38,6 +39,10 @@ router.delete(
   salaController.deleteSala
 );
 
+// DELETE /salas/:id - Excluir sala (soft delete - apenas dono)
+// Validações: não pode ter sessões criadas, não pode ter votos
+router.delete("/:id", validateHandler, authGuard, salaController.excluirSala);
+
 router.post(
   "/entrar",
   salaLoginValidations(),
@@ -67,40 +72,85 @@ router.get(
   salaController.obterPorId
 );
 
-// POST /salas/:id/sessoes - Criar sessão (apenas dono)
+router.get(
+  "/:id/editar",
+  validateHandler,
+  authGuard,
+  salaController.obterParaEdicao
+);
+
+// Rotas de gerenciamento de participantes (sem token de sala - para uso na edição)
+// POST /salas/:id/participantes/adicionar - Adicionar participante (dono ou admin)
+router.post(
+  "/:id/participantes/adicionar",
+  validateHandler,
+  authGuard,
+  salaController.adicionarParticipante
+);
+
+// DELETE /salas/:id/participantes/:pessoaId/remover - Remover participante (dono ou admin)
+router.delete(
+  "/:id/participantes/:pessoaId/remover",
+  validateHandler,
+  authGuard,
+  salaController.removerParticipante
+);
+
+// PATCH /salas/:id/participantes/:pessoaId/role - Alterar role (apenas dono)
+router.patch(
+  "/:id/participantes/:pessoaId/role",
+  validateHandler,
+  authGuard,
+  salaController.alterarRoleParticipante
+);
+
+// POST /salas/:id/sessoes - Criar nova sessão (dono e admin)
 router.post(
   "/:id/sessoes",
   validateHandler,
   authGuard,
-  salaPermissaoGuard([0]), // Apenas dono
   sessaoSalaController.criarSessao
 );
 
-// POST /salas/:id/sessoes/encerrar - Encerrar sessão (apenas dono)
+// POST /salas/:id/sessoes/encerrar - Encerrar sessão (dono e admin)
 router.post(
   "/:id/sessoes/encerrar",
   validateHandler,
   authGuard,
-  salaPermissaoGuard([0]), // Apenas dono
+  salaAuthGuard, // Valida token de sala
+  salaPermissaoGuard([0, 1]), // Dono e Admin
   sessaoSalaController.encerrarSessao
 );
 
-// POST /salas/:id/sessoes/visitantes - Adicionar visitantes (apenas dono)
+// POST /salas/:id/sessoes/visitantes - Adicionar visitantes (dono e admin)
 router.post(
   "/:id/sessoes/visitantes",
   validateHandler,
   authGuard,
-  salaPermissaoGuard([0]), // Apenas dono
+  salaAuthGuard, // Valida token de sala
+  salaPermissaoGuard([0, 1]), // Dono e Admin
   sessaoSalaController.adicionarVisitantes
 );
 
-// DELETE /salas/:id/sessoes/visitantes/:pessoaId - Remover visitante (apenas dono)
+// DELETE /salas/:id/sessoes/visitantes/:pessoaId - Remover visitante (dono e admin)
 router.delete(
   "/:id/sessoes/visitantes/:pessoaId",
   validateHandler,
   authGuard,
-  salaPermissaoGuard([0]), // Apenas dono
+  salaAuthGuard, // Valida token de sala
+  salaPermissaoGuard([0, 1]), // Dono e Admin
   sessaoSalaController.removerVisitante
+);
+
+// PATCH /salas/:id/sessoes/:sessaoId/participantes/:pessoaId/kick - Kickar participante (moderação)
+// Admin não pode kickar dono
+router.patch(
+  "/:id/sessoes/:sessaoId/participantes/:pessoaId/kick",
+  validateHandler,
+  authGuard,
+  salaAuthGuard, // Valida token de sala (necessário para validações)
+  salaPermissaoGuard([0, 1]), // Dono e Admin
+  sessaoSalaController.kickarParticipante
 );
 
 // POST /salas/:id/participantes - Adicionar participante permanente (dono ou admin)
@@ -108,6 +158,7 @@ router.post(
   "/:id/participantes",
   validateHandler,
   authGuard,
+  salaAuthGuard, // Valida token de sala
   salaPermissaoGuard([0, 1]), // Dono ou admin
   participanteSalaController.adicionarParticipante
 );
@@ -117,16 +168,18 @@ router.delete(
   "/:id/participantes/:pessoaId",
   validateHandler,
   authGuard,
+  salaAuthGuard, // Valida token de sala
   salaPermissaoGuard([0, 1]), // Dono ou admin
   participanteSalaController.removerParticipante
 );
 
-// GET /salas/:id/participantes - Listar participantes permanentes
+// GET /salas/:id/participantes - Listar participantes permanentes (todos podem ver)
 router.get(
   "/:id/participantes",
   validateHandler,
   authGuard,
-  salaPermissaoGuard([0, 1, 2, 3]), // Todos podem ver
+  salaAuthGuard, // Valida token de sala
+  salaPermissaoGuard([0, 1, 2, 3]), // Todos (incluindo visitantes)
   participanteSalaController.listarParticipantes
 );
 

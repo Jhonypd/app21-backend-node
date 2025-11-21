@@ -3,13 +3,13 @@ import { prismaClient } from "../lib/prisma";
 interface ParticipanteSalaInserirData {
   sala_id: string;
   pessoa_id: string;
-  tipo?: number; // 0 = dono, 1 = admin, 2 = participante
+  tipo?: number; // 0 = dono, 1 = admin, 2 = participante, 3 = visitante
 }
 
 export const participanteSalaRepository = {
   inserir: ({ sala_id, pessoa_id, tipo = 2 }: ParticipanteSalaInserirData) =>
     prismaClient.participanteSala.create({
-      data: { sala_id, pessoa_id, tipo },
+      data: { sala_id, pessoa_id, role: tipo },
     }),
 
   remover: (sala_id: string, pessoa_id: string) =>
@@ -53,5 +53,11 @@ export const participanteSalaRepository = {
     prismaClient.participanteSala.update({
       where: { sala_id_pessoa_id: { sala_id, pessoa_id } },
       data: { online },
+    }),
+
+  alterarRole: (sala_id: string, pessoa_id: string, role: number) =>
+    prismaClient.participanteSala.update({
+      where: { sala_id_pessoa_id: { sala_id, pessoa_id } },
+      data: { role },
     }),
 };

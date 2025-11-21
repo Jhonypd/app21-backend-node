@@ -75,13 +75,14 @@ model ParticipanteSala {
   pessoa_id  String
   adicionado DateTime @default(now())
   online     Boolean  @default(false)
-  tipo       Int      @default(2) // 0 = dono, 1 = administrador, 2 = participante, 3 = visitante
+  role       Int      @default(2) // 0 = Dono (Owner), 1 = Administrador (Admin), 2 = Membro (Member)
   pessoa     Pessoa   @relation(fields: [pessoa_id], references: [id])
   sala       Sala     @relation(fields: [sala_id], references: [id])
 
   @@unique([sala_id, pessoa_id])
   @@index([sala_id])
   @@index([pessoa_id])
+  @@index([role])
 }
 
 model SessaoSala {

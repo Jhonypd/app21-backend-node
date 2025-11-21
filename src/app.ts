@@ -9,6 +9,7 @@ import auth from "./routes/auth/auth.routes";
 import pessoas from "./routes/pessoas/pessoa.routes";
 import sessoes from "./routes/sessoes/sessao-sala.routes";
 import votos from "./routes/votos/votos.routes";
+import historias from "./routes/historias/historia-sala.routes";
 import dotenv from "dotenv";
 
 dotenv.config();
@@ -30,7 +31,7 @@ app.use(
     origin: allowedOrigins,
     credentials: true,
     methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],
-    allowedHeaders: ["Content-Type", "Authorization"],
+    allowedHeaders: ["Content-Type", "Authorization", "x-token-sala"],
   })
 );
 
@@ -46,6 +47,8 @@ app.use("/pessoas", pessoas);
 app.use("/salas", salas);
 app.use("/sessoes", sessoes);
 app.use("/sessoes", votos);
+app.use("/salas", historias);
+app.use("/", historias);
 
 // SOCKET.IO
 const io = new Server(server, {
@@ -53,7 +56,7 @@ const io = new Server(server, {
     origin: allowedOrigins,
     credentials: true,
     methods: ["GET", "POST", "PUT", "DELETE"],
-    allowedHeaders: ["Content-Type", "Authorization"],
+    allowedHeaders: ["Content-Type", "Authorization", "x-token-sala"],
   },
   connectionStateRecovery: {
     maxDisconnectionDuration: 2 * 60 * 1000,

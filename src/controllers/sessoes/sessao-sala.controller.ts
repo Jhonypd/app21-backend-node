@@ -163,4 +163,40 @@ export const sessaoSalaController = {
       res.status(500).json(respostaErro({ mensagem: error.message }));
     }
   },
+
+  /**
+   * Kicka um participante da sessão (moderação)
+   * Apenas dono e admin podem kickar
+   * Admin não pode kickar dono
+   */
+  async kickarParticipante(req: Request, res: Response) {
+    try {
+      const sessaoId = req.params.sessaoId;
+      const pessoaId = req.params.pessoaId;
+      const usuarioLogado = req.user;
+      const sala = req.sala; // Vem do salaAuthGuard
+
+      if (!sala) {
+        return res
+          .status(401)
+          .json(respostaErro({ mensagem: "Token da sala não encontrado" }));
+      }
+
+      const resultado = await sessaoSalaService.kickarParticipante(
+        sessaoId,
+        pessoaId,
+        usuarioLogado?.Usu_Id as string,
+        sala.Role as 0 | 1 | 2 | 3
+      );
+
+      res.json(
+        respostaSucesso({
+          resultado: resultado,
+          mensagem: resultado.mensagem,
+        })
+      );
+    } catch (error: any) {
+      res.status(500).json(respostaErro({ mensagem: error.message }));
+    }
+  },
 };

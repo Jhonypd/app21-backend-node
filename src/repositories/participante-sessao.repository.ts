@@ -93,6 +93,34 @@ export const participanteSessaoRepository = {
       },
     }),
 
+  /**
+   * Método genérico para atualizar campos de ParticipanteSessao
+   * Útil para operações como kick (autorizado=false)
+   */
+  atualizar: (
+    sessao_id: string,
+    pessoa_id: string,
+    dados: { autorizado?: boolean; online?: boolean }
+  ) =>
+    prismaClient.participanteSessao.update({
+      where: {
+        sessao_id_pessoa_id: {
+          sessao_id,
+          pessoa_id,
+        },
+      },
+      data: dados,
+      include: {
+        pessoa: {
+          select: {
+            id: true,
+            nome: true,
+            inativo: true,
+          },
+        },
+      },
+    }),
+
   deletar: (sessao_id: string, pessoa_id: string) =>
     prismaClient.participanteSessao.delete({
       where: {

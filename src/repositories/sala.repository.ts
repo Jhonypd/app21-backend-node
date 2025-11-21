@@ -159,57 +159,65 @@ export const salaRepository = {
       },
     }),
 
-  listarTodos: (pessoaId: string, pagina: number, itensPagina: number) =>
+  listarTodos: (
+    pessoaId: string,
+    pagina: number,
+    itensPagina: number,
+    valorPesquisa?: string
+  ) =>
     prismaClient.sala.findMany({
       where: {
-        // criado_por: pessoaId,
         inativo: false,
         OR: [
           { criado_por: pessoaId },
           { participantes: { some: { pessoa_id: pessoaId } } },
+          { titulo: { contains: valorPesquisa, mode: "insensitive" } },
+          { codigo: { contains: valorPesquisa, mode: "insensitive" } },
         ],
       },
       select: {
         id: true,
         codigo: true,
         titulo: true,
+        senha: true,
         criado_por: true,
         data_criacao: true,
-        data_alteracao: true,
         inativo: true,
-        senha: true,
+        proprietario: { select: { id: true, nome: true, inativo: true } },
+        _count: {
+          select: {
+            participantes: true,
+          },
+        },
+        participantes: {
+          where: {
+            pessoa_id: pessoaId,
+          },
+          select: {
+            role: true,
+          },
+        },
         sessoes: {
           where: {
             ativa: true,
           },
           select: {
             id: true,
-            historias: {
+            criada_em: true,
+            _count: {
               select: {
-                id: true,
-                votos: {
-                  select: {
-                    id: true,
-                    valor: true,
-                    pessoa: { select: { id: true, nome: true, inativo: true } },
-                  },
-                },
+                participantes: true,
               },
             },
           },
-        },
-        proprietario: { select: { id: true, nome: true, inativo: true } },
-        participantes: {
-          select: {
-            pessoa_id: true,
-            pessoa: {
-              select: {
-                nome: true,
-                inativo: true,
-              },
-            },
+          orderBy: {
+            criada_em: "desc",
           },
+          take: 1,
         },
+      },
+      orderBy: {
+        data_criacao: "desc",
       },
       take: itensPagina,
       skip: (pagina - 1) * itensPagina,
@@ -227,5 +235,39 @@ export const salaRepository = {
           },
         },
       },
+    }),
+
+  /**
+   * Busca dados completos da sala para edição (apenas para dono)
+   */
+  obterParaEdicao: (id: string, criadoPor: string) =>
+    prismaClient.sala.findUnique({
+      where: { id, criado_por: criadoPor },
+      select: {
+        id: true,
+        titulo: true,
+        senha: true,
+        participantes: {
+          select: {
+            role: true,
+            pessoa: {
+              select: {
+                id: true,
+                nome: true,
+                inativo: true,
+              },
+            },
+          },
+        },
+      },
+    }),
+
+  /**
+   * Atualiza status de atividade da sala (soft delete)
+   */
+  atualizarStatus: (sala_id: string, inativo: boolean) =>
+    prismaClient.sala.update({
+      where: { id: sala_id },
+      data: { inativo },
     }),
 };

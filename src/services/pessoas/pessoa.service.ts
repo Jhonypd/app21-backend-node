@@ -184,6 +184,8 @@ export const pessoaService = {
     return pessoas.map((pessoa) => ({
       id: pessoa.id,
       nome: criptografia.descriptografar(pessoa.nome),
+      email: pessoa.email ? criptografia.descriptografar(pessoa.email) : null,
+      inativo: pessoa.inativo,
     }));
   },
 };

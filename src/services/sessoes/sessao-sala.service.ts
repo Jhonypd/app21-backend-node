@@ -11,16 +11,23 @@ import { criptografia } from "../../lib/criptografia";
 export const sessaoSalaService = {
   async criarSessao(sala_id: string, pessoa_id: string, visitantes?: string[]) {
     // Verificar se a sala existe
-    const sala = await salaRepository.obterPorId(sala_id, false, pessoa_id);
+    const sala = await salaRepository.obterPorId(sala_id, false);
     if (!sala) {
       throw new Error("Sala não encontrada.");
     }
 
-    // Verificar se o usuário é dono (tipo 0) ou administrador (tipo 1)
+    // Verificar se o usuário é dono (role 0) ou admin (role 1)
     const isDono = sala.criado_por === pessoa_id;
-    const participanteSala =
-      await participanteSalaRepository.obterPorSalaEPessoa(sala_id, pessoa_id);
-    const isAdmin = participanteSala?.tipo === 1;
+
+    let isAdmin = false;
+    if (!isDono) {
+      const participanteSala =
+        await participanteSalaRepository.obterPorSalaEPessoa(
+          sala_id,
+          pessoa_id
+        );
+      isAdmin = participanteSala?.role === 1;
+    }
 
     if (!isDono && !isAdmin) {
       throw new Error("Apenas o dono ou administrador podem criar sessão.");
@@ -40,7 +47,9 @@ export const sessaoSalaService = {
       await participanteSessaoRepository.inserir({
         sessao_id: novaSessao.id,
         pessoa_id: participante.pessoa_id,
-        autorizado: participante.pessoa_id === sala.criado_por, // Dono autorizado, outros não
+        // comentei esse trecho abaixo pois estava autorizado: participante.pessoa_id === sala.criado_por, // Dono autorizado, outros não, mas na sessão todos permanentes devem ser autorizados
+        // autorizado: participante.pessoa_id === sala.criado_por, // Dono autorizado, outros não
+        autorizado: true, // Todos permanentes autorizados automaticamente
       });
     }
 
@@ -54,7 +63,8 @@ export const sessaoSalaService = {
           await participanteSessaoRepository.inserir({
             sessao_id: novaSessao.id,
             pessoa_id: visitanteId,
-            autorizado: false,
+            // Visitantes são autorizados por padrão, caso contrario como entrarão na sala?
+            autorizado: true,
           });
         }
       }
@@ -72,11 +82,29 @@ export const sessaoSalaService = {
       throw new Error("Nenhuma sessão ativa encontrada para esta sala.");
     }
 
-    if (sessaoAtiva.sala.criado_por !== pessoa_id) {
-      throw new Error("Apenas o criador da sala pode encerrar a sessão.");
+    // Verificar se é dono ou admin
+    const isDono = sessaoAtiva.sala.criado_por === pessoa_id;
+
+    let isAdmin = false;
+    if (!isDono) {
+      const participanteSala =
+        await participanteSalaRepository.obterPorSalaEPessoa(
+          sala_id,
+          pessoa_id
+        );
+      isAdmin = participanteSala?.role === 1;
+    }
+
+    if (!isDono && !isAdmin) {
+      throw new Error(
+        "Apenas o dono ou administrador podem encerrar a sessão."
+      );
     }
 
     await sessaoSalaRepository.desativarSessoesPorSala(sala_id);
+
+    // TODO: Quando implementar Socket.IO, emitir evento:
+    // socketService.emitToRoom(sessao_id, 'sessao_encerrada', { encerrado_por: pessoa_id })
 
     return sessao_id;
   },
@@ -101,14 +129,9 @@ export const sessaoSalaService = {
     return sessao;
   },
 
-  async obterSessaoAtivaPorSala(sala_id: string, pessoa_id?: string) {
-    // Verificar se a sala existe e se o usuário tem permissão
-    const sala = await salaRepository.obterPorId(sala_id, false, pessoa_id);
-
-    if (!sala) {
-      throw new Error("Sala não encontrada ou sem permissão.");
-    }
-
+  async obterSessaoAtivaPorSala(sala_id: string) {
+    // Buscar sessão ativa sem validação de permissão
+    // A permissão é validada no contexto de uso (entrarSala, etc)
     const sessao = await sessaoSalaRepository.obterSessaoAtivaPorSala(sala_id);
     return sessao;
   },
@@ -307,5 +330,74 @@ export const sessaoSalaService = {
       sessaoAtiva.id,
       pessoa_id
     );
+  },
+
+  /**
+   * Kicka um participante da sessão (UPDATE autorizado=false)
+   * Admin NÃO pode kickar dono
+   *
+   * @param sessao_id - ID da sessão
+   * @param pessoa_id - ID da pessoa a ser kickada
+   * @param solicitante_id - ID de quem está kickando (para validação)
+   * @param solicitante_role - Role de quem está kickando (0=Dono, 1=Admin)
+   */
+  async kickarParticipante(
+    sessao_id: string,
+    pessoa_id: string,
+    solicitante_id: string,
+    solicitante_role: 0 | 1 | 2 | 3
+  ) {
+    // Validar que quem está kickando é dono ou admin
+    if (solicitante_role !== 0 && solicitante_role !== 1) {
+      throw new Error(
+        "Apenas dono ou administrador podem kickar participantes."
+      );
+    }
+
+    // Obter sessão
+    const sessao = await sessaoSalaRepository.obterPorId(sessao_id);
+    if (!sessao) {
+      throw new Error("Sessão não encontrada.");
+    }
+
+    // Obter sala
+    const sala = await salaRepository.obterPorId(sessao.sala_id, false);
+    if (!sala) {
+      throw new Error("Sala não encontrada.");
+    }
+
+    // PROTEÇÃO: Admin não pode kickar dono
+    if (solicitante_role === 1 && sala.criado_por === pessoa_id) {
+      throw new Error("Administrador não pode remover o dono da sessão.");
+    }
+
+    // PROTEÇÃO: Ninguém pode kickar a si mesmo
+    if (pessoa_id === solicitante_id) {
+      throw new Error("Use a rota 'sair da sessão' para sair voluntariamente.");
+    }
+
+    // Verificar se ParticipanteSessao existe
+    const participante =
+      await participanteSessaoRepository.obterPorSessaoEPessoa(
+        sessao_id,
+        pessoa_id
+      );
+
+    if (!participante) {
+      throw new Error("Participante não encontrado nesta sessão.");
+    }
+
+    // UPDATE autorizado = false (kick)
+    await participanteSessaoRepository.atualizar(sessao_id, pessoa_id, {
+      autorizado: false,
+    });
+
+    // TODO: Quando implementar Socket.IO, emitir evento:
+    // socketService.emitToUser(pessoa_id, 'participante_kickado', { sessao_id })
+
+    return {
+      sucesso: true,
+      mensagem: "Participante removido da sessão com sucesso.",
+    };
   },
 };
