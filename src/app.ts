@@ -17,6 +17,9 @@ dotenv.config();
 const app = express();
 const server = http.createServer(app);
 
+// Configurar trust proxy para obter o IP real do cliente através de proxies/load balancers
+app.set("trust proxy", true);
+
 // Lista real de origins permitidos
 const allowedOrigins = [
   process.env.FRONTEND_URL,
@@ -28,10 +31,36 @@ const allowedOrigins = [
 // CORS Geral do Express
 app.use(
   cors({
-    origin: allowedOrigins,
+    origin: (origin, callback) => {
+      // Permitir requisições sem origin (mobile apps, Postman, etc)
+      if (!origin) return callback(null, true);
+
+      // Em desenvolvimento, permitir TODAS as origins
+      if (process.env.NODE_ENV !== "production") {
+        return callback(null, true);
+      }
+
+      // Em produção, verificar lista de origins permitidos
+      if (allowedOrigins.includes(origin)) {
+        return callback(null, true);
+      }
+
+      // Rejeitar
+      callback(new Error("Not allowed by CORS"));
+    },
     credentials: true,
-    methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],
-    allowedHeaders: ["Content-Type", "Authorization", "x-token-sala"],
+    methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
+    allowedHeaders: [
+      "Content-Type",
+      "Authorization",
+      "x-token-sala",
+      "Accept",
+      "Origin",
+      "X-Requested-With",
+    ],
+    exposedHeaders: ["set-cookie"],
+    preflightContinue: false,
+    optionsSuccessStatus: 204,
   })
 );
 
@@ -53,7 +82,21 @@ app.use("/", historias);
 // SOCKET.IO
 const io = new Server(server, {
   cors: {
-    origin: allowedOrigins,
+    origin: (origin, callback) => {
+      if (!origin) return callback(null, true);
+
+      // Em desenvolvimento, permitir TODAS as origins
+      if (process.env.NODE_ENV !== "production") {
+        return callback(null, true);
+      }
+
+      if (allowedOrigins.includes(origin)) {
+        return callback(null, true);
+      }
+
+      console.warn(`[Socket.IO CORS] Origin bloqueada: ${origin}`);
+      callback(new Error("Not allowed by CORS"));
+    },
     credentials: true,
     methods: ["GET", "POST", "PUT", "DELETE"],
     allowedHeaders: ["Content-Type", "Authorization", "x-token-sala"],

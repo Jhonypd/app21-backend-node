@@ -2,11 +2,13 @@ import { Request, Response } from "express";
 import { respostaErro, respostaSucesso } from "../../utils/response";
 import { refreshTokenService } from "../../services/auth/refresh-token.service";
 import { sessaoUsuarioService } from "../../services/auth/sessao-usuario.service";
+import { getClientInfo } from "../../helpers/client-info.helper";
 
 export const refreshTokenController = {
   async renovarAccessToken(req: Request, res: Response) {
     try {
       const { refreshToken } = req.body;
+      const { ip, userAgent } = getClientInfo(req);
 
       if (!refreshToken) {
         return res
@@ -15,7 +17,9 @@ export const refreshTokenController = {
       }
 
       const tokenValidado = await refreshTokenService.revalidarAccessToken(
-        refreshToken
+        refreshToken,
+        ip,
+        userAgent
       );
 
       return res.status(200).json(

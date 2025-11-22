@@ -49,4 +49,17 @@ export const sessaoUsuarioService = {
       );
     return sessoes;
   },
+
+  async atualizarUltimoAcesso(
+    sessaoId: string,
+    ip?: string,
+    userAgent?: string
+  ) {
+    const sessao = await sessionUsuarioRepository.atualizarUltimoAcesso(
+      sessaoId,
+      ip,
+      userAgent
+    );
+    return sessao;
+  },
 };

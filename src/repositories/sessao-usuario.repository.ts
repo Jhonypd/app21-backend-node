@@ -33,4 +33,14 @@ export const sessionUsuarioRepository = {
     prismaClient.sessaoPessoa.findMany({
       where: { pessoa_id: pessoaId },
     }),
+
+  atualizarUltimoAcesso: (sessaoId: string, ip?: string, userAgent?: string) =>
+    prismaClient.sessaoPessoa.update({
+      where: { id: sessaoId },
+      data: {
+        ultimo_acesso_em: new Date(),
+        ip,
+        user_agent: userAgent,
+      },
+    }),
 };

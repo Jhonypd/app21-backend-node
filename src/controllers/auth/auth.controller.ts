@@ -1,13 +1,14 @@
 import { Request, Response } from "express";
 import { authService } from "../../services/auth/auth.service";
 import { respostaErro, respostaSucesso } from "../../utils/response";
+import { getClientInfo } from "../../helpers/client-info.helper";
 
 export const authController = {
   async login(req: Request, res: Response) {
     try {
       const { email, senha } = req.body;
-      const ip = req.ip;
-      const userAgent = req.get("User-Agent") || "";
+      const { ip, userAgent } = getClientInfo(req);
+
       if (!email || !senha) {
         return res
           .status(400)

@@ -36,7 +36,11 @@ export const refreshTokenService = {
     return { token: gerarRefreshToken, dataExpiracao: dataTokenRefresh.Dt_Ex };
   },
 
-  async revalidarAccessToken(refreshToken: string) {
+  async revalidarAccessToken(
+    refreshToken: string,
+    ip?: string,
+    userAgent?: string
+  ) {
     const refreshTokenDecoded = decodeToken<ClaimsRefreshToken>(refreshToken);
 
     const buscaRefreshTokenBanco =
@@ -75,6 +79,13 @@ export const refreshTokenService = {
       throw new Error("Sessão revogada para renovar token de acesso");
     if (sessaoAtiva.expiracao < new Date())
       throw new Error("Sessão expirada para renovar token de acesso");
+
+    // Atualiza o último acesso com IP e User-Agent
+    await sessaoUsuarioService.atualizarUltimoAcesso(
+      sessaoAtiva.id,
+      ip,
+      userAgent
+    );
 
     const novoAccessTokenPayload = {
       Usu_Id: dadosUsuarioNovoToken.id,
