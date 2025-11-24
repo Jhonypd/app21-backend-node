@@ -23,12 +23,24 @@ export const sessaoSalaController = {
   async encerrarSessao(req: Request, res: Response) {
     try {
       const sala_id = req.params.id;
-      const sessao_id = req.params.sessaoId;
       const pessoa_id = req.user?.Usu_Id as string;
+
+      // Buscar sessão ativa da sala
+      const sessaoAtiva = await sessaoSalaService.obterSessaoAtivaPorSala(
+        sala_id
+      );
+
+      if (!sessaoAtiva) {
+        return res
+          .status(400)
+          .json(
+            respostaErro({ mensagem: "Nenhuma sessão ativa para encerrar." })
+          );
+      }
 
       const sessaoEncerradaId = await sessaoSalaService.encerrarSessao(
         sala_id,
-        sessao_id,
+        sessaoAtiva.id,
         pessoa_id
       );
       res.json(

@@ -7,6 +7,7 @@ import { ptBR } from "date-fns/locale";
 import { participanteSalaService } from "../participantes/participante-sala.service";
 import { sessaoSalaService } from "../sessoes/sessao-sala.service";
 import { participanteSalaRepository } from "../../repositories/participante-sala.repository";
+import { participanteSessaoRepository } from "../../repositories/participante-sessao.repository";
 import { pessoaRepository } from "../../repositories/pessoa.repository";
 import { determinarTipoAcesso } from "../../helpers/determinar-tipo-acesso";
 import { sessaoSalaRepository } from "../../repositories/sessao-sala.repository";
@@ -242,29 +243,15 @@ export const salaService = {
   },
 
   async obterPorCodigo(codigo: string, pessoaId: string) {
-    const sala = await salaRepository.obterPorCodigo(codigo, true, pessoaId);
+    // Busca apenas dados básicos da sala sem sessões (usado para listar salas)
+    const sala = await salaRepository.obterPorCodigo(codigo, false, pessoaId);
 
     if (!sala) {
       throw new Error("Sala não encontrada");
     }
 
+    // Remove senha da resposta
     const { senha, ...restante } = sala;
-
-    // Coletar todos os votos das sessões ativas
-    const votos =
-      sala.sessoes?.flatMap(
-        (sessao) =>
-          sessao.historias?.flatMap(
-            (historia) =>
-              historia.votos?.map((voto) => ({
-                ...voto,
-                pessoa: {
-                  nome: criptografia.descriptografar(voto.pessoa.nome),
-                  inativo: voto.pessoa.inativo,
-                },
-              })) || []
-          ) || []
-      ) || [];
 
     return {
       ...restante,
@@ -277,10 +264,12 @@ export const salaService = {
           return {
             ...participante.pessoa,
             nome: criptografia.descriptografar(participante.pessoa.nome),
+            role: participante.role, // Inclui role (0=Dono, 1=Admin, 2=Membro)
           };
         }),
       ],
-      votos,
+      historias: sala.historias || [],
+      votos: [],
     };
   },
 
@@ -328,6 +317,74 @@ export const salaService = {
     };
   },
 
+  async obterDadosSessaoAtiva(codigo: string, pessoaId: string) {
+    // Busca sala com sessão ativa e todos os dados relacionados
+    // undefined = não filtra por criador (permite participantes acessarem)
+    const sala = await salaRepository.obterPorCodigo(codigo, true, undefined);
+
+    if (!sala) {
+      throw new Error("Sala não encontrada");
+    }
+
+    // Buscar sessão ativa
+    const sessaoAtiva = sala.sessoes?.find((s) => s.ativa);
+
+    if (!sessaoAtiva) {
+      throw new Error("Nenhuma sessão ativa encontrada para esta sala");
+    }
+
+    // Filtrar histórias pela sessão ativa
+    const historiasAtivas =
+      sessaoAtiva.historias?.map((historiaSessao) => ({
+        id: historiaSessao.historia.id,
+        titulo: historiaSessao.historia.titulo,
+      })) || [];
+
+    // Buscar votos apenas da história ATUAL (historia_atual_id)
+    const historiaAtualSessao = sessaoAtiva.historias?.find(
+      (hs) => hs.historia.id === sala.historia_atual_id
+    );
+
+    const votosHistoriaAtual =
+      historiaAtualSessao?.votos?.map((voto) => ({
+        id: voto.id,
+        pessoa_id: voto.pessoa_id,
+        valor: voto.valor,
+        pessoa: {
+          nome: criptografia.descriptografar(voto.pessoa.nome),
+          inativo: voto.pessoa.inativo,
+        },
+      })) || [];
+
+    return {
+      id: sala.id,
+      codigo: sala.codigo,
+      titulo: sala.titulo,
+      criado_por: sala.criado_por,
+      inativo: sala.inativo,
+      historia_atual_id: sala.historia_atual_id,
+      votos_revelados: sala.votos_revelados,
+      proprietario: {
+        ...sala.proprietario,
+        nome: criptografia.descriptografar(sala.proprietario.nome),
+      },
+      participantes: sala.participantes.map((participante) => ({
+        ...participante.pessoa,
+        nome: criptografia.descriptografar(participante.pessoa.nome),
+        role: participante.role, // Inclui role
+        online: participante.online,
+      })),
+      historias: historiasAtivas, // Lista de histórias da sessão (sem votos dentro)
+      votos: votosHistoriaAtual, // Apenas votos da história atual
+      sessaoAtiva: {
+        id: sessaoAtiva.id,
+        criada_em: sessaoAtiva.criada_em,
+        ativa: sessaoAtiva.ativa,
+        iniciada_por: sessaoAtiva.iniciada_por,
+      },
+    };
+  },
+
   async entrarSala(
     codigo: string,
     pessoaId: string,
@@ -356,7 +413,7 @@ export const salaService = {
     }
 
     // Validar senha (exceto para dono)
-    if (sala.senha && tipoAcesso !== 0) {
+    if (sala.senha && tipoAcesso > 1) {
       if (!senha) {
         throw new Error("Informe a senha para acessar a sala.");
       }
@@ -369,17 +426,46 @@ export const salaService = {
     // Obter sessão ativa (sem filtro de pessoa - busca apenas por sala_id)
     let sessaoAtiva = await sessaoSalaService.obterSessaoAtivaPorSala(sala.id);
 
-    // TIPO 0 (Dono) ou TIPO 1 (Admin): Podem criar sessão se não existir
+    // TIPO 0 (Dono) ou TIPO 1 (Admin): Requer sessão ativa
     if (tipoAcesso === 0 || tipoAcesso === 1) {
-      if (!sessaoAtiva) {
-        // Criar sessão e ParticipanteSessao para todos (permanentes + visitantes opcionais)
-        await sessaoSalaService.criarSessao(sala.id, pessoaId, visitantes);
-        // Recarregar sessão ativa após criação
-        sessaoAtiva = await sessaoSalaService.obterSessaoAtivaPorSala(sala.id);
+      // ✅ Sessão deve ser criada via rota separada (POST /salas/:id/sessoes)
+      // Não criamos automaticamente aqui para evitar race conditions
+      if (!sessaoAtiva || !sessaoAtiva.ativa) {
+        throw new Error("Não há sessão ativa. Inicie uma sessão primeiro.");
       }
-      // ParticipanteSessao já foi criado automaticamente em criarSessao
 
-      // Marca como online em ParticipanteSala
+      // Verificar ParticipanteSessao
+      const participanteSessao =
+        await participanteSessaoRepository.obterPorSessaoEPessoa(
+          sessaoAtiva.id,
+          pessoaId
+        );
+
+      // Se não tem ParticipanteSessao, criar (não deveria acontecer)
+      if (!participanteSessao) {
+        await participanteSessaoRepository.inserir({
+          sessao_id: sessaoAtiva.id,
+          pessoa_id: pessoaId,
+          autorizado: true,
+        });
+      }
+      // Se foi desautorizado (saiu/kickado), precisa re-aprovação
+      else if (!participanteSessao.autorizado) {
+        // ✅ Sala privada: requer aprovação para reentrar
+        if (sala.senha) {
+          throw new Error(
+            "REQUER_APROVACAO:Você saiu ou foi removido desta sessão. Aguarde aprovação do administrador para reentrar."
+          );
+        }
+        // ✅ Sala pública: reentrada automática para dono/admin
+        await participanteSessaoRepository.atualizarAutorizacao(
+          sessaoAtiva.id,
+          pessoaId,
+          true
+        );
+      }
+
+      // ✅ Marca como online em ParticipanteSala
       const participanteSala =
         await participanteSalaRepository.obterPorSalaEPessoa(sala.id, pessoaId);
       if (participanteSala) {
@@ -390,7 +476,7 @@ export const salaService = {
         );
       }
     }
-    // TIPO 2 (Membro): Requer sessão ativa, entra automaticamente
+    // TIPO 2 (Membro): Requer sessão ativa
     else if (tipoAcesso === 2) {
       if (!sessaoAtiva || !sessaoAtiva.ativa) {
         throw new Error(
@@ -398,8 +484,41 @@ export const salaService = {
         );
       }
 
-      // Membro entra automaticamente na sessão
-      // ParticipanteSessao deve ser criado/atualizado
+      // REENTRADA: Lógica diferente para salas públicas vs privadas
+      const participanteSessao =
+        await participanteSessaoRepository.obterPorSessaoEPessoa(
+          sessaoAtiva.id,
+          pessoaId
+        );
+
+      // Se já tem ParticipanteSessao nesta sessão e não está autorizado
+      if (participanteSessao && !participanteSessao.autorizado) {
+        // SALA PRIVADA (com senha): Requer aprovação para reentrar
+        if (sala.senha) {
+          throw new Error(
+            "REQUER_APROVACAO:Você saiu ou foi removido desta sessão. Aguarde aprovação do administrador para reentrar."
+          );
+        }
+        // SALA PÚBLICA (sem senha): Reentrada automática
+        else {
+          await participanteSessaoRepository.atualizarAutorizacao(
+            sessaoAtiva.id,
+            pessoaId,
+            true
+          );
+        }
+      }
+
+      // Se não tem ParticipanteSessao ainda, cria (primeira entrada na sessão)
+      if (!participanteSessao) {
+        await participanteSessaoRepository.inserir({
+          sessao_id: sessaoAtiva.id,
+          pessoa_id: pessoaId,
+          autorizado: true,
+        });
+      }
+
+      // Marca como online em ParticipanteSala
       const participanteSala =
         await participanteSalaRepository.obterPorSalaEPessoa(sala.id, pessoaId);
       if (participanteSala) {
@@ -436,6 +555,7 @@ export const salaService = {
       Usu_Id: pessoaId,
       Usu_Na: nomeDescriptografado,
       Sala_Id: sala.id,
+      Sala_Co: sala.codigo,
       Sala_titulo: sala.titulo,
       Dt_Ex: format(dataExpiracao, "yyyy-MM-dd' 'HH:mm:ss", { locale: ptBR }),
       Ss_Sl_Id: sessaoAtiva?.id as string,
@@ -447,6 +567,166 @@ export const salaService = {
       tokenSala,
       dataExpiracao: tokenPayload.Dt_Ex,
       role: tipoAcesso,
+      sessaoId: tokenPayload.Ss_Sl_Id,
+    };
+  },
+
+  async sairDaSala(sala_id: string, pessoa_id: string) {
+    // Verificar se tem sessão ativa
+    const sessaoAtiva = await sessaoSalaService.obterSessaoAtivaPorSala(
+      sala_id
+    );
+
+    if (!sessaoAtiva) {
+      throw new Error("Nenhuma sessão ativa encontrada.");
+    }
+
+    // Verificar se a pessoa está na sessão
+    const participanteSessao =
+      await participanteSessaoRepository.obterPorSessaoEPessoa(
+        sessaoAtiva.id,
+        pessoa_id
+      );
+
+    if (!participanteSessao) {
+      throw new Error("Você não está participando desta sessão.");
+    }
+
+    // ✅ Desautorizar participanteSessao (autorizado = false)
+    // Isso marca que a pessoa saiu voluntariamente da sessão
+    await participanteSessaoRepository.atualizarAutorizacao(
+      sessaoAtiva.id,
+      pessoa_id,
+      false
+    );
+
+    // Marcar como offline em ParticipanteSala (se for permanente)
+    const participanteSala =
+      await participanteSalaRepository.obterPorSalaEPessoa(sala_id, pessoa_id);
+
+    if (participanteSala) {
+      await participanteSalaRepository.alterarParticipanteSalaOnline(
+        sala_id,
+        pessoa_id,
+        false
+      );
+    }
+
+    return {
+      mensagem: "Você saiu da sala com sucesso.",
+      limpar_token: true, // Frontend deve limpar token_sala
+    };
+  },
+
+  async aprovarReentrada(
+    sala_id: string,
+    pessoa_id_aprovador: string,
+    pessoa_id_reentrada: string
+  ) {
+    // Verificar se quem está aprovando é Dono ou Admin
+    const sala = await salaRepository.obterPorId(sala_id, false);
+    if (!sala) {
+      throw new Error("Sala não encontrada.");
+    }
+
+    const isDono = sala.criado_por === pessoa_id_aprovador;
+    let isAdmin = false;
+
+    if (!isDono) {
+      const participanteSala =
+        await participanteSalaRepository.obterPorSalaEPessoa(
+          sala_id,
+          pessoa_id_aprovador
+        );
+      isAdmin = participanteSala?.role === 1;
+    }
+
+    if (!isDono && !isAdmin) {
+      throw new Error(
+        "Apenas o dono ou administrador podem aprovar reentradas."
+      );
+    }
+
+    // Verificar sessão ativa
+    const sessaoAtiva = await sessaoSalaService.obterSessaoAtivaPorSala(
+      sala_id
+    );
+    if (!sessaoAtiva) {
+      throw new Error("Nenhuma sessão ativa encontrada.");
+    }
+
+    // Verificar se a pessoa tem ParticipanteSessao não autorizado
+    const participanteSessao =
+      await participanteSessaoRepository.obterPorSessaoEPessoa(
+        sessaoAtiva.id,
+        pessoa_id_reentrada
+      );
+
+    if (!participanteSessao) {
+      throw new Error("Pessoa não está na sessão.");
+    }
+
+    if (participanteSessao.autorizado) {
+      throw new Error("Pessoa já está autorizada na sessão.");
+    }
+
+    // Autorizar reentrada
+    await participanteSessaoRepository.atualizarAutorizacao(
+      sessaoAtiva.id,
+      pessoa_id_reentrada,
+      true
+    );
+
+    // Marcar como online
+    const participanteSala =
+      await participanteSalaRepository.obterPorSalaEPessoa(
+        sala_id,
+        pessoa_id_reentrada
+      );
+
+    if (participanteSala) {
+      await participanteSalaRepository.alterarParticipanteSalaOnline(
+        sala_id,
+        pessoa_id_reentrada,
+        true
+      );
+    }
+
+    // Buscar pessoa para gerar novo token
+    const pessoa = await pessoaRepository.obterPorId(
+      pessoa_id_reentrada,
+      false
+    );
+    if (!pessoa) {
+      throw new Error("Pessoa não encontrada.");
+    }
+
+    // Gerar novo token
+    const dataExpiracao = addHours(new Date(), 6);
+    const nomeDescriptografado = await criptografia.descriptografar(
+      pessoa.nome
+    );
+
+    const tipoAcesso = await determinarTipoAcesso(sala, pessoa_id_reentrada);
+
+    const tokenPayload: ClaimsAuthSala = {
+      Role: tipoAcesso as 0 | 1 | 2 | 3,
+      Usu_Id: pessoa_id_reentrada,
+      Usu_Na: nomeDescriptografado,
+      Sala_Id: sala.id,
+      Sala_Co: sala.codigo,
+      Sala_titulo: sala.titulo,
+      Dt_Ex: format(dataExpiracao, "yyyy-MM-dd' 'HH:mm:ss", { locale: ptBR }),
+      Ss_Sl_Id: sessaoAtiva.id,
+    };
+
+    const tokenSala = geradorTokenSala(tokenPayload);
+
+    return {
+      mensagem: "Reentrada aprovada com sucesso.",
+      tokenSala,
+      dataExpiracao: tokenPayload.Dt_Ex,
+      pessoa_id: pessoa_id_reentrada,
     };
   },
 
@@ -473,7 +753,7 @@ export const salaService = {
         throw new Error("Você não tem permissão para acessar esta sala.");
       }
 
-      // Buscar sala sem filtro de criado_por
+      // Buscar sala completa com participantes (Admin pode gerenciar participantes)
       const salaCompleta = await salaRepository.obterPorId(
         sala_id,
         true,
@@ -483,11 +763,17 @@ export const salaService = {
         throw new Error("Sala não encontrada.");
       }
 
+      // Admin (role=1) tem permissão para gerenciar participantes fixos
       return {
         id: salaCompleta.id,
         titulo: salaCompleta.titulo,
         salaPrivada: !!salaCompleta.senha,
-        participantes: [], // Admin não precisa ver participantes para alterar título
+        participantes: salaCompleta.participantes.map((p) => ({
+          id: p.pessoa.id,
+          nome: criptografia.descriptografar(p.pessoa.nome),
+          inativo: p.pessoa.inativo,
+          role: p.role,
+        })),
       };
     }
 

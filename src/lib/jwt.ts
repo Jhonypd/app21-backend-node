@@ -19,6 +19,7 @@ export interface ClaimsAuthSala extends jwt.JwtPayload {
   Usu_Id: string;
   Usu_Na: string;
   Sala_Id: string;
+  Sala_Co: string; // Código da sala (para redirecionamento no frontend)
   Sala_titulo: string;
   Dt_Ex: string;
   Ss_Sl_Id: string; // ID da SessaoSala (sessão ativa da sala)
@@ -66,6 +67,7 @@ export const geradorTokenSala = ({
   Usu_Id,
   Usu_Na,
   Sala_Id,
+  Sala_Co,
   Sala_titulo,
   Dt_Ex,
   Role,
@@ -79,7 +81,7 @@ export const geradorTokenSala = ({
   const expiresIn = duracaoEmMinutos ? duracaoEmMinutos + 1 : 1;
 
   return jwt.sign(
-    { Usu_Id, Usu_Na, Role, Sala_Id, Sala_titulo, Dt_Ex, Ss_Sl_Id },
+    { Usu_Id, Usu_Na, Role, Sala_Id, Sala_Co, Sala_titulo, Dt_Ex, Ss_Sl_Id },
     jwtSecret,
     {
       expiresIn: `${expiresIn}m`,

@@ -60,4 +60,11 @@ export const participanteSalaRepository = {
       where: { sala_id_pessoa_id: { sala_id, pessoa_id } },
       data: { role },
     }),
+
+  // ✅ Marcar todos os participantes de uma sala como offline
+  marcarTodosOfflinePorSala: (sala_id: string) =>
+    prismaClient.participanteSala.updateMany({
+      where: { sala_id },
+      data: { online: false },
+    }),
 };

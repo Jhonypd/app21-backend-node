@@ -5,6 +5,9 @@ import { sessaoUsuarioService } from "../services/auth/sessao-usuario.service";
 import { pessoaService } from "../services/pessoas/pessoa.service";
 import { respostaErro } from "../utils/response";
 
+// IMPORTANTE: Adicionar no app.ts (CORS):
+// app.use(cors({ exposedHeaders: ['X-New-Access-Token', 'X-New-Refresh-Token'] }));
+
 declare global {
   namespace Express {
     interface Request {
@@ -58,11 +61,13 @@ export const authGuard = async (
     );
 
     if (!sessaoUsuario) {
-      return res
-        .status(401)
-        .json(
-          respostaErro({ mensagem: "Sessão inválida.", codigoRetorno: 401 })
-        );
+      return res.status(401).json(
+        respostaErro({
+          mensagem: "Sessão inválida.",
+          codigoRetorno: 401,
+          requer_login: true,
+        })
+      );
     }
 
     if (sessaoUsuario.revogado_em) {
@@ -70,16 +75,16 @@ export const authGuard = async (
         respostaErro({
           mensagem: "Sessão expirada ou usuario logado em outro dispositivo.",
           codigoRetorno: 401,
+          requer_login: true,
         })
       );
     }
 
+    // ✅ CORREÇÃO: Se sessão expirou MAS ainda há refresh_token válido, NÃO pedir login
+    // Deixar o catch do TokenExpiredError fazer o refresh automático
     if (sessaoUsuario.expiracao < new Date()) {
-      return res
-        .status(401)
-        .json(
-          respostaErro({ mensagem: "Sua sessão expirou.", codigoRetorno: 401 })
-        );
+      // Forçar erro de token expirado para acionar o refresh automático
+      throw new jwt.TokenExpiredError("Sessão expirada", new Date());
     }
 
     const pessoa = await pessoaService.obterDadosConta(decoded.Usu_Id);
@@ -89,6 +94,7 @@ export const authGuard = async (
         respostaErro({
           mensagem: "Usuário não encontrado.",
           codigoRetorno: 401,
+          requer_login: true,
         })
       );
     if (pessoa.inativo)
@@ -127,6 +133,7 @@ export const authGuard = async (
 
         req.sala = {
           Sala_Id: decodedTokenSala.Sala_Id,
+          Sala_Co: decodedTokenSala.Sala_Co,
           Sala_titulo: decodedTokenSala.Sala_titulo,
           Role: decodedTokenSala.Role,
           Ss_Sl_Id: decodedTokenSala.Ss_Sl_Id,
@@ -143,6 +150,65 @@ export const authGuard = async (
 
     next();
   } catch (error) {
+    // Token expirado - tentar refresh automático
+    if (error instanceof jwt.TokenExpiredError) {
+      const refreshToken =
+        req.cookies?.refresh_token ||
+        (req.headers["x-refresh-token"] as string);
+
+      if (!refreshToken) {
+        return res.status(401).json(
+          respostaErro({
+            mensagem: "Token expirado. Faça login novamente.",
+            codigoRetorno: 401,
+            requer_login: true,
+          })
+        );
+      }
+
+      try {
+        // Importar serviço de refresh
+        const {
+          refreshTokenService,
+        } = require("../services/auth/refresh-token.service");
+
+        // Tentar fazer refresh
+        const resultado = await refreshTokenService.refresh(refreshToken);
+
+        // Retornar novos tokens nos headers
+        res.setHeader("X-New-Access-Token", resultado.tokenAcesso.token);
+        res.setHeader("X-New-Refresh-Token", resultado.refreshToken.token);
+
+        // Decodificar novo token e continuar
+        const decoded = jwt.verify(
+          resultado.tokenAcesso.token,
+          jwtSecret
+        ) as Claims;
+
+        req.user = {
+          Usu_Id: decoded.Usu_Id,
+          Usu_Na: decoded.Usu_Na,
+          Email: decoded.Email,
+          Dt_Ex: decoded.Dt_Ex,
+          Idp: decoded.Idp,
+          iss: decoded.iss,
+          aud: decoded.aud,
+          Ss_Id: decoded.Ss_Id,
+        };
+
+        return next();
+      } catch (refreshError) {
+        console.error("Erro ao fazer refresh automático:", refreshError);
+        return res.status(401).json(
+          respostaErro({
+            mensagem: "Sessão expirada. Faça login novamente.",
+            codigoRetorno: 401,
+            requer_login: true,
+          })
+        );
+      }
+    }
+
     console.error(error);
     return res
       .status(401)

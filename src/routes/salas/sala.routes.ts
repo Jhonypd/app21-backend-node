@@ -51,6 +51,24 @@ router.post(
   salaController.entrarSala
 );
 
+// Sair da sala (não encerra sessão, apenas marca como offline e não autorizado)
+router.post(
+  "/:id/sair",
+  validateHandler,
+  authGuard,
+  salaAuthGuard,
+  salaController.sairDaSala
+);
+
+// Aprovar reentrada de participante que saiu ou foi kickado
+router.post(
+  "/:id/aprovar-reentrada/:pessoaId",
+  validateHandler,
+  authGuard,
+  salaAuthGuard,
+  salaController.aprovarReentrada
+);
+
 router.get(
   "/listarSalas",
   validateHandler,
@@ -63,6 +81,15 @@ router.get(
   validateHandler,
   authGuard,
   salaController.obterPorCodigo
+);
+
+// Obter dados completos da sessão ativa (com historias, votos filtrados)
+router.get(
+  "/codigo/:codigo/sessao-ativa",
+  validateHandler,
+  authGuard,
+  salaAuthGuard,
+  salaController.obterDadosSessaoAtiva
 );
 
 router.get(
@@ -120,26 +147,6 @@ router.post(
   salaAuthGuard, // Valida token de sala
   salaPermissaoGuard([0, 1]), // Dono e Admin
   sessaoSalaController.encerrarSessao
-);
-
-// POST /salas/:id/sessoes/visitantes - Adicionar visitantes (dono e admin)
-router.post(
-  "/:id/sessoes/visitantes",
-  validateHandler,
-  authGuard,
-  salaAuthGuard, // Valida token de sala
-  salaPermissaoGuard([0, 1]), // Dono e Admin
-  sessaoSalaController.adicionarVisitantes
-);
-
-// DELETE /salas/:id/sessoes/visitantes/:pessoaId - Remover visitante (dono e admin)
-router.delete(
-  "/:id/sessoes/visitantes/:pessoaId",
-  validateHandler,
-  authGuard,
-  salaAuthGuard, // Valida token de sala
-  salaPermissaoGuard([0, 1]), // Dono e Admin
-  sessaoSalaController.removerVisitante
 );
 
 // PATCH /salas/:id/sessoes/:sessaoId/participantes/:pessoaId/kick - Kickar participante (moderação)

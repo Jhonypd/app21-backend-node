@@ -101,6 +101,20 @@ export const salaController = {
     }
   },
 
+  async obterDadosSessaoAtiva(req: Request, res: Response) {
+    try {
+      const codigo = req.params.codigo;
+      const pessoaId = req.user?.Usu_Id as string;
+      const dadosSala = await salaService.obterDadosSessaoAtiva(
+        codigo,
+        pessoaId
+      );
+      res.json(respostaSucesso({ resultado: { sala: dadosSala } }));
+    } catch (error: any) {
+      res.status(500).json(respostaErro({ mensagem: error.message }));
+    }
+  },
+
   async obterPorId(req: Request, res: Response) {
     try {
       const id = req.params.id;
@@ -128,13 +142,14 @@ export const salaController = {
       const pessoa = req.user;
       const { codigo, senha, visitantes } = req.body;
 
-      const { tokenSala, dataExpiracao, role } = await salaService.entrarSala(
-        codigo,
-        pessoa?.Usu_Id as string,
-        pessoa?.Ss_Id as string,
-        senha,
-        visitantes
-      );
+      const { tokenSala, dataExpiracao, role, sessaoId } =
+        await salaService.entrarSala(
+          codigo,
+          pessoa?.Usu_Id as string,
+          pessoa?.Ss_Id as string,
+          senha,
+          visitantes
+        );
 
       res.json(
         respostaSucesso({
@@ -142,8 +157,50 @@ export const salaController = {
             tokenSala,
             dataExpiracao,
             role,
+            sessaoId,
           },
           mensagem: "Login na sala realizado com sucesso.",
+        })
+      );
+    } catch (error: any) {
+      res.status(500).json(respostaErro({ mensagem: error.message }));
+    }
+  },
+
+  async sairDaSala(req: Request, res: Response) {
+    try {
+      const sala_id = req.params.id;
+      const pessoa_id = req.user?.Usu_Id as string;
+
+      const resultado = await salaService.sairDaSala(sala_id, pessoa_id);
+
+      res.json(
+        respostaSucesso({
+          resultado,
+          mensagem: resultado.mensagem,
+        })
+      );
+    } catch (error: any) {
+      res.status(500).json(respostaErro({ mensagem: error.message }));
+    }
+  },
+
+  async aprovarReentrada(req: Request, res: Response) {
+    try {
+      const sala_id = req.params.id;
+      const pessoa_id_reentrada = req.params.pessoaId;
+      const pessoa_id_aprovador = req.user?.Usu_Id as string;
+
+      const resultado = await salaService.aprovarReentrada(
+        sala_id,
+        pessoa_id_aprovador,
+        pessoa_id_reentrada
+      );
+
+      res.json(
+        respostaSucesso({
+          resultado,
+          mensagem: resultado.mensagem,
         })
       );
     } catch (error: any) {

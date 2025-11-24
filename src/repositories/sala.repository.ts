@@ -35,6 +35,7 @@ export const salaRepository = {
         proprietario: { select: { id: true, nome: true, inativo: true } },
         participantes: {
           select: {
+            role: true,
             pessoa: {
               select: {
                 id: true,
@@ -107,6 +108,8 @@ export const salaRepository = {
         proprietario: { select: { id: true, nome: true, inativo: true } },
         participantes: {
           select: {
+            role: true,
+            online: true,
             pessoa: {
               select: {
                 id: true,
@@ -130,6 +133,8 @@ export const salaRepository = {
           select: {
             id: true,
             criada_em: true,
+            ativa: true,
+            iniciada_por: true,
             historias: {
               select: {
                 id: true,

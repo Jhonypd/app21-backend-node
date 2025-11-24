@@ -123,16 +123,6 @@ export const refreshTokenService = {
     };
   },
 
-  // async revogarRefreshTokenPorRefreshToken(refreshToken: string) {
-  //   //decodificar e pegar o Ss_Id para revogar todos os refresh tokens daquela sessão
-  //   const refreshTokenDecoded = decodeToken<ClaimsRefreshToken>(refreshToken);
-
-  //   if (!refreshTokenDecoded.Ss_Id)
-  //     throw new Error("Refresh token inválido para revogação");
-
-  //   return RefreshTokenRepository.deletarTodosPorSessaoId(refreshTokenDecoded.Ss_Id);
-  // },
-
   async revogarTodasRefreshTokensPorPessoaId(pessoaId: string) {
     const sessoesPessoa =
       await sessaoUsuarioService.buscarSessoesAtivasPorPessoaId(pessoaId);

@@ -37,6 +37,17 @@ export const salaAuthGuard = async (
   try {
     const decodedTokenSala = jwt.verify(tokenSala, jwtSecret) as ClaimsAuthSala;
 
+    // VALIDAÇÃO CRÍTICA #0: Verificar se o token é válido para esta sala
+    const codigoSalaRota = req.params.codigo || req.params.id;
+    if (codigoSalaRota && decodedTokenSala.Sala_Co !== codigoSalaRota && decodedTokenSala.Sala_Id !== codigoSalaRota) {
+      return res.status(403).json({
+        Sucesso: false,
+        Mensagem: "Token não é válido para esta sala.",
+        CodigoRetorno: 403,
+        Resultado: { limpar_token: true },
+      });
+    }
+
     // VALIDAÇÃO CRÍTICA #1: Verificar se sessão ainda está ativa
     const sessao = await sessaoSalaRepository.obterPorId(
       decodedTokenSala.Ss_Sl_Id
@@ -80,6 +91,7 @@ export const salaAuthGuard = async (
     // Anexar informações da sala no request
     req.sala = {
       Sala_Id: decodedTokenSala.Sala_Id,
+      Sala_Co: decodedTokenSala.Sala_Co,
       Sala_titulo: decodedTokenSala.Sala_titulo,
       Role: decodedTokenSala.Role,
       Ss_Sl_Id: decodedTokenSala.Ss_Sl_Id,

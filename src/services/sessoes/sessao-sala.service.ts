@@ -33,11 +33,44 @@ export const sessaoSalaService = {
       throw new Error("Apenas o dono ou administrador podem criar sessão.");
     }
 
-    // Desativar sessões ativas anteriores da sala
-    await sessaoSalaRepository.desativarSessoesPorSala(sala_id);
+    // 🔴 CRÍTICO: Usar transação Prisma para evitar race condition
+    // Se 2 admins tentarem criar sessão simultaneamente, apenas 1 conseguirá
+    const { prismaClient } = await import("../../lib/prisma");
 
-    // Criar nova sessão
-    const novaSessao = await sessaoSalaRepository.inserir({ sala_id });
+    const novaSessao = await prismaClient.$transaction(async (prisma) => {
+      // 1. Verificar se já existe sessão ativa (dentro da transação)
+      const sessaoExistente = await prisma.sessaoSala.findFirst({
+        where: {
+          sala_id,
+          ativa: true,
+        },
+      });
+
+      if (sessaoExistente) {
+        throw new Error("Já existe uma sessão ativa para esta sala.");
+      }
+
+      // 2. Criar nova sessão
+      const sessao = await prisma.sessaoSala.create({
+        data: {
+          sala_id,
+          iniciada_por: pessoa_id,
+          ativa: true,
+        },
+        include: {
+          sala: {
+            select: {
+              id: true,
+              codigo: true,
+              titulo: true,
+              criado_por: true,
+            },
+          },
+        },
+      });
+
+      return sessao;
+    });
 
     // 1. Criar ParticipanteSessao para TODOS os ParticipanteSala (permanentes)
     const participantesSala =
@@ -47,10 +80,17 @@ export const sessaoSalaService = {
       await participanteSessaoRepository.inserir({
         sessao_id: novaSessao.id,
         pessoa_id: participante.pessoa_id,
-        // comentei esse trecho abaixo pois estava autorizado: participante.pessoa_id === sala.criado_por, // Dono autorizado, outros não, mas na sessão todos permanentes devem ser autorizados
-        // autorizado: participante.pessoa_id === sala.criado_por, // Dono autorizado, outros não
         autorizado: true, // Todos permanentes autorizados automaticamente
       });
+
+      // ✅ Marcar como online APENAS quem iniciou a sessão
+      if (participante.pessoa_id === pessoa_id) {
+        await participanteSalaRepository.alterarParticipanteSalaOnline(
+          sala_id,
+          pessoa_id,
+          true
+        );
+      }
     }
 
     // 2. Criar ParticipanteSessao para visitantes temporários (se fornecidos)
@@ -82,8 +122,9 @@ export const sessaoSalaService = {
       throw new Error("Nenhuma sessão ativa encontrada para esta sala.");
     }
 
-    // Verificar se é dono ou admin
+    // Verificar se é dono ou admin que INICIOU a sessão
     const isDono = sessaoAtiva.sala.criado_por === pessoa_id;
+    const foiIniciadorDaSessao = sessaoAtiva.iniciada_por === pessoa_id;
 
     let isAdmin = false;
     if (!isDono) {
@@ -95,13 +136,25 @@ export const sessaoSalaService = {
       isAdmin = participanteSala?.role === 1;
     }
 
-    if (!isDono && !isAdmin) {
+    // Dono pode encerrar qualquer sessão, Admin só pode encerrar se ele iniciou
+    if (!isDono && (!isAdmin || !foiIniciadorDaSessao)) {
       throw new Error(
-        "Apenas o dono ou administrador podem encerrar a sessão."
+        isDono || isAdmin
+          ? "Apenas quem iniciou a sessão pode encerrá-la."
+          : "Apenas o dono ou administrador podem encerrar a sessão."
       );
     }
 
-    await sessaoSalaRepository.desativarSessoesPorSala(sala_id);
+    // ✅ Desativar sessão e registrar quem encerrou
+    await sessaoSalaRepository.desativarSessoesPorSala(sala_id, pessoa_id);
+
+    // ✅ Marcar todos os participantes como offline
+    await participanteSalaRepository.marcarTodosOfflinePorSala(sala_id);
+
+    // ✅ Desautorizar todos os ParticipanteSessao
+    await participanteSessaoRepository.desautorizarTodosPorSessao(
+      sessaoAtiva.id
+    );
 
     // TODO: Quando implementar Socket.IO, emitir evento:
     // socketService.emitToRoom(sessao_id, 'sessao_encerrada', { encerrado_por: pessoa_id })

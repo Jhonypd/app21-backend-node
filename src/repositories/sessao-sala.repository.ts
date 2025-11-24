@@ -2,6 +2,7 @@ import { prismaClient } from "../lib/prisma";
 
 interface SessaoSalaInserirData {
   sala_id: string;
+  iniciada_por: string;
 }
 
 export const sessaoSalaRepository = {
@@ -10,6 +11,7 @@ export const sessaoSalaRepository = {
       data: {
         sala_id: data.sala_id,
         ativa: true,
+        iniciada_por: data.iniciada_por,
       },
       include: {
         sala: {
@@ -165,7 +167,7 @@ export const sessaoSalaRepository = {
       },
     }),
 
-  desativarSessoesPorSala: (sala_id: string) =>
+  desativarSessoesPorSala: (sala_id: string, encerrada_por?: string) =>
     prismaClient.sessaoSala.updateMany({
       where: {
         sala_id,
@@ -173,6 +175,14 @@ export const sessaoSalaRepository = {
       },
       data: {
         ativa: false,
+        // ✅ AUDITORIA: Registrar quem encerrou e quando
+        // Nota: Requer migração do schema para adicionar campos:
+        // encerrada_por String?
+        // data_encerramento DateTime?
+        ...(encerrada_por && {
+          encerrada_por,
+          data_encerramento: new Date(),
+        }),
       },
     }),
 

@@ -23,6 +23,7 @@ model Pessoa {
 
   participacoes        ParticipanteSala[]
   salas_criadas        Sala[]               @relation("SalasCriadasPorPessoa")
+  sessoes_iniciadas    SessaoSala[]         @relation("SessoesIniciadas")
   votos                Voto[]
   sessao_usuario       SessaoPessoa[]
   participantes_sessao ParticipanteSessao[]
@@ -86,16 +87,21 @@ model ParticipanteSala {
 }
 
 model SessaoSala {
-  id        String   @id @default(uuid())
-  sala_id   String
-  criada_em DateTime @default(now())
-  ativa     Boolean  @default(true)
+  id                 String    @id @default(uuid())
+  sala_id            String
+  criada_em          DateTime  @default(now())
+  ativa              Boolean   @default(true)
+  iniciada_por       String    // Pessoa que iniciou a sessão (Dono ou Admin)
+  encerrada_por      String?   // ✅ Pessoa que encerrou a sessão (auditoria)
+  data_encerramento  DateTime? // ✅ Quando foi encerrada (auditoria)
 
   sala          Sala                 @relation(fields: [sala_id], references: [id])
+  iniciador     Pessoa               @relation("SessoesIniciadas", fields: [iniciada_por], references: [id])
   participantes ParticipanteSessao[]
   historias     HistoriaSessao[]
 
   @@index([sala_id])
+  @@index([iniciada_por])
 }
 
 model ParticipanteSessao {

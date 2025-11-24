@@ -130,4 +130,11 @@ export const participanteSessaoRepository = {
         },
       },
     }),
+
+  // ✅ Desautorizar todos os participantes de uma sessão (ao encerrar)
+  desautorizarTodosPorSessao: (sessao_id: string) =>
+    prismaClient.participanteSessao.updateMany({
+      where: { sessao_id },
+      data: { autorizado: false },
+    }),
 };

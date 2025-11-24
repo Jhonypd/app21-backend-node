@@ -54,11 +54,12 @@ app.use(
       "Content-Type",
       "Authorization",
       "x-token-sala",
+      "X-Refresh-Token",
       "Accept",
       "Origin",
       "X-Requested-With",
     ],
-    exposedHeaders: ["set-cookie"],
+    exposedHeaders: ["set-cookie", "X-New-Access-Token", "X-New-Refresh-Token"],
     preflightContinue: false,
     optionsSuccessStatus: 204,
   })

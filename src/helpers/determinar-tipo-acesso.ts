@@ -57,8 +57,13 @@ export async function determinarTipoAcesso(
       );
 
     // Visitante = tem ParticipanteSessao MAS não tem ParticipanteSala
+    // ✅ CRÍTICO: Verificar se está autorizado (não foi kickado)
     if (participanteSessao && !participanteSala) {
-      return 3;
+      if (participanteSessao.autorizado) {
+        return 3;
+      }
+      // Visitante desautorizado = sem acesso
+      return null;
     }
   }
 
