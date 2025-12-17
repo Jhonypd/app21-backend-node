@@ -31,6 +31,12 @@ export const authGuard = async (
   const authHeader = req.headers.authorization;
   const authSala = req.headers["x-token-sala"] as string | undefined;
 
+  console.log("🔍 [authGuard] Headers recebidos:", {
+    hasAuthorization: !!authHeader,
+    hasRefreshToken: !!req.headers["x-refresh-token"],
+    hasTokenSala: !!authSala,
+  });
+
   if (authSala) {
     tokenSala = authSala;
   }
@@ -39,11 +45,7 @@ export const authGuard = async (
     token = t;
   }
 
-  // Cookie
-  if (!token && req.cookies?.access_token) {
-    token = req.cookies.access_token;
-  }
-
+  // ✅ Apenas headers - sem cookies
   if (!token) {
     return res
       .status(401)
@@ -83,9 +85,16 @@ export const authGuard = async (
     // ✅ CORREÇÃO: Se sessão expirou, tentar refresh automático
     // Não forçar TokenExpiredError - fazer refresh diretamente
     if (sessaoUsuario.expiracao < new Date()) {
-      const refreshToken =
-        req.cookies?.refresh_token ||
-        (req.headers["x-refresh-token"] as string);
+      // ✅ Apenas header X-Refresh-Token
+      const refreshToken = req.headers["x-refresh-token"] as string;
+
+      console.log("⏰ [authGuard] Sessão expirada, tentando refresh:", {
+        hasRefreshToken: !!refreshToken,
+        refreshTokenPreview: refreshToken
+          ? `${refreshToken.substring(0, 20)}...`
+          : "undefined",
+        sessaoExpiracao: sessaoUsuario.expiracao,
+      });
 
       if (!refreshToken) {
         return res.status(401).json(
@@ -244,9 +253,15 @@ export const authGuard = async (
   } catch (error) {
     // Token expirado - tentar refresh automático
     if (error instanceof jwt.TokenExpiredError) {
-      const refreshToken =
-        req.cookies?.refresh_token ||
-        (req.headers["x-refresh-token"] as string);
+      // ✅ Apenas header X-Refresh-Token
+      const refreshToken = req.headers["x-refresh-token"] as string;
+
+      console.log("⚠️ [authGuard] Token expirado, tentando refresh:", {
+        hasRefreshToken: !!refreshToken,
+        refreshTokenPreview: refreshToken
+          ? `${refreshToken.substring(0, 20)}...`
+          : "undefined",
+      });
 
       if (!refreshToken) {
         return res.status(401).json(

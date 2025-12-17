@@ -55,11 +55,23 @@ export const authService = {
       userAgent
     );
 
+    console.log("🆕 [authService] Nova sessão criada:", {
+      sessaoId: novaSessao.id,
+      pessoaId: pessoa.id,
+      expiracao: novaSessao.expiracao,
+    });
+
     const token = geradorToken({ ...tokenPayload, Ss_Id: novaSessao.id });
     const refreshToken = await refreshTokenService.gerarRefreshToken(
       pessoa.id,
       novaSessao.id
     );
+
+    console.log("✅ [authService] Tokens gerados:", {
+      sessaoId: novaSessao.id,
+      tokenPreview: token.substring(0, 20) + "...",
+      refreshTokenPreview: refreshToken.token.substring(0, 20) + "...",
+    });
     return {
       tokenAcesso: { token, dataExpiracao: tokenPayload.Dt_Ex },
       refreshToken,
