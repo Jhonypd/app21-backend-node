@@ -135,6 +135,18 @@ export const salaRepository = {
             criada_em: true,
             ativa: true,
             iniciada_por: true,
+            participantes: {
+              select: {
+                autorizado: true,
+                pessoa: {
+                  select: {
+                    id: true,
+                    nome: true,
+                    inativo: true,
+                  },
+                },
+              },
+            },
             historias: {
               select: {
                 id: true,

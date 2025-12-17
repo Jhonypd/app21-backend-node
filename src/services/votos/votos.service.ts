@@ -1,4 +1,5 @@
 import { votosRepository } from "../../repositories/votos.repository";
+import { historiaSessaoRepository } from "../../repositories/historia-sessao.repository";
 
 interface VotoInserirData {
   historia_sessao_id: string;
@@ -14,6 +15,35 @@ export const votosService = {
       throw new Error("Valor do voto inválido. Deve estar entre -1 e 89.");
     }
 
+    // ✅ NOVA LÓGICA: Verificar se sessão tem histórias vinculadas
+    const historiaSessao = await historiaSessaoRepository.obterPorId(
+      voto.historia_sessao_id
+    );
+
+    if (!historiaSessao) {
+      throw new Error("História de sessão não encontrada.");
+    }
+
+    // Buscar todas as histórias da sessão
+    const historiasVinculadas = await historiaSessaoRepository.obterPorSessao(
+      historiaSessao.sessao_id
+    );
+
+    // Se não há histórias vinculadas, retorna voto temporário (não salva)
+    if (!historiasVinculadas || historiasVinculadas.length === 0) {
+      return {
+        temporario: true,
+        voto: {
+          historia_sessao_id: voto.historia_sessao_id,
+          pessoa_id: voto.pessoa_id,
+          valor: voto.valor,
+          data_voto: new Date(),
+        },
+        mensagem: "Voto registrado (modo prática - não será salvo)",
+      };
+    }
+
+    // ✅ TEM histórias → salva normalmente
     // Verificar se já existe voto para esta história-sessão e pessoa
     const votoExistente =
       await votosRepository.obterVotoPorHistoriaSessaoEPessoa(
@@ -23,17 +53,27 @@ export const votosService = {
 
     if (votoExistente) {
       // Se já existe, atualiza o voto
-      return await votosRepository.atualizar(
+      const votoAtualizado = await votosRepository.atualizar(
         voto.historia_sessao_id,
         voto.pessoa_id,
         {
           valor: voto.valor,
         }
       );
+      return {
+        temporario: false,
+        voto: votoAtualizado,
+        mensagem: "Voto atualizado com sucesso",
+      };
     }
 
     // Se não existe, cria novo voto
-    return await votosRepository.inserir(voto);
+    const novoVoto = await votosRepository.inserir(voto);
+    return {
+      temporario: false,
+      voto: novoVoto,
+      mensagem: "Voto registrado com sucesso",
+    };
   },
 
   async obterVotosPorHistoriaSessao(historia_sessao_id: string) {

@@ -140,15 +140,14 @@ export const salaController = {
   async entrarSala(req: Request, res: Response) {
     try {
       const pessoa = req.user;
-      const { codigo, senha, visitantes } = req.body;
+      const { codigo, senha } = req.body;
 
       const { tokenSala, dataExpiracao, role, sessaoId } =
         await salaService.entrarSala(
           codigo,
           pessoa?.Usu_Id as string,
           pessoa?.Ss_Id as string,
-          senha,
-          visitantes
+          senha
         );
 
       res.json(

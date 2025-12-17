@@ -137,4 +137,11 @@ export const refreshTokenService = {
   async revogarRefreshTokenPorSessaoId(sessaoId: string) {
     return RefreshTokenRepository.deletarTodosPorSessaoId(sessaoId);
   },
+
+  /**
+   * Método simplificado para refresh - alias para revalidarAccessToken
+   */
+  async refresh(refreshToken: string, ip?: string, userAgent?: string) {
+    return this.revalidarAccessToken(refreshToken, ip, userAgent);
+  },
 };

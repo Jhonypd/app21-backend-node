@@ -104,7 +104,6 @@ export const pessoaRepository = {
               some: { sala_id: salaId },
             },
           },
-          {},
         ],
       },
       select: {

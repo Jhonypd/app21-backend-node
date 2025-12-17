@@ -8,18 +8,14 @@ const salaInserirValidations = () => {
       .isLength({ min: 3, max: 100 })
       .withMessage("O campo titulo deve ter entre 3 e 100 caracteres"),
     body("senha")
+      .optional()
       .isString()
       .withMessage("O campo senha deve ser um valor válido")
       .isLength({ min: 6, max: 100 })
-      .withMessage("O campo senha deve ter no mínimo 6 caracteres")
-      .optional(),
+      .withMessage("O campo senha deve ter no mínimo 6 caracteres"),
     body("salaPrivada")
       .isBoolean()
-      .withMessage("O campo salaPrivada deve ser um valor válido")
-      .optional(),
-    // body("pessoaId")
-    //   .isUUID()
-    //   .withMessage("O campo pessoaId deve ser um id válido"),
+      .withMessage("O campo salaPrivada deve ser um valor válido"),
   ];
 };
 

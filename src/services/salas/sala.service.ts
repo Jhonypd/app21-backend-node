@@ -356,6 +356,46 @@ export const salaService = {
         },
       })) || [];
 
+    // ✅ Juntar participantes permanentes + visitantes
+    const participantes: Array<{
+      id: string;
+      nome: string;
+      inativo: boolean;
+      role: number;
+      online: boolean;
+    }> = [];
+
+    // 1. Adicionar participantes PERMANENTES (têm ParticipanteSala)
+    sala.participantes.forEach((participante) => {
+      participantes.push({
+        id: participante.pessoa.id,
+        nome: criptografia.descriptografar(participante.pessoa.nome),
+        inativo: participante.pessoa.inativo,
+        role: participante.role, // 0=Dono, 1=Admin, 2=Membro
+        online: participante.online, // Status real do ParticipanteSala
+      });
+    });
+
+    // 2. Adicionar VISITANTES (apenas ParticipanteSessao)
+    // Buscar IDs dos permanentes para filtrar
+    const idsParticipantesPermanentes = sala.participantes.map(
+      (p) => p.pessoa.id
+    );
+
+    // Buscar visitantes da sessão ativa (excluir permanentes)
+    sessaoAtiva.participantes?.forEach((participanteSessao) => {
+      // Se NÃO é permanente, é visitante
+      if (!idsParticipantesPermanentes.includes(participanteSessao.pessoa.id)) {
+        participantes.push({
+          id: participanteSessao.pessoa.id,
+          nome: criptografia.descriptografar(participanteSessao.pessoa.nome),
+          inativo: participanteSessao.pessoa.inativo,
+          role: 3, // Visitante sempre role 3
+          online: true, // Visitante sempre online (se está na sessão ativa)
+        });
+      }
+    });
+
     return {
       id: sala.id,
       codigo: sala.codigo,
@@ -368,12 +408,7 @@ export const salaService = {
         ...sala.proprietario,
         nome: criptografia.descriptografar(sala.proprietario.nome),
       },
-      participantes: sala.participantes.map((participante) => ({
-        ...participante.pessoa,
-        nome: criptografia.descriptografar(participante.pessoa.nome),
-        role: participante.role, // Inclui role
-        online: participante.online,
-      })),
+      participantes, // Lista unificada (permanentes + visitantes)
       historias: historiasAtivas, // Lista de histórias da sessão (sem votos dentro)
       votos: votosHistoriaAtual, // Apenas votos da história atual
       sessaoAtiva: {
@@ -389,8 +424,7 @@ export const salaService = {
     codigo: string,
     pessoaId: string,
     sessaoPessoaId: string,
-    senha?: string,
-    visitantes?: string[]
+    senha?: string
   ) {
     // Validações iniciais
     if (!pessoaId) throw new Error("Id da pessoa não fornecido.");
@@ -441,7 +475,7 @@ export const salaService = {
           pessoaId
         );
 
-      // Se não tem ParticipanteSessao, criar (não deveria acontecer)
+      // Se não tem ParticipanteSessao, criar (caso excepcional)
       if (!participanteSessao) {
         await participanteSessaoRepository.inserir({
           sessao_id: sessaoAtiva.id,
@@ -449,19 +483,13 @@ export const salaService = {
           autorizado: true,
         });
       }
-      // Se foi desautorizado (saiu/kickado), precisa re-aprovação
+      // ✅ NOVA LÓGICA: Ao sair, mantemos autorizado=true
+      // Então dono/admin podem entrar e sair livremente
+      // Apenas verificar se foi kickado/banido (autorizado=false)
       else if (!participanteSessao.autorizado) {
-        // ✅ Sala privada: requer aprovação para reentrar
-        if (sala.senha) {
-          throw new Error(
-            "REQUER_APROVACAO:Você saiu ou foi removido desta sessão. Aguarde aprovação do administrador para reentrar."
-          );
-        }
-        // ✅ Sala pública: reentrada automática para dono/admin
-        await participanteSessaoRepository.atualizarAutorizacao(
-          sessaoAtiva.id,
-          pessoaId,
-          true
+        // Se foi kickado/banido, não pode reentrar sem aprovação
+        throw new Error(
+          "REQUER_APROVACAO:Você foi removido desta sessão. Aguarde aprovação do administrador para reentrar."
         );
       }
 
@@ -484,30 +512,12 @@ export const salaService = {
         );
       }
 
-      // REENTRADA: Lógica diferente para salas públicas vs privadas
+      // Verificar ParticipanteSessao
       const participanteSessao =
         await participanteSessaoRepository.obterPorSessaoEPessoa(
           sessaoAtiva.id,
           pessoaId
         );
-
-      // Se já tem ParticipanteSessao nesta sessão e não está autorizado
-      if (participanteSessao && !participanteSessao.autorizado) {
-        // SALA PRIVADA (com senha): Requer aprovação para reentrar
-        if (sala.senha) {
-          throw new Error(
-            "REQUER_APROVACAO:Você saiu ou foi removido desta sessão. Aguarde aprovação do administrador para reentrar."
-          );
-        }
-        // SALA PÚBLICA (sem senha): Reentrada automática
-        else {
-          await participanteSessaoRepository.atualizarAutorizacao(
-            sessaoAtiva.id,
-            pessoaId,
-            true
-          );
-        }
-      }
 
       // Se não tem ParticipanteSessao ainda, cria (primeira entrada na sessão)
       if (!participanteSessao) {
@@ -517,6 +527,14 @@ export const salaService = {
           autorizado: true,
         });
       }
+      // ✅ NOVA LÓGICA: Se já tem, apenas verifica se foi kickado
+      else if (!participanteSessao.autorizado) {
+        // Se foi kickado/banido, não pode reentrar sem aprovação
+        throw new Error(
+          "REQUER_APROVACAO:Você foi removido desta sessão. Aguarde aprovação do administrador para reentrar."
+        );
+      }
+      // Se já tem e está autorizado, pode entrar (saiu temporariamente)
 
       // Marca como online em ParticipanteSala
       const participanteSala =
@@ -592,13 +610,9 @@ export const salaService = {
       throw new Error("Você não está participando desta sessão.");
     }
 
-    // ✅ Desautorizar participanteSessao (autorizado = false)
-    // Isso marca que a pessoa saiu voluntariamente da sessão
-    await participanteSessaoRepository.atualizarAutorizacao(
-      sessaoAtiva.id,
-      pessoa_id,
-      false
-    );
+    // ✅ NÃO desautorizar! Apenas marcar como offline
+    // O participante pode entrar e sair livremente
+    // Desautorização só acontece em kick/ban (futuro) ou encerrar sessão (todos)
 
     // Marcar como offline em ParticipanteSala (se for permanente)
     const participanteSala =

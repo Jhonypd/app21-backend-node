@@ -140,6 +140,33 @@ class HistoriaSalaController {
       });
     }
   }
+
+  // POST /salas/:salaId/historias/durante-sessao
+  async adicionarDuranteSessao(req: Request, res: Response) {
+    try {
+      const { salaId } = req.params;
+      const { titulo, descricao } = req.body;
+      const usuarioId = req.user!.Usu_Id;
+
+      const historia = await historiaSalaService.adicionarDuranteSessao({
+        sala_id: salaId,
+        titulo,
+        descricao,
+        criado_por: usuarioId,
+      });
+
+      return res.status(201).json({
+        Sucesso: true,
+        Mensagem: "História adicionada e vinculada à sessão",
+        Resultado: { historia },
+      });
+    } catch (error: any) {
+      return res.status(400).json({
+        Sucesso: false,
+        Mensagem: error.message || "Erro ao adicionar história durante sessão",
+      });
+    }
+  }
 }
 
 export const historiaSalaController = new HistoriaSalaController();

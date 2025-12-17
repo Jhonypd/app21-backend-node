@@ -27,6 +27,16 @@ router.post(
   historiaSalaController.criarVarias
 );
 
+// POST /salas/:salaId/historias/durante-sessao - Adicionar história durante sessão ativa
+router.post(
+  "/:salaId/historias/durante-sessao",
+  validateHandler,
+  authGuard,
+  salaAuthGuard, // Valida token de sala
+  salaPermissaoGuard([0, 1]), // Dono ou admin
+  historiaSalaController.adicionarDuranteSessao
+);
+
 // GET /salas/:salaId/historias - Listar histórias da sala
 router.get(
   "/:salaId/historias",

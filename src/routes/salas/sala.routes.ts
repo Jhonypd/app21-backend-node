@@ -84,11 +84,11 @@ router.get(
 );
 
 // Obter dados completos da sessão ativa (com historias, votos filtrados)
+// ✅ Não usa salaAuthGuard - permite visualizar sem estar "dentro" da sala
 router.get(
   "/codigo/:codigo/sessao-ativa",
   validateHandler,
   authGuard,
-  salaAuthGuard,
   salaController.obterDadosSessaoAtiva
 );
 

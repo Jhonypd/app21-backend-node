@@ -80,11 +80,103 @@ export const authGuard = async (
       );
     }
 
-    // ✅ CORREÇÃO: Se sessão expirou MAS ainda há refresh_token válido, NÃO pedir login
-    // Deixar o catch do TokenExpiredError fazer o refresh automático
+    // ✅ CORREÇÃO: Se sessão expirou, tentar refresh automático
+    // Não forçar TokenExpiredError - fazer refresh diretamente
     if (sessaoUsuario.expiracao < new Date()) {
-      // Forçar erro de token expirado para acionar o refresh automático
-      throw new jwt.TokenExpiredError("Sessão expirada", new Date());
+      const refreshToken =
+        req.cookies?.refresh_token ||
+        (req.headers["x-refresh-token"] as string);
+
+      if (!refreshToken) {
+        return res.status(401).json(
+          respostaErro({
+            mensagem: "Sessão expirada. Faça login novamente.",
+            codigoRetorno: 401,
+            requer_login: true,
+          })
+        );
+      }
+
+      try {
+        // Importar serviço de refresh
+        const {
+          refreshTokenService,
+        } = require("../services/auth/refresh-token.service");
+
+        // Tentar fazer refresh
+        const resultado = await refreshTokenService.refresh(refreshToken);
+
+        // Retornar novos tokens nos headers
+        res.setHeader("X-New-Access-Token", resultado.tokenAcesso.token);
+        res.setHeader("X-New-Refresh-Token", resultado.refreshToken.token);
+
+        // Decodificar novo token e continuar
+        const decodedNovo = jwt.verify(
+          resultado.tokenAcesso.token,
+          jwtSecret
+        ) as Claims;
+
+        // Buscar dados da pessoa com novo token
+        const pessoaNova = await pessoaService.obterDadosConta(
+          decodedNovo.Usu_Id
+        );
+
+        if (!pessoaNova) {
+          return res.status(401).json(
+            respostaErro({
+              mensagem: "Usuário não encontrado.",
+              codigoRetorno: 401,
+              requer_login: true,
+            })
+          );
+        }
+
+        req.user = {
+          Usu_Id: pessoaNova.id,
+          Usu_Na: pessoaNova.nome,
+          Email: pessoaNova.email,
+          Dt_Ex: decodedNovo.Dt_Ex,
+          Idp: decodedNovo.Idp,
+          iss: decodedNovo.iss,
+          aud: decodedNovo.aud,
+          Ss_Id: decodedNovo.Ss_Id,
+        };
+
+        // Processar token de sala se existir
+        if (tokenSala) {
+          try {
+            const decodedTokenSala = jwt.verify(
+              tokenSala,
+              jwtSecret
+            ) as ClaimsAuthSala;
+
+            req.sala = {
+              Sala_Id: decodedTokenSala.Sala_Id,
+              Sala_Co: decodedTokenSala.Sala_Co,
+              Sala_titulo: decodedTokenSala.Sala_titulo,
+              Role: decodedTokenSala.Role,
+              Ss_Sl_Id: decodedTokenSala.Ss_Sl_Id,
+              Dt_Ex: decodedTokenSala.Dt_Ex,
+              Usu_Id: decodedTokenSala.Usu_Id,
+              Usu_Na: decodedTokenSala.Usu_Na,
+            };
+          } catch (error) {
+            console.warn("Token de sala inválido, ignorando:", error);
+          }
+        }
+
+        console.log("✅ Refresh automático realizado (sessão expirou)");
+        return next();
+      } catch (refreshError) {
+        console.error("Erro ao fazer refresh (sessão expirou):", refreshError);
+        return res.status(401).json(
+          respostaErro({
+            mensagem: "Sessão expirada. Faça login novamente.",
+            codigoRetorno: 401,
+            requer_login: true,
+          })
+        );
+      }
     }
 
     const pessoa = await pessoaService.obterDadosConta(decoded.Usu_Id);

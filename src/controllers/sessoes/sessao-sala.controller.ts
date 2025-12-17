@@ -7,8 +7,9 @@ export const sessaoSalaController = {
     try {
       const sala_id = req.params.id;
       const pessoa_id = req.user?.Usu_Id as string;
+      const { visitantes } = req.body; // Array de IDs de pessoas visitantes
 
-      const sessao = await sessaoSalaService.criarSessao(sala_id, pessoa_id);
+      const sessao = await sessaoSalaService.criarSessao(sala_id, pessoa_id, visitantes);
 
       res.status(201).json(
         respostaSucesso({
