@@ -32,7 +32,7 @@ router.post(
   "/:salaId/historias/durante-sessao",
   validateHandler,
   authGuard,
-  salaAuthGuard, // Valida token de sala
+  salaAuthGuard,
   salaPermissaoGuard([0, 1]), // Dono ou admin
   historiaSalaController.adicionarDuranteSessao
 );
