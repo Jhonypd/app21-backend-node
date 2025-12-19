@@ -3,7 +3,7 @@ import { prismaClient } from "../lib/prisma";
 export interface CriarHistoriaSalaDTO {
   sala_id: string;
   titulo: string;
-  descricao?: string;
+  descricao?: string | null;
   criado_por: string;
 }
 

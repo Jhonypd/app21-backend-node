@@ -154,6 +154,7 @@ export const salaRepository = {
                   select: {
                     id: true,
                     titulo: true,
+                    descricao: true,
                   },
                 },
                 votos: {

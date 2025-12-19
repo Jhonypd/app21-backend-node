@@ -48,21 +48,23 @@ class HistoriaSalaService {
     criado_por: string;
   }) {
     // Verificar se sala existe e tem sessão ativa
-    const sala = await salaRepository.obterPorId(dados.sala_id);
+    const sala = await salaRepository.obterPorId(dados.sala_id, false);
     if (!sala) {
       throw new Error("Sala não encontrada");
     }
 
-    if (!sala.sessao_ativa_id) {
+    if (!sala.sessoes.filter((s) => s)) {
       throw new Error("Sala não possui sessão ativa");
     }
 
     // Criar história
     const historia = await historiaSalaRepository.criar(dados);
 
+    // const salaAtiva = sala.sessoes.find((s)=> s.id )
+
     // Vincular à sessão ativa
     await historiaSessaoRepository.inserir({
-      sessao_id: sala.sessao_ativa_id,
+      sessao_id: sala.sessoes[0].id,
       historia_id: historia.id,
     });
 

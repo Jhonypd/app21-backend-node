@@ -28,17 +28,37 @@ export interface AlterarSalaProps {
 
 export const salaService = {
   async geradorCodigoUnico(tamanho: number = 6): Promise<string> {
-    const ALFABETO = "ABCDEFGHJKMNPQRSTUVWXYZ23456789";
-    let codigo = "";
-
-    for (let i = 0; i < tamanho; i++) {
-      const index = Math.floor(Math.random() * ALFABETO.length);
-      codigo += ALFABETO[index];
+    if (tamanho < 2) {
+      throw new Error(
+        "O tamanho mínimo deve ser 2 para conter letras e números."
+      );
     }
 
-    return codigo;
-  },
+    const LETRAS = "ABCDEFGHJKMNPQRSTUVWXYZ";
+    const NUMEROS = "23456789";
+    const TODOS = LETRAS + NUMEROS;
 
+    const resultado: string[] = [];
+
+    // Garante pelo menos uma letra
+    resultado.push(LETRAS[Math.floor(Math.random() * LETRAS.length)]);
+
+    // Garante pelo menos um número
+    resultado.push(NUMEROS[Math.floor(Math.random() * NUMEROS.length)]);
+
+    // Preenche o restante
+    for (let i = 2; i < tamanho; i++) {
+      resultado.push(TODOS[Math.floor(Math.random() * TODOS.length)]);
+    }
+
+    // Embaralha para evitar padrão previsível
+    for (let i = resultado.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [resultado[i], resultado[j]] = [resultado[j], resultado[i]];
+    }
+
+    return resultado.join("");
+  },
   async inserir({
     titulo,
     senha,
@@ -338,6 +358,7 @@ export const salaService = {
       sessaoAtiva.historias?.map((historiaSessao) => ({
         id: historiaSessao.historia.id,
         titulo: historiaSessao.historia.titulo,
+        descricao: historiaSessao.historia.descricao,
       })) || [];
 
     // Buscar votos apenas da história ATUAL (historia_atual_id)
