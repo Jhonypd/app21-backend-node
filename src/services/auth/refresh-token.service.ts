@@ -33,11 +33,11 @@ export const refreshTokenService = {
       new Date(dataTokenRefresh.Dt_Ex)
     );
 
-    console.log("🔑 [refreshTokenService] Refresh token criado no banco:", {
-      sessaoId: sessionId,
-      expiracao: dataTokenRefresh.Dt_Ex,
-      tokenId: refreshToken.id,
-    });
+    // console.log("🔑 [refreshTokenService] Refresh token criado no banco:", {
+    //   sessaoId: sessionId,
+    //   expiracao: dataTokenRefresh.Dt_Ex,
+    //   tokenId: refreshToken.id,
+    // });
 
     return { token: gerarRefreshToken, dataExpiracao: dataTokenRefresh.Dt_Ex };
   },
@@ -47,24 +47,24 @@ export const refreshTokenService = {
     ip?: string,
     userAgent?: string
   ) {
-    console.log("🔄 [refreshTokenService] Iniciando revalidação...");
+    // console.log("🔄 [refreshTokenService] Iniciando revalidação...");
 
     const refreshTokenDecoded = decodeToken<ClaimsRefreshToken>(refreshToken);
 
-    console.log("🔍 [refreshTokenService] Token decodificado:", {
-      Usu_Id: refreshTokenDecoded.Usu_Id,
-      Ss_Id: refreshTokenDecoded.Ss_Id,
-      Dt_Ex: refreshTokenDecoded.Dt_Ex,
-    });
+    // console.log("🔍 [refreshTokenService] Token decodificado:", {
+    //   Usu_Id: refreshTokenDecoded.Usu_Id,
+    //   Ss_Id: refreshTokenDecoded.Ss_Id,
+    //   Dt_Ex: refreshTokenDecoded.Dt_Ex,
+    // });
 
     const buscaRefreshTokenBanco =
       await RefreshTokenRepository.buscarPorSessaoId(refreshTokenDecoded.Ss_Id);
 
-    console.log("🔍 [refreshTokenService] Busca no banco:", {
-      encontrado: !!buscaRefreshTokenBanco,
-      revogado: buscaRefreshTokenBanco?.revogado_em,
-      expiracao: buscaRefreshTokenBanco?.expiracao,
-    });
+    // console.log("🔍 [refreshTokenService] Busca no banco:", {
+    //   encontrado: !!buscaRefreshTokenBanco,
+    //   revogado: buscaRefreshTokenBanco?.revogado_em,
+    //   expiracao: buscaRefreshTokenBanco?.expiracao,
+    // });
 
     if (!buscaRefreshTokenBanco) {
       console.error(
@@ -78,7 +78,7 @@ export const refreshTokenService = {
       buscaRefreshTokenBanco?.token_hash
     );
 
-    console.log("🔍 [refreshTokenService] Validação hash:", validaTokenDoBb);
+    // console.log("🔍 [refreshTokenService] Validação hash:", validaTokenDoBb);
 
     if (!validaTokenDoBb) {
       console.error("❌ [refreshTokenService] Hash do token não confere!");

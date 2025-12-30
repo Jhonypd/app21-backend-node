@@ -216,12 +216,16 @@ export const salaRepository = {
           },
         },
         sessoes: {
-          where: {
-            ativa: true,
-          },
+          // where: {
+          //   ativa: true,
+          // },
           select: {
             id: true,
             criada_em: true,
+            ativa: true,
+            iniciada_por: true,
+            encerrada_por: true,
+            data_encerramento: true,
             _count: {
               select: {
                 participantes: true,

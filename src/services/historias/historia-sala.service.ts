@@ -53,14 +53,13 @@ class HistoriaSalaService {
       throw new Error("Sala não encontrada");
     }
 
-    if (!sala.sessoes.filter((s) => s)) {
+    console.log(sala.sessoes[0]);
+    if (sala.sessoes.length === 0) {
       throw new Error("Sala não possui sessão ativa");
     }
 
     // Criar história
     const historia = await historiaSalaRepository.criar(dados);
-
-    // const salaAtiva = sala.sessoes.find((s)=> s.id )
 
     // Vincular à sessão ativa
     await historiaSessaoRepository.inserir({

@@ -31,11 +31,11 @@ export const authGuard = async (
   const authHeader = req.headers.authorization;
   const authSala = req.headers["x-token-sala"] as string | undefined;
 
-  console.log("🔍 [authGuard] Headers recebidos:", {
-    hasAuthorization: !!authHeader,
-    hasRefreshToken: !!req.headers["x-refresh-token"],
-    hasTokenSala: !!authSala,
-  });
+  // console.log("🔍 [authGuard] Headers recebidos:", {
+  //   hasAuthorization: !!authHeader,
+  //   hasRefreshToken: !!req.headers["x-refresh-token"],
+  //   hasTokenSala: !!authSala,
+  // });
 
   if (authSala) {
     tokenSala = authSala;
@@ -88,13 +88,13 @@ export const authGuard = async (
       // ✅ Apenas header X-Refresh-Token
       const refreshToken = req.headers["x-refresh-token"] as string;
 
-      console.log("⏰ [authGuard] Sessão expirada, tentando refresh:", {
-        hasRefreshToken: !!refreshToken,
-        refreshTokenPreview: refreshToken
-          ? `${refreshToken.substring(0, 20)}...`
-          : "undefined",
-        sessaoExpiracao: sessaoUsuario.expiracao,
-      });
+      // console.log("⏰ [authGuard] Sessão expirada, tentando refresh:", {
+      //   hasRefreshToken: !!refreshToken,
+      //   refreshTokenPreview: refreshToken
+      //     ? `${refreshToken.substring(0, 20)}...`
+      //     : "undefined",
+      //   sessaoExpiracao: sessaoUsuario.expiracao,
+      // });
 
       if (!refreshToken) {
         return res.status(401).json(
@@ -174,7 +174,7 @@ export const authGuard = async (
           }
         }
 
-        console.log("✅ Refresh automático realizado (sessão expirou)");
+        // console.log("✅ Refresh automático realizado (sessão expirou)");
         return next();
       } catch (refreshError) {
         console.error("Erro ao fazer refresh (sessão expirou):", refreshError);
@@ -256,12 +256,12 @@ export const authGuard = async (
       // ✅ Apenas header X-Refresh-Token
       const refreshToken = req.headers["x-refresh-token"] as string;
 
-      console.log("⚠️ [authGuard] Token expirado, tentando refresh:", {
-        hasRefreshToken: !!refreshToken,
-        refreshTokenPreview: refreshToken
-          ? `${refreshToken.substring(0, 20)}...`
-          : "undefined",
-      });
+      // console.log("⚠️ [authGuard] Token expirado, tentando refresh:", {
+      //   hasRefreshToken: !!refreshToken,
+      //   refreshTokenPreview: refreshToken
+      //     ? `${refreshToken.substring(0, 20)}...`
+      //     : "undefined",
+      // });
 
       if (!refreshToken) {
         return res.status(401).json(

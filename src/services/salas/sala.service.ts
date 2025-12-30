@@ -1,7 +1,7 @@
 import { hash } from "../../lib/hash";
 import { salaRepository } from "../../repositories/sala.repository";
 import { criptografia } from "../../lib/criptografia";
-import { addHours, format } from "date-fns";
+import { addHours, format, formatISO } from "date-fns";
 import { ClaimsAuthSala, geradorTokenSala } from "../../lib/jwt";
 import { ptBR } from "date-fns/locale";
 import { participanteSalaService } from "../participantes/participante-sala.service";
@@ -228,13 +228,10 @@ export const salaService = {
           : sala.participantes[0]?.role ?? null; // Admin(1), Membro(2) ou null (já filtrado por pessoaId no repository)
 
       // Verificar se tem sessão ativa
-      const temSessaoAtiva = sala.sessoes && sala.sessoes.length > 0;
-      const sessaoAtiva = temSessaoAtiva ? sala.sessoes[0] : null;
-
-      // Se tem sessão ativa, verificar se tem participantes
-      const temParticipantes = sessaoAtiva
-        ? sessaoAtiva._count.participantes > 0
-        : false;
+      const temSessaoAtiva =
+        sala.sessoes && sala.sessoes.length > 0 && sala.sessoes[0].ativa;
+      const ultimaSessaoAtiva =
+        sala.sessoes.length > 0 ? sala.sessoes[0] : null;
 
       return {
         id: sala.id,
@@ -251,12 +248,10 @@ export const salaService = {
         membros: sala._count.participantes,
         meuRole,
         temSessaoAtiva,
-        status: temParticipantes ? "online" : null,
-        data_ultima_sessao:
-          sessaoAtiva?.criada_em &&
-          format(new Date(sessaoAtiva.criada_em), "dd/MM/yyyy HH:mm:ss", {
-            locale: ptBR,
-          }),
+        status: temSessaoAtiva ? "online" : "offline",
+        data_ultima_sessao: temSessaoAtiva
+          ? ultimaSessaoAtiva.criada_em
+          : ultimaSessaoAtiva.data_encerramento,
       };
     });
     return salaFormatada;

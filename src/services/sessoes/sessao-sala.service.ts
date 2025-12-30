@@ -8,8 +8,23 @@ import { pessoaRepository } from "../../repositories/pessoa.repository";
 import emailService from "../mail/mail.service";
 import { criptografia } from "../../lib/criptografia";
 
+interface CriarHistoriaDTO {
+  titulo: string;
+  descricao?: string;
+}
+
 export const sessaoSalaService = {
-  async criarSessao(sala_id: string, pessoa_id: string, visitantes?: string[]) {
+  async criarSessao(
+    sala_id: string,
+    pessoa_id: string,
+    visitantes?: string[],
+    historias?: CriarHistoriaDTO[]
+  ) {
+    // Validar que histórias foram fornecidas
+    if (!historias || historias.length === 0) {
+      throw new Error("É necessário adicionar pelo menos uma história para iniciar a sessão.");
+    }
+
     // Verificar se a sala existe
     const sala = await salaRepository.obterPorId(sala_id, false);
     if (!sala) {
@@ -68,6 +83,29 @@ export const sessaoSalaService = {
           },
         },
       });
+
+      // 3. Criar histórias e vincular à sessão
+      if (historias && historias.length > 0) {
+        for (const historia of historias) {
+          // Criar HistoriaSala
+          const historiaCriada = await prisma.historiaSala.create({
+            data: {
+              sala_id,
+              titulo: historia.titulo,
+              descricao: historia.descricao || null,
+              criado_por: pessoa_id,
+            },
+          });
+
+          // Criar HistoriaSessao (vinculação)
+          await prisma.historiaSessao.create({
+            data: {
+              sessao_id: sessao.id,
+              historia_id: historiaCriada.id,
+            },
+          });
+        }
+      }
 
       return sessao;
     });

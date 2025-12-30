@@ -14,19 +14,15 @@ export const votosController = {
         throw new Error("historia_id é obrigatório.");
       }
 
-      // Buscar ou criar HistoriaSessao
-      let historiaSessao =
+      // Buscar HistoriaSessao (deve existir - criada junto com a sessão)
+      const historiaSessao =
         await historiaSessaoRepository.obterPorSessaoEHistoria(
           sessao_id,
           historia_id
         );
 
       if (!historiaSessao) {
-        // Criar HistoriaSessao se não existir
-        historiaSessao = await historiaSessaoRepository.inserir({
-          sessao_id,
-          historia_id,
-        });
+        throw new Error("História não encontrada na sessão. As histórias devem ser adicionadas ao criar a sessão.");
       }
 
       // Registrar o voto
