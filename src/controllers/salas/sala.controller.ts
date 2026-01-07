@@ -50,25 +50,6 @@ export const salaController = {
     }
   },
 
-  async deleteSala(req: Request, res: Response) {
-    try {
-      const idSala = req.header("IdSala");
-
-      const pessoaId = req.user?.Usu_Id as string;
-
-      await salaService.delete(idSala as string, pessoaId);
-
-      res.json(
-        respostaSucesso({
-          resultado: {},
-          mensagem: "Sala deletada com sucesso.",
-        })
-      );
-    } catch (error: any) {
-      res.status(500).json(respostaErro({ mensagem: error.message }));
-    }
-  },
-
   async listarSalas(req: Request, res: Response) {
     try {
       const pessoaId = req.user?.Usu_Id as string;

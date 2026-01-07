@@ -1,7 +1,7 @@
 import { hash } from "../../lib/hash";
 import { salaRepository } from "../../repositories/sala.repository";
 import { criptografia } from "../../lib/criptografia";
-import { addHours, format, formatISO } from "date-fns";
+import { addHours, format } from "date-fns";
 import { ClaimsAuthSala, geradorTokenSala } from "../../lib/jwt";
 import { ptBR } from "date-fns/locale";
 import { participanteSalaService } from "../participantes/participante-sala.service";
@@ -189,19 +189,6 @@ export const salaService = {
     );
 
     return salaAtualizada;
-  },
-
-  async delete(id: string, pessoaId: string) {
-    const salaExistente = await salaRepository.obterPorId(id, true, pessoaId);
-    if (!salaExistente) {
-      throw new Error("Sala não encontrada.");
-    }
-
-    const salaDeletada = await salaRepository.delete(id, pessoaId);
-    if (!salaDeletada) {
-      throw new Error("Erro ao deletar a sala.");
-    }
-    return salaDeletada.id;
   },
 
   async listar(

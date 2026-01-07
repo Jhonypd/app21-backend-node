@@ -15,6 +15,7 @@ import { validateHandler } from "../../middlewares/handleValidate";
 
 const router = Router();
 
+// POST /salas/inserir - Criar nova sala
 router.post(
   "/inserir",
   salaInserirValidations(),
@@ -23,20 +24,13 @@ router.post(
   salaController.criarSalas
 );
 
+// PUT /salas/alterar/:id - Alterar dados da sala
 router.put(
   "/alterar/:id",
   salaAlterarValidations(),
   validateHandler,
   authGuard,
   salaController.alterarSala
-);
-
-router.delete(
-  "/delete",
-  salaDeleteValidations(),
-  validateHandler,
-  authGuard,
-  salaController.deleteSala
 );
 
 // DELETE /salas/:id - Excluir sala (soft delete - apenas dono)
