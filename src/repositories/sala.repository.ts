@@ -191,6 +191,18 @@ export const salaRepository = {
           { participantes: { some: { pessoa_id: pessoaId } } },
           { titulo: { contains: valorPesquisa, mode: "insensitive" } },
           { codigo: { contains: valorPesquisa, mode: "insensitive" } },
+          {
+            sessoes: {
+              some: {
+                participantes: {
+                  some: {
+                    pessoa_id: pessoaId,
+                    // autorizado: true, // verificar se deve filtrar apenas por autorizado
+                  },
+                },
+              },
+            },
+          },
         ],
       },
       select: {
