@@ -4,6 +4,7 @@ interface ParticipanteSessaoInserirData {
   sessao_id: string;
   pessoa_id: string;
   autorizado?: boolean;
+  participa_votacao?: boolean;
 }
 
 export const participanteSessaoRepository = {
@@ -13,6 +14,7 @@ export const participanteSessaoRepository = {
         sessao_id: data.sessao_id,
         pessoa_id: data.pessoa_id,
         autorizado: data.autorizado ?? false,
+        participa_votacao: data.participa_votacao ?? true,
       },
       include: {
         pessoa: {
@@ -100,7 +102,7 @@ export const participanteSessaoRepository = {
   atualizar: (
     sessao_id: string,
     pessoa_id: string,
-    dados: { autorizado?: boolean; online?: boolean }
+    dados: { autorizado?: boolean; online?: boolean; participa_votacao?: boolean }
   ) =>
     prismaClient.participanteSessao.update({
       where: {

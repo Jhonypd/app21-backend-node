@@ -366,7 +366,14 @@ export const salaService = {
       inativo: boolean;
       role: number;
       online: boolean;
+      participa_votacao?: boolean;
     }> = [];
+
+    // Criar mapa de participa_votacao dos ParticipanteSessao
+    const participaVotacaoMap = new Map<string, boolean>();
+    sessaoAtiva.participantes?.forEach((ps) => {
+      participaVotacaoMap.set(ps.pessoa.id, ps.participa_votacao ?? true);
+    });
 
     // 1. Adicionar participantes PERMANENTES (têm ParticipanteSala)
     sala.participantes.forEach((participante) => {
@@ -376,6 +383,7 @@ export const salaService = {
         inativo: participante.pessoa.inativo,
         role: participante.role, // 0=Dono, 1=Admin, 2=Membro
         online: participante.online, // Status real do ParticipanteSala
+        participa_votacao: participaVotacaoMap.get(participante.pessoa.id),
       });
     });
 
@@ -395,6 +403,7 @@ export const salaService = {
           inativo: participanteSessao.pessoa.inativo,
           role: 3, // Visitante sempre role 3
           online: true, // Visitante sempre online (se está na sessão ativa)
+          participa_votacao: participanteSessao.participa_votacao ?? true,
         });
       }
     });
@@ -846,5 +855,77 @@ export const salaService = {
     await salaRepository.atualizarStatus(sala_id, true); // inativo = true
 
     return { sucesso: true, mensagem: "Sala excluída com sucesso." };
+  },
+
+  async selecionarHistoriaAtual(
+    sala_id: string,
+    historia_id: string,
+    pessoa_id: string
+  ) {
+    const { historiaSalaRepository } = await import(
+      "../../repositories/historia-sala.repository"
+    );
+    const { historiaSessaoRepository } = await import(
+      "../../repositories/historia-sessao.repository"
+    );
+
+    // Validar sala
+    const sala = await salaRepository.obterPorId(sala_id, false);
+    if (!sala) {
+      throw new Error("Sala não encontrada");
+    }
+
+    // Validar permissão (Dono ou Admin)
+    const isDono = sala.criado_por === pessoa_id;
+    let isAdmin = false;
+
+    if (!isDono) {
+      const participante = await participanteSalaRepository.obterPorSalaEPessoa(
+        sala_id,
+        pessoa_id
+      );
+      isAdmin = participante?.role === 1;
+    }
+
+    if (!isDono && !isAdmin) {
+      throw new Error(
+        "Apenas dono ou administrador podem alterar a história atual"
+      );
+    }
+
+    // Validar que história pertence à sala
+    const historia = await historiaSalaRepository.obterPorId(historia_id);
+    if (!historia || historia.sala_id !== sala_id) {
+      throw new Error("História não pertence a esta sala");
+    }
+
+    // Verificar se está vinculada à sessão ativa
+    const sessaoAtiva =
+      sala.sessoes && sala.sessoes.length > 0 ? sala.sessoes[0] : null;
+    if (sessaoAtiva) {
+      const vinculada = await historiaSessaoRepository.obterPorSessaoEHistoria(
+        sessaoAtiva.id,
+        historia_id
+      );
+      if (!vinculada) {
+        throw new Error("História não está vinculada à sessão ativa");
+      }
+    }
+
+    // Atualizar sala
+    await salaRepository.atualizar(sala_id, {
+      historia_atual_id: historia_id,
+      votos_revelados: false, // Resetar ao trocar
+    });
+
+    // Emit socket para notificar todos os participantes
+    // TODO: Implementar socket service quando disponível
+    // const { socketService } = await import("../../sockets/socket.service");
+    // socketService.emitToRoom(`sala:${sala_id}`, "historia:alterada", {
+    //   historiaId: historia_id,
+    //   titulo: historia.titulo,
+    // });
+
+    return true;
   },
 };

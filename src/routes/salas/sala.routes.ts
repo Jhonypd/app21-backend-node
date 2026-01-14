@@ -133,6 +133,16 @@ router.post(
   sessaoSalaController.criarSessao
 );
 
+// PUT /salas/:id/historia-atual - Selecionar história atual (dono e admin)
+router.put(
+  "/:id/historia-atual",
+  validateHandler,
+  authGuard,
+  salaAuthGuard, // Valida token de sala
+  salaPermissaoGuard([0, 1]), // Apenas Dono e Admin
+  salaController.selecionarHistoriaAtual
+);
+
 // POST /salas/:id/sessoes/encerrar - Encerrar sessão (dono e admin)
 router.post(
   "/:id/sessoes/encerrar",

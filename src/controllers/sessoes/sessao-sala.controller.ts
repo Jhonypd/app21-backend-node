@@ -9,7 +9,12 @@ export const sessaoSalaController = {
       const pessoa_id = req.user?.Usu_Id as string;
       const { visitantes, historias } = req.body; // visitantes: Array de IDs | historias: Array de {titulo, descricao}
 
-      const sessao = await sessaoSalaService.criarSessao(sala_id, pessoa_id, visitantes, historias);
+      const sessao = await sessaoSalaService.criarSessao(
+        sala_id,
+        pessoa_id,
+        visitantes,
+        historias
+      );
 
       res.status(201).json(
         respostaSucesso({
@@ -206,6 +211,43 @@ export const sessaoSalaController = {
         respostaSucesso({
           resultado: resultado,
           mensagem: resultado.mensagem,
+        })
+      );
+    } catch (error: any) {
+      res.status(500).json(respostaErro({ mensagem: error.message }));
+    }
+  },
+
+  /**
+   * Atualizar flag participa_votacao do participante na sessão
+   * Permite Donos/Admin escolherem se vão votar ou não
+   */
+  async atualizarParticipaVotacao(req: Request, res: Response) {
+    try {
+      const sessao_id = req.params.id;
+      const pessoa_id = req.user?.Usu_Id as string;
+      const { participa_votacao } = req.body;
+
+      if (typeof participa_votacao !== "boolean") {
+        return res
+          .status(400)
+          .json(
+            respostaErro({ mensagem: "participa_votacao deve ser um boolean" })
+          );
+      }
+
+      const participante = await sessaoSalaService.atualizarParticipaVotacao(
+        sessao_id,
+        pessoa_id,
+        participa_votacao
+      );
+
+      res.json(
+        respostaSucesso({
+          resultado: { participante },
+          mensagem: `Participação ${
+            participa_votacao ? "ativada" : "desativada"
+          } com sucesso.`,
         })
       );
     } catch (error: any) {

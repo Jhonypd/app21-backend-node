@@ -37,4 +37,12 @@ router.get(
   sessaoSalaController.obterSessao
 );
 
+// PATCH /sessoes/:id/participa-votacao
+router.patch(
+  "/:id/participa-votacao",
+  validateHandler,
+  authGuard,
+  sessaoSalaController.atualizarParticipaVotacao
+);
+
 export default router;

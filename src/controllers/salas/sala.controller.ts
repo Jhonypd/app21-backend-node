@@ -316,4 +316,32 @@ export const salaController = {
       res.status(500).json(respostaErro({ mensagem: error.message }));
     }
   },
+
+  async selecionarHistoriaAtual(req: Request, res: Response) {
+    try {
+      const sala_id = req.params.id;
+      const pessoa_id = req.user?.Usu_Id as string;
+      const { historia_id } = req.body;
+
+      if (!historia_id) {
+        return res
+          .status(400)
+          .json(respostaErro({ mensagem: "historia_id é obrigatório" }));
+      }
+
+      await salaService.selecionarHistoriaAtual(
+        sala_id,
+        historia_id,
+        pessoa_id
+      );
+
+      res
+        .status(200)
+        .json(
+          respostaSucesso({ mensagem: "História atual atualizada com sucesso" })
+        );
+    } catch (error: any) {
+      res.status(500).json(respostaErro({ mensagem: error.message }));
+    }
+  },
 };

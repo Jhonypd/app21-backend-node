@@ -5,6 +5,8 @@ interface VotoInserirData {
   historia_sessao_id: string;
   pessoa_id: string;
   valor: number;
+  sessao_id?: string;
+  participa_votacao?: boolean;
 }
 
 export const votosService = {
@@ -22,6 +24,38 @@ export const votosService = {
 
     if (!historiaSessao) {
       throw new Error("História de sessão não encontrada.");
+    }
+
+    // ✅ NOVA VALIDAÇÃO: Se participa_votacao === false, não salvar voto
+    if (voto.participa_votacao === false) {
+      return {
+        temporario: true,
+        voto: {
+          historia_sessao_id: voto.historia_sessao_id,
+          pessoa_id: voto.pessoa_id,
+          valor: voto.valor,
+          data_voto: new Date(),
+        },
+        mensagem:
+          "Voto não registrado - Dono/Admin não está participando da votação",
+      };
+    }
+
+    // Atualizar flag participa_votacao no ParticipanteSessao se sessao_id foi fornecido
+    if (voto.sessao_id) {
+      const { participanteSessaoRepository } = await import(
+        "../../repositories/participante-sessao.repository"
+      );
+      try {
+        await participanteSessaoRepository.atualizar(
+          voto.sessao_id,
+          voto.pessoa_id,
+          { participa_votacao: true }
+        );
+      } catch (error) {
+        // Se não conseguir atualizar, continua (participante pode não existir ainda)
+        console.warn("Não foi possível atualizar participa_votacao:", error);
+      }
     }
 
     // Buscar todas as histórias da sessão

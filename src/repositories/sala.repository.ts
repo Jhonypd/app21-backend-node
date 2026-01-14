@@ -138,6 +138,7 @@ export const salaRepository = {
             participantes: {
               select: {
                 autorizado: true,
+                participa_votacao: true,
                 pessoa: {
                   select: {
                     id: true,
@@ -303,5 +304,20 @@ export const salaRepository = {
     prismaClient.sala.update({
       where: { id: sala_id },
       data: { inativo },
+    }),
+
+  /**
+   * Atualiza campos da sala (genérico)
+   */
+  atualizar: (
+    sala_id: string,
+    data: Partial<{
+      historia_atual_id: string | null;
+      votos_revelados: boolean;
+    }>
+  ) =>
+    prismaClient.sala.update({
+      where: { id: sala_id },
+      data,
     }),
 };

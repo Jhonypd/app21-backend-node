@@ -22,7 +22,9 @@ export const sessaoSalaService = {
   ) {
     // Validar que histórias foram fornecidas
     if (!historias || historias.length === 0) {
-      throw new Error("É necessário adicionar pelo menos uma história para iniciar a sessão.");
+      throw new Error(
+        "É necessário adicionar pelo menos uma história para iniciar a sessão."
+      );
     }
 
     // Verificar se a sala existe
@@ -490,5 +492,35 @@ export const sessaoSalaService = {
       sucesso: true,
       mensagem: "Participante removido da sessão com sucesso.",
     };
+  },
+
+  /**
+   * Atualizar flag participa_votacao do participante na sessão
+   * Usado quando Donos/Admin alternam o toggle de participação
+   */
+  async atualizarParticipaVotacao(
+    sessao_id: string,
+    pessoa_id: string,
+    participa_votacao: boolean
+  ) {
+    // Verificar se ParticipanteSessao existe
+    const participante =
+      await participanteSessaoRepository.obterPorSessaoEPessoa(
+        sessao_id,
+        pessoa_id
+      );
+
+    if (!participante) {
+      throw new Error("Participante não encontrado nesta sessão.");
+    }
+
+    // Atualizar flag participa_votacao
+    const participanteAtualizado = await participanteSessaoRepository.atualizar(
+      sessao_id,
+      pessoa_id,
+      { participa_votacao }
+    );
+
+    return participanteAtualizado;
   },
 };
