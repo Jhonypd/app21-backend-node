@@ -2,11 +2,9 @@ import { NextFunction, Request, Response } from "express";
 import jwt from "jsonwebtoken";
 import { Claims, ClaimsAuthSala } from "../lib/jwt";
 import { sessaoUsuarioService } from "../services/auth/sessao-usuario.service";
+import { refreshTokenService } from "../services/auth/refresh-token.service";
 import { pessoaService } from "../services/pessoas/pessoa.service";
 import { respostaErro } from "../utils/response";
-
-// IMPORTANTE: Adicionar no app.ts (CORS):
-// app.use(cors({ exposedHeaders: ['X-New-Access-Token', 'X-New-Refresh-Token'] }));
 
 declare global {
   namespace Express {
@@ -19,41 +17,131 @@ declare global {
 
 const jwtSecret = process.env.JWT_SECRET as string;
 
+// ==================== FUNÇÕES AUXILIARES ====================
+
+/**
+ * Processa e valida o token de sala (opcional)
+ */
+function processarTokenSala(tokenSala: string): ClaimsAuthSala | null {
+  try {
+    return jwt.verify(tokenSala, jwtSecret) as ClaimsAuthSala;
+  } catch (error) {
+    console.warn("Token de sala inválido, ignorando:", error);
+    return null;
+  }
+}
+
+/**
+ * Valida os dados da pessoa (inativo, email confirmado, etc)
+ */
+async function validarPessoa(usuarioId: string, res: Response): Promise<any> {
+  const pessoa = await pessoaService.obterDadosConta(usuarioId);
+
+  if (!pessoa) {
+    res.status(401).json(
+      respostaErro({
+        mensagem: "Usuário não encontrado.",
+        codigoRetorno: 401,
+        requer_login: true,
+      }),
+    );
+    return null;
+  }
+
+  if (pessoa.inativo) {
+    res
+      .status(403)
+      .json(respostaErro({ mensagem: "Usuário inativo.", codigoRetorno: 403 }));
+    return null;
+  }
+
+  if (!pessoa.email_confirmado) {
+    res.status(403).json(
+      respostaErro({
+        mensagem: "E-mail não confirmado.",
+        codigoRetorno: 403,
+      }),
+    );
+    return null;
+  }
+
+  return pessoa;
+}
+
+/**
+ * Tenta fazer refresh automático do token
+ */
+async function tentarRefreshAutomatico(
+  refreshToken: string | undefined,
+  res: Response,
+): Promise<{
+  claims: Claims;
+  novosTokens: { access: string; refresh: string };
+} | null> {
+  if (!refreshToken) {
+    res.status(401).json(
+      respostaErro({
+        mensagem: "Sessão expirada. Faça login novamente.",
+        codigoRetorno: 401,
+        requer_login: true,
+      }),
+    );
+    return null;
+  }
+
+  try {
+    const resultado = await refreshTokenService.refresh(refreshToken);
+    const claims = jwt.verify(resultado.tokenAcesso.token, jwtSecret) as Claims;
+
+    return {
+      claims,
+      novosTokens: {
+        access: resultado.tokenAcesso.token,
+        refresh: resultado.refreshToken.token,
+      },
+    };
+  } catch (error) {
+    console.error("Erro ao fazer refresh automático:", error);
+    res.status(401).json(
+      respostaErro({
+        mensagem: "Sessão expirada. Faça login novamente.",
+        codigoRetorno: 401,
+        requer_login: true,
+      }),
+    );
+    return null;
+  }
+}
+
+// ==================== MIDDLEWARE PRINCIPAL ====================
+
 export const authGuard = async (
   req: Request,
   res: Response,
-  next: NextFunction
+  next: NextFunction,
 ) => {
-  let token: string | undefined;
-  let tokenSala: string | undefined;
-
-  // Authorization
+  // ==================== 1. EXTRAÇÃO DOS TOKENS ====================
   const authHeader = req.headers.authorization;
-  const authSala = req.headers["x-token-sala"] as string | undefined;
+  const tokenSala = req.headers["x-token-sala"] as string | undefined;
+  const refreshToken = req.headers["x-refresh-token"] as string | undefined;
 
-  if (authSala) {
-    tokenSala = authSala;
-  }
-  if (authHeader) {
-    const [, t] = authHeader.split(" ");
-    token = t;
-  }
+  const token = authHeader?.split(" ")[1];
 
-  // ✅ Apenas headers - sem cookies
   if (!token) {
     return res
       .status(401)
       .json(
-        respostaErro({ mensagem: "Token não informado.", codigoRetorno: 401 })
+        respostaErro({ mensagem: "Token não informado.", codigoRetorno: 401 }),
       );
   }
 
   try {
+    // ==================== 2. VERIFICAÇÃO DO TOKEN ====================
     const decoded = jwt.verify(token, jwtSecret) as Claims;
 
-    // SESSION VALIDATION
+    // ==================== 3. VALIDAÇÃO DA SESSÃO ====================
     const sessaoUsuario = await sessaoUsuarioService.buscarSessaoAtivaPorId(
-      decoded.Ss_Id
+      decoded.Ss_Id,
     );
 
     if (!sessaoUsuario) {
@@ -62,7 +150,7 @@ export const authGuard = async (
           mensagem: "Sessão inválida.",
           codigoRetorno: 401,
           requer_login: true,
-        })
+        }),
       );
     }
 
@@ -72,132 +160,51 @@ export const authGuard = async (
           mensagem: "Sessão expirada ou usuario logado em outro dispositivo.",
           codigoRetorno: 401,
           requer_login: true,
-        })
+        }),
       );
     }
 
-    // ✅ CORREÇÃO: Se sessão expirou, tentar refresh automático
-    // Não forçar TokenExpiredError - fazer refresh diretamente
+    // ==================== 4. VERIFICAR SE SESSÃO EXPIROU ====================
     if (sessaoUsuario.expiracao < new Date()) {
-      // ✅ Apenas header X-Refresh-Token
-      const refreshToken = req.headers["x-refresh-token"] as string;
+      const resultado = await tentarRefreshAutomatico(refreshToken, res);
+      if (!resultado) return; // Resposta já enviada
 
-      if (!refreshToken) {
-        return res.status(401).json(
-          respostaErro({
-            mensagem: "Sessão expirada. Faça login novamente.",
-            codigoRetorno: 401,
-            requer_login: true,
-          })
-        );
+      const { claims, novosTokens } = resultado;
+
+      // Validar pessoa com novo token
+      const pessoa = await validarPessoa(claims.Usu_Id, res);
+      if (!pessoa) return; // Resposta já enviada
+
+      // Configurar req.user com dados atualizados
+      req.user = {
+        Usu_Id: pessoa.id,
+        Usu_Na: pessoa.nome,
+        Email: pessoa.email,
+        Dt_Ex: claims.Dt_Ex,
+        Idp: claims.Idp,
+        iss: claims.iss,
+        aud: claims.aud,
+        Ss_Id: claims.Ss_Id,
+      };
+
+      // Anexar novos tokens nos headers
+      res.setHeader("X-New-Access-Token", novosTokens.access);
+      res.setHeader("X-New-Refresh-Token", novosTokens.refresh);
+
+      // Processar token de sala se existir
+      if (tokenSala) {
+        const salaDecoded = processarTokenSala(tokenSala);
+        if (salaDecoded) req.sala = salaDecoded;
       }
 
-      try {
-        // Importar serviço de refresh
-        const {
-          refreshTokenService,
-        } = require("../services/auth/refresh-token.service");
-
-        // Tentar fazer refresh
-        const resultado = await refreshTokenService.refresh(refreshToken);
-
-        // Retornar novos tokens nos headers
-        res.setHeader("X-New-Access-Token", resultado.tokenAcesso.token);
-        res.setHeader("X-New-Refresh-Token", resultado.refreshToken.token);
-
-        // Decodificar novo token e continuar
-        const decodedNovo = jwt.verify(
-          resultado.tokenAcesso.token,
-          jwtSecret
-        ) as Claims;
-
-        // Buscar dados da pessoa com novo token
-        const pessoaNova = await pessoaService.obterDadosConta(
-          decodedNovo.Usu_Id
-        );
-
-        if (!pessoaNova) {
-          return res.status(401).json(
-            respostaErro({
-              mensagem: "Usuário não encontrado.",
-              codigoRetorno: 401,
-              requer_login: true,
-            })
-          );
-        }
-
-        req.user = {
-          Usu_Id: pessoaNova.id,
-          Usu_Na: pessoaNova.nome,
-          Email: pessoaNova.email,
-          Dt_Ex: decodedNovo.Dt_Ex,
-          Idp: decodedNovo.Idp,
-          iss: decodedNovo.iss,
-          aud: decodedNovo.aud,
-          Ss_Id: decodedNovo.Ss_Id,
-        };
-
-        // Processar token de sala se existir
-        if (tokenSala) {
-          try {
-            const decodedTokenSala = jwt.verify(
-              tokenSala,
-              jwtSecret
-            ) as ClaimsAuthSala;
-
-            req.sala = {
-              Sala_Id: decodedTokenSala.Sala_Id,
-              Sala_Co: decodedTokenSala.Sala_Co,
-              Sala_titulo: decodedTokenSala.Sala_titulo,
-              Role: decodedTokenSala.Role,
-              Ss_Sl_Id: decodedTokenSala.Ss_Sl_Id,
-              Dt_Ex: decodedTokenSala.Dt_Ex,
-              Usu_Id: decodedTokenSala.Usu_Id,
-              Usu_Na: decodedTokenSala.Usu_Na,
-            };
-          } catch (error) {
-            console.warn("Token de sala inválido, ignorando:", error);
-          }
-        }
-
-        // console.log("✅ Refresh automático realizado (sessão expirou)");
-        return next();
-      } catch (refreshError) {
-        console.error("Erro ao fazer refresh (sessão expirou):", refreshError);
-        return res.status(401).json(
-          respostaErro({
-            mensagem: "Sessão expirada. Faça login novamente.",
-            codigoRetorno: 401,
-            requer_login: true,
-          })
-        );
-      }
+      return next();
     }
 
-    const pessoa = await pessoaService.obterDadosConta(decoded.Usu_Id);
+    // ==================== 5. VALIDAÇÃO DA PESSOA ====================
+    const pessoa = await validarPessoa(decoded.Usu_Id, res);
+    if (!pessoa) return; // Resposta já enviada
 
-    if (!pessoa)
-      return res.status(401).json(
-        respostaErro({
-          mensagem: "Usuário não encontrado.",
-          codigoRetorno: 401,
-          requer_login: true,
-        })
-      );
-    if (pessoa.inativo)
-      return res
-        .status(403)
-        .json(
-          respostaErro({ mensagem: "Usuário inativo.", codigoRetorno: 403 })
-        );
-    if (!pessoa.email_confirmado)
-      return res.status(403).json(
-        respostaErro({
-          mensagem: "E-mail não confirmado.",
-          codigoRetorno: 403,
-        })
-      );
-
+    // ==================== 6. CONFIGURAR REQ.USER ====================
     req.user = {
       Usu_Id: pessoa.id,
       Usu_Na: pessoa.nome,
@@ -209,93 +216,48 @@ export const authGuard = async (
       Ss_Id: decoded.Ss_Id,
     };
 
-    // Se token de sala está presente, apenas decodifica sem validar
-    // A validação será feita por salaAuthGuard quando necessário
+    // ==================== 7. PROCESSAR TOKEN DE SALA (OPCIONAL) ====================
     if (tokenSala) {
-      try {
-        const decodedTokenSala = jwt.verify(
-          tokenSala,
-          jwtSecret
-        ) as ClaimsAuthSala;
-
-        req.sala = {
-          Sala_Id: decodedTokenSala.Sala_Id,
-          Sala_Co: decodedTokenSala.Sala_Co,
-          Sala_titulo: decodedTokenSala.Sala_titulo,
-          Role: decodedTokenSala.Role,
-          Ss_Sl_Id: decodedTokenSala.Ss_Sl_Id,
-          Dt_Ex: decodedTokenSala.Dt_Ex,
-          Usu_Id: decodedTokenSala.Usu_Id,
-          Usu_Na: decodedTokenSala.Usu_Na,
-        };
-      } catch (error) {
-        // Token inválido, mas não bloqueia a requisição
-        // Apenas não anexa req.sala
-        console.warn("Token de sala inválido, ignorando:", error);
-      }
+      const salaDecoded = processarTokenSala(tokenSala);
+      if (salaDecoded) req.sala = salaDecoded;
     }
 
     next();
   } catch (error) {
-    // Token expirado - tentar refresh automático
+    // ==================== 8. TRATAMENTO DE TOKEN EXPIRADO ====================
     if (error instanceof jwt.TokenExpiredError) {
-      // ✅ Apenas header X-Refresh-Token
-      const refreshToken = req.headers["x-refresh-token"] as string;
+      const resultado = await tentarRefreshAutomatico(refreshToken, res);
+      if (!resultado) return; // Resposta já enviada
 
-      if (!refreshToken) {
-        return res.status(401).json(
-          respostaErro({
-            mensagem: "Token expirado. Faça login novamente.",
-            codigoRetorno: 401,
-            requer_login: true,
-          })
-        );
+      const { claims } = resultado;
+
+      // Configurar req.user com claims do novo token
+      req.user = {
+        Usu_Id: claims.Usu_Id,
+        Usu_Na: claims.Usu_Na,
+        Email: claims.Email,
+        Dt_Ex: claims.Dt_Ex,
+        Idp: claims.Idp,
+        iss: claims.iss,
+        aud: claims.aud,
+        Ss_Id: claims.Ss_Id,
+      };
+
+      // Anexar novos tokens nos headers
+      res.setHeader("X-New-Access-Token", resultado.novosTokens.access);
+      res.setHeader("X-New-Refresh-Token", resultado.novosTokens.refresh);
+
+      // Processar token de sala se existir
+      if (tokenSala) {
+        const salaDecoded = processarTokenSala(tokenSala);
+        if (salaDecoded) req.sala = salaDecoded;
       }
 
-      try {
-        // Importar serviço de refresh
-        const {
-          refreshTokenService,
-        } = require("../services/auth/refresh-token.service");
-
-        // Tentar fazer refresh
-        const resultado = await refreshTokenService.refresh(refreshToken);
-
-        // Retornar novos tokens nos headers
-        res.setHeader("X-New-Access-Token", resultado.tokenAcesso.token);
-        res.setHeader("X-New-Refresh-Token", resultado.refreshToken.token);
-
-        // Decodificar novo token e continuar
-        const decoded = jwt.verify(
-          resultado.tokenAcesso.token,
-          jwtSecret
-        ) as Claims;
-
-        req.user = {
-          Usu_Id: decoded.Usu_Id,
-          Usu_Na: decoded.Usu_Na,
-          Email: decoded.Email,
-          Dt_Ex: decoded.Dt_Ex,
-          Idp: decoded.Idp,
-          iss: decoded.iss,
-          aud: decoded.aud,
-          Ss_Id: decoded.Ss_Id,
-        };
-
-        return next();
-      } catch (refreshError) {
-        console.error("Erro ao fazer refresh automático:", refreshError);
-        return res.status(401).json(
-          respostaErro({
-            mensagem: "Sessão expirada. Faça login novamente.",
-            codigoRetorno: 401,
-            requer_login: true,
-          })
-        );
-      }
+      return next();
     }
 
-    console.error(error);
+    // ==================== 9. OUTROS ERROS ====================
+    console.error("Erro no authGuard:", error);
     return res
       .status(401)
       .json(respostaErro({ mensagem: "Token inválido.", codigoRetorno: 401 }));
