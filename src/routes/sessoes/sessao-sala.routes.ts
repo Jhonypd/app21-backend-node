@@ -10,7 +10,7 @@ router.post(
   "/:id/participantes",
   validateHandler,
   authGuard,
-  sessaoSalaController.adicionarParticipante
+  sessaoSalaController.adicionarParticipante,
 );
 
 // POST /sessoes/:id/revelar
@@ -18,7 +18,7 @@ router.post(
   "/:id/revelar",
   validateHandler,
   authGuard,
-  sessaoSalaController.revelarVotos
+  sessaoSalaController.revelarVotos,
 );
 
 // POST /sessoes/:id/resetar
@@ -26,7 +26,7 @@ router.post(
   "/:id/resetar",
   validateHandler,
   authGuard,
-  sessaoSalaController.resetarVotos
+  sessaoSalaController.resetarVotos,
 );
 
 // GET /sessoes/:id
@@ -34,7 +34,7 @@ router.get(
   "/:id",
   validateHandler,
   authGuard,
-  sessaoSalaController.obterSessao
+  sessaoSalaController.obterSessao,
 );
 
 // PATCH /sessoes/:id/participa-votacao
@@ -42,7 +42,15 @@ router.patch(
   "/:id/participa-votacao",
   validateHandler,
   authGuard,
-  sessaoSalaController.atualizarParticipaVotacao
+  sessaoSalaController.atualizarParticipaVotacao,
+);
+
+// GET /sessoes/:sessaoId/historias/:historiaId/votos - Obter votos de uma história específica
+router.get(
+  "/:sessaoId/historias/:historiaId/votos",
+  validateHandler,
+  authGuard,
+  sessaoSalaController.obterVotosPorHistoria,
 );
 
 export default router;

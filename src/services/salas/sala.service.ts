@@ -30,7 +30,7 @@ export const salaService = {
   async geradorCodigoUnico(tamanho: number = 6): Promise<string> {
     if (tamanho < 2) {
       throw new Error(
-        "O tamanho mínimo deve ser 2 para conter letras e números."
+        "O tamanho mínimo deve ser 2 para conter letras e números.",
       );
     }
 
@@ -93,7 +93,7 @@ export const salaService = {
           await participanteSalaService.adicionarParticipanteASala(
             novaSala.id,
             pessoaId,
-            0
+            0,
           );
 
           // Adicionar participantes permanentes (role 2 = Membro)
@@ -105,13 +105,13 @@ export const salaService = {
                   await participanteSalaService.adicionarParticipanteASala(
                     novaSala.id,
                     participanteId,
-                    2 // role 2 = Membro
+                    2, // role 2 = Membro
                   );
                 } catch (error) {
                   // Ignora erro se participante já existe ou não foi encontrado
                   console.error(
                     `Erro ao adicionar participante ${participanteId}:`,
-                    error
+                    error,
                   );
                 }
               }
@@ -147,7 +147,7 @@ export const salaService = {
       // Verificar se é Admin (role=1) - pode alterar apenas título
       const participante = await participanteSalaRepository.obterPorSalaEPessoa(
         id,
-        pessoaId
+        pessoaId,
       );
 
       if (!participante || participante.role !== 1) {
@@ -170,7 +170,7 @@ export const salaService = {
     if (data.senha !== undefined) {
       if (salaExistente.senha && !data.senha) {
         throw new Error(
-          "Não é possível remover a senha de uma sala privada. Defina uma nova senha."
+          "Não é possível remover a senha de uma sala privada. Defina uma nova senha.",
         );
       }
 
@@ -185,7 +185,7 @@ export const salaService = {
     const salaAtualizada = await salaRepository.alterar(
       id,
       pessoaId,
-      dadosParaAtualizar
+      dadosParaAtualizar,
     );
 
     return salaAtualizada;
@@ -195,7 +195,7 @@ export const salaService = {
     pessoaId: string,
     pagina: number,
     itensPagina: number,
-    valorPesquisa?: string
+    valorPesquisa?: string,
   ) {
     if (!pessoaId) {
       throw new Error("Id da pessoa é obrigatório");
@@ -205,14 +205,14 @@ export const salaService = {
       pessoaId,
       pagina,
       itensPagina,
-      valorPesquisa
+      valorPesquisa,
     );
     const salaFormatada = salas.map((sala: any) => {
       // Determinar o role do usuário atual na sala
       const meuRole =
         sala.criado_por === pessoaId
           ? 0 // Dono
-          : sala.participantes[0]?.role ?? null; // Admin(1), Membro(2) ou null (já filtrado por pessoaId no repository)
+          : (sala.participantes[0]?.role ?? null); // Admin(1), Membro(2) ou null (já filtrado por pessoaId no repository)
 
       // Verificar se tem sessão ativa
       const temSessaoAtiva =
@@ -294,8 +294,8 @@ export const salaService = {
                   nome: criptografia.descriptografar(voto.pessoa.nome),
                   inativo: voto.pessoa.inativo,
                 },
-              })) || []
-          ) || []
+              })) || [],
+          ) || [],
       ) || [];
 
     return {
@@ -321,7 +321,7 @@ export const salaService = {
 
   async obterDadosSessaoAtiva(codigo: string, pessoaId: string) {
     // Busca sala com sessão ativa e todos os dados relacionados
-    // undefined = não filtra por criador (permite participantes acessarem)
+
     const sala = await salaRepository.obterPorCodigo(codigo, true, undefined);
 
     if (!sala) {
@@ -345,7 +345,7 @@ export const salaService = {
 
     // Buscar votos apenas da história ATUAL (historia_atual_id)
     const historiaAtualSessao = sessaoAtiva.historias?.find(
-      (hs) => hs.historia.id === sala.historia_atual_id
+      (hs) => hs.historia.id === sala.historia_atual_id,
     );
 
     const votosHistoriaAtual =
@@ -390,7 +390,7 @@ export const salaService = {
     // 2. Adicionar VISITANTES (apenas ParticipanteSessao)
     // Buscar IDs dos permanentes para filtrar
     const idsParticipantesPermanentes = sala.participantes.map(
-      (p) => p.pessoa.id
+      (p) => p.pessoa.id,
     );
 
     // Buscar visitantes da sessão ativa (excluir permanentes)
@@ -436,7 +436,7 @@ export const salaService = {
     codigo: string,
     pessoaId: string,
     sessaoPessoaId: string,
-    senha?: string
+    senha?: string,
   ) {
     // Validações iniciais
     if (!pessoaId) throw new Error("Id da pessoa não fornecido.");
@@ -484,7 +484,7 @@ export const salaService = {
       const participanteSessao =
         await participanteSessaoRepository.obterPorSessaoEPessoa(
           sessaoAtiva.id,
-          pessoaId
+          pessoaId,
         );
 
       // Se não tem ParticipanteSessao, criar (caso excepcional)
@@ -501,7 +501,7 @@ export const salaService = {
       else if (!participanteSessao.autorizado) {
         // Se foi kickado/banido, não pode reentrar sem aprovação
         throw new Error(
-          "REQUER_APROVACAO:Você foi removido desta sessão. Aguarde aprovação do administrador para reentrar."
+          "REQUER_APROVACAO:Você foi removido desta sessão. Aguarde aprovação do administrador para reentrar.",
         );
       }
 
@@ -512,7 +512,7 @@ export const salaService = {
         await participanteSalaRepository.alterarParticipanteSalaOnline(
           sala.id,
           pessoaId,
-          true
+          true,
         );
       }
     }
@@ -520,7 +520,7 @@ export const salaService = {
     else if (tipoAcesso === 2) {
       if (!sessaoAtiva || !sessaoAtiva.ativa) {
         throw new Error(
-          "Não há sessão ativa no momento. Aguarde o dono ou admin iniciar uma sessão."
+          "Não há sessão ativa no momento. Aguarde o dono ou admin iniciar uma sessão.",
         );
       }
 
@@ -528,7 +528,7 @@ export const salaService = {
       const participanteSessao =
         await participanteSessaoRepository.obterPorSessaoEPessoa(
           sessaoAtiva.id,
-          pessoaId
+          pessoaId,
         );
 
       // Se não tem ParticipanteSessao ainda, cria (primeira entrada na sessão)
@@ -543,7 +543,7 @@ export const salaService = {
       else if (!participanteSessao.autorizado) {
         // Se foi kickado/banido, não pode reentrar sem aprovação
         throw new Error(
-          "REQUER_APROVACAO:Você foi removido desta sessão. Aguarde aprovação do administrador para reentrar."
+          "REQUER_APROVACAO:Você foi removido desta sessão. Aguarde aprovação do administrador para reentrar.",
         );
       }
       // Se já tem e está autorizado, pode entrar (saiu temporariamente)
@@ -555,7 +555,7 @@ export const salaService = {
         await participanteSalaRepository.alterarParticipanteSalaOnline(
           sala.id,
           pessoaId,
-          true
+          true,
         );
       }
     }
@@ -577,7 +577,7 @@ export const salaService = {
     // Gerar token
     const dataExpiracao = addHours(new Date(), 6);
     const nomeDescriptografado = await criptografia.descriptografar(
-      pessoa.nome
+      pessoa.nome,
     );
 
     const tokenPayload: ClaimsAuthSala = {
@@ -603,9 +603,8 @@ export const salaService = {
 
   async sairDaSala(sala_id: string, pessoa_id: string) {
     // Verificar se tem sessão ativa
-    const sessaoAtiva = await sessaoSalaService.obterSessaoAtivaPorSala(
-      sala_id
-    );
+    const sessaoAtiva =
+      await sessaoSalaService.obterSessaoAtivaPorSala(sala_id);
 
     if (!sessaoAtiva) {
       throw new Error("Nenhuma sessão ativa encontrada.");
@@ -615,7 +614,7 @@ export const salaService = {
     const participanteSessao =
       await participanteSessaoRepository.obterPorSessaoEPessoa(
         sessaoAtiva.id,
-        pessoa_id
+        pessoa_id,
       );
 
     if (!participanteSessao) {
@@ -634,7 +633,7 @@ export const salaService = {
       await participanteSalaRepository.alterarParticipanteSalaOnline(
         sala_id,
         pessoa_id,
-        false
+        false,
       );
     }
 
@@ -647,7 +646,7 @@ export const salaService = {
   async aprovarReentrada(
     sala_id: string,
     pessoa_id_aprovador: string,
-    pessoa_id_reentrada: string
+    pessoa_id_reentrada: string,
   ) {
     // Verificar se quem está aprovando é Dono ou Admin
     const sala = await salaRepository.obterPorId(sala_id, false);
@@ -662,21 +661,20 @@ export const salaService = {
       const participanteSala =
         await participanteSalaRepository.obterPorSalaEPessoa(
           sala_id,
-          pessoa_id_aprovador
+          pessoa_id_aprovador,
         );
       isAdmin = participanteSala?.role === 1;
     }
 
     if (!isDono && !isAdmin) {
       throw new Error(
-        "Apenas o dono ou administrador podem aprovar reentradas."
+        "Apenas o dono ou administrador podem aprovar reentradas.",
       );
     }
 
     // Verificar sessão ativa
-    const sessaoAtiva = await sessaoSalaService.obterSessaoAtivaPorSala(
-      sala_id
-    );
+    const sessaoAtiva =
+      await sessaoSalaService.obterSessaoAtivaPorSala(sala_id);
     if (!sessaoAtiva) {
       throw new Error("Nenhuma sessão ativa encontrada.");
     }
@@ -685,7 +683,7 @@ export const salaService = {
     const participanteSessao =
       await participanteSessaoRepository.obterPorSessaoEPessoa(
         sessaoAtiva.id,
-        pessoa_id_reentrada
+        pessoa_id_reentrada,
       );
 
     if (!participanteSessao) {
@@ -700,28 +698,28 @@ export const salaService = {
     await participanteSessaoRepository.atualizarAutorizacao(
       sessaoAtiva.id,
       pessoa_id_reentrada,
-      true
+      true,
     );
 
     // Marcar como online
     const participanteSala =
       await participanteSalaRepository.obterPorSalaEPessoa(
         sala_id,
-        pessoa_id_reentrada
+        pessoa_id_reentrada,
       );
 
     if (participanteSala) {
       await participanteSalaRepository.alterarParticipanteSalaOnline(
         sala_id,
         pessoa_id_reentrada,
-        true
+        true,
       );
     }
 
     // Buscar pessoa para gerar novo token
     const pessoa = await pessoaRepository.obterPorId(
       pessoa_id_reentrada,
-      false
+      false,
     );
     if (!pessoa) {
       throw new Error("Pessoa não encontrada.");
@@ -730,7 +728,7 @@ export const salaService = {
     // Gerar novo token
     const dataExpiracao = addHours(new Date(), 6);
     const nomeDescriptografado = await criptografia.descriptografar(
-      pessoa.nome
+      pessoa.nome,
     );
 
     const tipoAcesso = await determinarTipoAcesso(sala, pessoa_id_reentrada);
@@ -769,7 +767,7 @@ export const salaService = {
       // Verificar se é Admin (role=1)
       const participante = await participanteSalaRepository.obterPorSalaEPessoa(
         sala_id,
-        pessoa_id
+        pessoa_id,
       );
 
       if (
@@ -783,7 +781,7 @@ export const salaService = {
       const salaCompleta = await salaRepository.obterPorId(
         sala_id,
         true,
-        undefined
+        undefined,
       );
       if (!salaCompleta) {
         throw new Error("Sala não encontrada.");
@@ -839,7 +837,7 @@ export const salaService = {
     const totalSessoes = await sessaoSalaRepository.contarPorSala(sala_id);
     if (totalSessoes > 0) {
       throw new Error(
-        "Não é possível excluir sala com sessões criadas. Histórico deve ser preservado."
+        "Não é possível excluir sala com sessões criadas. Histórico deve ser preservado.",
       );
     }
 
@@ -847,7 +845,7 @@ export const salaService = {
     const totalVotos = await votosRepository.contarPorSala(sala_id);
     if (totalVotos > 0) {
       throw new Error(
-        "Não é possível excluir sala com votos registrados. Histórico deve ser preservado."
+        "Não é possível excluir sala com votos registrados. Histórico deve ser preservado.",
       );
     }
 
@@ -860,14 +858,12 @@ export const salaService = {
   async selecionarHistoriaAtual(
     sala_id: string,
     historia_id: string,
-    pessoa_id: string
+    pessoa_id: string,
   ) {
-    const { historiaSalaRepository } = await import(
-      "../../repositories/historia-sala.repository"
-    );
-    const { historiaSessaoRepository } = await import(
-      "../../repositories/historia-sessao.repository"
-    );
+    const { historiaSalaRepository } =
+      await import("../../repositories/historia-sala.repository");
+    const { historiaSessaoRepository } =
+      await import("../../repositories/historia-sessao.repository");
 
     // Validar sala
     const sala = await salaRepository.obterPorId(sala_id, false);
@@ -882,14 +878,14 @@ export const salaService = {
     if (!isDono) {
       const participante = await participanteSalaRepository.obterPorSalaEPessoa(
         sala_id,
-        pessoa_id
+        pessoa_id,
       );
       isAdmin = participante?.role === 1;
     }
 
     if (!isDono && !isAdmin) {
       throw new Error(
-        "Apenas dono ou administrador podem alterar a história atual"
+        "Apenas dono ou administrador podem alterar a história atual",
       );
     }
 
@@ -905,7 +901,7 @@ export const salaService = {
     if (sessaoAtiva) {
       const vinculada = await historiaSessaoRepository.obterPorSessaoEHistoria(
         sessaoAtiva.id,
-        historia_id
+        historia_id,
       );
       if (!vinculada) {
         throw new Error("História não está vinculada à sessão ativa");

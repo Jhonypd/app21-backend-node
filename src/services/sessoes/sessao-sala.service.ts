@@ -18,12 +18,12 @@ export const sessaoSalaService = {
     sala_id: string,
     pessoa_id: string,
     visitantes?: string[],
-    historias?: CriarHistoriaDTO[]
+    historias?: CriarHistoriaDTO[],
   ) {
     // Validar que histórias foram fornecidas
     if (!historias || historias.length === 0) {
       throw new Error(
-        "É necessário adicionar pelo menos uma história para iniciar a sessão."
+        "É necessário adicionar pelo menos uma história para iniciar a sessão.",
       );
     }
 
@@ -41,7 +41,7 @@ export const sessaoSalaService = {
       const participanteSala =
         await participanteSalaRepository.obterPorSalaEPessoa(
           sala_id,
-          pessoa_id
+          pessoa_id,
         );
       isAdmin = participanteSala?.role === 1;
     }
@@ -128,7 +128,7 @@ export const sessaoSalaService = {
         await participanteSalaRepository.alterarParticipanteSalaOnline(
           sala_id,
           pessoa_id,
-          true
+          true,
         );
       }
     }
@@ -154,9 +154,8 @@ export const sessaoSalaService = {
   },
 
   async encerrarSessao(sala_id: string, sessao_id: string, pessoa_id: string) {
-    const sessaoAtiva = await sessaoSalaRepository.obterSessaoAtivaPorSala(
-      sala_id
-    );
+    const sessaoAtiva =
+      await sessaoSalaRepository.obterSessaoAtivaPorSala(sala_id);
 
     if (!sessaoAtiva) {
       throw new Error("Nenhuma sessão ativa encontrada para esta sala.");
@@ -171,7 +170,7 @@ export const sessaoSalaService = {
       const participanteSala =
         await participanteSalaRepository.obterPorSalaEPessoa(
           sala_id,
-          pessoa_id
+          pessoa_id,
         );
       isAdmin = participanteSala?.role === 1;
     }
@@ -181,7 +180,7 @@ export const sessaoSalaService = {
       throw new Error(
         isDono || isAdmin
           ? "Apenas quem iniciou a sessão pode encerrá-la."
-          : "Apenas o dono ou administrador podem encerrar a sessão."
+          : "Apenas o dono ou administrador podem encerrar a sessão.",
       );
     }
 
@@ -193,7 +192,7 @@ export const sessaoSalaService = {
 
     // ✅ Desautorizar todos os ParticipanteSessao
     await participanteSessaoRepository.desautorizarTodosPorSessao(
-      sessaoAtiva.id
+      sessaoAtiva.id,
     );
 
     // TODO: Quando implementar Socket.IO, emitir evento:
@@ -212,7 +211,7 @@ export const sessaoSalaService = {
     const sala = await salaRepository.obterPorId(
       sessao.sala.id,
       false,
-      pessoa_id
+      pessoa_id,
     );
 
     if (!sala) {
@@ -232,7 +231,7 @@ export const sessaoSalaService = {
   async adicionarParticipante(
     sessao_id: string,
     pessoa_id: string,
-    autorizado: boolean = false
+    autorizado: boolean = false,
   ) {
     // Verificar se a sessão existe
     const sessao = await sessaoSalaRepository.obterPorId(sessao_id);
@@ -248,7 +247,7 @@ export const sessaoSalaService = {
     const participanteExistente =
       await participanteSessaoRepository.obterPorSessaoEPessoa(
         sessao_id,
-        pessoa_id
+        pessoa_id,
       );
 
     if (participanteExistente) {
@@ -257,7 +256,7 @@ export const sessaoSalaService = {
         return await participanteSessaoRepository.atualizarAutorizacao(
           sessao_id,
           pessoa_id,
-          autorizado
+          autorizado,
         );
       }
       return participanteExistente;
@@ -314,7 +313,7 @@ export const sessaoSalaService = {
   async adicionarVisitantes(
     sala_id: string,
     pessoa_ids: string[],
-    dono_id: string
+    dono_id: string,
   ) {
     // Verificar se quem está chamando é o dono
     const sala = await salaRepository.obterPorId(sala_id, false, dono_id);
@@ -323,9 +322,8 @@ export const sessaoSalaService = {
     }
 
     // Verificar se há sessão ativa
-    const sessaoAtiva = await sessaoSalaRepository.obterSessaoAtivaPorSala(
-      sala_id
-    );
+    const sessaoAtiva =
+      await sessaoSalaRepository.obterSessaoAtivaPorSala(sala_id);
     if (!sessaoAtiva) {
       throw new Error("Não há sessão ativa para adicionar visitantes.");
     }
@@ -352,7 +350,7 @@ export const sessaoSalaService = {
       // Verificar se já existe ParticipanteSessao
       const jaExiste = await participanteSessaoRepository.obterPorSessaoEPessoa(
         sessaoAtiva.id,
-        pessoaId
+        pessoaId,
       );
 
       if (!jaExiste) {
@@ -370,7 +368,7 @@ export const sessaoSalaService = {
             // Descriptografar dados para o email
             const nomeVisitante = criptografia.descriptografar(visitante.nome);
             const emailVisitante = criptografia.descriptografar(
-              visitante.email
+              visitante.email,
             );
             const nomeAnfitriao = criptografia.descriptografar(anfitriao.nome);
 
@@ -378,12 +376,12 @@ export const sessaoSalaService = {
             await emailService.sendEmailConviteSessao(
               { nome: nomeVisitante, email: emailVisitante },
               { titulo: sala.titulo, codigo: sala.codigo },
-              { nome: nomeAnfitriao }
+              { nome: nomeAnfitriao },
             );
           } catch (error) {
             console.error(
               `Erro ao enviar email para visitante ${pessoaId}:`,
-              error
+              error,
             );
             // Não bloqueia a adição do visitante se o email falhar
           }
@@ -402,9 +400,8 @@ export const sessaoSalaService = {
     }
 
     // Verificar se há sessão ativa
-    const sessaoAtiva = await sessaoSalaRepository.obterSessaoAtivaPorSala(
-      sala_id
-    );
+    const sessaoAtiva =
+      await sessaoSalaRepository.obterSessaoAtivaPorSala(sala_id);
     if (!sessaoAtiva) {
       throw new Error("Não há sessão ativa.");
     }
@@ -414,14 +411,14 @@ export const sessaoSalaService = {
       await participanteSalaRepository.obterPorSalaEPessoa(sala_id, pessoa_id);
     if (participanteSala) {
       throw new Error(
-        "Não é possível remover participante permanente. Use a rota de remoção de participantes."
+        "Não é possível remover participante permanente. Use a rota de remoção de participantes.",
       );
     }
 
     // Remover ParticipanteSessao
     return await participanteSessaoRepository.deletar(
       sessaoAtiva.id,
-      pessoa_id
+      pessoa_id,
     );
   },
 
@@ -438,12 +435,12 @@ export const sessaoSalaService = {
     sessao_id: string,
     pessoa_id: string,
     solicitante_id: string,
-    solicitante_role: 0 | 1 | 2 | 3
+    solicitante_role: 0 | 1 | 2 | 3,
   ) {
     // Validar que quem está kickando é dono ou admin
     if (solicitante_role !== 0 && solicitante_role !== 1) {
       throw new Error(
-        "Apenas dono ou administrador podem kickar participantes."
+        "Apenas dono ou administrador podem kickar participantes.",
       );
     }
 
@@ -473,7 +470,7 @@ export const sessaoSalaService = {
     const participante =
       await participanteSessaoRepository.obterPorSessaoEPessoa(
         sessao_id,
-        pessoa_id
+        pessoa_id,
       );
 
     if (!participante) {
@@ -501,13 +498,13 @@ export const sessaoSalaService = {
   async atualizarParticipaVotacao(
     sessao_id: string,
     pessoa_id: string,
-    participa_votacao: boolean
+    participa_votacao: boolean,
   ) {
     // Verificar se ParticipanteSessao existe
     const participante =
       await participanteSessaoRepository.obterPorSessaoEPessoa(
         sessao_id,
-        pessoa_id
+        pessoa_id,
       );
 
     if (!participante) {
@@ -518,9 +515,43 @@ export const sessaoSalaService = {
     const participanteAtualizado = await participanteSessaoRepository.atualizar(
       sessao_id,
       pessoa_id,
-      { participa_votacao }
+      { participa_votacao },
     );
 
     return participanteAtualizado;
+  },
+
+  /**
+   * Obter votos de uma história específica dentro de uma sessão
+   * Usado para carregar votos ao alternar entre histórias
+   */
+  async obterVotosPorHistoria(sessao_id: string, historia_id: string) {
+    // Buscar HistoriaSessao para obter os votos
+    const historiaSessao =
+      await historiaSessaoRepository.obterPorSessaoEHistoria(
+        sessao_id,
+        historia_id,
+      );
+
+    if (!historiaSessao) {
+      // Se não existe HistoriaSessao, retornar array vazio (história ainda não tem votos)
+      return [];
+    }
+
+    // Buscar votos da HistoriaSessao
+    const votos = await votosRepository.obterVotosPorHistoriaSessao(
+      historiaSessao.id,
+    );
+
+    // Formatar votos com dados descriptografados
+    return votos.map((voto) => ({
+      id: voto.id,
+      pessoa_id: voto.pessoa_id,
+      valor: voto.valor,
+      pessoa: {
+        nome: criptografia.descriptografar(voto.pessoa.nome),
+        inativo: voto.pessoa.inativo,
+      },
+    }));
   },
 };

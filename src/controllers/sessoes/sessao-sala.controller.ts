@@ -13,14 +13,14 @@ export const sessaoSalaController = {
         sala_id,
         pessoa_id,
         visitantes,
-        historias
+        historias,
       );
 
       res.status(201).json(
         respostaSucesso({
           resultado: { sessao },
           mensagem: "Sessão criada com sucesso.",
-        })
+        }),
       );
     } catch (error: any) {
       res.status(500).json(respostaErro({ mensagem: error.message }));
@@ -32,28 +32,27 @@ export const sessaoSalaController = {
       const pessoa_id = req.user?.Usu_Id as string;
 
       // Buscar sessão ativa da sala
-      const sessaoAtiva = await sessaoSalaService.obterSessaoAtivaPorSala(
-        sala_id
-      );
+      const sessaoAtiva =
+        await sessaoSalaService.obterSessaoAtivaPorSala(sala_id);
 
       if (!sessaoAtiva) {
         return res
           .status(400)
           .json(
-            respostaErro({ mensagem: "Nenhuma sessão ativa para encerrar." })
+            respostaErro({ mensagem: "Nenhuma sessão ativa para encerrar." }),
           );
       }
 
       const sessaoEncerradaId = await sessaoSalaService.encerrarSessao(
         sala_id,
         sessaoAtiva.id,
-        pessoa_id
+        pessoa_id,
       );
       res.json(
         respostaSucesso({
           resultado: { sessaoEncerradaId },
           mensagem: "Sessão encerrada com sucesso.",
-        })
+        }),
       );
     } catch (error: any) {
       res.status(500).json(respostaErro({ mensagem: error.message }));
@@ -66,13 +65,13 @@ export const sessaoSalaController = {
 
       const sessao = await sessaoSalaService.obterSessaoPorId(
         sessao_id,
-        pessoa_id
+        pessoa_id,
       );
 
       res.json(
         respostaSucesso({
           resultado: { sessao },
-        })
+        }),
       );
     } catch (error: any) {
       res.status(500).json(respostaErro({ mensagem: error.message }));
@@ -91,14 +90,14 @@ export const sessaoSalaController = {
       const participante = await sessaoSalaService.adicionarParticipante(
         sessao_id,
         pessoaIdParaAdicionar,
-        autorizado ?? false
+        autorizado ?? false,
       );
 
       res.status(201).json(
         respostaSucesso({
           resultado: { participante },
           mensagem: "Participante adicionado com sucesso.",
-        })
+        }),
       );
     } catch (error: any) {
       res.status(500).json(respostaErro({ mensagem: error.message }));
@@ -116,7 +115,7 @@ export const sessaoSalaController = {
         respostaSucesso({
           resultado: { sessao },
           mensagem: "Votos revelados com sucesso.",
-        })
+        }),
       );
     } catch (error: any) {
       res.status(500).json(respostaErro({ mensagem: error.message }));
@@ -134,7 +133,7 @@ export const sessaoSalaController = {
         respostaSucesso({
           resultado: { sessao },
           mensagem: "Votos resetados com sucesso.",
-        })
+        }),
       );
     } catch (error: any) {
       res.status(500).json(respostaErro({ mensagem: error.message }));
@@ -150,14 +149,14 @@ export const sessaoSalaController = {
       const participantes = await sessaoSalaService.adicionarVisitantes(
         sala_id,
         pessoa_ids,
-        dono_id
+        dono_id,
       );
 
       res.json(
         respostaSucesso({
           resultado: { participantes },
           mensagem: "Visitantes adicionados com sucesso.",
-        })
+        }),
       );
     } catch (error: any) {
       res.status(500).json(respostaErro({ mensagem: error.message }));
@@ -175,7 +174,7 @@ export const sessaoSalaController = {
       res.json(
         respostaSucesso({
           mensagem: "Visitante removido com sucesso.",
-        })
+        }),
       );
     } catch (error: any) {
       res.status(500).json(respostaErro({ mensagem: error.message }));
@@ -204,14 +203,14 @@ export const sessaoSalaController = {
         sessaoId,
         pessoaId,
         usuarioLogado?.Usu_Id as string,
-        sala.Role as 0 | 1 | 2 | 3
+        sala.Role as 0 | 1 | 2 | 3,
       );
 
       res.json(
         respostaSucesso({
           resultado: resultado,
           mensagem: resultado.mensagem,
-        })
+        }),
       );
     } catch (error: any) {
       res.status(500).json(respostaErro({ mensagem: error.message }));
@@ -232,14 +231,14 @@ export const sessaoSalaController = {
         return res
           .status(400)
           .json(
-            respostaErro({ mensagem: "participa_votacao deve ser um boolean" })
+            respostaErro({ mensagem: "participa_votacao deve ser um boolean" }),
           );
       }
 
       const participante = await sessaoSalaService.atualizarParticipaVotacao(
         sessao_id,
         pessoa_id,
-        participa_votacao
+        participa_votacao,
       );
 
       res.json(
@@ -248,7 +247,31 @@ export const sessaoSalaController = {
           mensagem: `Participação ${
             participa_votacao ? "ativada" : "desativada"
           } com sucesso.`,
-        })
+        }),
+      );
+    } catch (error: any) {
+      res.status(500).json(respostaErro({ mensagem: error.message }));
+    }
+  },
+
+  /**
+   * Obter votos de uma história específica dentro de uma sessão
+   * GET /sessoes/:sessaoId/historias/:historiaId/votos
+   */
+  async obterVotosPorHistoria(req: Request, res: Response) {
+    try {
+      const sessao_id = req.params.sessaoId;
+      const historia_id = req.params.historiaId;
+
+      const votos = await sessaoSalaService.obterVotosPorHistoria(
+        sessao_id,
+        historia_id,
+      );
+
+      res.json(
+        respostaSucesso({
+          resultado: { votos },
+        }),
       );
     } catch (error: any) {
       res.status(500).json(respostaErro({ mensagem: error.message }));
