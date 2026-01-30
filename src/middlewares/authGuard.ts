@@ -2,7 +2,6 @@ import { NextFunction, Request, Response } from "express";
 import jwt from "jsonwebtoken";
 import { Claims, ClaimsAuthSala } from "../lib/jwt";
 import { sessaoUsuarioService } from "../services/auth/sessao-usuario.service";
-import { refreshTokenService } from "../services/auth/refresh-token.service";
 import { pessoaService } from "../services/pessoas/pessoa.service";
 import { respostaErro } from "../utils/response";
 
@@ -34,7 +33,16 @@ function processarTokenSala(tokenSala: string): ClaimsAuthSala | null {
 /**
  * Valida os dados da pessoa (inativo, email confirmado, etc)
  */
-async function validarPessoa(usuarioId: string, res: Response): Promise<any> {
+async function validarPessoa(
+  usuarioId: string,
+  res: Response,
+): Promise<{
+  id: string;
+  nome: string;
+  email: string;
+  inativo: boolean;
+  email_confirmado: boolean;
+} | null> {
   const pessoa = await pessoaService.obterDadosConta(usuarioId);
 
   if (!pessoa) {
@@ -68,52 +76,9 @@ async function validarPessoa(usuarioId: string, res: Response): Promise<any> {
   return pessoa;
 }
 
-/**
- * Tenta fazer refresh automático do token
- */
-async function tentarRefreshAutomatico(
-  refreshToken: string | undefined,
-  res: Response,
-): Promise<{
-  claims: Claims;
-  novosTokens: { access: string; refresh: string };
-} | null> {
-  if (!refreshToken) {
-    res.status(401).json(
-      respostaErro({
-        mensagem: "Sessão expirada. Faça login novamente.",
-        codigoRetorno: 401,
-        requer_login: true,
-      }),
-    );
-    return null;
-  }
-
-  try {
-    const resultado = await refreshTokenService.refresh(refreshToken);
-    const claims = jwt.verify(resultado.tokenAcesso.token, jwtSecret) as Claims;
-
-    return {
-      claims,
-      novosTokens: {
-        access: resultado.tokenAcesso.token,
-        refresh: resultado.refreshToken.token,
-      },
-    };
-  } catch (error) {
-    console.error("Erro ao fazer refresh automático:", error);
-    res.status(401).json(
-      respostaErro({
-        mensagem: "Sessão expirada. Faça login novamente.",
-        codigoRetorno: 401,
-        requer_login: true,
-      }),
-    );
-    return null;
-  }
-}
-
 // ==================== MIDDLEWARE PRINCIPAL ====================
+// 🔥 SIMPLIFICADO: Sem refresh automático
+// Token válido por 7 dias - se expirar, usuário faz login novamente
 
 export const authGuard = async (
   req: Request,
@@ -123,7 +88,6 @@ export const authGuard = async (
   // ==================== 1. EXTRAÇÃO DOS TOKENS ====================
   const authHeader = req.headers.authorization;
   const tokenSala = req.headers["x-token-sala"] as string | undefined;
-  const refreshToken = req.headers["x-refresh-token"] as string | undefined;
 
   const token = authHeader?.split(" ")[1];
 
@@ -157,66 +121,29 @@ export const authGuard = async (
     if (sessaoUsuario.revogado_em) {
       return res.status(401).json(
         respostaErro({
-          mensagem: "Sessão expirada ou usuario logado em outro dispositivo.",
+          mensagem: "Sessão expirada ou usuário logado em outro dispositivo.",
           codigoRetorno: 401,
           requer_login: true,
         }),
       );
     }
 
-    // ==================== 4. VERIFICAR SE SESSÃO EXPIROU ====================
-    if (sessaoUsuario.expiracao < new Date()) {
-      const resultado = await tentarRefreshAutomatico(refreshToken, res);
-      if (!resultado) return; // Resposta já enviada
-
-      const { claims, novosTokens } = resultado;
-
-      // Validar pessoa com novo token
-      const pessoa = await validarPessoa(claims.Usu_Id, res);
-      if (!pessoa) return; // Resposta já enviada
-
-      // Configurar req.user com dados atualizados
-      req.user = {
-        Usu_Id: pessoa.id,
-        Usu_Na: pessoa.nome,
-        Email: pessoa.email,
-        Dt_Ex: claims.Dt_Ex,
-        Idp: claims.Idp,
-        iss: claims.iss,
-        aud: claims.aud,
-        Ss_Id: claims.Ss_Id,
-      };
-
-      // Anexar novos tokens nos headers
-      res.setHeader("X-New-Access-Token", novosTokens.access);
-      res.setHeader("X-New-Refresh-Token", novosTokens.refresh);
-
-      // Processar token de sala se existir
-      if (tokenSala) {
-        const salaDecoded = processarTokenSala(tokenSala);
-        if (salaDecoded) req.sala = salaDecoded;
-      }
-
-      return next();
-    }
-
-    // ==================== 5. VALIDAÇÃO DA PESSOA ====================
+    // ==================== 4. VALIDAÇÃO DA PESSOA ====================
     const pessoa = await validarPessoa(decoded.Usu_Id, res);
     if (!pessoa) return; // Resposta já enviada
 
-    // ==================== 6. CONFIGURAR REQ.USER ====================
+    // ==================== 5. CONFIGURAR REQ.USER ====================
     req.user = {
       Usu_Id: pessoa.id,
       Usu_Na: pessoa.nome,
       Email: pessoa.email,
-      Dt_Ex: decoded.Dt_Ex,
       Idp: decoded.Idp,
       iss: decoded.iss,
       aud: decoded.aud,
       Ss_Id: decoded.Ss_Id,
     };
 
-    // ==================== 7. PROCESSAR TOKEN DE SALA (OPCIONAL) ====================
+    // ==================== 6. PROCESSAR TOKEN DE SALA (OPCIONAL) ====================
     if (tokenSala) {
       const salaDecoded = processarTokenSala(tokenSala);
       if (salaDecoded) req.sala = salaDecoded;
@@ -224,39 +151,18 @@ export const authGuard = async (
 
     next();
   } catch (error) {
-    // ==================== 8. TRATAMENTO DE TOKEN EXPIRADO ====================
+    // ==================== 7. TRATAMENTO DE ERROS ====================
     if (error instanceof jwt.TokenExpiredError) {
-      const resultado = await tentarRefreshAutomatico(refreshToken, res);
-      if (!resultado) return; // Resposta já enviada
-
-      const { claims } = resultado;
-
-      // Configurar req.user com claims do novo token
-      req.user = {
-        Usu_Id: claims.Usu_Id,
-        Usu_Na: claims.Usu_Na,
-        Email: claims.Email,
-        Dt_Ex: claims.Dt_Ex,
-        Idp: claims.Idp,
-        iss: claims.iss,
-        aud: claims.aud,
-        Ss_Id: claims.Ss_Id,
-      };
-
-      // Anexar novos tokens nos headers
-      res.setHeader("X-New-Access-Token", resultado.novosTokens.access);
-      res.setHeader("X-New-Refresh-Token", resultado.novosTokens.refresh);
-
-      // Processar token de sala se existir
-      if (tokenSala) {
-        const salaDecoded = processarTokenSala(tokenSala);
-        if (salaDecoded) req.sala = salaDecoded;
-      }
-
-      return next();
+      // 🔥 Token expirado - pedir login novamente
+      return res.status(401).json(
+        respostaErro({
+          mensagem: "Sessão expirada. Faça login novamente.",
+          codigoRetorno: 401,
+          requer_login: true,
+        }),
+      );
     }
 
-    // ==================== 9. OUTROS ERROS ====================
     console.error("Erro no authGuard:", error);
     return res
       .status(401)

@@ -19,13 +19,13 @@ export const authService = {
 
     if (pessoa.inativo) {
       throw new Error(
-        "Usuário sem permissão de acesso, entre em contato com o administrador."
+        "Usuário sem permissão de acesso, entre em contato com o administrador.",
       );
     }
 
     if (pessoa.email_confirmado === false) {
       throw new Error(
-        "E-mail não confirmado. Por favor, confirme seu e-mail para continuar."
+        "E-mail não confirmado. Por favor, confirme seu e-mail para continuar.",
       );
     }
 
@@ -37,9 +37,6 @@ export const authService = {
       Usu_Id: pessoa.id,
       Usu_Na: criptografia.descriptografar(pessoa.nome),
       Email: criptografia.descriptografar(pessoa.email),
-      Dt_Ex: format(addMinutes(new Date(), 15), "yyyy-MM-dd' 'HH:mm:ss", {
-        locale: ptBR,
-      }),
       Idp: "pt-BR",
       aud: "App21",
       iss: "App21",
@@ -52,7 +49,7 @@ export const authService = {
       pessoa.id,
       addDays(new Date(), 3),
       ip,
-      userAgent
+      userAgent,
     );
 
     console.log("🆕 [authService] Nova sessão criada:", {
@@ -62,9 +59,10 @@ export const authService = {
     });
 
     const token = geradorToken({ ...tokenPayload, Ss_Id: novaSessao.id });
+
     const refreshToken = await refreshTokenService.gerarRefreshToken(
       pessoa.id,
-      novaSessao.id
+      novaSessao.id,
     );
 
     console.log("✅ [authService] Tokens gerados:", {
@@ -73,7 +71,7 @@ export const authService = {
       refreshTokenPreview: refreshToken.token.substring(0, 20) + "...",
     });
     return {
-      tokenAcesso: { token, dataExpiracao: tokenPayload.Dt_Ex },
+      tokenAcesso: { token },
       refreshToken,
     };
   },
@@ -94,8 +92,8 @@ export const authService = {
           `${
             process.env.FRONTEND_URL
           }/confirmacao-email?codigo=${encodeURIComponent(
-            novoUsuario.usuario.codigo_confirmacao!
-          )}&confirmarConta=true`
+            novoUsuario.usuario.codigo_confirmacao!,
+          )}&confirmarConta=true`,
         );
 
         emailEnviado = true;
@@ -111,7 +109,7 @@ export const authService = {
   async novoCodigo(email: string) {
     const usuarioExistente = await pessoaService.usuarioExistePorEmailOuId(
       email,
-      null
+      null,
     );
 
     if (!usuarioExistente) {
@@ -128,7 +126,7 @@ export const authService = {
       await hash.geradorCamposComuns(email),
       criptografia.criptografar(codigo as string),
       await hash.geradorCamposComuns(codigo as string),
-      addMinutes(new Date(), 30)
+      addMinutes(new Date(), 30),
     );
 
     if (!usuario) {
@@ -144,8 +142,8 @@ export const authService = {
         `${
           process.env.FRONTEND_URL
         }/confirmacao-email?codigo=${encodeURIComponent(
-          usuario.codigo_confirmacao!
-        )}&confirmarConta=true`
+          usuario.codigo_confirmacao!,
+        )}&confirmarConta=true`,
       );
     } catch (emailError) {
       console.error("Erro ao enviar email de boas-vindas:", emailError);
@@ -153,9 +151,8 @@ export const authService = {
   },
 
   async esqueciMinhaSenha(email: string) {
-    const usuarioExistente = await pessoaService.usuarioExistePorEmailOuId(
-      email
-    );
+    const usuarioExistente =
+      await pessoaService.usuarioExistePorEmailOuId(email);
 
     if (!usuarioExistente) {
       return;
@@ -167,7 +164,7 @@ export const authService = {
       await hash.geradorCamposComuns(email),
       criptografia.criptografar(codigo as string),
       await hash.geradorCamposComuns(codigo as string),
-      addMinutes(new Date(), 30)
+      addMinutes(new Date(), 30),
     );
 
     if (!usuario) {
@@ -183,8 +180,8 @@ export const authService = {
         `${
           process.env.FRONTEND_URL
         }/redefinicaoValidaCodigo?codigo=${encodeURIComponent(
-          usuario.codigo_confirmacao!
-        )}`
+          usuario.codigo_confirmacao!,
+        )}`,
       );
     } catch (emailError) {
       console.error("Erro ao enviar email de boas-vindas:", emailError);
@@ -193,32 +190,32 @@ export const authService = {
 
   async validaCodigoConfirmacaoEmail(
     codigo: string,
-    confirmarConta: boolean = false
+    confirmarConta: boolean = false,
   ) {
     // O código que vem da URL já está criptografado (é o codigo_confirmacao do banco)
     // Precisamos descriptografar para obter o UUID original e então gerar o hash
     const codigoDescriptografado = criptografia.descriptografar(codigo);
 
     const usuarioNovoExistente = await pessoaRepository.validaCodigoEmailExiste(
-      await hash.geradorCamposComuns(codigoDescriptografado)
+      await hash.geradorCamposComuns(codigoDescriptografado),
     );
 
     if (!usuarioNovoExistente) {
       throw new Error(
-        "O link de recuperação de senha é inválido. Por favor, solicite um novo link."
+        "O link de recuperação de senha é inválido. Por favor, solicite um novo link.",
       );
     }
 
     if (usuarioNovoExistente.codigo_expiracao! < new Date()) {
       throw new Error(
-        "O link de recuperação de senha expirou. Por favor, solicite um novo link."
+        "O link de recuperação de senha expirou. Por favor, solicite um novo link.",
       );
     }
 
     if (confirmarConta && usuarioNovoExistente.id) {
       const confirmaContaNovoUsuario =
         await pessoaRepository.confirmarEmailContaNovoUsuario(
-          usuarioNovoExistente.id
+          usuarioNovoExistente.id,
         );
 
       return { id: usuarioNovoExistente.id, contaConfirmada: true };
@@ -227,7 +224,7 @@ export const authService = {
         id: usuarioNovoExistente.id,
         nome: criptografia.descriptografar(usuarioNovoExistente.nome),
         codigo_expiracao: formatarParaDataLocal(
-          usuarioNovoExistente.codigo_expiracao!
+          usuarioNovoExistente.codigo_expiracao!,
         ),
       };
     }
@@ -237,7 +234,7 @@ export const authService = {
     senha: string,
     confirmacaoSenha: string,
     codigo: string,
-    id: string
+    id: string,
   ) {
     if (senha !== confirmacaoSenha) {
       throw new Error("A confirmação de senha não corresponde à nova senha.");
@@ -246,31 +243,31 @@ export const authService = {
     const codigoDescriptografado = criptografia.descriptografar(codigo);
 
     const usuarioExistente = await pessoaRepository.validaCodigoEmailExiste(
-      await hash.geradorCamposComuns(codigoDescriptografado)
+      await hash.geradorCamposComuns(codigoDescriptografado),
     );
 
     if (!usuarioExistente) {
       throw new Error(
-        "O link de recuperação de senha é inválido. Por favor, solicite um novo link."
+        "O link de recuperação de senha é inválido. Por favor, solicite um novo link.",
       );
     }
 
     if (usuarioExistente.codigo_expiracao! < new Date()) {
       throw new Error(
-        "O link de recuperação de senha expirou. Por favor, solicite um novo link."
+        "O link de recuperação de senha expirou. Por favor, solicite um novo link.",
       );
     }
 
     const novaSenha = await hash.senha(senha);
 
     const ultimaSenha = await pessoaRepository.obterSenhaAtual(
-      usuarioExistente.id
+      usuarioExistente.id,
     );
 
     const redefineSenhaUsuario = await pessoaRepository.redefinirSenha(
       usuarioExistente.codigo_confirmacao_hash!,
       novaSenha,
-      id
+      id,
     );
 
     return redefineSenhaUsuario.id;

@@ -1,4 +1,4 @@
-import { differenceInMinutes } from "date-fns";
+import { addDays, addHours, addMinutes, differenceInMinutes } from "date-fns";
 import jwt from "jsonwebtoken";
 
 const jwtSecret = process.env.JWT_SECRET as string;
@@ -10,7 +10,6 @@ export interface Claims extends jwt.JwtPayload {
   Idp: string;
   iss: string;
   aud: string;
-  Dt_Ex: string;
   Ss_Id: string;
 }
 
@@ -21,14 +20,12 @@ export interface ClaimsAuthSala extends jwt.JwtPayload {
   Sala_Id: string;
   Sala_Co: string; // Código da sala (para redirecionamento no frontend)
   Sala_titulo: string;
-  Dt_Ex: string;
   Ss_Sl_Id: string; // ID da SessaoSala (sessão ativa da sala)
 }
 
 export interface ClaimsRefreshToken extends jwt.JwtPayload {
   Usu_Id: string;
   Ss_Id: string;
-  Dt_Ex: string;
 }
 
 type ClaimsType = Claims | ClaimsAuthSala | ClaimsRefreshToken;
@@ -45,18 +42,12 @@ export const geradorToken = ({
   Idp,
   aud,
   iss,
-  Dt_Ex,
   Ss_Id,
 }: Claims) => {
-  const agora = new Date();
-  const dataExpiracao = new Date(Dt_Ex);
-
-  const duracaoEmMinutos = differenceInMinutes(dataExpiracao, agora);
-
-  const expiresIn = duracaoEmMinutos ? duracaoEmMinutos + 1 : 1;
-
-  return jwt.sign({ Usu_Id, Usu_Na, Email, Dt_Ex, Idp, Ss_Id }, jwtSecret, {
-    expiresIn: `${expiresIn}m`,
+  // 🔥 SIMPLIFICADO: Token válido por 7 dias
+  // Sem refresh automático - se expirar, usuário faz login novamente
+  return jwt.sign({ Usu_Id, Usu_Na, Email, Idp, Ss_Id }, jwtSecret, {
+    expiresIn: "7d",
     audience: aud,
     issuer: iss,
     algorithm: "HS256",
@@ -69,40 +60,35 @@ export const geradorTokenSala = ({
   Sala_Id,
   Sala_Co,
   Sala_titulo,
-  Dt_Ex,
   Role,
   Ss_Sl_Id,
 }: ClaimsAuthSala) => {
   const agora = new Date();
-  const dataExpiracao = new Date(Dt_Ex);
+  const dataExpiracao = new Date(addHours(agora, 10));
 
   const duracaoEmMinutos = differenceInMinutes(dataExpiracao, agora);
 
   const expiresIn = duracaoEmMinutos ? duracaoEmMinutos + 1 : 1;
 
   return jwt.sign(
-    { Usu_Id, Usu_Na, Role, Sala_Id, Sala_Co, Sala_titulo, Dt_Ex, Ss_Sl_Id },
+    { Usu_Id, Usu_Na, Role, Sala_Id, Sala_Co, Sala_titulo, Ss_Sl_Id },
     jwtSecret,
     {
       expiresIn: `${expiresIn}m`,
       algorithm: "HS256",
-    }
+    },
   );
 };
 
-export const geradorRefreshToken = ({
-  Usu_Id,
-  Dt_Ex,
-  Ss_Id,
-}: ClaimsRefreshToken) => {
+export const geradorRefreshToken = ({ Usu_Id, Ss_Id }: ClaimsRefreshToken) => {
   const agora = new Date();
-  const dataExpiracao = new Date(Dt_Ex);
+  const dataExpiracao = new Date(addDays(agora, 1));
 
   const duracaoEmMinutos = differenceInMinutes(dataExpiracao, agora);
 
   const expiresIn = duracaoEmMinutos ? duracaoEmMinutos + 1 : 1;
 
-  return jwt.sign({ Usu_Id, Dt_Ex: Dt_Ex, Ss_Id }, jwtSecret, {
+  return jwt.sign({ Usu_Id, Ss_Id }, jwtSecret, {
     expiresIn: `${expiresIn}m`,
     algorithm: "HS256",
   });

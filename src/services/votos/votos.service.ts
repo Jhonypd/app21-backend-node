@@ -19,7 +19,7 @@ export const votosService = {
 
     // ✅ NOVA LÓGICA: Verificar se sessão tem histórias vinculadas
     const historiaSessao = await historiaSessaoRepository.obterPorId(
-      voto.historia_sessao_id
+      voto.historia_sessao_id,
     );
 
     if (!historiaSessao) {
@@ -43,14 +43,13 @@ export const votosService = {
 
     // Atualizar flag participa_votacao no ParticipanteSessao se sessao_id foi fornecido
     if (voto.sessao_id) {
-      const { participanteSessaoRepository } = await import(
-        "../../repositories/participante-sessao.repository"
-      );
+      const { participanteSessaoRepository } =
+        await import("../../repositories/participante-sessao.repository");
       try {
         await participanteSessaoRepository.atualizar(
           voto.sessao_id,
           voto.pessoa_id,
-          { participa_votacao: true }
+          { participa_votacao: true },
         );
       } catch (error) {
         // Se não conseguir atualizar, continua (participante pode não existir ainda)
@@ -60,7 +59,7 @@ export const votosService = {
 
     // Buscar todas as histórias da sessão
     const historiasVinculadas = await historiaSessaoRepository.obterPorSessao(
-      historiaSessao.sessao_id
+      historiaSessao.sessao_id,
     );
 
     // Se não há histórias vinculadas, retorna voto temporário (não salva)
@@ -82,7 +81,7 @@ export const votosService = {
     const votoExistente =
       await votosRepository.obterVotoPorHistoriaSessaoEPessoa(
         voto.historia_sessao_id,
-        voto.pessoa_id
+        voto.pessoa_id,
       );
 
     if (votoExistente) {
@@ -92,7 +91,7 @@ export const votosService = {
         voto.pessoa_id,
         {
           valor: voto.valor,
-        }
+        },
       );
       return {
         temporario: false,
@@ -112,7 +111,7 @@ export const votosService = {
 
   async obterVotosPorHistoriaSessao(historia_sessao_id: string) {
     return await votosRepository.obterVotosPorHistoriaSessao(
-      historia_sessao_id
+      historia_sessao_id,
     );
   },
 
@@ -122,17 +121,17 @@ export const votosService = {
 
   async obterVotoPorHistoriaSessaoEPessoa(
     historia_sessao_id: string,
-    pessoa_id: string
+    pessoa_id: string,
   ) {
     return await votosRepository.obterVotoPorHistoriaSessaoEPessoa(
       historia_sessao_id,
-      pessoa_id
+      pessoa_id,
     );
   },
 
   async resetarVotosPorHistoriaSessao(historia_sessao_id: string) {
     return await votosRepository.deletarVotosPorHistoriaSessao(
-      historia_sessao_id
+      historia_sessao_id,
     );
   },
 
@@ -142,11 +141,18 @@ export const votosService = {
 
   async contarVotosPorHistoriaSessao(historia_sessao_id: string) {
     return await votosRepository.contarVotosPorHistoriaSessao(
-      historia_sessao_id
+      historia_sessao_id,
     );
   },
 
   async contarVotosPorSessao(sessao_id: string) {
     return await votosRepository.contarVotosPorSessao(sessao_id);
+  },
+
+  async obterHistoriaSessao(sessao_id: string, historia_id: string) {
+    return await historiaSessaoRepository.obterPorSessaoEHistoria(
+      sessao_id,
+      historia_id,
+    );
   },
 };

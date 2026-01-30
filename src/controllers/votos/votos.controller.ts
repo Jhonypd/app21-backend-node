@@ -1,6 +1,5 @@
 import { Request, Response } from "express";
 import { votosService } from "../../services/votos/votos.service";
-import { historiaSessaoRepository } from "../../repositories/historia-sessao.repository";
 import { respostaErro, respostaSucesso } from "../../utils/response";
 
 export const votosController = {
@@ -15,14 +14,15 @@ export const votosController = {
       }
 
       // Buscar HistoriaSessao (deve existir - criada junto com a sessão)
-      const historiaSessao =
-        await historiaSessaoRepository.obterPorSessaoEHistoria(
-          sessao_id,
-          historia_id
-        );
+      const historiaSessao = await votosService.obterHistoriaSessao(
+        sessao_id,
+        historia_id,
+      );
 
       if (!historiaSessao) {
-        throw new Error("História não encontrada na sessão. As histórias devem ser adicionadas ao criar a sessão.");
+        throw new Error(
+          "História não encontrada na sessão. As histórias devem ser adicionadas ao criar a sessão.",
+        );
       }
 
       // Registrar o voto
@@ -38,7 +38,7 @@ export const votosController = {
         respostaSucesso({
           resultado: { voto },
           mensagem: "Voto registrado com sucesso.",
-        })
+        }),
       );
     } catch (error: any) {
       res.status(500).json(respostaErro({ mensagem: error.message }));
@@ -52,28 +52,27 @@ export const votosController = {
 
       if (historia_id) {
         // Buscar votos de uma história específica
-        const historiaSessao =
-          await historiaSessaoRepository.obterPorSessaoEHistoria(
-            sessao_id,
-            historia_id as string
-          );
+        const historiaSessao = await votosService.obterHistoriaSessao(
+          sessao_id,
+          historia_id as string,
+        );
 
         if (!historiaSessao) {
           return res.json(
             respostaSucesso({
               resultado: { votos: [] },
-            })
+            }),
           );
         }
 
         const votos = await votosService.obterVotosPorHistoriaSessao(
-          historiaSessao.id
+          historiaSessao.id,
         );
 
         res.json(
           respostaSucesso({
             resultado: { votos },
-          })
+          }),
         );
       } else {
         // Buscar todos os votos da sessão
@@ -82,7 +81,7 @@ export const votosController = {
         res.json(
           respostaSucesso({
             resultado: { votos },
-          })
+          }),
         );
       }
     } catch (error: any) {
