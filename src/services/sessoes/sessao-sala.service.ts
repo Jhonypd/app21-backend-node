@@ -7,6 +7,7 @@ import { participanteSalaRepository } from "../../repositories/participante-sala
 import { pessoaRepository } from "../../repositories/pessoa.repository";
 import emailService from "../mail/mail.service";
 import { criptografia } from "../../lib/criptografia";
+import { obterVotosVencedoresHistoria } from "../../utils/voto-vencedor-historia";
 
 interface CriarHistoriaDTO {
   titulo: string;
@@ -119,12 +120,12 @@ export const sessaoSalaService = {
     for (const participante of participantesSala) {
       await participanteSessaoRepository.inserir({
         sessao_id: novaSessao.id,
-        pessoa_id: participante.pessoa_id,
+        pessoa_id: participante.pessoa.id,
         autorizado: true, // Todos permanentes autorizados automaticamente
       });
 
       // ✅ Marcar como online APENAS quem iniciou a sessão
-      if (participante.pessoa_id === pessoa_id) {
+      if (participante.pessoa.id === pessoa_id) {
         await participanteSalaRepository.alterarParticipanteSalaOnline(
           sala_id,
           pessoa_id,
@@ -135,7 +136,7 @@ export const sessaoSalaService = {
 
     // 2. Criar ParticipanteSessao para visitantes temporários (se fornecidos)
     if (visitantes && visitantes.length > 0) {
-      const idsPermantentes = participantesSala.map((p) => p.pessoa_id);
+      const idsPermantentes = participantesSala.map((p) => p.pessoa.id);
 
       for (const visitanteId of visitantes) {
         // Não criar se já é participante permanente
@@ -289,25 +290,47 @@ export const sessaoSalaService = {
 
   async resetarVotos(sessao_id: string, pessoa_id: string) {
     const sessao = await sessaoSalaRepository.obterPorId(sessao_id);
+
     if (!sessao) {
-      throw new Error("Sessão não encontrada.");
+      throw new Error("Sessão não encontrada para os votos serem resetados.");
     }
 
-    // Verificar se o usuário é o criador da sala
-    if (sessao.sala.criado_por !== pessoa_id) {
-      throw new Error("Apenas o criador da sala pode resetar os votos.");
+    // Verificar se o usuário é o criador da sala OU iniciador da sessão
+    if (
+      sessao.sala.criado_por !== pessoa_id &&
+      sessao.iniciada_por !== pessoa_id
+    ) {
+      throw new Error(
+        "Apenas donos e iniciadores da sessão podem resetar os votos.",
+      );
     }
 
-    // Deletar todos os votos das histórias da sessão
-    for (const historiaSessao of sessao.historias) {
-      await votosRepository.deletarVotosPorHistoriaSessao(historiaSessao.id);
+    // Validar que existe uma história atual selecionada
+    if (!sessao.sala.historia_atual_id) {
+      throw new Error("Nenhuma história atual selecionada para resetar votos.");
     }
+
+    // Buscar a HistoriaSessao correspondente à história atual
+    const historiaSessaoAtual = sessao.historias?.find(
+      (hs) => hs.historia.id === sessao.sala.historia_atual_id,
+    );
+
+    if (!historiaSessaoAtual) {
+      throw new Error("A história atual não está vinculada a esta sessão.");
+    }
+
+    // Deletar apenas os votos da história atual da sessão
+    await votosRepository.deletarVotosPorHistoriaSessao(
+      historiaSessaoAtual.id,
+      historiaSessaoAtual.historia.id,
+    );
 
     // Atualizar flag de votos revelados
     await sessaoSalaRepository.atualizarVotosRevelados(sessao.sala.id, false);
 
-    // Buscar sessão atualizada
-    return await sessaoSalaRepository.obterPorId(sessao_id);
+    return {
+      sessao: sessao.sala.titulo,
+    };
   },
 
   async adicionarVisitantes(
@@ -331,7 +354,7 @@ export const sessaoSalaService = {
     // Buscar participantes permanentes para evitar duplicação
     const permanentes =
       await participanteSalaRepository.obterTodosParticipantesPorSala(sala_id);
-    const idsPermantentes = permanentes.map((p) => p.pessoa_id);
+    const idsPermantentes = permanentes.map((p) => p.pessoa.id);
 
     // Buscar dados do anfitrião (dono)
     const anfitriao = await pessoaRepository.obterPorId(dono_id, false);
@@ -519,6 +542,80 @@ export const sessaoSalaService = {
     );
 
     return participanteAtualizado;
+  },
+
+  /**
+   * Lista todas as histórias vinculadas a uma sessão
+   * Retorna formatado com jaFoiVotada, historiaAtual e voto (vencedores)
+   */
+  async listarHistoriasPorSessao(sessao_id: string) {
+    if (!sessao_id) {
+      throw new Error("Id da sessão é obrigatório");
+    }
+
+    // Buscar sessão para obter sala_id e historia_atual_id
+    const sessao = await sessaoSalaRepository.obterPorId(sessao_id);
+    if (!sessao) {
+      throw new Error("Sessão não encontrada");
+    }
+
+    const historiaAtualId = sessao.sala.historia_atual_id;
+
+    // Buscar histórias da sessão com votos
+    const historiasSessao =
+      await historiaSessaoRepository.listarPorSessao(sessao_id);
+
+    return historiasSessao.map((hs) => ({
+      id: hs.historia.id,
+      titulo: hs.historia.titulo,
+      descricao: hs.historia.descricao,
+      jaFoiVotada: hs.votos.length > 0,
+      historiaAtual: hs.historia.id === historiaAtualId,
+      voto: obterVotosVencedoresHistoria(
+        hs.votos.reduce(
+          (acc, voto) => {
+            acc[voto.valor] = (acc[voto.valor] || 0) + 1;
+            return acc;
+          },
+          {} as Record<number, number>,
+        ),
+      ),
+    }));
+  },
+
+  /**
+   * Adiciona história durante sessão ativa
+   * Cria a história e vincula automaticamente à sessão ativa da sala
+   */
+  async adicionarHistoriaDuranteSessao(dados: {
+    sala_id: string;
+    titulo: string;
+    descricao?: string | null;
+    criado_por: string;
+  }) {
+    const { historiaSalaRepository } =
+      await import("../../repositories/historia-sala.repository");
+
+    // Verificar se sala existe e tem sessão ativa
+    const sala = await salaRepository.obterPorId(dados.sala_id, false);
+    if (!sala) {
+      throw new Error("Sala não encontrada");
+    }
+
+    if (sala.sessoes.length === 0) {
+      throw new Error("Sala não possui sessão ativa");
+    }
+
+    // Criar história
+    const historia = await historiaSalaRepository.criar(dados);
+
+    // Vincular à sessão ativa
+    await historiaSessaoRepository.inserir({
+      sessao_id: sala.sessoes[0].id,
+      historia_id: historia.id,
+    });
+
+    return historia;
   },
 
   /**

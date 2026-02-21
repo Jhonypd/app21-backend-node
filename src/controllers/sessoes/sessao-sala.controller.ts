@@ -255,6 +255,62 @@ export const sessaoSalaController = {
   },
 
   /**
+   * Adicionar história durante sessão ativa
+   * POST /sessoes/:sessaoId/historias/durante-sessao
+   */
+  async adicionarHistoriaDuranteSessao(req: Request, res: Response) {
+    try {
+      const { sessaoId } = req.params;
+      const { titulo, descricao } = req.body;
+      const usuarioId = req.user?.Usu_Id as string;
+
+      // Obter sessão para pegar o sala_id
+      const sessao = await sessaoSalaService.obterSessaoPorId(
+        sessaoId,
+        usuarioId,
+      );
+
+      const historia = await sessaoSalaService.adicionarHistoriaDuranteSessao({
+        sala_id: sessao.sala_id,
+        titulo,
+        descricao,
+        criado_por: usuarioId,
+      });
+
+      res.status(201).json(
+        respostaSucesso({
+          resultado: { historia },
+          mensagem: "História adicionada e vinculada à sessão.",
+        }),
+      );
+    } catch (error: any) {
+      res.status(500).json(respostaErro({ mensagem: error.message }));
+    }
+  },
+
+  /**
+   * Listar todas as histórias de uma sessão
+   * GET /sessoes/:sessaoId/historias
+   */
+  async listarHistoriasPorSessao(req: Request, res: Response) {
+    try {
+      const sessao_id = req.params.sessaoId;
+
+      const historias =
+        await sessaoSalaService.listarHistoriasPorSessao(sessao_id);
+
+      res.json(
+        respostaSucesso({
+          resultado: { historias },
+          mensagem: "Histórias da sessão listadas com sucesso.",
+        }),
+      );
+    } catch (error: any) {
+      res.status(500).json(respostaErro({ mensagem: error.message }));
+    }
+  },
+
+  /**
    * Obter votos de uma história específica dentro de uma sessão
    * GET /sessoes/:sessaoId/historias/:historiaId/votos
    */

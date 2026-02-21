@@ -34,7 +34,9 @@ export const participanteSalaRepository = {
   obterTodosParticipantesPorSala: (sala_id: string) =>
     prismaClient.participanteSala.findMany({
       where: { sala_id },
-      include: {
+      select: {
+        role: true,
+        online: true,
         pessoa: {
           select: {
             id: true,
@@ -48,7 +50,7 @@ export const participanteSalaRepository = {
   alterarParticipanteSalaOnline: (
     sala_id: string,
     pessoa_id: string,
-    online: boolean
+    online: boolean,
   ) =>
     prismaClient.participanteSala.update({
       where: { sala_id_pessoa_id: { sala_id, pessoa_id } },

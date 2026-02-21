@@ -62,6 +62,7 @@ export const sessaoSalaRepository = {
     prismaClient.sessaoSala.findUnique({
       where: { id },
       include: {
+        iniciador: true,
         sala: {
           select: {
             id: true,

@@ -45,6 +45,22 @@ router.patch(
   sessaoSalaController.atualizarParticipaVotacao,
 );
 
+// POST /sessoes/:sessaoId/historias/durante-sessao - Adicionar história durante sessão ativa
+router.post(
+  "/:sessaoId/historias/durante-sessao",
+  validateHandler,
+  authGuard,
+  sessaoSalaController.adicionarHistoriaDuranteSessao,
+);
+
+// GET /sessoes/:sessaoId/historias - Listar todas as histórias da sessão
+router.get(
+  "/:sessaoId/historias",
+  validateHandler,
+  authGuard,
+  sessaoSalaController.listarHistoriasPorSessao,
+);
+
 // GET /sessoes/:sessaoId/historias/:historiaId/votos - Obter votos de uma história específica
 router.get(
   "/:sessaoId/historias/:historiaId/votos",

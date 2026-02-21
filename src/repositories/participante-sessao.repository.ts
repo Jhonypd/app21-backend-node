@@ -58,7 +58,9 @@ export const participanteSessaoRepository = {
       where: {
         sessao_id,
       },
-      include: {
+      select: {
+        id: true,
+        participa_votacao: true,
         pessoa: {
           select: {
             id: true,
@@ -72,7 +74,7 @@ export const participanteSessaoRepository = {
   atualizarAutorizacao: (
     sessao_id: string,
     pessoa_id: string,
-    autorizado: boolean
+    autorizado: boolean,
   ) =>
     prismaClient.participanteSessao.update({
       where: {
@@ -102,7 +104,11 @@ export const participanteSessaoRepository = {
   atualizar: (
     sessao_id: string,
     pessoa_id: string,
-    dados: { autorizado?: boolean; online?: boolean; participa_votacao?: boolean }
+    dados: {
+      autorizado?: boolean;
+      online?: boolean;
+      participa_votacao?: boolean;
+    },
   ) =>
     prismaClient.participanteSessao.update({
       where: {

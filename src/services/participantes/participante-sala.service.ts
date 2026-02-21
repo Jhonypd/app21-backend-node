@@ -1,5 +1,6 @@
 import { criptografia } from "../../lib/criptografia";
 import { participanteSalaRepository } from "../../repositories/participante-sala.repository";
+import { participanteSessaoRepository } from "../../repositories/participante-sessao.repository";
 import { pessoaRepository } from "../../repositories/pessoa.repository";
 import { salaRepository } from "../../repositories/sala.repository";
 
@@ -7,14 +8,14 @@ export const participanteSalaService = {
   async adicionarParticipanteASala(
     sala_id: string,
     pessoa_id: string,
-    tipo: number = 2
+    tipo: number = 2,
   ) {
     const pessoaExiste = await pessoaRepository.obterPorId(pessoa_id, false);
 
     const salaExiste = await salaRepository.obterPorId(
       sala_id,
       false,
-      pessoa_id
+      pessoa_id,
     );
 
     if (!salaExiste) {
@@ -28,7 +29,7 @@ export const participanteSalaService = {
     const participanteExistente =
       await participanteSalaRepository.obterPorSalaEPessoa(
         sala_id,
-        pessoaExiste.id
+        pessoaExiste.id,
       );
 
     if (participanteExistente) {
@@ -54,7 +55,7 @@ export const participanteSalaService = {
     const salaExiste = await salaRepository.obterPorId(
       sala_id,
       false,
-      pessoa_id
+      pessoa_id,
     );
 
     if (!salaExiste) {
@@ -67,7 +68,7 @@ export const participanteSalaService = {
 
     const removeParticipante = await participanteSalaRepository.remover(
       salaExiste.id,
-      pessoaExiste.id
+      pessoaExiste.id,
     );
 
     if (!removeParticipante) {
@@ -77,34 +78,64 @@ export const participanteSalaService = {
     return removeParticipante.id;
   },
 
-  async listarParticipantesDaSala(sala_id: string) {
-    const participantes =
+  async listarParticipantesDaSala(
+    sala_id: string,
+    sessao_id?: string | null,
+  ) {
+    const participantesSala =
       await participanteSalaRepository.obterTodosParticipantesPorSala(sala_id);
 
-    return {
-      participantes: [
-        {
-          ...participantes,
-          nome: participantes.map((p) => ({
-            ...p.pessoa,
-            nome: criptografia.descriptografar(p.pessoa.nome),
-          })),
-        },
-      ],
-    };
+    // Montar lista de participantes permanentes
+    const participantes: Array<{
+      id: string;
+      nome: string;
+      inativo: boolean;
+      role: number;
+      online: boolean;
+    }> = participantesSala.map((p) => ({
+      id: p.pessoa.id,
+      nome: criptografia.descriptografar(p.pessoa.nome),
+      inativo: p.pessoa.inativo,
+      role: p.role,
+      online: p.online,
+    }));
+
+    // Se sessao_id fornecido, incluir visitantes (ParticipanteSessao que não são permanentes)
+    if (sessao_id) {
+      const participantesSessao =
+        await participanteSessaoRepository.obterParticipantesPorSessao(
+          sessao_id,
+        );
+
+      const idsPermanentes = new Set(participantesSala.map((p) => p.pessoa.id));
+
+      participantesSessao.forEach((ps) => {
+        if (!idsPermanentes.has(ps.pessoa.id)) {
+          participantes.push({
+            id: ps.pessoa.id,
+            nome: criptografia.descriptografar(ps.pessoa.nome),
+            inativo: ps.pessoa.inativo,
+            role: 3, // Visitante sempre role 3
+            online: true, // Visitante sempre online (está na sessão ativa)
+          });
+        }
+      });
+    }
+
+    return { participantes };
   },
 
   async alterarParticipanteSalaOnline(
     sala_id: string,
     pessoa_id: string,
-    online: boolean
+    online: boolean,
   ) {
     const pessoaExiste = await pessoaRepository.obterPorId(pessoa_id, false);
 
     const salaExiste = await salaRepository.obterPorId(
       sala_id,
       false,
-      pessoa_id
+      pessoa_id,
     );
 
     if (!salaExiste) {
@@ -119,7 +150,7 @@ export const participanteSalaService = {
       await participanteSalaRepository.alterarParticipanteSalaOnline(
         salaExiste.id,
         pessoaExiste.id,
-        online
+        online,
       );
 
     return participante.id;
@@ -133,7 +164,7 @@ export const participanteSalaService = {
     sala_id: string,
     pessoa_id_solicitante: string,
     pessoa_id_adicionar: string,
-    role: 1 | 2
+    role: 1 | 2,
   ) {
     // Buscar sala
     const sala = await salaRepository.obterPorId(sala_id, false, undefined);
@@ -146,13 +177,13 @@ export const participanteSalaService = {
     const participanteSolicitante =
       await participanteSalaRepository.obterPorSalaEPessoa(
         sala_id,
-        pessoa_id_solicitante
+        pessoa_id_solicitante,
       );
     const isAdmin = participanteSolicitante?.role === 1;
 
     if (!isDono && !isAdmin) {
       throw new Error(
-        "Apenas o dono ou administradores podem adicionar participantes"
+        "Apenas o dono ou administradores podem adicionar participantes",
       );
     }
 
@@ -164,7 +195,7 @@ export const participanteSalaService = {
     // Verificar se pessoa existe
     const pessoaAdicionar = await pessoaRepository.obterPorId(
       pessoa_id_adicionar,
-      false
+      false,
     );
     if (!pessoaAdicionar) {
       throw new Error("Pessoa não encontrada");
@@ -174,7 +205,7 @@ export const participanteSalaService = {
     const participanteExistente =
       await participanteSalaRepository.obterPorSalaEPessoa(
         sala_id,
-        pessoa_id_adicionar
+        pessoa_id_adicionar,
       );
     if (participanteExistente) {
       throw new Error("Esta pessoa já é participante da sala");
@@ -205,7 +236,7 @@ export const participanteSalaService = {
   async removerParticipante(
     sala_id: string,
     pessoa_id_solicitante: string,
-    pessoa_id_remover: string
+    pessoa_id_remover: string,
   ) {
     // Buscar sala
     const sala = await salaRepository.obterPorId(sala_id, false, undefined);
@@ -223,13 +254,13 @@ export const participanteSalaService = {
     const participanteSolicitante =
       await participanteSalaRepository.obterPorSalaEPessoa(
         sala_id,
-        pessoa_id_solicitante
+        pessoa_id_solicitante,
       );
     const isAdmin = participanteSolicitante?.role === 1;
 
     if (!isDono && !isAdmin) {
       throw new Error(
-        "Apenas o dono ou administradores podem remover participantes"
+        "Apenas o dono ou administradores podem remover participantes",
       );
     }
 
@@ -237,7 +268,7 @@ export const participanteSalaService = {
     const participanteRemover =
       await participanteSalaRepository.obterPorSalaEPessoa(
         sala_id,
-        pessoa_id_remover
+        pessoa_id_remover,
       );
     if (!participanteRemover) {
       throw new Error("Participante não encontrado na sala");
@@ -246,7 +277,7 @@ export const participanteSalaService = {
     // Admin não pode remover outro admin
     if (isAdmin && !isDono && participanteRemover.role === 1) {
       throw new Error(
-        "Administradores não podem remover outros administradores"
+        "Administradores não podem remover outros administradores",
       );
     }
 
@@ -264,7 +295,7 @@ export const participanteSalaService = {
     sala_id: string,
     pessoa_id_solicitante: string,
     pessoa_id_alterar: string,
-    novo_role: 1 | 2
+    novo_role: 1 | 2,
   ) {
     // Buscar sala
     const sala = await salaRepository.obterPorId(sala_id, false, undefined);
@@ -285,7 +316,7 @@ export const participanteSalaService = {
     // Buscar participante
     const participante = await participanteSalaRepository.obterPorSalaEPessoa(
       sala_id,
-      pessoa_id_alterar
+      pessoa_id_alterar,
     );
     if (!participante) {
       throw new Error("Participante não encontrado na sala");
@@ -295,7 +326,7 @@ export const participanteSalaService = {
     const participanteAtualizado = await participanteSalaRepository.alterarRole(
       sala_id,
       pessoa_id_alterar,
-      novo_role
+      novo_role,
     );
 
     return {

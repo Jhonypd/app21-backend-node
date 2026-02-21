@@ -16,7 +16,7 @@ export const participanteSalaController = {
           respostaErro({
             mensagem:
               "Apenas o dono ou administrador pode adicionar participantes.",
-          })
+          }),
         );
       }
 
@@ -25,7 +25,7 @@ export const participanteSalaController = {
         return res.status(400).json(
           respostaErro({
             mensagem: "Não é possível adicionar outro dono.",
-          })
+          }),
         );
       }
 
@@ -34,7 +34,7 @@ export const participanteSalaController = {
           respostaErro({
             mensagem:
               "Tipo inválido. Use 1 para administrador ou 2 para participante.",
-          })
+          }),
         );
       }
 
@@ -42,14 +42,14 @@ export const participanteSalaController = {
         await participanteSalaService.adicionarParticipanteASala(
           sala_id,
           pessoa_id,
-          tipo
+          tipo,
         );
 
       res.json(
         respostaSucesso({
           resultado: { id: participante },
           mensagem: "Participante adicionado com sucesso.",
-        })
+        }),
       );
     } catch (error: any) {
       res.status(500).json(respostaErro({ mensagem: error.message }));
@@ -69,7 +69,7 @@ export const participanteSalaController = {
           respostaErro({
             mensagem:
               "Apenas o dono ou administrador pode remover participantes.",
-          })
+          }),
         );
       }
 
@@ -79,14 +79,14 @@ export const participanteSalaController = {
       const participante =
         await participanteSalaService.removerParticipanteDaSala(
           sala_id,
-          pessoa_id
+          pessoa_id,
         );
 
       res.json(
         respostaSucesso({
           resultado: { id: participante },
           mensagem: "Participante removido com sucesso.",
-        })
+        }),
       );
     } catch (error: any) {
       res.status(500).json(respostaErro({ mensagem: error.message }));
@@ -96,14 +96,17 @@ export const participanteSalaController = {
   async listarParticipantes(req: Request, res: Response) {
     try {
       const sala_id = req.params.id;
+      const sessao_id = req.headers["sessao_id"] as string | undefined;
 
-      const participantes =
-        await participanteSalaService.listarParticipantesDaSala(sala_id);
+      const resultado = await participanteSalaService.listarParticipantesDaSala(
+        sala_id,
+        sessao_id,
+      );
 
       res.json(
         respostaSucesso({
-          resultado: { participantes },
-        })
+          resultado,
+        }),
       );
     } catch (error: any) {
       res.status(500).json(respostaErro({ mensagem: error.message }));
