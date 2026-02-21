@@ -302,7 +302,6 @@ export const sessaoSalaController = {
       res.json(
         respostaSucesso({
           resultado: { historias },
-          mensagem: "Histórias da sessão listadas com sucesso.",
         }),
       );
     } catch (error: any) {

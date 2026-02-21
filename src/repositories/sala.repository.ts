@@ -119,13 +119,6 @@ export const salaRepository = {
             },
           },
         },
-        // historias: {
-        //   select: {
-        //     id: true,
-        //     titulo: true,
-        //     descricao: true,
-        //   },
-        // },
         sessoes: {
           where: {
             ativa: true,
@@ -156,19 +149,6 @@ export const salaRepository = {
                     id: true,
                     titulo: true,
                     descricao: true,
-                  },
-                },
-                votos: {
-                  select: {
-                    id: true,
-                    pessoa_id: true,
-                    valor: true,
-                    pessoa: {
-                      select: {
-                        nome: true,
-                        inativo: true,
-                      },
-                    },
                   },
                 },
               },

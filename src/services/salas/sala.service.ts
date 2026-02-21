@@ -338,22 +338,6 @@ export const salaService = {
       throw new Error("Nenhuma sessão ativa encontrada para esta sala");
     }
 
-    // Buscar votos apenas da história ATUAL (historia_atual_id)
-    const historiaAtualSessao = sessaoAtiva.historias?.find(
-      (hs) => hs.historia.id === sala.historia_atual_id,
-    );
-
-    const votosHistoriaAtual =
-      historiaAtualSessao?.votos?.map((voto) => ({
-        id: voto.id,
-        pessoa_id: voto.pessoa_id,
-        valor: voto.valor,
-        pessoa: {
-          nome: criptografia.descriptografar(voto.pessoa.nome),
-          inativo: voto.pessoa.inativo,
-        },
-      })) || [];
-
     // ✅ Calcular resumo de participantes (sem enviar lista completa)
     // Criar mapa de participa_votacao dos ParticipanteSessao
     const participaVotacaoMap = new Map<string, boolean>();
@@ -435,7 +419,7 @@ export const salaService = {
         totalOnline,
         totalDevemVotar,
       },
-      votos: votosHistoriaAtual, // Apenas votos da história atual
+      // votos: votosHistoriaAtual, // Apenas votos da história atual
       sessaoAtiva: {
         id: sessaoAtiva.id,
         criada_em: sessaoAtiva.criada_em,
