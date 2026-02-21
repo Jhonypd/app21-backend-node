@@ -27,22 +27,11 @@ export const refreshTokenService = {
     // 🔥 CORREÇÃO: Expiração deve ser 7 dias no futuro, não a data atual
     const expiracao = addDays(new Date(), 7);
 
-    console.log("📝 [refreshTokenService] Salvando refresh token no banco:", {
-      sessionId,
-      userId,
-      expiracao: expiracao.toISOString(),
-    });
-
     const refreshToken = await RefreshTokenRepository.criar(
       sessionId,
       refreshTokenHash,
       expiracao,
     );
-
-    console.log("✅ [refreshTokenService] Refresh token salvo:", {
-      id: refreshToken?.id,
-      sessaoId: sessionId,
-    });
 
     return { token: gerarRefreshToken };
   },
@@ -54,22 +43,12 @@ export const refreshTokenService = {
   ) {
     const refreshTokenDecoded = decodeToken<ClaimsRefreshToken>(refreshToken);
 
-    console.log("🔍 [refreshTokenService] Buscando refresh token:", {
-      sessaoIdDoToken: refreshTokenDecoded.Ss_Id,
-      usuarioIdDoToken: refreshTokenDecoded.Usu_Id,
-    });
-
     const buscaRefreshTokenBanco =
       await RefreshTokenRepository.buscarPorSessaoId(refreshTokenDecoded.Ss_Id);
 
-    console.log("🔍 [refreshTokenService] Resultado da busca:", {
-      encontrado: !!buscaRefreshTokenBanco,
-      sessaoIdBuscado: refreshTokenDecoded.Ss_Id,
-    });
-
     if (!buscaRefreshTokenBanco) {
       console.error(
-        "❌ [refreshTokenService] Refresh token não encontrado no banco!",
+        "[refreshTokenService] Refresh token não encontrado no banco!",
       );
       throw new Error("Refresh token inválido");
     }
@@ -80,12 +59,12 @@ export const refreshTokenService = {
     );
 
     if (!validaTokenDoBb) {
-      console.error("❌ [refreshTokenService] Hash do token não confere!");
+      console.error("[refreshTokenService] Hash do token não confere!");
       throw new Error("Refresh token inválido");
     }
 
     if (buscaRefreshTokenBanco.revogado_em) {
-      console.error("❌ [refreshTokenService] Token foi revogado!");
+      console.error("[refreshTokenService] Token foi revogado!");
       throw new Error("Refresh token inválido");
     }
 
