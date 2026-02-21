@@ -58,11 +58,12 @@ app.use(
       "Accept",
       "Origin",
       "X-Requested-With",
+      "sessao_id",
     ],
     exposedHeaders: ["set-cookie", "X-New-Access-Token", "X-New-Refresh-Token"],
     preflightContinue: false,
     optionsSuccessStatus: 204,
-  })
+  }),
 );
 
 // Body JSON
@@ -115,7 +116,7 @@ const PORT =
   process.env.NODE_ENV === "production" ? process.env.PORT || 5006 : DEV_PORT;
 
 console.log(
-  `Servidor rodando em modo ${process.env.NODE_ENV} na porta ${PORT}`
+  `Servidor rodando em modo ${process.env.NODE_ENV} na porta ${PORT}`,
 );
 // Start
 server.listen(PORT, () => console.log(`Servidor rodando na porta ${PORT}`));
