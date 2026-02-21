@@ -119,39 +119,24 @@ export const historiaSessaoRepository = {
       },
     }),
 
-  obterPorSessao: (sessao_id: string) =>
+  listarPorSessao: (sessao_id: string) =>
     prismaClient.historiaSessao.findMany({
       where: {
         sessao_id,
       },
       include: {
-        sessao: {
-          select: {
-            id: true,
-            sala_id: true,
-            ativa: true,
-          },
-        },
         historia: {
           select: {
             id: true,
             titulo: true,
             descricao: true,
-            sala_id: true,
           },
         },
         votos: {
-          include: {
-            pessoa: {
-              select: {
-                id: true,
-                nome: true,
-                inativo: true,
-              },
-            },
-          },
-          orderBy: {
-            data_voto: "asc",
+          select: {
+            id: true,
+            valor: true,
+            data_voto: true,
           },
         },
       },
@@ -162,7 +147,7 @@ export const historiaSessaoRepository = {
       },
     }),
 
-  obterPorHistoria: (historia_id: string) =>
+  listarPorHistoria: (historia_id: string) =>
     prismaClient.historiaSessao.findMany({
       where: {
         historia_id,

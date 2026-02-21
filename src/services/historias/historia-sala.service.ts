@@ -1,6 +1,4 @@
 import { historiaSalaRepository } from "../../repositories/historia-sala.repository";
-import { historiaSessaoRepository } from "../../repositories/historia-sessao.repository";
-import { salaRepository } from "../../repositories/sala.repository";
 import type {
   CriarHistoriaSalaDTO,
   AtualizarHistoriaSalaDTO,
@@ -35,39 +33,6 @@ class HistoriaSalaService {
 
   async criarVarias(historias: CriarHistoriaSalaDTO[]) {
     return await historiaSalaRepository.criarVarias(historias);
-  }
-
-  /**
-   * Adiciona história durante sessão ativa
-   * Vincula automaticamente à sessão ativa da sala
-   */
-  async adicionarDuranteSessao(dados: {
-    sala_id: string;
-    titulo: string;
-    descricao?: string | null;
-    criado_por: string;
-  }) {
-    // Verificar se sala existe e tem sessão ativa
-    const sala = await salaRepository.obterPorId(dados.sala_id, false);
-    if (!sala) {
-      throw new Error("Sala não encontrada");
-    }
-
-    console.log(sala.sessoes[0]);
-    if (sala.sessoes.length === 0) {
-      throw new Error("Sala não possui sessão ativa");
-    }
-
-    // Criar história
-    const historia = await historiaSalaRepository.criar(dados);
-
-    // Vincular à sessão ativa
-    await historiaSessaoRepository.inserir({
-      sessao_id: sala.sessoes[0].id,
-      historia_id: historia.id,
-    });
-
-    return historia;
   }
 }
 

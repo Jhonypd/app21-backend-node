@@ -14,7 +14,7 @@ router.post(
   authGuard,
   salaAuthGuard, // Valida token de sala
   salaPermissaoGuard([0, 1]), // Dono ou admin
-  historiaSalaController.criar
+  historiaSalaController.criar,
 );
 
 // POST /salas/:salaId/historias/lote - Criar várias histórias de uma vez
@@ -24,17 +24,7 @@ router.post(
   authGuard,
   salaAuthGuard, // Valida token de sala
   salaPermissaoGuard([0, 1]), // Dono ou admin
-  historiaSalaController.criarVarias
-);
-
-// POST /salas/:salaId/historias/durante-sessao - Adicionar história durante sessão ativa
-router.post(
-  "/:salaId/historias/durante-sessao",
-  validateHandler,
-  authGuard,
-  salaAuthGuard,
-  salaPermissaoGuard([0, 1]), // Dono ou admin
-  historiaSalaController.adicionarDuranteSessao
+  historiaSalaController.criarVarias,
 );
 
 // GET /salas/:salaId/historias - Listar histórias da sala
@@ -44,7 +34,7 @@ router.get(
   authGuard,
   salaAuthGuard, // Valida token de sala
   salaPermissaoGuard([0, 1, 2]), // Todos podem ver
-  historiaSalaController.listar
+  historiaSalaController.listar,
 );
 
 // GET /historias/:id - Obter história por ID
@@ -52,7 +42,7 @@ router.get(
   "/historias/:id",
   validateHandler,
   authGuard,
-  historiaSalaController.obterPorId
+  historiaSalaController.obterPorId,
 );
 
 // PUT /historias/:id - Atualizar história
@@ -60,7 +50,7 @@ router.put(
   "/historias/:id",
   validateHandler,
   authGuard,
-  historiaSalaController.atualizar
+  historiaSalaController.atualizar,
 );
 
 // DELETE /historias/:id - Deletar história
@@ -68,7 +58,7 @@ router.delete(
   "/historias/:id",
   validateHandler,
   authGuard,
-  historiaSalaController.deletar
+  historiaSalaController.deletar,
 );
 
 export default router;
