@@ -18,38 +18,12 @@ export const votosRepository = {
         pessoa_id: voto.pessoa_id,
         valor: voto.valor,
       },
-      include: {
-        pessoa: {
-          select: {
-            id: true,
-            nome: true,
-            inativo: true,
-          },
-        },
-        historiaSessao: {
-          include: {
-            sessao: {
-              select: {
-                id: true,
-                sala_id: true,
-              },
-            },
-            historia: {
-              select: {
-                id: true,
-                titulo: true,
-                descricao: true,
-              },
-            },
-          },
-        },
-      },
     }),
 
   atualizar: (
     historia_sessao_id: string,
     pessoa_id: string,
-    data: VotoAtualizarData
+    data: VotoAtualizarData,
   ) =>
     prismaClient.voto.update({
       where: {
@@ -62,37 +36,11 @@ export const votosRepository = {
         valor: data.valor,
         data_voto: new Date(),
       },
-      include: {
-        pessoa: {
-          select: {
-            id: true,
-            nome: true,
-            inativo: true,
-          },
-        },
-        historiaSessao: {
-          include: {
-            sessao: {
-              select: {
-                id: true,
-                sala_id: true,
-              },
-            },
-            historia: {
-              select: {
-                id: true,
-                titulo: true,
-                descricao: true,
-              },
-            },
-          },
-        },
-      },
     }),
 
   obterVotoPorHistoriaSessaoEPessoa: (
     historia_sessao_id: string,
-    pessoa_id: string
+    pessoa_id: string,
   ) =>
     prismaClient.voto.findUnique({
       where: {
@@ -203,10 +151,18 @@ export const votosRepository = {
       },
     }),
 
-  deletarVotosPorHistoriaSessao: (historia_sessao_id: string) =>
+  deletarVotosPorHistoriaSessao: (
+    historia_sessao_id: string,
+    historia_id: string,
+  ) =>
     prismaClient.voto.deleteMany({
       where: {
         historia_sessao_id,
+        AND: {
+          historiaSessao: {
+            historia_id,
+          },
+        },
       },
     }),
 

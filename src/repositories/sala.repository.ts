@@ -119,13 +119,13 @@ export const salaRepository = {
             },
           },
         },
-        historias: {
-          select: {
-            id: true,
-            titulo: true,
-            descricao: true,
-          },
-        },
+        // historias: {
+        //   select: {
+        //     id: true,
+        //     titulo: true,
+        //     descricao: true,
+        //   },
+        // },
         sessoes: {
           where: {
             ativa: true,
@@ -182,7 +182,7 @@ export const salaRepository = {
     pessoaId: string,
     pagina: number,
     itensPagina: number,
-    valorPesquisa?: string
+    valorPesquisa?: string,
   ) =>
     prismaClient.sala.findMany({
       where: {
@@ -314,7 +314,7 @@ export const salaRepository = {
     data: Partial<{
       historia_atual_id: string | null;
       votos_revelados: boolean;
-    }>
+    }>,
   ) =>
     prismaClient.sala.update({
       where: { id: sala_id },

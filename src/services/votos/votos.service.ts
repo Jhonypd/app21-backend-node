@@ -1,5 +1,6 @@
 import { votosRepository } from "../../repositories/votos.repository";
 import { historiaSessaoRepository } from "../../repositories/historia-sessao.repository";
+import { participanteSessaoRepository } from "../../repositories/participante-sessao.repository";
 
 interface VotoInserirData {
   historia_sessao_id: string;
@@ -11,13 +12,12 @@ interface VotoInserirData {
 
 export const votosService = {
   async votar(voto: VotoInserirData) {
-    // Validação do valor do voto (exemplo: Planning Poker usa valores específicos)
     // Ajuste conforme as regras do seu Planning Poker
     if (voto.valor < -1 || voto.valor > 89) {
       throw new Error("Valor do voto inválido. Deve estar entre -1 e 89.");
     }
 
-    // ✅ NOVA LÓGICA: Verificar se sessão tem histórias vinculadas
+    // Verificar se sessão tem histórias vinculadas
     const historiaSessao = await historiaSessaoRepository.obterPorId(
       voto.historia_sessao_id,
     );
@@ -26,7 +26,7 @@ export const votosService = {
       throw new Error("História de sessão não encontrada.");
     }
 
-    // ✅ NOVA VALIDAÇÃO: Se participa_votacao === false, não salvar voto
+    // Se participa_votacao === false, não salvar voto
     if (voto.participa_votacao === false) {
       return {
         temporario: true,
@@ -43,8 +43,6 @@ export const votosService = {
 
     // Atualizar flag participa_votacao no ParticipanteSessao se sessao_id foi fornecido
     if (voto.sessao_id) {
-      const { participanteSessaoRepository } =
-        await import("../../repositories/participante-sessao.repository");
       try {
         await participanteSessaoRepository.atualizar(
           voto.sessao_id,
@@ -58,7 +56,7 @@ export const votosService = {
     }
 
     // Buscar todas as histórias da sessão
-    const historiasVinculadas = await historiaSessaoRepository.obterPorSessao(
+    const historiasVinculadas = await historiaSessaoRepository.listarPorSessao(
       historiaSessao.sessao_id,
     );
 
@@ -67,6 +65,7 @@ export const votosService = {
       return {
         temporario: true,
         voto: {
+          id: crypto.randomUUID(),
           historia_sessao_id: voto.historia_sessao_id,
           pessoa_id: voto.pessoa_id,
           valor: voto.valor,
@@ -96,7 +95,6 @@ export const votosService = {
       return {
         temporario: false,
         voto: votoAtualizado,
-        mensagem: "Voto atualizado com sucesso",
       };
     }
 
@@ -105,7 +103,6 @@ export const votosService = {
     return {
       temporario: false,
       voto: novoVoto,
-      mensagem: "Voto registrado com sucesso",
     };
   },
 
@@ -129,9 +126,13 @@ export const votosService = {
     );
   },
 
-  async resetarVotosPorHistoriaSessao(historia_sessao_id: string) {
+  async resetarVotosPorHistoriaSessao(
+    historia_sessao_id: string,
+    historia_id: string,
+  ) {
     return await votosRepository.deletarVotosPorHistoriaSessao(
       historia_sessao_id,
+      historia_id,
     );
   },
 

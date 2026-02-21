@@ -3,7 +3,7 @@ import { salaRepository } from "../../repositories/sala.repository";
 import { criptografia } from "../../lib/criptografia";
 import { addHours, format } from "date-fns";
 import { ClaimsAuthSala, geradorTokenSala } from "../../lib/jwt";
-import { ptBR } from "date-fns/locale";
+import { ja, ptBR } from "date-fns/locale";
 import { participanteSalaService } from "../participantes/participante-sala.service";
 import { sessaoSalaService } from "../sessoes/sessao-sala.service";
 import { participanteSalaRepository } from "../../repositories/participante-sala.repository";
@@ -12,6 +12,9 @@ import { pessoaRepository } from "../../repositories/pessoa.repository";
 import { determinarTipoAcesso } from "../../helpers/determinar-tipo-acesso";
 import { sessaoSalaRepository } from "../../repositories/sessao-sala.repository";
 import { votosRepository } from "../../repositories/votos.repository";
+import { obterVotosVencedoresHistoria } from "../../utils/voto-vencedor-historia";
+import { historiaSalaRepository } from "../../repositories/historia-sala.repository";
+import { historiaSessaoRepository } from "../../repositories/historia-sessao.repository";
 
 interface CriarSalaProps {
   pessoaId: string;
@@ -270,7 +273,7 @@ export const salaService = {
           };
         }),
       ],
-      historias: sala.historias || [],
+      // historias: sala.historias || [],
       votos: [],
     };
   },
@@ -335,14 +338,6 @@ export const salaService = {
       throw new Error("Nenhuma sessão ativa encontrada para esta sala");
     }
 
-    // Filtrar histórias pela sessão ativa
-    const historiasAtivas =
-      sessaoAtiva.historias?.map((historiaSessao) => ({
-        id: historiaSessao.historia.id,
-        titulo: historiaSessao.historia.titulo,
-        descricao: historiaSessao.historia.descricao,
-      })) || [];
-
     // Buscar votos apenas da história ATUAL (historia_atual_id)
     const historiaAtualSessao = sessaoAtiva.historias?.find(
       (hs) => hs.historia.id === sala.historia_atual_id,
@@ -359,54 +354,68 @@ export const salaService = {
         },
       })) || [];
 
-    // ✅ Juntar participantes permanentes + visitantes
-    const participantes: Array<{
-      id: string;
-      nome: string;
-      inativo: boolean;
-      role: number;
-      online: boolean;
-      participa_votacao?: boolean;
-    }> = [];
-
+    // ✅ Calcular resumo de participantes (sem enviar lista completa)
     // Criar mapa de participa_votacao dos ParticipanteSessao
     const participaVotacaoMap = new Map<string, boolean>();
     sessaoAtiva.participantes?.forEach((ps) => {
       participaVotacaoMap.set(ps.pessoa.id, ps.participa_votacao ?? true);
     });
 
-    // 1. Adicionar participantes PERMANENTES (têm ParticipanteSala)
+    // Contar participantes permanentes
+    let totalParticipantes = sala.participantes.length;
+    let totalOnline = sala.participantes.filter((p) => p.online).length;
+    let totalDevemVotar = 0;
+
+    // Participantes permanentes que devem votar
     sala.participantes.forEach((participante) => {
-      participantes.push({
-        id: participante.pessoa.id,
-        nome: criptografia.descriptografar(participante.pessoa.nome),
-        inativo: participante.pessoa.inativo,
-        role: participante.role, // 0=Dono, 1=Admin, 2=Membro
-        online: participante.online, // Status real do ParticipanteSala
-        participa_votacao: participaVotacaoMap.get(participante.pessoa.id),
-      });
-    });
-
-    // 2. Adicionar VISITANTES (apenas ParticipanteSessao)
-    // Buscar IDs dos permanentes para filtrar
-    const idsParticipantesPermanentes = sala.participantes.map(
-      (p) => p.pessoa.id,
-    );
-
-    // Buscar visitantes da sessão ativa (excluir permanentes)
-    sessaoAtiva.participantes?.forEach((participanteSessao) => {
-      // Se NÃO é permanente, é visitante
-      if (!idsParticipantesPermanentes.includes(participanteSessao.pessoa.id)) {
-        participantes.push({
-          id: participanteSessao.pessoa.id,
-          nome: criptografia.descriptografar(participanteSessao.pessoa.nome),
-          inativo: participanteSessao.pessoa.inativo,
-          role: 3, // Visitante sempre role 3
-          online: true, // Visitante sempre online (se está na sessão ativa)
-          participa_votacao: participanteSessao.participa_votacao ?? true,
-        });
+      const participaVotacao =
+        participaVotacaoMap.get(participante.pessoa.id) ?? true;
+      // Roles 2 e 3 sempre participam, roles 0 e 1 dependem de participa_votacao
+      if (
+        participante.role === 2 ||
+        participante.role === 3 ||
+        (participante.role <= 1 && participaVotacao !== false)
+      ) {
+        totalDevemVotar++;
       }
     });
+
+    // Contar visitantes (ParticipanteSessao que não são permanentes)
+    const idsParticipantesPermanentes = new Set(
+      sala.participantes.map((p) => p.pessoa.id),
+    );
+
+    sessaoAtiva.participantes?.forEach((participanteSessao) => {
+      if (!idsParticipantesPermanentes.has(participanteSessao.pessoa.id)) {
+        totalParticipantes++;
+        totalOnline++; // Visitante sempre online
+        // Visitante participa se participa_votacao !== false
+        if (participanteSessao.participa_votacao !== false) {
+          totalDevemVotar++;
+        }
+      }
+    });
+
+    // Determinar role do usuário que fez a requisição
+    let meuRole: number | null = null;
+    if (sala.criado_por === pessoaId) {
+      meuRole = 0; // Dono
+    } else {
+      const participantePermanente = sala.participantes.find(
+        (p) => p.pessoa.id === pessoaId,
+      );
+      if (participantePermanente) {
+        meuRole = participantePermanente.role; // Admin(1) ou Membro(2)
+      } else {
+        // Verificar se é visitante da sessão
+        const visitanteSessao = sessaoAtiva.participantes?.find(
+          (ps) => ps.pessoa.id === pessoaId,
+        );
+        if (visitanteSessao) {
+          meuRole = 3; // Visitante
+        }
+      }
+    }
 
     return {
       id: sala.id,
@@ -416,12 +425,16 @@ export const salaService = {
       inativo: sala.inativo,
       historia_atual_id: sala.historia_atual_id,
       votos_revelados: sala.votos_revelados,
+      meuRole,
       proprietario: {
         ...sala.proprietario,
         nome: criptografia.descriptografar(sala.proprietario.nome),
       },
-      participantes, // Lista unificada (permanentes + visitantes)
-      historias: historiasAtivas, // Lista de histórias da sessão (sem votos dentro)
+      resumoParticipantes: {
+        totalParticipantes,
+        totalOnline,
+        totalDevemVotar,
+      },
       votos: votosHistoriaAtual, // Apenas votos da história atual
       sessaoAtiva: {
         id: sessaoAtiva.id,
@@ -860,10 +873,10 @@ export const salaService = {
     historia_id: string,
     pessoa_id: string,
   ) {
-    const { historiaSalaRepository } =
-      await import("../../repositories/historia-sala.repository");
-    const { historiaSessaoRepository } =
-      await import("../../repositories/historia-sessao.repository");
+    // const { historiaSalaRepository } =
+    //   await import("../../repositories/historia-sala.repository");
+    // const { historiaSessaoRepository } =
+    //   await import("../../repositories/historia-sessao.repository");
 
     // Validar sala
     const sala = await salaRepository.obterPorId(sala_id, false);

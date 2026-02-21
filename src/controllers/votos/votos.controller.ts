@@ -6,17 +6,17 @@ export const votosController = {
   async votar(req: Request, res: Response) {
     try {
       const sessao_id = req.params.id;
-      const { historia_id, valor, participa_votacao } = req.body;
+      const { historia_sessao_id, valor, participa_votacao } = req.body;
       const pessoa_id = req.user?.Usu_Id as string;
 
-      if (!historia_id) {
+      if (!historia_sessao_id) {
         throw new Error("historia_id é obrigatório.");
       }
 
       // Buscar HistoriaSessao (deve existir - criada junto com a sessão)
       const historiaSessao = await votosService.obterHistoriaSessao(
         sessao_id,
-        historia_id,
+        historia_sessao_id,
       );
 
       if (!historiaSessao) {
@@ -36,7 +36,10 @@ export const votosController = {
 
       res.status(201).json(
         respostaSucesso({
-          resultado: { voto },
+          resultado: {
+            voto: voto.voto.id,
+            temporario: voto.temporario,
+          },
           mensagem: "Voto registrado com sucesso.",
         }),
       );
