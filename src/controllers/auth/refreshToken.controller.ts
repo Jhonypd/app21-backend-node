@@ -19,20 +19,20 @@ export const refreshTokenController = {
       const tokenValidado = await refreshTokenService.revalidarAccessToken(
         refreshToken,
         ip,
-        userAgent
+        userAgent,
       );
 
       return res.status(200).json(
         respostaSucesso({
           mensagem: "Token renovado com sucesso",
           resultado: tokenValidado,
-        })
+        }),
       );
     } catch (error: any) {
       return res.status(500).json(
         respostaErro({
           mensagem: error.message || "Erro ao renovar token",
-        })
+        }),
       );
     }
   },
@@ -40,7 +40,7 @@ export const refreshTokenController = {
   async encerrarSessao(req: Request, res: Response) {
     try {
       const { refreshToken } = req.body;
-      const sessaoId = req.user?.Ss_Id;
+      const sessaoId = req.user?.Sessao_Usuario_Id;
 
       if (!refreshToken) {
         return res
@@ -56,19 +56,19 @@ export const refreshTokenController = {
 
       await sessaoUsuarioService.invalidarSessaoRefreshToken(
         sessaoId,
-        refreshToken
+        refreshToken,
       );
 
       return res.status(200).json(
         respostaSucesso({
           mensagem: "Sessão encerrada com sucesso",
-        })
+        }),
       );
     } catch (error: any) {
       return res.status(500).json(
         respostaErro({
           mensagem: error.message || "Erro ao revogar refresh token",
-        })
+        }),
       );
     }
   },

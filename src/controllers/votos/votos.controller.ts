@@ -7,7 +7,7 @@ export const votosController = {
     try {
       const sessao_id = req.params.id;
       const { historia_sessao_id, valor, participa_votacao } = req.body;
-      const pessoa_id = req.user?.Usu_Id as string;
+      const pessoa_id = req.user?.Usuario_Id as string;
 
       if (!historia_sessao_id) {
         throw new Error("historia_id é obrigatório.");

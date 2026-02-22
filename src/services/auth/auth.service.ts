@@ -34,10 +34,10 @@ export const authService = {
     if (!senhaValida) throw new Error("Usuario e/ou senha inválido(s)");
 
     const tokenPayload = {
-      Usu_Id: pessoa.id,
-      Usu_Na: criptografia.descriptografar(pessoa.nome),
+      Usuario_Id: pessoa.id,
+      Nome: criptografia.descriptografar(pessoa.nome),
       Email: criptografia.descriptografar(pessoa.email),
-      Idp: "pt-BR",
+      Idioma_Padrao: "pt-BR",
       aud: "App21",
       iss: "App21",
     } as Claims;
@@ -52,7 +52,10 @@ export const authService = {
       userAgent,
     );
 
-    const token = geradorToken({ ...tokenPayload, Ss_Id: novaSessao.id });
+    const token = geradorToken({
+      ...tokenPayload,
+      Sessao_Usuario_Id: novaSessao.id,
+    });
 
     const refreshToken = await refreshTokenService.gerarRefreshToken(
       pessoa.id,

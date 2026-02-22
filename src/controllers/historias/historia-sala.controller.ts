@@ -7,7 +7,7 @@ class HistoriaSalaController {
     try {
       const { salaId } = req.params;
       const { titulo, descricao } = req.body;
-      const usuarioId = req.user!.Usu_Id;
+      const usuarioId = req.user!.Usuario_Id;
 
       const historia = await historiaSalaService.criar({
         sala_id: salaId,
@@ -34,7 +34,7 @@ class HistoriaSalaController {
     try {
       const { salaId } = req.params;
       const { historias } = req.body;
-      const usuarioId = req.user!.Usu_Id;
+      const usuarioId = req.user!.Usuario_Id;
 
       const historiasComSala = historias.map((h: any) => ({
         sala_id: salaId,

@@ -1,4 +1,4 @@
-import { addDays, addMinutes, format } from "date-fns";
+import { addDays } from "date-fns";
 import {
   Claims,
   ClaimsRefreshToken,
@@ -6,7 +6,6 @@ import {
   geradorRefreshToken,
   geradorToken,
 } from "../../lib/jwt";
-import { ptBR } from "date-fns/locale";
 import { RefreshTokenRepository } from "../../repositories/refresh-token.repository";
 import { pessoaService } from "../pessoas/pessoa.service";
 import { sessaoUsuarioService } from "./sessao-usuario.service";
@@ -16,15 +15,14 @@ import { hash } from "../../lib/hash";
 export const refreshTokenService = {
   async gerarRefreshToken(userId: string, sessionId: string) {
     const dataTokenRefresh = {
-      Usu_Id: userId,
-      Ss_Id: sessionId,
+      Usuario_Id: userId,
+      Sessao_Usuario_Id: sessionId,
     } as ClaimsRefreshToken;
 
     const gerarRefreshToken = geradorRefreshToken(dataTokenRefresh);
 
     const refreshTokenHash = await hash.senha(gerarRefreshToken);
 
-    // 🔥 CORREÇÃO: Expiração deve ser 7 dias no futuro, não a data atual
     const expiracao = addDays(new Date(), 7);
 
     const refreshToken = await RefreshTokenRepository.criar(
@@ -44,7 +42,9 @@ export const refreshTokenService = {
     const refreshTokenDecoded = decodeToken<ClaimsRefreshToken>(refreshToken);
 
     const buscaRefreshTokenBanco =
-      await RefreshTokenRepository.buscarPorSessaoId(refreshTokenDecoded.Ss_Id);
+      await RefreshTokenRepository.buscarPorSessaoId(
+        refreshTokenDecoded.Sessao_Usuario_Id,
+      );
 
     if (!buscaRefreshTokenBanco) {
       console.error(
@@ -73,14 +73,14 @@ export const refreshTokenService = {
 
     const dadosUsuarioNovoToken = await pessoaService.usuarioExistePorEmailOuId(
       null,
-      refreshTokenDecoded.Usu_Id,
+      refreshTokenDecoded.Usuario_Id,
     );
 
     if (!dadosUsuarioNovoToken)
       throw new Error("Usuário não encontrado para renovar token de acesso");
 
     const sessaoAtiva = await sessaoUsuarioService.buscarSessaoAtivaPorId(
-      refreshTokenDecoded.Ss_Id,
+      refreshTokenDecoded.Sessao_Usuario_Id,
     );
 
     if (!sessaoAtiva)
@@ -98,18 +98,18 @@ export const refreshTokenService = {
     );
 
     const novoAccessTokenPayload = {
-      Usu_Id: dadosUsuarioNovoToken.id,
-      Usu_Na: criptografia.descriptografar(dadosUsuarioNovoToken.nome),
+      Usuario_Id: dadosUsuarioNovoToken.id,
+      Nome: criptografia.descriptografar(dadosUsuarioNovoToken.nome),
       Email: criptografia.descriptografar(dadosUsuarioNovoToken.email),
-      Ss_Id: sessaoAtiva.id,
-      Idp: "pt-BR",
+      Sessao_Usuario_Id: sessaoAtiva.id,
+      Idioma_Padrao: "pt-BR",
       aud: "App21",
       iss: "App21",
     } as Claims;
 
     const novoRefreshTokenPayload = {
-      Usu_Id: dadosUsuarioNovoToken.id,
-      Ss_Id: sessaoAtiva.id,
+      Usuario_Id: dadosUsuarioNovoToken.id,
+      Sessao_Usuario_Id: sessaoAtiva.id,
     } as ClaimsRefreshToken;
 
     const accessToken = geradorToken(novoAccessTokenPayload);

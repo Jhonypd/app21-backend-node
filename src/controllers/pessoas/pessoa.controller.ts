@@ -22,7 +22,7 @@ export const pessoaController = {
               ? "Usuário atualizado com sucesso"
               : "Usuário atualizado, mas email de confirmação não pôde ser enviado"
           }`,
-        })
+        }),
       );
     } catch (error: any) {
       return res.status(400).json(respostaErro({ mensagem: error.message }));
@@ -46,7 +46,7 @@ export const pessoaController = {
           resultado: {
             pessoa: dados,
           },
-        })
+        }),
       );
     } catch (error: any) {
       return res.status(400).json(respostaErro({ mensagem: error.message }));
@@ -55,7 +55,7 @@ export const pessoaController = {
 
   async obterDadosConta(req: Request, res: Response) {
     try {
-      const pessoaId = req.user?.Usu_Id as string;
+      const pessoaId = req.user?.Usuario_Id as string;
 
       const dados = await pessoaService.obterDadosConta(pessoaId);
 

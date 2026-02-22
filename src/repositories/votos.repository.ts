@@ -147,6 +147,9 @@ export const votosRepository = {
         },
       },
       orderBy: {
+        pessoa: {
+          nome: "asc",
+        },
         data_voto: "asc",
       },
     }),

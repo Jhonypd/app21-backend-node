@@ -7,7 +7,7 @@ export const participanteSalaController = {
     try {
       const sala_id = req.params.id;
       const { pessoa_id, tipo } = req.body; // tipo: 1=admin, 2=participante
-      const dono_id = req.user?.Usu_Id as string;
+      const dono_id = req.user?.Usuario_Id as string;
 
       // Validar que apenas dono ou admin pode adicionar participantes
       const userRole = req.user?.Role;
@@ -60,7 +60,7 @@ export const participanteSalaController = {
     try {
       const sala_id = req.params.id;
       const pessoa_id = req.params.pessoaId;
-      const dono_id = req.user?.Usu_Id as string;
+      const dono_id = req.user?.Usuario_Id as string;
 
       // Validar que apenas dono ou admin pode remover participantes
       const userRole = req.user?.Role;

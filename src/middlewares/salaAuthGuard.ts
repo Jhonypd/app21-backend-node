@@ -21,7 +21,7 @@ const jwtSecret = process.env.JWT_SECRET as string;
 export const salaAuthGuard = async (
   req: Request,
   res: Response,
-  next: NextFunction
+  next: NextFunction,
 ) => {
   const tokenSala = req.headers["x-token-sala"] as string | undefined;
 
@@ -30,7 +30,7 @@ export const salaAuthGuard = async (
       respostaErro({
         mensagem: "Token da sala não informado.",
         codigoRetorno: 401,
-      })
+      }),
     );
   }
 
@@ -39,7 +39,11 @@ export const salaAuthGuard = async (
 
     // VALIDAÇÃO CRÍTICA #0: Verificar se o token é válido para esta sala
     const codigoSalaRota = req.params.codigo || req.params.id;
-    if (codigoSalaRota && decodedTokenSala.Sala_Co !== codigoSalaRota && decodedTokenSala.Sala_Id !== codigoSalaRota) {
+    if (
+      codigoSalaRota &&
+      decodedTokenSala.Sala_Codigo !== codigoSalaRota &&
+      decodedTokenSala.Sala_Id !== codigoSalaRota
+    ) {
       return res.status(403).json({
         Sucesso: false,
         Mensagem: "Token não é válido para esta sala.",
@@ -50,7 +54,7 @@ export const salaAuthGuard = async (
 
     // VALIDAÇÃO CRÍTICA #1: Verificar se sessão ainda está ativa
     const sessao = await sessaoSalaRepository.obterPorId(
-      decodedTokenSala.Ss_Sl_Id
+      decodedTokenSala.Sessao_Sala_Id,
     );
 
     if (!sessao || !sessao.ativa) {
@@ -65,8 +69,8 @@ export const salaAuthGuard = async (
     // VALIDAÇÃO CRÍTICA #2: Verificar se pessoa tem ParticipanteSessao
     const participanteSessao =
       await participanteSessaoRepository.obterPorSessaoEPessoa(
-        decodedTokenSala.Ss_Sl_Id,
-        decodedTokenSala.Usu_Id
+        decodedTokenSala.Sessao_Sala_Id,
+        decodedTokenSala.Usuario_Id,
       );
 
     if (!participanteSessao) {
@@ -91,13 +95,12 @@ export const salaAuthGuard = async (
     // Anexar informações da sala no request
     req.sala = {
       Sala_Id: decodedTokenSala.Sala_Id,
-      Sala_Co: decodedTokenSala.Sala_Co,
-      Sala_titulo: decodedTokenSala.Sala_titulo,
+      Sala_Codigo: decodedTokenSala.Sala_Codigo,
+      Sala_Titulo: decodedTokenSala.Sala_Titulo,
       Role: decodedTokenSala.Role,
-      Ss_Sl_Id: decodedTokenSala.Ss_Sl_Id,
-      Dt_Ex: decodedTokenSala.Dt_Ex,
-      Usu_Id: decodedTokenSala.Usu_Id,
-      Usu_Na: decodedTokenSala.Usu_Na,
+      Sessao_Sala_Id: decodedTokenSala.Sessao_Sala_Id,
+      Usuario_Id: decodedTokenSala.Usuario_Id,
+      Nome: decodedTokenSala.Nome,
     };
 
     next();

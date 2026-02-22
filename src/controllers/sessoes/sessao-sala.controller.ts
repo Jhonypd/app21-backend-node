@@ -6,7 +6,7 @@ export const sessaoSalaController = {
   async criarSessao(req: Request, res: Response) {
     try {
       const sala_id = req.params.id;
-      const pessoa_id = req.user?.Usu_Id as string;
+      const pessoa_id = req.user?.Usuario_Id as string;
       const { visitantes, historias } = req.body; // visitantes: Array de IDs | historias: Array de {titulo, descricao}
 
       const sessao = await sessaoSalaService.criarSessao(
@@ -29,7 +29,7 @@ export const sessaoSalaController = {
   async encerrarSessao(req: Request, res: Response) {
     try {
       const sala_id = req.params.id;
-      const pessoa_id = req.user?.Usu_Id as string;
+      const pessoa_id = req.user?.Usuario_Id as string;
 
       // Buscar sessão ativa da sala
       const sessaoAtiva =
@@ -61,7 +61,7 @@ export const sessaoSalaController = {
   async obterSessao(req: Request, res: Response) {
     try {
       const sessao_id = req.params.id;
-      const pessoa_id = req.user?.Usu_Id as string;
+      const pessoa_id = req.user?.Usuario_Id as string;
 
       const sessao = await sessaoSalaService.obterSessaoPorId(
         sessao_id,
@@ -82,7 +82,7 @@ export const sessaoSalaController = {
     try {
       const sessao_id = req.params.id;
       const { pessoa_id, autorizado } = req.body;
-      const usuario_id = req.user?.Usu_Id as string;
+      const usuario_id = req.user?.Usuario_Id as string;
 
       // Se não foi passado pessoa_id, usa o usuário logado
       const pessoaIdParaAdicionar = pessoa_id || usuario_id;
@@ -107,7 +107,7 @@ export const sessaoSalaController = {
   async revelarVotos(req: Request, res: Response) {
     try {
       const sessao_id = req.params.id;
-      const pessoa_id = req.user?.Usu_Id as string;
+      const pessoa_id = req.user?.Usuario_Id as string;
 
       const sessao = await sessaoSalaService.revelarVotos(sessao_id, pessoa_id);
 
@@ -125,7 +125,7 @@ export const sessaoSalaController = {
   async resetarVotos(req: Request, res: Response) {
     try {
       const sessao_id = req.params.id;
-      const pessoa_id = req.user?.Usu_Id as string;
+      const pessoa_id = req.user?.Usuario_Id as string;
 
       const sessao = await sessaoSalaService.resetarVotos(sessao_id, pessoa_id);
 
@@ -144,7 +144,7 @@ export const sessaoSalaController = {
     try {
       const sala_id = req.params.id;
       const { pessoa_ids } = req.body; // Array de IDs
-      const dono_id = req.user?.Usu_Id as string;
+      const dono_id = req.user?.Usuario_Id as string;
 
       const participantes = await sessaoSalaService.adicionarVisitantes(
         sala_id,
@@ -167,7 +167,7 @@ export const sessaoSalaController = {
     try {
       const sala_id = req.params.id;
       const pessoa_id = req.params.pessoaId;
-      const dono_id = req.user?.Usu_Id as string;
+      const dono_id = req.user?.Usuario_Id as string;
 
       await sessaoSalaService.removerVisitante(sala_id, pessoa_id, dono_id);
 
@@ -202,7 +202,7 @@ export const sessaoSalaController = {
       const resultado = await sessaoSalaService.kickarParticipante(
         sessaoId,
         pessoaId,
-        usuarioLogado?.Usu_Id as string,
+        usuarioLogado?.Usuario_Id as string,
         sala.Role as 0 | 1 | 2 | 3,
       );
 
@@ -224,7 +224,7 @@ export const sessaoSalaController = {
   async atualizarParticipaVotacao(req: Request, res: Response) {
     try {
       const sessao_id = req.params.id;
-      const pessoa_id = req.user?.Usu_Id as string;
+      const pessoa_id = req.user?.Usuario_Id as string;
       const { participa_votacao } = req.body;
 
       if (typeof participa_votacao !== "boolean") {
@@ -262,7 +262,7 @@ export const sessaoSalaController = {
     try {
       const { sessaoId } = req.params;
       const { titulo, descricao } = req.body;
-      const usuarioId = req.user?.Usu_Id as string;
+      const usuarioId = req.user?.Usuario_Id as string;
 
       // Obter sessão para pegar o sala_id
       const sessao = await sessaoSalaService.obterSessaoPorId(

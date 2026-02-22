@@ -25,21 +25,21 @@ const socketEventos = (io: Server, jwtSecret: string) => {
   io.on("connection", (socket: Socket) => {
     const user = socket.data.usuario;
 
-    console.log("Usuário conectado:", user.Usu_Na);
+    console.log("Usuário conectado:", user.Nome);
 
     // Entrar na sala
     socket.on("entrar_sala", () => {
       socket.join(user.Sala_Id);
 
       io.to(user.Sala_Id).emit("usuario_entrou", {
-        pessoa_id: user.Usu_Id,
-        nome: user.Usu_Na,
+        pessoa_id: user.Usuario_Id,
+        nome: user.Nome,
         role: user.Role,
       });
     });
 
     socket.on("disconnect", () => {
-      console.log("Usuário desconectado:", user.Usu_Na);
+      console.log("Usuário desconectado:", user.Nome);
     });
   });
 };

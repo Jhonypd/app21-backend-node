@@ -77,8 +77,7 @@ async function validarPessoa(
 }
 
 // ==================== MIDDLEWARE PRINCIPAL ====================
-// 🔥 SIMPLIFICADO: Sem refresh automático
-// Token válido por 7 dias - se expirar, usuário faz login novamente
+// Token válido por 10 horas - se expirar, usuário faz login novamente
 
 export const authGuard = async (
   req: Request,
@@ -105,7 +104,7 @@ export const authGuard = async (
 
     // ==================== 3. VALIDAÇÃO DA SESSÃO ====================
     const sessaoUsuario = await sessaoUsuarioService.buscarSessaoAtivaPorId(
-      decoded.Ss_Id,
+      decoded.Sessao_Usuario_Id,
     );
 
     if (!sessaoUsuario) {
@@ -129,18 +128,18 @@ export const authGuard = async (
     }
 
     // ==================== 4. VALIDAÇÃO DA PESSOA ====================
-    const pessoa = await validarPessoa(decoded.Usu_Id, res);
+    const pessoa = await validarPessoa(decoded.Usuario_Id, res);
     if (!pessoa) return; // Resposta já enviada
 
     // ==================== 5. CONFIGURAR REQ.USER ====================
     req.user = {
-      Usu_Id: pessoa.id,
-      Usu_Na: pessoa.nome,
+      Usuario_Id: pessoa.id,
+      Nome: pessoa.nome,
       Email: pessoa.email,
-      Idp: decoded.Idp,
+      Idioma_Padrao: decoded.Idioma_Padrao,
+      Sessao_Usuario_Id: decoded.Sessao_Usuario_Id,
       iss: decoded.iss,
       aud: decoded.aud,
-      Ss_Id: decoded.Ss_Id,
     };
 
     // ==================== 6. PROCESSAR TOKEN DE SALA (OPCIONAL) ====================
@@ -153,7 +152,6 @@ export const authGuard = async (
   } catch (error) {
     // ==================== 7. TRATAMENTO DE ERROS ====================
     if (error instanceof jwt.TokenExpiredError) {
-      // 🔥 Token expirado - pedir login novamente
       return res.status(401).json(
         respostaErro({
           mensagem: "Sessão expirada. Faça login novamente.",

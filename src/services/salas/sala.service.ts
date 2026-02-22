@@ -3,7 +3,7 @@ import { salaRepository } from "../../repositories/sala.repository";
 import { criptografia } from "../../lib/criptografia";
 import { addHours, format } from "date-fns";
 import { ClaimsAuthSala, geradorTokenSala } from "../../lib/jwt";
-import { ja, ptBR } from "date-fns/locale";
+import { ptBR } from "date-fns/locale";
 import { participanteSalaService } from "../participantes/participante-sala.service";
 import { sessaoSalaService } from "../sessoes/sessao-sala.service";
 import { participanteSalaRepository } from "../../repositories/participante-sala.repository";
@@ -579,22 +579,20 @@ export const salaService = {
 
     const tokenPayload: ClaimsAuthSala = {
       Role: tipoAcesso,
-      Usu_Id: pessoaId,
-      Usu_Na: nomeDescriptografado,
+      Usuario_Id: pessoaId,
+      Nome: nomeDescriptografado,
       Sala_Id: sala.id,
-      Sala_Co: sala.codigo,
-      Sala_titulo: sala.titulo,
-      Dt_Ex: format(dataExpiracao, "yyyy-MM-dd' 'HH:mm:ss", { locale: ptBR }),
-      Ss_Sl_Id: sessaoAtiva?.id as string,
+      Sala_Codigo: sala.codigo,
+      Sala_Titulo: sala.titulo,
+      Sessao_Sala_Id: sessaoAtiva?.id as string,
     };
 
     const tokenSala = geradorTokenSala(tokenPayload);
 
     return {
       tokenSala,
-      dataExpiracao: tokenPayload.Dt_Ex,
       role: tipoAcesso,
-      sessaoId: tokenPayload.Ss_Sl_Id,
+      sessaoId: tokenPayload.Sessao_Sala_Id,
     };
   },
 
@@ -732,13 +730,13 @@ export const salaService = {
 
     const tokenPayload: ClaimsAuthSala = {
       Role: tipoAcesso as 0 | 1 | 2 | 3,
-      Usu_Id: pessoa_id_reentrada,
-      Usu_Na: nomeDescriptografado,
+      Usuario_Id: pessoa_id_reentrada,
+      Nome: nomeDescriptografado,
       Sala_Id: sala.id,
-      Sala_Co: sala.codigo,
-      Sala_titulo: sala.titulo,
-      Dt_Ex: format(dataExpiracao, "yyyy-MM-dd' 'HH:mm:ss", { locale: ptBR }),
-      Ss_Sl_Id: sessaoAtiva.id,
+      Sala_Codigo: sala.codigo,
+      Sala_Titulo: sala.titulo,
+      // Dt_Ex: format(dataExpiracao, "yyyy-MM-dd' 'HH:mm:ss", { locale: ptBR }),
+      Sessao_Sala_Id: sessaoAtiva.id,
     };
 
     const tokenSala = geradorTokenSala(tokenPayload);
@@ -857,11 +855,6 @@ export const salaService = {
     historia_id: string,
     pessoa_id: string,
   ) {
-    // const { historiaSalaRepository } =
-    //   await import("../../repositories/historia-sala.repository");
-    // const { historiaSessaoRepository } =
-    //   await import("../../repositories/historia-sessao.repository");
-
     // Validar sala
     const sala = await salaRepository.obterPorId(sala_id, false);
     if (!sala) {

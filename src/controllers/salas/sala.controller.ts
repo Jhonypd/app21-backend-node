@@ -7,7 +7,7 @@ export const salaController = {
   async criarSalas(req: Request, res: Response) {
     try {
       const { titulo, senha, salaPrivada, participantesIds } = req.body;
-      const pessoaId = req.user?.Usu_Id as string;
+      const pessoaId = req.user?.Usuario_Id as string;
 
       const sala = await salaService.inserir({
         titulo,
@@ -21,7 +21,7 @@ export const salaController = {
         respostaSucesso({
           resultado: { id: sala },
           mensagem: "Sala criada com sucesso.",
-        })
+        }),
       );
     } catch (error: any) {
       res.status(500).json(respostaErro({ mensagem: error.message }));
@@ -32,7 +32,7 @@ export const salaController = {
     try {
       const id = req.params.id;
       const { titulo, senha } = req.body;
-      const pessoaId = req.user?.Usu_Id as string;
+      const pessoaId = req.user?.Usuario_Id as string;
 
       const salaAtualizada = await salaService.alterar(id, pessoaId, {
         titulo,
@@ -43,7 +43,7 @@ export const salaController = {
         respostaSucesso({
           resultado: { id: salaAtualizada.id },
           mensagem: "Sala atualizada com sucesso.",
-        })
+        }),
       );
     } catch (error: any) {
       res.status(500).json(respostaErro({ mensagem: error.message }));
@@ -52,7 +52,7 @@ export const salaController = {
 
   async listarSalas(req: Request, res: Response) {
     try {
-      const pessoaId = req.user?.Usu_Id as string;
+      const pessoaId = req.user?.Usuario_Id as string;
 
       const pagina = Number(req.query.pagina) || 1;
       const itensPagina = Number(req.query.itensPagina) || 5;
@@ -62,7 +62,7 @@ export const salaController = {
         pessoaId,
         pagina,
         itensPagina,
-        valorPesquisa
+        valorPesquisa,
       );
 
       res.json(respostaSucesso({ resultado: { salas: salas } }));
@@ -74,7 +74,7 @@ export const salaController = {
   async obterPorCodigo(req: Request, res: Response) {
     try {
       const codigo = req.params.codigo;
-      const pessoaId = req.user?.Usu_Id as string;
+      const pessoaId = req.user?.Usuario_Id as string;
       const sala = await salaService.obterPorCodigo(codigo, pessoaId);
       res.json(respostaSucesso({ resultado: { sala: sala } }));
     } catch (error: any) {
@@ -85,10 +85,10 @@ export const salaController = {
   async obterDadosSessaoAtiva(req: Request, res: Response) {
     try {
       const codigo = req.params.codigo;
-      const pessoaId = req.user?.Usu_Id as string;
+      const pessoaId = req.user?.Usuario_Id as string;
       const dadosSala = await salaService.obterDadosSessaoAtiva(
         codigo,
-        pessoaId
+        pessoaId,
       );
       res.json(respostaSucesso({ resultado: { sala: dadosSala } }));
     } catch (error: any) {
@@ -99,7 +99,7 @@ export const salaController = {
   async obterPorId(req: Request, res: Response) {
     try {
       const id = req.params.id;
-      const pessoaId = req.user?.Usu_Id as string;
+      const pessoaId = req.user?.Usuario_Id as string;
       const sala = await salaService.obterPorId(id, pessoaId);
       res.json(respostaSucesso({ resultado: { sala: sala } }));
     } catch (error: any) {
@@ -110,7 +110,7 @@ export const salaController = {
   async obterParaEdicao(req: Request, res: Response) {
     try {
       const id = req.params.id;
-      const pessoaId = req.user?.Usu_Id as string;
+      const pessoaId = req.user?.Usuario_Id as string;
       const sala = await salaService.obterParaEdicao(id, pessoaId);
       res.json(respostaSucesso({ resultado: { sala: sala } }));
     } catch (error: any) {
@@ -123,24 +123,22 @@ export const salaController = {
       const pessoa = req.user;
       const { codigo, senha } = req.body;
 
-      const { tokenSala, dataExpiracao, role, sessaoId } =
-        await salaService.entrarSala(
-          codigo,
-          pessoa?.Usu_Id as string,
-          pessoa?.Ss_Id as string,
-          senha
-        );
+      const { tokenSala, role, sessaoId } = await salaService.entrarSala(
+        codigo,
+        pessoa?.Usuario_Id as string,
+        pessoa?.Sessao_Usuario_Id as string,
+        senha,
+      );
 
       res.json(
         respostaSucesso({
           resultado: {
             tokenSala,
-            dataExpiracao,
             role,
             sessaoId,
           },
           mensagem: "Login na sala realizado com sucesso.",
-        })
+        }),
       );
     } catch (error: any) {
       res.status(500).json(respostaErro({ mensagem: error.message }));
@@ -150,7 +148,7 @@ export const salaController = {
   async sairDaSala(req: Request, res: Response) {
     try {
       const sala_id = req.params.id;
-      const pessoa_id = req.user?.Usu_Id as string;
+      const pessoa_id = req.user?.Usuario_Id as string;
 
       const resultado = await salaService.sairDaSala(sala_id, pessoa_id);
 
@@ -158,7 +156,7 @@ export const salaController = {
         respostaSucesso({
           resultado,
           mensagem: resultado.mensagem,
-        })
+        }),
       );
     } catch (error: any) {
       res.status(500).json(respostaErro({ mensagem: error.message }));
@@ -169,19 +167,19 @@ export const salaController = {
     try {
       const sala_id = req.params.id;
       const pessoa_id_reentrada = req.params.pessoaId;
-      const pessoa_id_aprovador = req.user?.Usu_Id as string;
+      const pessoa_id_aprovador = req.user?.Usuario_Id as string;
 
       const resultado = await salaService.aprovarReentrada(
         sala_id,
         pessoa_id_aprovador,
-        pessoa_id_reentrada
+        pessoa_id_reentrada,
       );
 
       res.json(
         respostaSucesso({
           resultado,
           mensagem: resultado.mensagem,
-        })
+        }),
       );
     } catch (error: any) {
       res.status(500).json(respostaErro({ mensagem: error.message }));
@@ -196,7 +194,7 @@ export const salaController = {
   async excluirSala(req: Request, res: Response) {
     try {
       const id = req.params.id;
-      const pessoaId = req.user?.Usu_Id as string;
+      const pessoaId = req.user?.Usuario_Id as string;
 
       const resultado = await salaService.excluirSala(id, pessoaId);
 
@@ -204,7 +202,7 @@ export const salaController = {
         respostaSucesso({
           resultado: resultado,
           mensagem: resultado.mensagem,
-        })
+        }),
       );
     } catch (error: any) {
       res.status(500).json(respostaErro({ mensagem: error.message }));
@@ -218,20 +216,20 @@ export const salaController = {
   async adicionarParticipante(req: Request, res: Response) {
     try {
       const sala_id = req.params.id;
-      const pessoaIdSolicitante = req.user?.Usu_Id as string;
+      const pessoaIdSolicitante = req.user?.Usuario_Id as string;
       const { pessoa_id, role } = req.body;
 
       if (!pessoa_id) {
         return res
           .status(400)
-          .json(respostaErro({ mensagem: "ID da pessoa é obrigatório" }));
+          .json(respostaErro({ mensagem: "Id da pessoa é obrigatório" }));
       }
 
       if (role !== 1 && role !== 2) {
         return res
           .status(400)
           .json(
-            respostaErro({ mensagem: "Role deve ser 1 (Admin) ou 2 (Membro)" })
+            respostaErro({ mensagem: "Role deve ser 1 (Admin) ou 2 (Membro)" }),
           );
       }
 
@@ -239,14 +237,14 @@ export const salaController = {
         sala_id,
         pessoaIdSolicitante,
         pessoa_id,
-        role
+        role,
       );
 
       res.status(201).json(
         respostaSucesso({
           resultado: participante,
           mensagem: "Participante adicionado com sucesso",
-        })
+        }),
       );
     } catch (error: any) {
       res.status(500).json(respostaErro({ mensagem: error.message }));
@@ -261,19 +259,19 @@ export const salaController = {
     try {
       const sala_id = req.params.id;
       const pessoa_id_remover = req.params.pessoaId;
-      const pessoaIdSolicitante = req.user?.Usu_Id as string;
+      const pessoaIdSolicitante = req.user?.Usuario_Id as string;
 
       await participanteSalaService.removerParticipante(
         sala_id,
         pessoaIdSolicitante,
-        pessoa_id_remover
+        pessoa_id_remover,
       );
 
       res.json(
         respostaSucesso({
           resultado: {},
           mensagem: "Participante removido com sucesso",
-        })
+        }),
       );
     } catch (error: any) {
       res.status(500).json(respostaErro({ mensagem: error.message }));
@@ -288,14 +286,14 @@ export const salaController = {
     try {
       const sala_id = req.params.id;
       const pessoa_id_alterar = req.params.pessoaId;
-      const pessoaIdSolicitante = req.user?.Usu_Id as string;
+      const pessoaIdSolicitante = req.user?.Usuario_Id as string;
       const { role } = req.body;
 
       if (role !== 1 && role !== 2) {
         return res
           .status(400)
           .json(
-            respostaErro({ mensagem: "Role deve ser 1 (Admin) ou 2 (Membro)" })
+            respostaErro({ mensagem: "Role deve ser 1 (Admin) ou 2 (Membro)" }),
           );
       }
 
@@ -303,14 +301,14 @@ export const salaController = {
         sala_id,
         pessoaIdSolicitante,
         pessoa_id_alterar,
-        role
+        role,
       );
 
       res.json(
         respostaSucesso({
           resultado,
           mensagem: "Role alterado com sucesso",
-        })
+        }),
       );
     } catch (error: any) {
       res.status(500).json(respostaErro({ mensagem: error.message }));
@@ -320,7 +318,7 @@ export const salaController = {
   async selecionarHistoriaAtual(req: Request, res: Response) {
     try {
       const sala_id = req.params.id;
-      const pessoa_id = req.user?.Usu_Id as string;
+      const pessoa_id = req.user?.Usuario_Id as string;
       const { historia_id } = req.body;
 
       if (!historia_id) {
@@ -332,14 +330,14 @@ export const salaController = {
       await salaService.selecionarHistoriaAtual(
         sala_id,
         historia_id,
-        pessoa_id
+        pessoa_id,
       );
 
-      res
-        .status(200)
-        .json(
-          respostaSucesso({ mensagem: "História atual atualizada com sucesso" })
-        );
+      res.status(200).json(
+        respostaSucesso({
+          mensagem: "História atual atualizada com sucesso",
+        }),
+      );
     } catch (error: any) {
       res.status(500).json(respostaErro({ mensagem: error.message }));
     }
