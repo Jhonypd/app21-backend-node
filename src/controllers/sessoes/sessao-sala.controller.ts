@@ -82,14 +82,10 @@ export const sessaoSalaController = {
     try {
       const sessao_id = req.params.id;
       const { pessoa_id, autorizado } = req.body;
-      const usuario_id = req.user?.Usuario_Id as string;
-
-      // Se não foi passado pessoa_id, usa o usuário logado
-      const pessoaIdParaAdicionar = pessoa_id || usuario_id;
 
       const participante = await sessaoSalaService.adicionarParticipante(
         sessao_id,
-        pessoaIdParaAdicionar,
+        pessoa_id,
         autorizado ?? false,
       );
 
@@ -143,12 +139,27 @@ export const sessaoSalaController = {
   async adicionarVisitantes(req: Request, res: Response) {
     try {
       const sala_id = req.params.id;
-      const { pessoa_ids } = req.body; // Array de IDs
+      const { pessoa_ids, pessoa_id } = req.body; // Array ou ID único
       const dono_id = req.user?.Usuario_Id as string;
+
+      // Aceitar tanto array quanto ID único
+      const ids: string[] = pessoa_ids
+        ? pessoa_ids
+        : pessoa_id
+          ? [pessoa_id]
+          : [];
+
+      if (ids.length === 0) {
+        return res.status(400).json(
+          respostaErro({
+            mensagem: "Informe pessoa_ids (array) ou pessoa_id (string).",
+          }),
+        );
+      }
 
       const participantes = await sessaoSalaService.adicionarVisitantes(
         sala_id,
-        pessoa_ids,
+        ids,
         dono_id,
       );
 
@@ -318,14 +329,14 @@ export const sessaoSalaController = {
       const sessao_id = req.params.sessaoId;
       const historia_id = req.params.historiaId;
 
-      const votos = await sessaoSalaService.obterVotosPorHistoria(
+      const votos = await sessaoSalaService.obterVotosPorHistoriaSessao(
         sessao_id,
         historia_id,
       );
 
       res.json(
         respostaSucesso({
-          resultado: { votos },
+          resultado: votos,
         }),
       );
     } catch (error: any) {

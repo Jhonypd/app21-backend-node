@@ -12,6 +12,7 @@ import {
   salaLoginValidations,
 } from "../../middlewares/salaValidations";
 import { validateHandler } from "../../middlewares/handleValidate";
+import { csrfGuard } from "../../middlewares/csrfGuard";
 
 const router = Router();
 
@@ -21,6 +22,7 @@ router.post(
   salaInserirValidations(),
   validateHandler,
   authGuard,
+  csrfGuard,
   salaController.criarSalas,
 );
 
@@ -30,18 +32,26 @@ router.put(
   salaAlterarValidations(),
   validateHandler,
   authGuard,
+  csrfGuard,
   salaController.alterarSala,
 );
 
 // DELETE /salas/:id - Excluir sala (soft delete - apenas dono)
 // Validações: não pode ter sessões criadas, não pode ter votos
-router.delete("/:id", validateHandler, authGuard, salaController.excluirSala);
+router.delete(
+  "/:id",
+  validateHandler,
+  authGuard,
+  csrfGuard,
+  salaController.excluirSala,
+);
 
 router.post(
   "/entrar",
   salaLoginValidations(),
   validateHandler,
   authGuard,
+  csrfGuard,
   salaController.entrarSala,
 );
 
@@ -51,6 +61,7 @@ router.post(
   validateHandler,
   authGuard,
   salaAuthGuard,
+  csrfGuard,
   salaController.sairDaSala,
 );
 
@@ -60,6 +71,7 @@ router.post(
   validateHandler,
   authGuard,
   salaAuthGuard,
+  csrfGuard,
   salaController.aprovarReentrada,
 );
 
@@ -106,6 +118,7 @@ router.post(
   "/:id/participantes/adicionar",
   validateHandler,
   authGuard,
+  csrfGuard,
   salaController.adicionarParticipante,
 );
 
@@ -114,6 +127,7 @@ router.delete(
   "/:id/participantes/:pessoaId/remover",
   validateHandler,
   authGuard,
+  csrfGuard,
   salaController.removerParticipante,
 );
 
@@ -122,6 +136,7 @@ router.patch(
   "/:id/participantes/:pessoaId/role",
   validateHandler,
   authGuard,
+  csrfGuard,
   salaController.alterarRoleParticipante,
 );
 
@@ -129,6 +144,7 @@ router.patch(
 router.post(
   "/:id/sessoes",
   validateHandler,
+  csrfGuard,
   authGuard,
   sessaoSalaController.criarSessao,
 );
@@ -139,6 +155,7 @@ router.put(
   validateHandler,
   authGuard,
   salaAuthGuard, // Valida token de sala
+  csrfGuard,
   salaPermissaoGuard([0, 1]), // Apenas Dono e Admin
   salaController.selecionarHistoriaAtual,
 );
@@ -149,6 +166,7 @@ router.post(
   validateHandler,
   authGuard,
   salaAuthGuard, // Valida token de sala
+  csrfGuard,
   salaPermissaoGuard([0, 1]), // Dono e Admin
   sessaoSalaController.encerrarSessao,
 );
@@ -160,28 +178,9 @@ router.patch(
   validateHandler,
   authGuard,
   salaAuthGuard, // Valida token de sala (necessário para validações)
+  csrfGuard,
   salaPermissaoGuard([0, 1]), // Dono e Admin
   sessaoSalaController.kickarParticipante,
-);
-
-// POST /salas/:id/participantes - Adicionar participante permanente (dono ou admin)
-router.post(
-  "/:id/participantes",
-  validateHandler,
-  authGuard,
-  salaAuthGuard, // Valida token de sala
-  salaPermissaoGuard([0, 1]), // Dono ou admin
-  participanteSalaController.adicionarParticipante,
-);
-
-// DELETE /salas/:id/participantes/:pessoaId - Remover participante permanente (dono ou admin)
-router.delete(
-  "/:id/participantes/:pessoaId",
-  validateHandler,
-  authGuard,
-  salaAuthGuard, // Valida token de sala
-  salaPermissaoGuard([0, 1]), // Dono ou admin
-  participanteSalaController.removerParticipante,
 );
 
 // GET /salas/:id/participantes - Listar participantes permanentes (todos podem ver)
@@ -192,6 +191,28 @@ router.get(
   salaAuthGuard, // Valida token de sala
   salaPermissaoGuard([0, 1, 2, 3]), // Todos (incluindo visitantes)
   participanteSalaController.listarParticipantes,
+);
+
+// POST /salas/:id/visitantes - Adicionar visitantes à sessão ativa (dono ou admin)
+router.post(
+  "/:id/visitantes",
+  validateHandler,
+  authGuard,
+  salaAuthGuard,
+  csrfGuard,
+  salaPermissaoGuard([0, 1]),
+  sessaoSalaController.adicionarVisitantes,
+);
+
+// DELETE /salas/:id/visitantes/:pessoaId - Remover visitante da sessão ativa (dono ou admin)
+router.delete(
+  "/:id/visitantes/:pessoaId",
+  validateHandler,
+  authGuard,
+  salaAuthGuard,
+  csrfGuard,
+  salaPermissaoGuard([0, 1]),
+  sessaoSalaController.removerVisitante,
 );
 
 export default router;

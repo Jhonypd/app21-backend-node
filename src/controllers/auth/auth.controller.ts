@@ -2,8 +2,24 @@ import { Request, Response } from "express";
 import { authService } from "../../services/auth/auth.service";
 import { respostaErro, respostaSucesso } from "../../utils/response";
 import { getClientInfo } from "../../helpers/client-info.helper";
+import { tokenCookies } from "../../helpers/set-tokens-cookies.helper";
+import { hash } from "../../lib/hash";
 
 export const authController = {
+  async csrf(req: Request, res: Response) {
+    const csrfToken = await hash.geradorCsrfToken();
+
+    // salva em cookie no domínio do back (pra validar depois)
+    tokenCookies.setCsrfCookie(res, csrfToken);
+
+    // retorna pro front guardar em memória
+    return res.status(200).json(
+      respostaSucesso({
+        resultado: { csrfToken },
+      }),
+    );
+  },
+
   async login(req: Request, res: Response) {
     try {
       const { email, senha } = req.body;
@@ -17,17 +33,23 @@ export const authController = {
 
       const resultado = await authService.login(email, senha, ip, userAgent);
 
+      tokenCookies.setAuthCookies(
+        res,
+        resultado.refreshToken.token,
+        resultado.tokenAcesso.token,
+      );
+
       return res.status(200).json(
         respostaSucesso({
           resultado,
           mensagem: "Login realizado com sucesso",
-        })
+        }),
       );
     } catch (error: any) {
       return res
         .status(401)
         .json(
-          respostaErro({ mensagem: error.message || "Erro ao fazer login" })
+          respostaErro({ mensagem: error.message || "Erro ao fazer login" }),
         );
     }
   },
@@ -39,7 +61,7 @@ export const authController = {
         return res
           .status(400)
           .json(
-            respostaErro({ mensagem: "Nome, email e senha são obrigatórios" })
+            respostaErro({ mensagem: "Nome, email e senha são obrigatórios" }),
           );
       }
 
@@ -52,13 +74,13 @@ export const authController = {
             ? "Usuário criado com sucesso"
             : "Usuário criado, mas email de confirmação não pôde ser enviado",
           tipoRetorno: resultado.emailEnviado ? 1 : 0,
-        })
+        }),
       );
     } catch (error: any) {
       return res
         .status(400)
         .json(
-          respostaErro({ mensagem: error.message || "Erro ao criar usuário" })
+          respostaErro({ mensagem: error.message || "Erro ao criar usuário" }),
         );
     }
   },
@@ -76,13 +98,13 @@ export const authController = {
         respostaSucesso({
           mensagem:
             "Você receberá um email de confirmação se houver uma conta associada a este endereço",
-        })
+        }),
       );
     } catch (error: any) {
       return res
         .status(500)
         .json(
-          respostaErro({ mensagem: error.message || "Erro ao enviar código" })
+          respostaErro({ mensagem: error.message || "Erro ao enviar código" }),
         );
     }
   },
@@ -102,13 +124,13 @@ export const authController = {
         respostaSucesso({
           mensagem:
             "Você receberá um email com as instruções para redefinir sua senha se houver conta associada a este endereço",
-        })
+        }),
       );
     } catch (error: any) {
       return res
         .status(500)
         .json(
-          respostaErro({ mensagem: error.message || "Erro ao enviar email" })
+          respostaErro({ mensagem: error.message || "Erro ao enviar email" }),
         );
     }
   },
@@ -127,7 +149,7 @@ export const authController = {
 
       const resultado = await authService.validaCodigoConfirmacaoEmail(
         codigoDecodificado,
-        confirmarConta === "true" ? true : false
+        confirmarConta === "true" ? true : false,
       );
 
       return res.status(200).json(
@@ -138,13 +160,13 @@ export const authController = {
               : "Código válido"
           }`,
           resultado: { pessoa: { ...resultado } },
-        })
+        }),
       );
     } catch (error: any) {
       return res
         .status(500)
         .json(
-          respostaErro({ mensagem: error.message || "Erro ao validar código" })
+          respostaErro({ mensagem: error.message || "Erro ao validar código" }),
         );
     }
   },
@@ -157,21 +179,21 @@ export const authController = {
         senha,
         confirmacaoSenha,
         codigo,
-        id
+        id,
       );
 
       return res.status(200).json(
         respostaSucesso({
           mensagem: "Senha alterada com sucesso",
           resultado: { id: resultado },
-        })
+        }),
       );
     } catch (error: any) {
-      return res
-        .status(500)
-        .json(
-          respostaErro({ mensagem: error.message || "Erro ao redefinir senha" })
-        );
+      return res.status(500).json(
+        respostaErro({
+          mensagem: error.message || "Erro ao redefinir senha",
+        }),
+      );
     }
   },
 };

@@ -15,27 +15,29 @@ router.post(
   "/login",
   pessoaLoginValidation(),
   validateHandler,
-  authController.login
+  authController.login,
 );
+
+router.get("/csrf", validateHandler, authGuard, authController.csrf);
 
 router.post(
   "/refresh",
   validateHandler,
-  refreshTokenController.renovarAccessToken
+  refreshTokenController.renovarAccessToken,
 );
 
 router.post(
   "/refresh/revogar",
   authGuard,
   validateHandler,
-  refreshTokenController.encerrarSessao
+  refreshTokenController.encerrarSessao,
 );
 
 router.post(
   "/criarConta",
   pessoaCreateValidation(),
   validateHandler,
-  authController.criarConta
+  authController.criarConta,
 );
 
 router.post("/novoCodigo", validateHandler, authController.novoCodigo);
@@ -43,20 +45,20 @@ router.post("/novoCodigo", validateHandler, authController.novoCodigo);
 router.post(
   "/esqueciMinhaSenha",
   validateHandler,
-  authController.esqueciMinhaSenha
+  authController.esqueciMinhaSenha,
 );
 
 router.get(
   "/validaCodigoEmail",
   validateHandler,
-  authController.validaCodigoEmail
+  authController.validaCodigoEmail,
 );
 
 router.put(
   "/redefinirSenha",
   pessoaRedefinirSenhaValidation(),
   validateHandler,
-  authController.redefinirSenha
+  authController.redefinirSenha,
 );
 
 export default router;

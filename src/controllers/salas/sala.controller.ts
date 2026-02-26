@@ -217,7 +217,7 @@ export const salaController = {
     try {
       const sala_id = req.params.id;
       const pessoaIdSolicitante = req.user?.Usuario_Id as string;
-      const { pessoa_id, role } = req.body;
+      const { pessoa_id, role, sessao_id } = req.body;
 
       if (!pessoa_id) {
         return res
@@ -238,6 +238,7 @@ export const salaController = {
         pessoaIdSolicitante,
         pessoa_id,
         role,
+        sessao_id,
       );
 
       res.status(201).json(

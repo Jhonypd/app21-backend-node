@@ -9,10 +9,9 @@ import { sessaoSalaService } from "../sessoes/sessao-sala.service";
 import { participanteSalaRepository } from "../../repositories/participante-sala.repository";
 import { participanteSessaoRepository } from "../../repositories/participante-sessao.repository";
 import { pessoaRepository } from "../../repositories/pessoa.repository";
-import { determinarTipoAcesso } from "../../helpers/determinar-tipo-acesso";
+import { determinarTipoAcesso } from "../../helpers/determinar-tipo-acesso.helper";
 import { sessaoSalaRepository } from "../../repositories/sessao-sala.repository";
 import { votosRepository } from "../../repositories/votos.repository";
-import { obterVotosVencedoresHistoria } from "../../utils/voto-vencedor-historia";
 import { historiaSalaRepository } from "../../repositories/historia-sala.repository";
 import { historiaSessaoRepository } from "../../repositories/historia-sessao.repository";
 
@@ -498,7 +497,7 @@ export const salaService = {
       else if (!participanteSessao.autorizado) {
         // Se foi kickado/banido, não pode reentrar sem aprovação
         throw new Error(
-          "REQUER_APROVACAO:Você foi removido desta sessão. Aguarde aprovação do administrador para reentrar.",
+          "Você foi removido desta sessão. Aguarde aprovação do administrador para reentrar.",
         );
       }
 

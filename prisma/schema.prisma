@@ -4,7 +4,7 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"  
+  provider = "postgresql"
 }
 
 model Pessoa {
@@ -109,6 +109,7 @@ model ParticipanteSessao {
   pessoa_id         String
   autorizado        Boolean @default(false)
   participa_votacao Boolean @default(true)
+  online            Boolean @default(false)
 
   sessao SessaoSala @relation(fields: [sessao_id], references: [id])
   pessoa Pessoa     @relation(fields: [pessoa_id], references: [id])

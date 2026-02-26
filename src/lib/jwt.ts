@@ -48,7 +48,7 @@ export const geradorToken = ({
     { Usuario_Id, Nome, Email, Idioma_Padrao, Sessao_Usuario_Id },
     jwtSecret,
     {
-      expiresIn: "7d",
+      expiresIn: "30m",
       audience: aud,
       issuer: iss,
       algorithm: "HS256",
@@ -95,7 +95,7 @@ export const geradorRefreshToken = ({
   Sessao_Usuario_Id,
 }: ClaimsRefreshToken) => {
   const agora = new Date();
-  const dataExpiracao = new Date(addDays(agora, 1));
+  const dataExpiracao = new Date(addDays(agora, 7));
 
   const duracaoEmMinutos = differenceInMinutes(dataExpiracao, agora);
 

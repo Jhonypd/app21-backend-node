@@ -78,10 +78,7 @@ export const participanteSalaService = {
     return removeParticipante.id;
   },
 
-  async listarParticipantesDaSala(
-    sala_id: string,
-    sessao_id?: string | null,
-  ) {
+  async listarParticipantesDaSala(sala_id: string, sessao_id?: string | null) {
     const participantesSala =
       await participanteSalaRepository.obterTodosParticipantesPorSala(sala_id);
 
@@ -159,12 +156,14 @@ export const participanteSalaService = {
   /**
    * Adiciona um participante permanente à sala
    * Permissões: Dono (0) pode adicionar role 1 ou 2, Admin (1) pode adicionar apenas role 2
+   * Se sessao_id for fornecido, também cria ParticipanteSessao (autorizado=true)
    */
   async adicionarParticipante(
     sala_id: string,
     pessoa_id_solicitante: string,
     pessoa_id_adicionar: string,
     role: 1 | 2,
+    sessao_id?: string,
   ) {
     // Buscar sala
     const sala = await salaRepository.obterPorId(sala_id, false, undefined);
@@ -211,12 +210,28 @@ export const participanteSalaService = {
       throw new Error("Esta pessoa já é participante da sala");
     }
 
-    // Adicionar participante
+    // Adicionar participante permanente à sala
     const participante = await participanteSalaRepository.inserir({
       sala_id,
       pessoa_id: pessoa_id_adicionar,
       tipo: role,
     });
+
+    // Se sessao_id fornecido, também adicionar como ParticipanteSessao (autorizado)
+    if (sessao_id) {
+      const jaExisteNaSessao =
+        await participanteSessaoRepository.obterPorSessaoEPessoa(
+          sessao_id,
+          pessoa_id_adicionar,
+        );
+      if (!jaExisteNaSessao) {
+        await participanteSessaoRepository.inserir({
+          sessao_id,
+          pessoa_id: pessoa_id_adicionar,
+          autorizado: true,
+        });
+      }
+    }
 
     return {
       id: participante.id,

@@ -3,25 +3,38 @@ import { validateHandler } from "../../middlewares/handleValidate";
 import { authGuard } from "../../middlewares/authGuard";
 import { pessoaController } from "../../controllers/pessoas/pessoa.controller";
 import { pessoaUpdateValidation } from "../../middlewares/pessoaValidations";
+import { csrfGuard } from "../../middlewares/csrfGuard";
 
 const router = Router();
 
 router.put(
   "/alterar/:id",
-  authGuard,
-  pessoaUpdateValidation(),
   validateHandler,
-  pessoaController.alterar
+  authGuard,
+  csrfGuard,
+  pessoaUpdateValidation(),
+  pessoaController.alterar,
 );
 
-router.get("/obterDadosConta", authGuard, pessoaController.obterDadosConta);
+router.get(
+  "/obterDadosConta",
+  authGuard,
+  csrfGuard,
+  pessoaController.obterDadosConta,
+);
 
-router.get("/obterDadosAlterar", authGuard, pessoaController.obterDadosAlterar);
+router.get(
+  "/obterDadosAlterar",
+  authGuard,
+  csrfGuard,
+  pessoaController.obterDadosAlterar,
+);
 
 router.get(
   "/listarPorNomeOuEmail",
   authGuard,
-  pessoaController.listarPorNomeOuEmail
+  csrfGuard,
+  pessoaController.listarPorNomeOuEmail,
 );
 
 export default router;

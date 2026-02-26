@@ -4,6 +4,9 @@ import { Claims, ClaimsAuthSala } from "../lib/jwt";
 import { sessaoUsuarioService } from "../services/auth/sessao-usuario.service";
 import { pessoaService } from "../services/pessoas/pessoa.service";
 import { respostaErro } from "../utils/response";
+import { getClientInfo } from "../helpers/client-info.helper";
+import { refreshTokenService } from "../services/auth/refresh-token.service";
+import { tokenCookies } from "../helpers/set-tokens-cookies.helper";
 
 declare global {
   namespace Express {
@@ -16,33 +19,15 @@ declare global {
 
 const jwtSecret = process.env.JWT_SECRET as string;
 
-// ==================== FUNÇÕES AUXILIARES ====================
-
-/**
- * Processa e valida o token de sala (opcional)
- */
 function processarTokenSala(tokenSala: string): ClaimsAuthSala | null {
   try {
     return jwt.verify(tokenSala, jwtSecret) as ClaimsAuthSala;
-  } catch (error) {
-    console.warn("Token de sala inválido, ignorando:", error);
+  } catch {
     return null;
   }
 }
 
-/**
- * Valida os dados da pessoa (inativo, email confirmado, etc)
- */
-async function validarPessoa(
-  usuarioId: string,
-  res: Response,
-): Promise<{
-  id: string;
-  nome: string;
-  email: string;
-  inativo: boolean;
-  email_confirmado: boolean;
-} | null> {
+async function validarPessoa(usuarioId: string, res: Response) {
   const pessoa = await pessoaService.obterDadosConta(usuarioId);
 
   if (!pessoa) {
@@ -76,62 +61,78 @@ async function validarPessoa(
   return pessoa;
 }
 
-// ==================== MIDDLEWARE PRINCIPAL ====================
-// Token válido por 10 horas - se expirar, usuário faz login novamente
+async function validarSessao(decoded: Claims, res: Response) {
+  const sessaoUsuario = await sessaoUsuarioService.buscarSessaoAtivaPorId(
+    decoded.Sessao_Usuario_Id,
+  );
+
+  if (!sessaoUsuario) {
+    res.status(401).json(
+      respostaErro({
+        mensagem: "Sessão inválida.",
+        codigoRetorno: 401,
+        requer_login: true,
+      }),
+    );
+    return null;
+  }
+
+  if (sessaoUsuario.revogado_em) {
+    res.status(401).json(
+      respostaErro({
+        mensagem: "Sessão expirada ou usuário logado em outro dispositivo.",
+        codigoRetorno: 401,
+        requer_login: true,
+      }),
+    );
+    return null;
+  }
+
+  if (sessaoUsuario.expiracao < new Date()) {
+    res.status(401).json(
+      respostaErro({
+        mensagem: "Sessão expirada. Faça login novamente.",
+        codigoRetorno: 401,
+        requer_login: true,
+      }),
+    );
+    return null;
+  }
+
+  return sessaoUsuario;
+}
 
 export const authGuard = async (
   req: Request,
   res: Response,
   next: NextFunction,
 ) => {
-  // ==================== 1. EXTRAÇÃO DOS TOKENS ====================
-  const authHeader = req.headers.authorization;
   const tokenSala = req.headers["x-token-sala"] as string | undefined;
 
-  const token = authHeader?.split(" ")[1];
+  // cookie-first, fallback para Authorization header
+  let accessToken = req.cookies?.access_token as string | undefined;
 
-  if (!token) {
-    return res
-      .status(401)
-      .json(
-        respostaErro({ mensagem: "Token não informado.", codigoRetorno: 401 }),
-      );
+  const refreshToken = req.cookies?.refresh_token as string | undefined;
+
+  if (!accessToken) {
+    return res.status(401).json(
+      respostaErro({
+        mensagem: "Token não informado.",
+        codigoRetorno: 401,
+        requer_login: true,
+      }),
+    );
   }
 
   try {
-    // ==================== 2. VERIFICAÇÃO DO TOKEN ====================
-    const decoded = jwt.verify(token, jwtSecret) as Claims;
+    // tenta validar access
+    const decoded = jwt.verify(accessToken, jwtSecret) as Claims;
 
-    // ==================== 3. VALIDAÇÃO DA SESSÃO ====================
-    const sessaoUsuario = await sessaoUsuarioService.buscarSessaoAtivaPorId(
-      decoded.Sessao_Usuario_Id,
-    );
-
-    if (!sessaoUsuario) {
-      return res.status(401).json(
-        respostaErro({
-          mensagem: "Sessão inválida.",
-          codigoRetorno: 401,
-          requer_login: true,
-        }),
-      );
-    }
-
-    if (sessaoUsuario.revogado_em) {
-      return res.status(401).json(
-        respostaErro({
-          mensagem: "Sessão expirada ou usuário logado em outro dispositivo.",
-          codigoRetorno: 401,
-          requer_login: true,
-        }),
-      );
-    }
-
-    // ==================== 4. VALIDAÇÃO DA PESSOA ====================
+    // valida sessão e pessoa
+    if (!(await validarSessao(decoded, res))) return;
     const pessoa = await validarPessoa(decoded.Usuario_Id, res);
-    if (!pessoa) return; // Resposta já enviada
+    if (!pessoa) return;
 
-    // ==================== 5. CONFIGURAR REQ.USER ====================
     req.user = {
       Usuario_Id: pessoa.id,
       Nome: pessoa.nome,
@@ -142,28 +143,83 @@ export const authGuard = async (
       aud: decoded.aud,
     };
 
-    // ==================== 6. PROCESSAR TOKEN DE SALA (OPCIONAL) ====================
     if (tokenSala) {
       const salaDecoded = processarTokenSala(tokenSala);
       if (salaDecoded) req.sala = salaDecoded;
     }
 
-    next();
-  } catch (error) {
-    // ==================== 7. TRATAMENTO DE ERROS ====================
-    if (error instanceof jwt.TokenExpiredError) {
-      return res.status(401).json(
-        respostaErro({
-          mensagem: "Sessão expirada. Faça login novamente.",
-          codigoRetorno: 401,
-          requer_login: true,
-        }),
-      );
+    return next();
+  } catch (err: any) {
+    // access expirou -> tenta refresh
+    if (err instanceof jwt.TokenExpiredError) {
+      if (!refreshToken) {
+        return res.status(401).json(
+          respostaErro({
+            mensagem: "Sessão expirada. Faça login novamente.",
+            codigoRetorno: 401,
+            requer_login: true,
+          }),
+        );
+      }
+
+      try {
+        const { ip, userAgent } = getClientInfo(req);
+        const novos = await refreshTokenService.revalidarAccessToken(
+          refreshToken,
+          ip,
+          userAgent,
+        );
+
+        // seta cookies novos (rotação do refresh)
+        tokenCookies.setAuthCookies(
+          res,
+          novos.refreshToken.token,
+          novos.tokenAcesso.token,
+        );
+
+        // usa o NOVO access pra montar user
+        accessToken = novos.tokenAcesso.token;
+        const decodedNovo = jwt.verify(accessToken, jwtSecret) as Claims;
+
+        if (!(await validarSessao(decodedNovo, res))) return;
+        const pessoa = await validarPessoa(decodedNovo.Usuario_Id, res);
+        if (!pessoa) return;
+
+        req.user = {
+          Usuario_Id: pessoa.id,
+          Nome: pessoa.nome,
+          Email: pessoa.email,
+          Idioma_Padrao: decodedNovo.Idioma_Padrao,
+          Sessao_Usuario_Id: decodedNovo.Sessao_Usuario_Id,
+          iss: decodedNovo.iss,
+          aud: decodedNovo.aud,
+        };
+
+        if (tokenSala) {
+          const salaDecoded = processarTokenSala(tokenSala);
+          if (salaDecoded) req.sala = salaDecoded;
+        }
+
+        return next();
+      } catch {
+        tokenCookies.clear(res);
+        return res.status(401).json(
+          respostaErro({
+            mensagem: "Sessão expirada. Faça login novamente.",
+            codigoRetorno: 401,
+            requer_login: true,
+          }),
+        );
+      }
     }
 
-    console.error("Erro no authGuard:", error);
-    return res
-      .status(401)
-      .json(respostaErro({ mensagem: "Token inválido.", codigoRetorno: 401 }));
+    // token inválido (não-expirado)
+    return res.status(401).json(
+      respostaErro({
+        mensagem: "Token inválido.",
+        codigoRetorno: 401,
+        requer_login: true,
+      }),
+    );
   }
 };

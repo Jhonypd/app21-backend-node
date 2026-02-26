@@ -39,7 +39,8 @@ export const refreshTokenController = {
 
   async encerrarSessao(req: Request, res: Response) {
     try {
-      const { refreshToken } = req.body;
+      // Lê do cookie (cookie-based auth) com fallback para o body
+      const refreshToken = req.cookies?.refresh_token || req.body?.refreshToken;
       const sessaoId = req.user?.Sessao_Usuario_Id;
 
       if (!refreshToken) {

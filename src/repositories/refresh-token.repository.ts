@@ -47,6 +47,12 @@ export const RefreshTokenRepository = {
     return result;
   },
 
+  atualizarTokenHash: (sessao_id: string, novoTokenHash: string) =>
+    prismaClient.refreshToken.update({
+      where: { sessao_id },
+      data: { token_hash: novoTokenHash },
+    }),
+
   deletarTodosPorSessaoId: (sessao_id: string) =>
     prismaClient.refreshToken.deleteMany({
       where: { sessao_id },

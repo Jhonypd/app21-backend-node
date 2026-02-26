@@ -236,6 +236,7 @@ export const sessaoSalaService = {
   ) {
     // Verificar se a sessão existe
     const sessao = await sessaoSalaRepository.obterPorId(sessao_id);
+
     if (!sessao) {
       throw new Error("Sessão não encontrada.");
     }
@@ -336,12 +337,31 @@ export const sessaoSalaService = {
   async adicionarVisitantes(
     sala_id: string,
     pessoa_ids: string[],
-    dono_id: string,
+    solicitante_id: string,
   ) {
-    // Verificar se quem está chamando é o dono
-    const sala = await salaRepository.obterPorId(sala_id, false, dono_id);
-    if (!sala || sala.criado_por !== dono_id) {
-      throw new Error("Apenas o dono da sala pode adicionar visitantes.");
+    // Verificar se quem está chamando é dono ou admin
+    const sala = await salaRepository.obterPorId(
+      sala_id,
+      false,
+      solicitante_id,
+    );
+    if (!sala) {
+      throw new Error("Sala não encontrada.");
+    }
+
+    const isDono = sala.criado_por === solicitante_id;
+    if (!isDono) {
+      const participanteSolicitante =
+        await participanteSalaRepository.obterPorSalaEPessoa(
+          sala_id,
+          solicitante_id,
+        );
+      const isAdmin = participanteSolicitante?.role === 1;
+      if (!isAdmin) {
+        throw new Error(
+          "Apenas o dono ou administradores podem adicionar visitantes.",
+        );
+      }
     }
 
     // Verificar se há sessão ativa
@@ -356,8 +376,8 @@ export const sessaoSalaService = {
       await participanteSalaRepository.obterTodosParticipantesPorSala(sala_id);
     const idsPermantentes = permanentes.map((p) => p.pessoa.id);
 
-    // Buscar dados do anfitrião (dono)
-    const anfitriao = await pessoaRepository.obterPorId(dono_id, false);
+    // Buscar dados do anfitrião (solicitante)
+    const anfitriao = await pessoaRepository.obterPorId(solicitante_id, false);
     if (!anfitriao) {
       throw new Error("Anfitrião não encontrado.");
     }
@@ -380,7 +400,7 @@ export const sessaoSalaService = {
         const participante = await participanteSessaoRepository.inserir({
           sessao_id: sessaoAtiva.id,
           pessoa_id: pessoaId,
-          autorizado: false, // Visitantes não autorizados por padrão
+          autorizado: true, // Visitantes adicionados pelo dono/admin são autorizados
         });
         participantesCriados.push(participante);
 
@@ -415,11 +435,34 @@ export const sessaoSalaService = {
     return participantesCriados;
   },
 
-  async removerVisitante(sala_id: string, pessoa_id: string, dono_id: string) {
-    // Verificar se quem está chamando é o dono
-    const sala = await salaRepository.obterPorId(sala_id, false, dono_id);
-    if (!sala || sala.criado_por !== dono_id) {
-      throw new Error("Apenas o dono da sala pode remover visitantes.");
+  async removerVisitante(
+    sala_id: string,
+    pessoa_id: string,
+    solicitante_id: string,
+  ) {
+    // Verificar se quem está chamando é dono ou admin
+    const sala = await salaRepository.obterPorId(
+      sala_id,
+      false,
+      solicitante_id,
+    );
+    if (!sala) {
+      throw new Error("Sala não encontrada.");
+    }
+
+    const isDono = sala.criado_por === solicitante_id;
+    if (!isDono) {
+      const participanteSolicitante =
+        await participanteSalaRepository.obterPorSalaEPessoa(
+          sala_id,
+          solicitante_id,
+        );
+      const isAdmin = participanteSolicitante?.role === 1;
+      if (!isAdmin) {
+        throw new Error(
+          "Apenas o dono ou administradores podem remover visitantes.",
+        );
+      }
     }
 
     // Verificar se há sessão ativa
@@ -620,9 +663,8 @@ export const sessaoSalaService = {
 
   /**
    * Obter votos de uma história específica dentro de uma sessão
-   * Usado para carregar votos ao alternar entre histórias
    */
-  async obterVotosPorHistoria(sessao_id: string, historia_id: string) {
+  async obterVotosPorHistoriaSessao(sessao_id: string, historia_id: string) {
     // Buscar HistoriaSessao para obter os votos
     const historiaSessao =
       await historiaSessaoRepository.obterPorSessaoEHistoria(
@@ -632,7 +674,7 @@ export const sessaoSalaService = {
 
     if (!historiaSessao) {
       // Se não existe HistoriaSessao, retornar array vazio (história ainda não tem votos)
-      return [];
+      return { media: 0, voto_vencedor: 0, votos: [] };
     }
 
     // Buscar votos da HistoriaSessao
@@ -640,15 +682,41 @@ export const sessaoSalaService = {
       historiaSessao.id,
     );
 
-    // Formatar votos com dados descriptografados
-    return votos.map((voto) => ({
-      id: voto.id,
-      pessoa_id: voto.pessoa_id,
-      valor: voto.valor,
-      pessoa: {
-        nome: criptografia.descriptografar(voto.pessoa.nome),
-        inativo: voto.pessoa.inativo,
+    const contagemVotos = votos.reduce(
+      (acc, voto) => {
+        acc[voto.valor] = (acc[voto.valor] || 0) + 1;
+        return acc;
       },
-    }));
+      {} as Record<number, number>,
+    );
+
+    const calculaVotoVencedorHistoria =
+      obterVotosVencedoresHistoria(contagemVotos);
+
+    const votosValidos = votos
+      .map((v) => Number(v.valor))
+      .filter(Number.isFinite);
+    const media = votosValidos.length
+      ? Number(
+          (
+            votosValidos.reduce((a, b) => a + b, 0) / votosValidos.length
+          ).toFixed(1),
+        )
+      : null;
+
+    // Formatar votos com dados descriptografados
+    return {
+      media: media,
+      voto_vencedor: calculaVotoVencedorHistoria[0],
+      votos: votos.map((voto) => ({
+        id: voto.id,
+        pessoa_id: voto.pessoa_id,
+        valor: voto.valor,
+        pessoa: {
+          nome: criptografia.descriptografar(voto.pessoa.nome),
+          inativo: voto.pessoa.inativo,
+        },
+      })),
+    };
   },
 };

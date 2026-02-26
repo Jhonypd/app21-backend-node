@@ -115,14 +115,19 @@ export const refreshTokenService = {
     const accessToken = geradorToken(novoAccessTokenPayload);
     const novoRefreshToken = geradorRefreshToken(novoRefreshTokenPayload);
 
+    // Rotacionar o hash do refresh token no banco (refresh token rotation)
+    const novoRefreshTokenHash = await hash.senha(novoRefreshToken);
+    await RefreshTokenRepository.atualizarTokenHash(
+      sessaoAtiva.id,
+      novoRefreshTokenHash,
+    );
+
     return {
       tokenAcesso: {
         token: accessToken,
-        dataExpiracao: novoAccessTokenPayload.Dt_Ex,
       },
       refreshToken: {
         token: novoRefreshToken,
-        dataExpiracao: novoRefreshTokenPayload.Dt_Ex,
       },
     };
   },

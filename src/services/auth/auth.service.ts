@@ -47,7 +47,7 @@ export const authService = {
 
     const novaSessao = await sessaoUsuarioService.criarSessao(
       pessoa.id,
-      addDays(new Date(), 3),
+      addDays(new Date(), 7),
       ip,
       userAgent,
     );

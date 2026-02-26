@@ -16,4 +16,8 @@ export const hash = {
   async compare(value: string, hash: string) {
     return await bcrypt.compare(value, hash);
   },
+
+  async geradorCsrfToken() {
+    return CryptoJS.lib.WordArray.random(32).toString(CryptoJS.enc.Hex);
+  },
 };
