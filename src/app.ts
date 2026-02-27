@@ -126,6 +126,9 @@ const io = new Server(server, {
 });
 
 socketEventos(io, process.env.JWT_SECRET!);
+loggerService
+  .capture("Servidor iniciado", { layer: "service", tags: ["App"] })
+  .catch(() => {});
 loggerLimpezaService.start();
 const DEV_PORT = 5007;
 

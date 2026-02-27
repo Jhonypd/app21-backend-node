@@ -8,46 +8,43 @@ datasource db {
 }
 
 model Pessoa {
-  id                      String    @id @default(uuid())
+  id                      String               @id @default(uuid())
   nome                    String
-  email                   String    @unique
-  email_hash              String    @unique
-  email_confirmado        Boolean   @default(false)
-  codigo_confirmacao      String?   @unique
-  codigo_confirmacao_hash String?   @unique
-  codigo_expiracao        DateTime?
+  email                   String               @unique
+  inativo                 Boolean              @default(false)
+  data_criacao            DateTime             @default(now())
   senha                   String
-  inativo                 Boolean   @default(false)
-  data_criacao            DateTime  @default(now())
-
-  participacoes        ParticipanteSala[]
-  salas_criadas        Sala[]               @relation("SalasCriadasPorPessoa")
-  sessoes_iniciadas    SessaoSala[]         @relation("SessoesIniciadas")
-  votos                Voto[]
-  sessao_usuario       SessaoPessoa[]
-  participantes_sessao ParticipanteSessao[]
+  email_confirmado        Boolean              @default(false)
+  email_hash              String               @unique
+  codigo_confirmacao      String?              @unique
+  codigo_expiracao        DateTime?
+  codigo_confirmacao_hash String?              @unique
+  participacoes           ParticipanteSala[]
+  participantes_sessao    ParticipanteSessao[]
+  salas_criadas           Sala[]               @relation("SalasCriadasPorPessoa")
+  sessao_usuario          SessaoPessoa[]
+  sessoes_iniciadas       SessaoSala[]         @relation("SessoesIniciadas")
+  votos                   Voto[]
 
   @@index([email])
   @@index([codigo_expiracao])
 }
 
 model Sala {
-  id             String    @id @default(uuid())
-  codigo         String    @unique
-  titulo         String
-  criado_por     String
-  senha          String?
-  inativo        Boolean   @default(false)
-  data_criacao   DateTime  @default(now())
-  data_alteracao DateTime?
-
+  id                String             @id @default(uuid())
+  codigo            String             @unique
+  titulo            String
+  criado_por        String
+  senha             String?
+  inativo           Boolean            @default(false)
+  data_criacao      DateTime           @default(now())
+  data_alteracao    DateTime?
   historia_atual_id String?
-  votos_revelados   Boolean @default(false)
-
-  participantes ParticipanteSala[]
-  proprietario  Pessoa             @relation("SalasCriadasPorPessoa", fields: [criado_por], references: [id])
-  historias     HistoriaSala[]
-  sessoes       SessaoSala[]
+  votos_revelados   Boolean            @default(false)
+  historias         HistoriaSala[]
+  participantes     ParticipanteSala[]
+  proprietario      Pessoa             @relation("SalasCriadasPorPessoa", fields: [criado_por], references: [id])
+  sessoes           SessaoSala[]
 
   @@index([criado_por])
   @@index([codigo])
@@ -55,15 +52,13 @@ model Sala {
 }
 
 model HistoriaSala {
-  id           String   @id @default(uuid())
-  sala_id      String
-  titulo       String
-  descricao    String?
-  criado_por   String
-  data_criacao DateTime @default(now())
-
-  sala Sala @relation(fields: [sala_id], references: [id])
-
+  id              String           @id @default(uuid())
+  sala_id         String
+  titulo          String
+  descricao       String?
+  criado_por      String
+  data_criacao    DateTime         @default(now())
+  sala            Sala             @relation(fields: [sala_id], references: [id])
   historia_sessao HistoriaSessao[]
 
   @@index([sala_id])
@@ -75,7 +70,7 @@ model ParticipanteSala {
   pessoa_id  String
   adicionado DateTime @default(now())
   online     Boolean  @default(false)
-  role       Int      @default(2) // 0 = Dono (Owner), 1 = Administrador (Admin), 2 = Membro (Member)
+  role       Int      @default(2)
   pessoa     Pessoa   @relation(fields: [pessoa_id], references: [id])
   sala       Sala     @relation(fields: [sala_id], references: [id])
 
@@ -86,105 +81,85 @@ model ParticipanteSala {
 }
 
 model SessaoSala {
-  id                String    @id @default(uuid())
+  id                String               @id @default(uuid())
   sala_id           String
-  criada_em         DateTime  @default(now())
-  ativa             Boolean   @default(true)
-  iniciada_por      String // Pessoa que iniciou a sessão (Dono ou Admin)
-  encerrada_por     String? // ✅ Pessoa que encerrou a sessão (auditoria)
-  data_encerramento DateTime? // ✅ Quando foi encerrada (auditoria)
-
-  sala          Sala                 @relation(fields: [sala_id], references: [id])
-  iniciador     Pessoa               @relation("SessoesIniciadas", fields: [iniciada_por], references: [id])
-  participantes ParticipanteSessao[]
-  historias     HistoriaSessao[]
+  criada_em         DateTime             @default(now())
+  ativa             Boolean              @default(true)
+  iniciada_por      String
+  data_encerramento DateTime?
+  encerrada_por     String?
+  historias         HistoriaSessao[]
+  participantes     ParticipanteSessao[]
+  iniciador         Pessoa               @relation("SessoesIniciadas", fields: [iniciada_por], references: [id])
+  sala              Sala                 @relation(fields: [sala_id], references: [id])
 
   @@index([sala_id])
   @@index([iniciada_por])
 }
 
 model ParticipanteSessao {
-  id                String  @id @default(uuid())
+  id                String     @id @default(uuid())
   sessao_id         String
   pessoa_id         String
-  autorizado        Boolean @default(false)
-  participa_votacao Boolean @default(true)
-  online            Boolean @default(false)
-
-  sessao SessaoSala @relation(fields: [sessao_id], references: [id])
-  pessoa Pessoa     @relation(fields: [pessoa_id], references: [id])
+  autorizado        Boolean    @default(false)
+  participa_votacao Boolean    @default(true)
+  pessoa            Pessoa     @relation(fields: [pessoa_id], references: [id])
+  sessao            SessaoSala @relation(fields: [sessao_id], references: [id])
 
   @@unique([sessao_id, pessoa_id])
   @@index([sessao_id])
   @@index([pessoa_id])
 }
 
-//////////////////////////////////////////////////////////////
-// NOVA MODELAGEM PARA SUPORTAR HISTÓRIAS DENTRO DA SESSÃO //
-//////////////////////////////////////////////////////////////
-
 model HistoriaSessao {
-  id          String @id @default(uuid())
+  id          String       @id @default(uuid())
   sessao_id   String
   historia_id String
-  ordem       Int    @default(0)
-
-  sessao   SessaoSala   @relation(fields: [sessao_id], references: [id])
-  historia HistoriaSala @relation(fields: [historia_id], references: [id])
-
-  votos Voto[]
+  ordem       Int          @default(0)
+  historia    HistoriaSala @relation(fields: [historia_id], references: [id])
+  sessao      SessaoSala   @relation(fields: [sessao_id], references: [id])
+  votos       Voto[]
 
   @@unique([sessao_id, historia_id])
   @@index([sessao_id])
   @@index([historia_id])
 }
 
-//////////////////////////////////////////////////////////////
-// VOTO AGORA É POR HISTÓRIA DENTRO DA SESSÃO              //
-//////////////////////////////////////////////////////////////
-
 model Voto {
-  id                 String   @id @default(uuid())
-  historia_sessao_id String
+  id                 String         @id @default(uuid())
   pessoa_id          String
   valor              Int
-  data_voto          DateTime @default(now())
-
-  historiaSessao HistoriaSessao @relation(fields: [historia_sessao_id], references: [id])
-  pessoa         Pessoa         @relation(fields: [pessoa_id], references: [id])
+  data_voto          DateTime       @default(now())
+  historia_sessao_id String
+  historiaSessao     HistoriaSessao @relation(fields: [historia_sessao_id], references: [id])
+  pessoa             Pessoa         @relation(fields: [pessoa_id], references: [id])
 
   @@unique([historia_sessao_id, pessoa_id])
   @@index([historia_sessao_id])
   @@index([pessoa_id])
 }
 
-//////////////////////////////////////////////////////////////
-// AUTENTICAÇÃO E TOKEN                                     //
-//////////////////////////////////////////////////////////////
-
 model RefreshToken {
-  id          String    @id @default(uuid())
-  token_hash  String    @unique
-  sessao_id   String    @unique
+  id          String       @id @default(uuid())
   expiracao   DateTime
-  criado_em   DateTime  @default(now())
+  criado_em   DateTime     @default(now())
   revogado_em DateTime?
-
-  sessao SessaoPessoa @relation(fields: [sessao_id], references: [id])
+  sessao_id   String       @unique
+  token_hash  String       @unique
+  sessao      SessaoPessoa @relation(fields: [sessao_id], references: [id])
 }
 
 model SessaoPessoa {
-  id               String    @id @default(uuid())
+  id               String        @id @default(uuid())
   pessoa_id        String
-  criado_em        DateTime  @default(now())
+  criado_em        DateTime      @default(now())
   expiracao        DateTime
-  ultimo_acesso_em DateTime  @default(now())
+  ultimo_acesso_em DateTime      @default(now())
   revogado_em      DateTime?
   ip               String?
   user_agent       String?
-
-  refreshToken RefreshToken?
-  pessoa       Pessoa        @relation(fields: [pessoa_id], references: [id])
+  refreshToken     RefreshToken?
+  pessoa           Pessoa        @relation(fields: [pessoa_id], references: [id])
 
   @@index([pessoa_id])
 }
