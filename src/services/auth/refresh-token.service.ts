@@ -47,9 +47,7 @@ export const refreshTokenService = {
       );
 
     if (!buscaRefreshTokenBanco) {
-      console.error(
-        "[refreshTokenService] Refresh token não encontrado no banco!",
-      );
+      console.error("Refresh token não encontrado no banco!");
       throw new Error("Refresh token inválido");
     }
 
@@ -59,12 +57,12 @@ export const refreshTokenService = {
     );
 
     if (!validaTokenDoBb) {
-      console.error("[refreshTokenService] Hash do token não confere!");
+      console.error(" Hash do token não confere!");
       throw new Error("Refresh token inválido");
     }
 
     if (buscaRefreshTokenBanco.revogado_em) {
-      console.error("[refreshTokenService] Token foi revogado!");
+      console.error("Token foi revogado!");
       throw new Error("Refresh token inválido");
     }
 

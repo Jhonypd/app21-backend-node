@@ -2,38 +2,49 @@ import { Response } from "express";
 
 const isProduction = process.env.NODE_ENV === "production";
 
+const baseCookieOptions = {
+  path: "/",
+  secure: isProduction,
+  sameSite: isProduction ? ("none" as const) : ("lax" as const),
+};
+
 export const tokenCookies = {
   setAuthCookies(res: Response, refreshToken: string, accessToken: string) {
     res.cookie("refresh_token", refreshToken, {
+      ...baseCookieOptions,
       httpOnly: true,
-      secure: isProduction,
-      sameSite: isProduction ? "none" : "lax",
-      path: "/",
       maxAge: 7 * 24 * 60 * 60 * 1000,
     });
 
     res.cookie("access_token", accessToken, {
+      ...baseCookieOptions,
       httpOnly: true,
-      secure: isProduction,
-      sameSite: isProduction ? "none" : "lax",
-      path: "/",
-      maxAge: 7 * 60 * 1000,
+      maxAge: 15 * 60 * 1000,
     });
   },
 
   setCsrfCookie(res: Response, csrfToken: string) {
     res.cookie("csrf_token", csrfToken, {
+      ...baseCookieOptions,
       httpOnly: false,
-      secure: isProduction,
-      sameSite: isProduction ? "none" : "lax",
-      path: "/",
       maxAge: 60 * 60 * 1000,
     });
   },
 
-  clear(res: Response) {
-    res.clearCookie("refresh_token", { path: "/" });
-    res.clearCookie("access_token", { path: "/" });
-    res.clearCookie("csrf_token", { path: "/" });
+  clearTokensCookies(res: Response) {
+    res.clearCookie("refresh_token", {
+      ...baseCookieOptions,
+      httpOnly: true,
+    });
+
+    res.clearCookie("access_token", {
+      ...baseCookieOptions,
+      httpOnly: true,
+    });
+
+    res.clearCookie("csrf_token", {
+      ...baseCookieOptions,
+      httpOnly: false,
+    });
   },
 };

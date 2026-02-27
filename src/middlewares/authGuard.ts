@@ -202,7 +202,7 @@ export const authGuard = async (
 
         return next();
       } catch {
-        tokenCookies.clear(res);
+        tokenCookies.clearTokensCookies(res);
         return res.status(401).json(
           respostaErro({
             mensagem: "Sessão expirada. Faça login novamente.",

@@ -3,7 +3,7 @@ import { criptografia } from "../../lib/criptografia";
 import { hash } from "../../lib/hash";
 import { formatarParaDataLocal } from "../../utils/formatar-data";
 import emailService from "../mail/mail.service";
-import { codigos } from "../../lib/codigos";
+import { codigos } from "../../lib/codigos-conta";
 import { addMinutes } from "date-fns";
 import { el } from "date-fns/locale";
 
@@ -52,7 +52,7 @@ export const pessoaService = {
       senhaHash,
       criptografia.criptografar(codigo as string),
       await hash.geradorCamposComuns(codigo as string),
-      addMinutes(new Date(), 30)
+      addMinutes(new Date(), 30),
     );
 
     if (!novoUsuario) {
@@ -87,11 +87,11 @@ export const pessoaService = {
       // Gera código de confirmação para novo email
 
       dadosAtualizacao.codigo_confirmacao_hash = await hash.geradorCamposComuns(
-        (await codigos.codigoConfirmarConta()) as string
+        (await codigos.codigoConfirmarConta()) as string,
       );
       dadosAtualizacao.codigo_expiracao = addMinutes(new Date(), 30);
       dadosAtualizacao.codigo_confirmacao = criptografia.criptografar(
-        (await codigos.codigoConfirmarConta()) as string
+        (await codigos.codigoConfirmarConta()) as string,
       );
 
       // Precisa revalidar o email
@@ -127,8 +127,8 @@ export const pessoaService = {
           `${
             process.env.FRONTEND_URL
           }/confirmarConta?codigo=${encodeURIComponent(
-            usuario.codigo_confirmacao!
-          )}`
+            usuario.codigo_confirmacao!,
+          )}`,
         );
 
         emailEnviado = true;
@@ -178,7 +178,7 @@ export const pessoaService = {
 
     const pessoas = await pessoaRepository.obterTodosPorNomeOuEmail(
       valorPesquisaHasheado,
-      salaId
+      salaId,
     );
 
     return pessoas.map((pessoa) => ({

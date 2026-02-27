@@ -3,7 +3,7 @@ import { Claims, geradorToken } from "../../lib/jwt";
 import { hash } from "../../lib/hash";
 import { criptografia } from "../../lib/criptografia";
 import emailService from "../mail/mail.service";
-import { codigos } from "../../lib/codigos";
+import { codigos } from "../../lib/codigos-conta";
 import { pessoaService } from "../pessoas/pessoa.service";
 import { formatarParaDataLocal } from "../../utils/formatar-data";
 import { addDays, addMinutes, format } from "date-fns";
