@@ -13,6 +13,7 @@ import historias from "./routes/historias/historia-sala.routes";
 import dotenv from "dotenv";
 import { errorHandler } from "./lib/errorHandler";
 import { loggerLimpezaService } from "./services/monitoramento/logger-limpeza.service";
+import { loggerService } from "./services/monitoramento/logger-index.service";
 
 dotenv.config();
 
@@ -134,5 +135,22 @@ const PORT =
 console.log(
   `Servidor rodando em modo ${process.env.NODE_ENV} na porta ${PORT}`,
 );
+// Erros não tratados em nível de processo
+process.on("uncaughtException", (err) => {
+  loggerService
+    .capture(err, { layer: "job", tags: ["uncaughtException"] })
+    .catch(() => {})
+    .finally(() => {
+      console.error("[uncaughtException]", err);
+      process.exit(1);
+    });
+});
+
+process.on("unhandledRejection", (reason) => {
+  loggerService
+    .capture(reason, { layer: "job", tags: ["unhandledRejection"] })
+    .catch(() => console.error("[unhandledRejection]", reason));
+});
+
 // Start
 server.listen(PORT, () => console.log(`Servidor rodando na porta ${PORT}`));
