@@ -11,6 +11,8 @@ import sessoes from "./routes/sessoes/sessao-sala.routes";
 import votos from "./routes/votos/votos.routes";
 import historias from "./routes/historias/historia-sala.routes";
 import dotenv from "dotenv";
+import { errorHandler } from "./lib/errorHandler";
+import { loggerLimpezaService } from "./services/monitoramento/logger-limpeza.service";
 
 dotenv.config();
 
@@ -87,6 +89,9 @@ app.use("/sessoes", votos);
 app.use("/salas", historias);
 app.use("/", historias);
 
+// Middleware de tratamento de erros
+app.use(errorHandler);
+
 // SOCKET.IO
 const io = new Server(server, {
   cors: {
@@ -120,7 +125,7 @@ const io = new Server(server, {
 });
 
 socketEventos(io, process.env.JWT_SECRET!);
-
+loggerLimpezaService.start();
 const DEV_PORT = 5007;
 
 const PORT =
