@@ -19,7 +19,10 @@ export const tokenCookies = {
     res.cookie("access_token", accessToken, {
       ...baseCookieOptions,
       httpOnly: true,
-      maxAge: 15 * 60 * 1000,
+      // Cookie vive 30min: 15min a mais que o JWT (expira em 15min)
+      // Garante que o token expirado ainda chega no backend para
+      // acionar o fluxo de refresh via TokenExpiredError
+      maxAge: 30 * 60 * 1000,
     });
   },
 
