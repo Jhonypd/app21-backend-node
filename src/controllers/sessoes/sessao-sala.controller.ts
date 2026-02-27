@@ -1,9 +1,9 @@
-import { Request, Response } from "express";
+import { NextFunction, Request, Response } from "express";
 import { sessaoSalaService } from "../../services/sessoes/sessao-sala.service";
 import { respostaErro, respostaSucesso } from "../../utils/response";
 
 export const sessaoSalaController = {
-  async criarSessao(req: Request, res: Response) {
+  async criarSessao(req: Request, res: Response, next: NextFunction) {
     try {
       const sala_id = req.params.id;
       const pessoa_id = req.user?.Usuario_Id as string;
@@ -23,10 +23,10 @@ export const sessaoSalaController = {
         }),
       );
     } catch (error: any) {
-      res.status(500).json(respostaErro({ mensagem: error.message }));
+      return next(error);
     }
   },
-  async encerrarSessao(req: Request, res: Response) {
+  async encerrarSessao(req: Request, res: Response, next: NextFunction) {
     try {
       const sala_id = req.params.id;
       const pessoa_id = req.user?.Usuario_Id as string;
@@ -55,10 +55,10 @@ export const sessaoSalaController = {
         }),
       );
     } catch (error: any) {
-      res.status(500).json(respostaErro({ mensagem: error.message }));
+      return next(error);
     }
   },
-  async obterSessao(req: Request, res: Response) {
+  async obterSessao(req: Request, res: Response, next: NextFunction) {
     try {
       const sessao_id = req.params.id;
       const pessoa_id = req.user?.Usuario_Id as string;
@@ -74,11 +74,11 @@ export const sessaoSalaController = {
         }),
       );
     } catch (error: any) {
-      res.status(500).json(respostaErro({ mensagem: error.message }));
+      return next(error);
     }
   },
 
-  async adicionarParticipante(req: Request, res: Response) {
+  async adicionarParticipante(req: Request, res: Response, next: NextFunction) {
     try {
       const sessao_id = req.params.id;
       const { pessoa_id, autorizado } = req.body;
@@ -96,11 +96,11 @@ export const sessaoSalaController = {
         }),
       );
     } catch (error: any) {
-      res.status(500).json(respostaErro({ mensagem: error.message }));
+      return next(error);
     }
   },
 
-  async revelarVotos(req: Request, res: Response) {
+  async revelarVotos(req: Request, res: Response, next: NextFunction) {
     try {
       const sessao_id = req.params.id;
       const pessoa_id = req.user?.Usuario_Id as string;
@@ -114,11 +114,11 @@ export const sessaoSalaController = {
         }),
       );
     } catch (error: any) {
-      res.status(500).json(respostaErro({ mensagem: error.message }));
+      return next(error);
     }
   },
 
-  async resetarVotos(req: Request, res: Response) {
+  async resetarVotos(req: Request, res: Response, next: NextFunction) {
     try {
       const sessao_id = req.params.id;
       const pessoa_id = req.user?.Usuario_Id as string;
@@ -132,11 +132,11 @@ export const sessaoSalaController = {
         }),
       );
     } catch (error: any) {
-      res.status(500).json(respostaErro({ mensagem: error.message }));
+      return next(error);
     }
   },
 
-  async adicionarVisitantes(req: Request, res: Response) {
+  async adicionarVisitantes(req: Request, res: Response, next: NextFunction) {
     try {
       const sala_id = req.params.id;
       const { pessoa_ids, pessoa_id } = req.body; // Array ou ID único
@@ -170,11 +170,11 @@ export const sessaoSalaController = {
         }),
       );
     } catch (error: any) {
-      res.status(500).json(respostaErro({ mensagem: error.message }));
+      return next(error);
     }
   },
 
-  async removerVisitante(req: Request, res: Response) {
+  async removerVisitante(req: Request, res: Response, next: NextFunction) {
     try {
       const sala_id = req.params.id;
       const pessoa_id = req.params.pessoaId;
@@ -188,7 +188,7 @@ export const sessaoSalaController = {
         }),
       );
     } catch (error: any) {
-      res.status(500).json(respostaErro({ mensagem: error.message }));
+      return next(error);
     }
   },
 
@@ -197,7 +197,7 @@ export const sessaoSalaController = {
    * Apenas dono e admin podem kickar
    * Admin não pode kickar dono
    */
-  async kickarParticipante(req: Request, res: Response) {
+  async kickarParticipante(req: Request, res: Response, next: NextFunction) {
     try {
       const sessaoId = req.params.sessaoId;
       const pessoaId = req.params.pessoaId;
@@ -224,7 +224,7 @@ export const sessaoSalaController = {
         }),
       );
     } catch (error: any) {
-      res.status(500).json(respostaErro({ mensagem: error.message }));
+      return next(error);
     }
   },
 
@@ -232,7 +232,7 @@ export const sessaoSalaController = {
    * Atualizar flag participa_votacao do participante na sessão
    * Permite Donos/Admin escolherem se vão votar ou não
    */
-  async atualizarParticipaVotacao(req: Request, res: Response) {
+  async atualizarParticipaVotacao(req: Request, res: Response, next: NextFunction) {
     try {
       const sessao_id = req.params.id;
       const pessoa_id = req.user?.Usuario_Id as string;
@@ -261,7 +261,7 @@ export const sessaoSalaController = {
         }),
       );
     } catch (error: any) {
-      res.status(500).json(respostaErro({ mensagem: error.message }));
+      return next(error);
     }
   },
 
@@ -269,7 +269,7 @@ export const sessaoSalaController = {
    * Adicionar história durante sessão ativa
    * POST /sessoes/:sessaoId/historias/durante-sessao
    */
-  async adicionarHistoriaDuranteSessao(req: Request, res: Response) {
+  async adicionarHistoriaDuranteSessao(req: Request, res: Response, next: NextFunction) {
     try {
       const { sessaoId } = req.params;
       const { titulo, descricao } = req.body;
@@ -295,7 +295,7 @@ export const sessaoSalaController = {
         }),
       );
     } catch (error: any) {
-      res.status(500).json(respostaErro({ mensagem: error.message }));
+      return next(error);
     }
   },
 
@@ -303,7 +303,7 @@ export const sessaoSalaController = {
    * Listar todas as histórias de uma sessão
    * GET /sessoes/:sessaoId/historias
    */
-  async listarHistoriasPorSessao(req: Request, res: Response) {
+  async listarHistoriasPorSessao(req: Request, res: Response, next: NextFunction) {
     try {
       const sessao_id = req.params.sessaoId;
 
@@ -316,7 +316,7 @@ export const sessaoSalaController = {
         }),
       );
     } catch (error: any) {
-      res.status(500).json(respostaErro({ mensagem: error.message }));
+      return next(error);
     }
   },
 
@@ -324,7 +324,7 @@ export const sessaoSalaController = {
    * Obter votos de uma história específica dentro de uma sessão
    * GET /sessoes/:sessaoId/historias/:historiaId/votos
    */
-  async obterVotosPorHistoria(req: Request, res: Response) {
+  async obterVotosPorHistoria(req: Request, res: Response, next: NextFunction) {
     try {
       const sessao_id = req.params.sessaoId;
       const historia_id = req.params.historiaId;
@@ -340,7 +340,7 @@ export const sessaoSalaController = {
         }),
       );
     } catch (error: any) {
-      res.status(500).json(respostaErro({ mensagem: error.message }));
+      return next(error);
     }
   },
 };

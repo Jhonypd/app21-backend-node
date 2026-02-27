@@ -1,9 +1,9 @@
-import { Request, Response } from "express";
+import { NextFunction, Request, Response } from "express";
 import { pessoaService } from "../../services/pessoas/pessoa.service";
 import { respostaErro, respostaSucesso } from "../../utils/response";
 
 export const pessoaController = {
-  async alterar(req: Request, res: Response) {
+  async alterar(req: Request, res: Response, next: NextFunction) {
     try {
       const { id } = req.params;
       const { nome, email, inativo } = req.body;
@@ -25,11 +25,11 @@ export const pessoaController = {
         }),
       );
     } catch (error: any) {
-      return res.status(400).json(respostaErro({ mensagem: error.message }));
+      return next(error);
     }
   },
 
-  async obterDadosAlterar(req: Request, res: Response) {
+  async obterDadosAlterar(req: Request, res: Response, next: NextFunction) {
     try {
       const { id } = req.query;
 
@@ -49,11 +49,11 @@ export const pessoaController = {
         }),
       );
     } catch (error: any) {
-      return res.status(400).json(respostaErro({ mensagem: error.message }));
+      return next(error);
     }
   },
 
-  async obterDadosConta(req: Request, res: Response) {
+  async obterDadosConta(req: Request, res: Response, next: NextFunction) {
     try {
       const pessoaId = req.user?.Usuario_Id as string;
 
@@ -63,11 +63,11 @@ export const pessoaController = {
         .status(200)
         .json(respostaSucesso({ resultado: { pessoa: dados } }));
     } catch (error: any) {
-      return res.status(400).json(respostaErro({ mensagem: error.message }));
+      return next(error);
     }
   },
 
-  async listarPorNomeOuEmail(req: Request, res: Response) {
+  async listarPorNomeOuEmail(req: Request, res: Response, next: NextFunction) {
     try {
       // aceita tanto `q` quanto `termo` e garante string padrão
       const termo =
@@ -78,7 +78,7 @@ export const pessoaController = {
 
       return res.status(200).json(respostaSucesso({ resultado: { pessoas } }));
     } catch (error: any) {
-      return res.status(400).json(respostaErro({ mensagem: error.message }));
+      return next(error);
     }
   },
 };

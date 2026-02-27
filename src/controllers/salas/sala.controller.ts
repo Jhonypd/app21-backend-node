@@ -1,10 +1,10 @@
-import { Request, Response } from "express";
+import { NextFunction, Request, Response } from "express";
 import { salaService } from "../../services/salas/sala.service";
 import { participanteSalaService } from "../../services/participantes/participante-sala.service";
 import { respostaErro, respostaSucesso } from "../../utils/response";
 
 export const salaController = {
-  async criarSalas(req: Request, res: Response) {
+  async criarSalas(req: Request, res: Response, next: NextFunction) {
     try {
       const { titulo, senha, salaPrivada, participantesIds } = req.body;
       const pessoaId = req.user?.Usuario_Id as string;
@@ -24,11 +24,11 @@ export const salaController = {
         }),
       );
     } catch (error: any) {
-      res.status(500).json(respostaErro({ mensagem: error.message }));
+      return next(error);
     }
   },
 
-  async alterarSala(req: Request, res: Response) {
+  async alterarSala(req: Request, res: Response, next: NextFunction) {
     try {
       const id = req.params.id;
       const { titulo, senha } = req.body;
@@ -46,11 +46,11 @@ export const salaController = {
         }),
       );
     } catch (error: any) {
-      res.status(500).json(respostaErro({ mensagem: error.message }));
+      return next(error);
     }
   },
 
-  async listarSalas(req: Request, res: Response) {
+  async listarSalas(req: Request, res: Response, next: NextFunction) {
     try {
       const pessoaId = req.user?.Usuario_Id as string;
 
@@ -67,22 +67,22 @@ export const salaController = {
 
       res.json(respostaSucesso({ resultado: { salas: salas } }));
     } catch (error: any) {
-      res.status(500).json(respostaErro({ mensagem: error.message }));
+      return next(error);
     }
   },
 
-  async obterPorCodigo(req: Request, res: Response) {
+  async obterPorCodigo(req: Request, res: Response, next: NextFunction) {
     try {
       const codigo = req.params.codigo;
       const pessoaId = req.user?.Usuario_Id as string;
       const sala = await salaService.obterPorCodigo(codigo, pessoaId);
       res.json(respostaSucesso({ resultado: { sala: sala } }));
     } catch (error: any) {
-      res.status(500).json(respostaErro({ mensagem: error.message }));
+      return next(error);
     }
   },
 
-  async obterDadosSessaoAtiva(req: Request, res: Response) {
+  async obterDadosSessaoAtiva(req: Request, res: Response, next: NextFunction) {
     try {
       const codigo = req.params.codigo;
       const pessoaId = req.user?.Usuario_Id as string;
@@ -92,33 +92,33 @@ export const salaController = {
       );
       res.json(respostaSucesso({ resultado: { sala: dadosSala } }));
     } catch (error: any) {
-      res.status(500).json(respostaErro({ mensagem: error.message }));
+      return next(error);
     }
   },
 
-  async obterPorId(req: Request, res: Response) {
+  async obterPorId(req: Request, res: Response, next: NextFunction) {
     try {
       const id = req.params.id;
       const pessoaId = req.user?.Usuario_Id as string;
       const sala = await salaService.obterPorId(id, pessoaId);
       res.json(respostaSucesso({ resultado: { sala: sala } }));
     } catch (error: any) {
-      res.status(500).json(respostaErro({ mensagem: error.message }));
+      return next(error);
     }
   },
 
-  async obterParaEdicao(req: Request, res: Response) {
+  async obterParaEdicao(req: Request, res: Response, next: NextFunction) {
     try {
       const id = req.params.id;
       const pessoaId = req.user?.Usuario_Id as string;
       const sala = await salaService.obterParaEdicao(id, pessoaId);
       res.json(respostaSucesso({ resultado: { sala: sala } }));
     } catch (error: any) {
-      res.status(500).json(respostaErro({ mensagem: error.message }));
+      return next(error);
     }
   },
 
-  async entrarSala(req: Request, res: Response) {
+  async entrarSala(req: Request, res: Response, next: NextFunction) {
     try {
       const pessoa = req.user;
       const { codigo, senha } = req.body;
@@ -141,11 +141,11 @@ export const salaController = {
         }),
       );
     } catch (error: any) {
-      res.status(500).json(respostaErro({ mensagem: error.message }));
+      return next(error);
     }
   },
 
-  async sairDaSala(req: Request, res: Response) {
+  async sairDaSala(req: Request, res: Response, next: NextFunction) {
     try {
       const sala_id = req.params.id;
       const pessoa_id = req.user?.Usuario_Id as string;
@@ -159,11 +159,11 @@ export const salaController = {
         }),
       );
     } catch (error: any) {
-      res.status(500).json(respostaErro({ mensagem: error.message }));
+      return next(error);
     }
   },
 
-  async aprovarReentrada(req: Request, res: Response) {
+  async aprovarReentrada(req: Request, res: Response, next: NextFunction) {
     try {
       const sala_id = req.params.id;
       const pessoa_id_reentrada = req.params.pessoaId;
@@ -182,7 +182,7 @@ export const salaController = {
         }),
       );
     } catch (error: any) {
-      res.status(500).json(respostaErro({ mensagem: error.message }));
+      return next(error);
     }
   },
 
@@ -191,7 +191,7 @@ export const salaController = {
    * Apenas o dono pode excluir
    * Validações: sem sessões criadas, sem votos registrados
    */
-  async excluirSala(req: Request, res: Response) {
+  async excluirSala(req: Request, res: Response, next: NextFunction) {
     try {
       const id = req.params.id;
       const pessoaId = req.user?.Usuario_Id as string;
@@ -205,7 +205,7 @@ export const salaController = {
         }),
       );
     } catch (error: any) {
-      res.status(500).json(respostaErro({ mensagem: error.message }));
+      return next(error);
     }
   },
 
@@ -213,7 +213,7 @@ export const salaController = {
    * Adiciona um participante permanente à sala
    * Permissões: Dono pode adicionar admin (1) ou membro (2), Admin pode adicionar apenas membro (2)
    */
-  async adicionarParticipante(req: Request, res: Response) {
+  async adicionarParticipante(req: Request, res: Response, next: NextFunction) {
     try {
       const sala_id = req.params.id;
       const pessoaIdSolicitante = req.user?.Usuario_Id as string;
@@ -248,7 +248,7 @@ export const salaController = {
         }),
       );
     } catch (error: any) {
-      res.status(500).json(respostaErro({ mensagem: error.message }));
+      return next(error);
     }
   },
 
@@ -256,7 +256,7 @@ export const salaController = {
    * Remove um participante permanente da sala
    * Permissões: Dono e Admin podem remover membros, mas não podem remover dono ou outros admins
    */
-  async removerParticipante(req: Request, res: Response) {
+  async removerParticipante(req: Request, res: Response, next: NextFunction) {
     try {
       const sala_id = req.params.id;
       const pessoa_id_remover = req.params.pessoaId;
@@ -275,7 +275,7 @@ export const salaController = {
         }),
       );
     } catch (error: any) {
-      res.status(500).json(respostaErro({ mensagem: error.message }));
+      return next(error);
     }
   },
 
@@ -283,7 +283,7 @@ export const salaController = {
    * Altera o role de um participante (promover ou rebaixar)
    * Permissões: Apenas o dono pode alterar roles
    */
-  async alterarRoleParticipante(req: Request, res: Response) {
+  async alterarRoleParticipante(req: Request, res: Response, next: NextFunction) {
     try {
       const sala_id = req.params.id;
       const pessoa_id_alterar = req.params.pessoaId;
@@ -312,11 +312,11 @@ export const salaController = {
         }),
       );
     } catch (error: any) {
-      res.status(500).json(respostaErro({ mensagem: error.message }));
+      return next(error);
     }
   },
 
-  async selecionarHistoriaAtual(req: Request, res: Response) {
+  async selecionarHistoriaAtual(req: Request, res: Response, next: NextFunction) {
     try {
       const sala_id = req.params.id;
       const pessoa_id = req.user?.Usuario_Id as string;
@@ -340,7 +340,7 @@ export const salaController = {
         }),
       );
     } catch (error: any) {
-      res.status(500).json(respostaErro({ mensagem: error.message }));
+      return next(error);
     }
   },
 };

@@ -1,9 +1,9 @@
-import { Request, Response } from "express";
+import { NextFunction, Request, Response } from "express";
 import { historiaSalaService } from "../../services/historias/historia-sala.service";
 
 class HistoriaSalaController {
   // POST /salas/:salaId/historias
-  async criar(req: Request, res: Response) {
+  async criar(req: Request, res: Response, next: NextFunction) {
     try {
       const { salaId } = req.params;
       const { titulo, descricao } = req.body;
@@ -22,15 +22,12 @@ class HistoriaSalaController {
         Resultado: { historia },
       });
     } catch (error: any) {
-      return res.status(400).json({
-        Sucesso: false,
-        Mensagem: error.message || "Erro ao criar história",
-      });
+      return next(error);
     }
   }
 
   // POST /salas/:salaId/historias/lote
-  async criarVarias(req: Request, res: Response) {
+  async criarVarias(req: Request, res: Response, next: NextFunction) {
     try {
       const { salaId } = req.params;
       const { historias } = req.body;
@@ -51,15 +48,12 @@ class HistoriaSalaController {
         Resultado: { total: historias.length },
       });
     } catch (error: any) {
-      return res.status(400).json({
-        Sucesso: false,
-        Mensagem: error.message || "Erro ao criar histórias",
-      });
+      return next(error);
     }
   }
 
   // GET /salas/:salaId/historias
-  async listar(req: Request, res: Response) {
+  async listar(req: Request, res: Response, next: NextFunction) {
     try {
       const { salaId } = req.params;
 
@@ -71,15 +65,12 @@ class HistoriaSalaController {
         Resultado: { historias },
       });
     } catch (error: any) {
-      return res.status(400).json({
-        Sucesso: false,
-        Mensagem: error.message || "Erro ao listar histórias",
-      });
+      return next(error);
     }
   }
 
   // GET /historias/:id
-  async obterPorId(req: Request, res: Response) {
+  async obterPorId(req: Request, res: Response, next: NextFunction) {
     try {
       const { id } = req.params;
 
@@ -91,15 +82,12 @@ class HistoriaSalaController {
         Resultado: { historia },
       });
     } catch (error: any) {
-      return res.status(404).json({
-        Sucesso: false,
-        Mensagem: error.message || "Erro ao obter história",
-      });
+      return next(error);
     }
   }
 
   // PUT /historias/:id
-  async atualizar(req: Request, res: Response) {
+  async atualizar(req: Request, res: Response, next: NextFunction) {
     try {
       const { id } = req.params;
       const { titulo, descricao } = req.body;
@@ -115,15 +103,12 @@ class HistoriaSalaController {
         Resultado: { historia },
       });
     } catch (error: any) {
-      return res.status(400).json({
-        Sucesso: false,
-        Mensagem: error.message || "Erro ao atualizar história",
-      });
+      return next(error);
     }
   }
 
   // DELETE /historias/:id
-  async deletar(req: Request, res: Response) {
+  async deletar(req: Request, res: Response, next: NextFunction) {
     try {
       const { id } = req.params;
 
@@ -134,10 +119,7 @@ class HistoriaSalaController {
         Mensagem: "História deletada com sucesso",
       });
     } catch (error: any) {
-      return res.status(400).json({
-        Sucesso: false,
-        Mensagem: error.message || "Erro ao deletar história",
-      });
+      return next(error);
     }
   }
 }

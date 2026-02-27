@@ -1,9 +1,9 @@
-import { Request, Response } from "express";
+import { NextFunction, Request, Response } from "express";
 import { votosService } from "../../services/votos/votos.service";
 import { respostaErro, respostaSucesso } from "../../utils/response";
 
 export const votosController = {
-  async votar(req: Request, res: Response) {
+  async votar(req: Request, res: Response, next: NextFunction) {
     try {
       const sessao_id = req.params.id;
       const { historia_sessao_id, valor, participa_votacao } = req.body;
@@ -34,7 +34,7 @@ export const votosController = {
         participa_votacao,
       });
 
-      res.status(201).json(
+      return res.status(201).json(
         respostaSucesso({
           resultado: {
             voto: voto.voto.id,
@@ -44,11 +44,11 @@ export const votosController = {
         }),
       );
     } catch (error: any) {
-      res.status(500).json(respostaErro({ mensagem: error.message }));
+      return next(error);
     }
   },
 
-  async obterVotos(req: Request, res: Response) {
+  async obterVotos(req: Request, res: Response, next: NextFunction) {
     try {
       const sessao_id = req.params.id;
       const { historia_id } = req.query;
@@ -72,7 +72,7 @@ export const votosController = {
           historiaSessao.id,
         );
 
-        res.json(
+        return res.json(
           respostaSucesso({
             resultado: { votos },
           }),
@@ -81,14 +81,14 @@ export const votosController = {
         // Buscar todos os votos da sessão
         const votos = await votosService.obterVotosPorSessao(sessao_id);
 
-        res.json(
+        return res.json(
           respostaSucesso({
             resultado: { votos },
           }),
         );
       }
     } catch (error: any) {
-      res.status(500).json(respostaErro({ mensagem: error.message }));
+      return next(error);
     }
   },
 };

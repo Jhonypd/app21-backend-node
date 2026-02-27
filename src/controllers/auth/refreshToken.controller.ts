@@ -1,11 +1,11 @@
-import { Request, Response } from "express";
+import { NextFunction, Request, Response } from "express";
 import { respostaErro, respostaSucesso } from "../../utils/response";
 import { refreshTokenService } from "../../services/auth/refresh-token.service";
 import { sessaoUsuarioService } from "../../services/auth/sessao-usuario.service";
 import { getClientInfo } from "../../helpers/client-info.helper";
 
 export const refreshTokenController = {
-  async renovarAccessToken(req: Request, res: Response) {
+  async renovarAccessToken(req: Request, res: Response, next: NextFunction) {
     try {
       const { refreshToken } = req.body;
       const { ip, userAgent } = getClientInfo(req);
@@ -29,15 +29,11 @@ export const refreshTokenController = {
         }),
       );
     } catch (error: any) {
-      return res.status(500).json(
-        respostaErro({
-          mensagem: error.message || "Erro ao renovar token",
-        }),
-      );
+      return next(error);
     }
   },
 
-  async encerrarSessao(req: Request, res: Response) {
+  async encerrarSessao(req: Request, res: Response, next: NextFunction) {
     try {
       // Lê do cookie (cookie-based auth) com fallback para o body
       const refreshToken = req.cookies?.refresh_token || req.body?.refreshToken;
@@ -66,11 +62,7 @@ export const refreshTokenController = {
         }),
       );
     } catch (error: any) {
-      return res.status(500).json(
-        respostaErro({
-          mensagem: error.message || "Erro ao revogar refresh token",
-        }),
-      );
+      return next(error);
     }
   },
 };

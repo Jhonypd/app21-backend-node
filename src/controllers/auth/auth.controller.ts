@@ -1,4 +1,4 @@
-import { Request, Response } from "express";
+import { NextFunction, Request, Response } from "express";
 import { authService } from "../../services/auth/auth.service";
 import { respostaErro, respostaSucesso } from "../../utils/response";
 import { getClientInfo } from "../../helpers/client-info.helper";
@@ -20,7 +20,7 @@ export const authController = {
     );
   },
 
-  async login(req: Request, res: Response) {
+  async login(req: Request, res: Response, next: NextFunction) {
     try {
       const { email, senha } = req.body;
       const { ip, userAgent } = getClientInfo(req);
@@ -46,15 +46,11 @@ export const authController = {
         }),
       );
     } catch (error: any) {
-      return res
-        .status(401)
-        .json(
-          respostaErro({ mensagem: error.message || "Erro ao fazer login" }),
-        );
+      return next(error);
     }
   },
 
-  async criarConta(req: Request, res: Response) {
+  async criarConta(req: Request, res: Response, next: NextFunction) {
     try {
       const { nome, email, senha } = req.body;
       if (!nome || !email || !senha) {
@@ -77,15 +73,11 @@ export const authController = {
         }),
       );
     } catch (error: any) {
-      return res
-        .status(400)
-        .json(
-          respostaErro({ mensagem: error.message || "Erro ao criar usuário" }),
-        );
+      return next(error);
     }
   },
 
-  async novoCodigo(req: Request, res: Response) {
+  async novoCodigo(req: Request, res: Response, next: NextFunction) {
     try {
       const { email } = req.body;
       if (!email) {
@@ -101,15 +93,11 @@ export const authController = {
         }),
       );
     } catch (error: any) {
-      return res
-        .status(500)
-        .json(
-          respostaErro({ mensagem: error.message || "Erro ao enviar código" }),
-        );
+      return next(error);
     }
   },
 
-  async esqueciMinhaSenha(req: Request, res: Response) {
+  async esqueciMinhaSenha(req: Request, res: Response, next: NextFunction) {
     try {
       const { email } = req.body;
       if (!email) {
@@ -127,15 +115,11 @@ export const authController = {
         }),
       );
     } catch (error: any) {
-      return res
-        .status(500)
-        .json(
-          respostaErro({ mensagem: error.message || "Erro ao enviar email" }),
-        );
+      return next(error);
     }
   },
 
-  async validaCodigoEmail(req: Request, res: Response) {
+  async validaCodigoEmail(req: Request, res: Response, next: NextFunction) {
     try {
       const { codigo, confirmarConta } = req.query;
       if (!codigo) {
@@ -163,15 +147,11 @@ export const authController = {
         }),
       );
     } catch (error: any) {
-      return res
-        .status(500)
-        .json(
-          respostaErro({ mensagem: error.message || "Erro ao validar código" }),
-        );
+      return next(error);
     }
   },
 
-  async redefinirSenha(req: Request, res: Response) {
+  async redefinirSenha(req: Request, res: Response, next: NextFunction) {
     try {
       const { senha, confirmacaoSenha, codigo, id } = req.body;
 
@@ -189,11 +169,7 @@ export const authController = {
         }),
       );
     } catch (error: any) {
-      return res.status(500).json(
-        respostaErro({
-          mensagem: error.message || "Erro ao redefinir senha",
-        }),
-      );
+      return next(error);
     }
   },
 };
