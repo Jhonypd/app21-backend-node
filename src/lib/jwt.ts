@@ -48,7 +48,7 @@ export const geradorToken = ({
     { Usuario_Id, Nome, Email, Idioma_Padrao, Sessao_Usuario_Id },
     jwtSecret,
     {
-      expiresIn: "30m",
+      expiresIn: "15m",
       audience: aud,
       issuer: iss,
       algorithm: "HS256",
