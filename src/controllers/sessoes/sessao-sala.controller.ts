@@ -48,6 +48,15 @@ export const sessaoSalaController = {
         sessaoAtiva.id,
         pessoa_id,
       );
+
+      // Limpar cookie token_sala ao encerrar sessão
+      res.clearCookie("token_sala", {
+        path: "/",
+        secure: process.env.NODE_ENV === "production",
+        sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
+        httpOnly: true,
+      });
+
       res.json(
         respostaSucesso({
           resultado: { sessaoEncerradaId },

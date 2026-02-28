@@ -19,18 +19,27 @@ export const tokenCookies = {
     res.cookie("access_token", accessToken, {
       ...baseCookieOptions,
       httpOnly: true,
-      // Cookie vive 30min: 15min a mais que o JWT (expira em 15min)
-      // Garante que o token expirado ainda chega no backend para
-      // acionar o fluxo de refresh via TokenExpiredError
       maxAge: 30 * 60 * 1000,
     });
   },
 
   setCsrfCookie(res: Response, csrfToken: string) {
+    // Seta o cookie
     res.cookie("csrf_token", csrfToken, {
       ...baseCookieOptions,
       httpOnly: false,
       maxAge: 60 * 60 * 1000,
+    });
+    
+    // Também envia o token em um header customizado para o frontend capturar automaticamente
+    res.setHeader("X-CSRF-Token", csrfToken);
+  },
+
+  setSalaCookie(res: Response, tokenSala: string) {
+    res.cookie("token_sala", tokenSala, {
+      ...baseCookieOptions,
+      httpOnly: true,
+      maxAge: 6 * 60 * 60 * 1000, // 6 horas
     });
   },
 
@@ -48,6 +57,11 @@ export const tokenCookies = {
     res.clearCookie("csrf_token", {
       ...baseCookieOptions,
       httpOnly: false,
+    });
+
+    res.clearCookie("token_sala", {
+      ...baseCookieOptions,
+      httpOnly: true,
     });
   },
 };

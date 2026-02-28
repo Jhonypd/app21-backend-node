@@ -23,7 +23,7 @@ export const salaAuthGuard = async (
   res: Response,
   next: NextFunction,
 ) => {
-  const tokenSala = req.headers["x-token-sala"] as string | undefined;
+  const tokenSala = req.cookies.token_sala;
 
   if (!tokenSala) {
     return res.status(401).json(

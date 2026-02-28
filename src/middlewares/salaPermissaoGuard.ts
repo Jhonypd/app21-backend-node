@@ -3,7 +3,7 @@ import { respostaErro } from "../utils/response";
 
 /**
  * Middleware que valida se o usuário tem permissão para acessar a rota baseado no role da sala.
- * O Role vem do token JWT da sala (x-token-sala) decodificado pelo salaAuthGuard.
+ * O Role vem do token JWT da sala (cookie token_sala) decodificado pelo salaAuthGuard.
  *
  * @param tiposPermitidos - Array com os tipos permitidos (4 NÍVEIS):
  *   - 0: Dono da sala (Owner)
@@ -19,7 +19,7 @@ import { respostaErro } from "../utils/response";
  */
 export const salaPermissaoGuard = (tiposPermitidos: (0 | 1 | 2 | 3)[]) => {
   return (req: Request, res: Response, next: NextFunction) => {
-    // O Role vem do token da sala (x-token-sala), decodificado em req.sala pelo authGuard
+    // O Role vem do token da sala (cookie token_sala), decodificado em req.sala pelo salaAuthGuard
     const userRole = req.sala?.Role;
 
     if (userRole === undefined || userRole === null) {

@@ -2,6 +2,7 @@ import { NextFunction, Request, Response } from "express";
 import { salaService } from "../../services/salas/sala.service";
 import { participanteSalaService } from "../../services/participantes/participante-sala.service";
 import { respostaErro, respostaSucesso } from "../../utils/response";
+import { tokenCookies } from "../../helpers/set-tokens-cookies.helper";
 
 export const salaController = {
   async criarSalas(req: Request, res: Response, next: NextFunction) {
@@ -130,10 +131,12 @@ export const salaController = {
         senha,
       );
 
+      // Setar token_sala via cookie (httpOnly)
+      tokenCookies.setSalaCookie(res, tokenSala);
+
       res.json(
         respostaSucesso({
           resultado: {
-            tokenSala,
             role,
             sessaoId,
           },
@@ -151,6 +154,14 @@ export const salaController = {
       const pessoa_id = req.user?.Usuario_Id as string;
 
       const resultado = await salaService.sairDaSala(sala_id, pessoa_id);
+
+      // Limpar cookie token_sala ao sair da sala
+      res.clearCookie("token_sala", {
+        path: "/",
+        secure: process.env.NODE_ENV === "production",
+        sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
+        httpOnly: true,
+      });
 
       res.json(
         respostaSucesso({
@@ -175,12 +186,27 @@ export const salaController = {
         pessoa_id_reentrada,
       );
 
-      res.json(
-        respostaSucesso({
-          resultado,
-          mensagem: resultado.mensagem,
-        }),
-      );
+      // Setar token_sala via cookie (httpOnly) se houver tokenSala na resposta
+      if (resultado.tokenSala) {
+        tokenCookies.setSalaCookie(res, resultado.tokenSala);
+        
+        // Remover tokenSala do resultado para não enviar no corpo JSON
+        const { tokenSala, ...resultadoSemToken } = resultado;
+        
+        res.json(
+          respostaSucesso({
+            resultado: resultadoSemToken,
+            mensagem: resultado.mensagem,
+          }),
+        );
+      } else {
+        res.json(
+          respostaSucesso({
+            resultado,
+            mensagem: resultado.mensagem,
+          }),
+        );
+      }
     } catch (error: any) {
       return next(error);
     }
