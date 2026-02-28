@@ -1,6 +1,7 @@
 import fs from "fs/promises";
 import path from "path";
 import crypto from "crypto";
+import { AppError } from "../../lib/errorHandler";
 
 /* ===================== TIPOS ===================== */
 
@@ -70,7 +71,7 @@ export async function verificaOuCriaPastaLog(dir: string = LOGS_BASE_DIR) {
     return true;
   } catch (error) {
     console.error(`Erro ao criar/verificar pasta de logs: ${dir}`, error);
-    throw new Error(`Não foi possível criar pasta de logs: ${dir}`);
+    throw new AppError(`Não foi possível criar pasta de logs: ${dir}`, 500);
   }
 }
 

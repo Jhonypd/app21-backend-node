@@ -1,36 +1,35 @@
 import { sessionUsuarioRepository } from "../../repositories/sessao-usuario.repository";
 import { refreshTokenService } from "./refresh-token.service";
+import { AppError } from "../../lib/errorHandler";
 
 export const sessaoUsuarioService = {
   async criarSessao(
     pessoaId: string,
     expiracao: Date,
     ip?: string,
-    userAgent?: string
+    userAgent?: string,
   ) {
     const sessao = await sessionUsuarioRepository.criar(
       pessoaId,
       expiracao,
       ip,
-      userAgent
+      userAgent,
     );
     return sessao;
   },
 
   async invalidarSessaoPorPessoaId(pessoaId: string) {
-    const sessao = await sessionUsuarioRepository.deleteSessoesPorPessoaId(
-      pessoaId
-    );
+    const sessao =
+      await sessionUsuarioRepository.deleteSessoesPorPessoaId(pessoaId);
     return sessao;
   },
 
   async invalidarSessaoRefreshToken(sessaoId: string, refreshToken: string) {
-    const sessao = await sessionUsuarioRepository.invalidarSessaoPorId(
-      sessaoId
-    );
+    const sessao =
+      await sessionUsuarioRepository.invalidarSessaoPorId(sessaoId);
 
     if (!sessao) {
-      throw new Error("Sessão não encontrada ou já foi encerrada");
+      throw new AppError("Sessão não encontrada ou já foi encerrada", 404);
     }
 
     await refreshTokenService.revogarRefreshTokenPorSessaoId(sessaoId);
@@ -45,7 +44,7 @@ export const sessaoUsuarioService = {
   async buscarSessoesAtivasPorPessoaId(pessoaId: string) {
     const sessoes =
       await sessionUsuarioRepository.buscarTodasSessoesAtivasPorPessoaId(
-        pessoaId
+        pessoaId,
       );
     return sessoes;
   },
@@ -53,12 +52,12 @@ export const sessaoUsuarioService = {
   async atualizarUltimoAcesso(
     sessaoId: string,
     ip?: string,
-    userAgent?: string
+    userAgent?: string,
   ) {
     const sessao = await sessionUsuarioRepository.atualizarUltimoAcesso(
       sessaoId,
       ip,
-      userAgent
+      userAgent,
     );
     return sessao;
   },

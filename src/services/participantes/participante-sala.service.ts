@@ -3,6 +3,7 @@ import { participanteSalaRepository } from "../../repositories/participante-sala
 import { participanteSessaoRepository } from "../../repositories/participante-sessao.repository";
 import { pessoaRepository } from "../../repositories/pessoa.repository";
 import { salaRepository } from "../../repositories/sala.repository";
+import { AppError } from "../../lib/errorHandler";
 
 export const participanteSalaService = {
   async adicionarParticipanteASala(
@@ -19,11 +20,11 @@ export const participanteSalaService = {
     );
 
     if (!salaExiste) {
-      throw new Error("Sala não encontrada");
+      throw new AppError("Sala não encontrada");
     }
 
     if (!pessoaExiste) {
-      throw new Error("Pessoa não encontrada");
+      throw new AppError("Pessoa não encontrada");
     }
 
     const participanteExistente =
@@ -33,7 +34,7 @@ export const participanteSalaService = {
       );
 
     if (participanteExistente) {
-      throw new Error("Participante já está na sala");
+      throw new AppError("Participante já está na sala");
     }
 
     const participante = await participanteSalaRepository.inserir({
@@ -43,7 +44,7 @@ export const participanteSalaService = {
     });
 
     if (!participante) {
-      throw new Error("Erro ao adicionar participante à sala");
+      throw new AppError("Erro ao adicionar participante à sala");
     }
 
     return participante.id;
@@ -59,11 +60,11 @@ export const participanteSalaService = {
     );
 
     if (!salaExiste) {
-      throw new Error("Sala não encontrada");
+      throw new AppError("Sala não encontrada");
     }
 
     if (!pessoaExiste) {
-      throw new Error("Pessoa não encontrada");
+      throw new AppError("Pessoa não encontrada");
     }
 
     const removeParticipante = await participanteSalaRepository.remover(
@@ -72,7 +73,7 @@ export const participanteSalaService = {
     );
 
     if (!removeParticipante) {
-      throw new Error("Erro ao remover participante da sala");
+      throw new AppError("Erro ao remover participante da sala");
     }
 
     return removeParticipante.id;
@@ -136,11 +137,11 @@ export const participanteSalaService = {
     );
 
     if (!salaExiste) {
-      throw new Error("Sala não encontrada");
+      throw new AppError("Sala não encontrada");
     }
 
     if (!pessoaExiste) {
-      throw new Error("Pessoa não encontrada");
+      throw new AppError("Pessoa não encontrada");
     }
 
     const participante =
@@ -168,7 +169,7 @@ export const participanteSalaService = {
     // Buscar sala
     const sala = await salaRepository.obterPorId(sala_id, false, undefined);
     if (!sala) {
-      throw new Error("Sala não encontrada");
+      throw new AppError("Sala não encontrada");
     }
 
     // Verificar permissão do solicitante
@@ -181,14 +182,14 @@ export const participanteSalaService = {
     const isAdmin = participanteSolicitante?.role === 1;
 
     if (!isDono && !isAdmin) {
-      throw new Error(
+      throw new AppError(
         "Apenas o dono ou administradores podem adicionar participantes",
       );
     }
 
     // Admin só pode adicionar membros (role 2)
     if (isAdmin && !isDono && role === 1) {
-      throw new Error("Apenas o dono pode adicionar administradores");
+      throw new AppError("Apenas o dono pode adicionar administradores");
     }
 
     // Verificar se pessoa existe
@@ -197,7 +198,7 @@ export const participanteSalaService = {
       false,
     );
     if (!pessoaAdicionar) {
-      throw new Error("Pessoa não encontrada");
+      throw new AppError("Pessoa não encontrada");
     }
 
     // Verificar se já é participante
@@ -207,7 +208,7 @@ export const participanteSalaService = {
         pessoa_id_adicionar,
       );
     if (participanteExistente) {
-      throw new Error("Esta pessoa já é participante da sala");
+      throw new AppError("Esta pessoa já é participante da sala");
     }
 
     // Adicionar participante permanente à sala
@@ -256,12 +257,12 @@ export const participanteSalaService = {
     // Buscar sala
     const sala = await salaRepository.obterPorId(sala_id, false, undefined);
     if (!sala) {
-      throw new Error("Sala não encontrada");
+      throw new AppError("Sala não encontrada");
     }
 
     // Não pode remover o dono
     if (sala.criado_por === pessoa_id_remover) {
-      throw new Error("Não é possível remover o dono da sala");
+      throw new AppError("Não é possível remover o dono da sala");
     }
 
     // Verificar permissão do solicitante
@@ -274,7 +275,7 @@ export const participanteSalaService = {
     const isAdmin = participanteSolicitante?.role === 1;
 
     if (!isDono && !isAdmin) {
-      throw new Error(
+      throw new AppError(
         "Apenas o dono ou administradores podem remover participantes",
       );
     }
@@ -286,12 +287,12 @@ export const participanteSalaService = {
         pessoa_id_remover,
       );
     if (!participanteRemover) {
-      throw new Error("Participante não encontrado na sala");
+      throw new AppError("Participante não encontrado na sala");
     }
 
     // Admin não pode remover outro admin
     if (isAdmin && !isDono && participanteRemover.role === 1) {
-      throw new Error(
+      throw new AppError(
         "Administradores não podem remover outros administradores",
       );
     }
@@ -315,17 +316,17 @@ export const participanteSalaService = {
     // Buscar sala
     const sala = await salaRepository.obterPorId(sala_id, false, undefined);
     if (!sala) {
-      throw new Error("Sala não encontrada");
+      throw new AppError("Sala não encontrada");
     }
 
     // Apenas o dono pode alterar roles
     if (sala.criado_por !== pessoa_id_solicitante) {
-      throw new Error("Apenas o dono pode promover ou rebaixar participantes");
+      throw new AppError("Apenas o dono pode promover ou rebaixar participantes");
     }
 
     // Não pode alterar role do próprio dono
     if (sala.criado_por === pessoa_id_alterar) {
-      throw new Error("Não é possível alterar o role do dono");
+      throw new AppError("Não é possível alterar o role do dono");
     }
 
     // Buscar participante
@@ -334,7 +335,7 @@ export const participanteSalaService = {
       pessoa_id_alterar,
     );
     if (!participante) {
-      throw new Error("Participante não encontrado na sala");
+      throw new AppError("Participante não encontrado na sala");
     }
 
     // Alterar role

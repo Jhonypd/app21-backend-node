@@ -1,4 +1,5 @@
 import { historiaSalaRepository } from "../../repositories/historia-sala.repository";
+import { AppError } from "../../lib/errorHandler";
 import type {
   CriarHistoriaSalaDTO,
   AtualizarHistoriaSalaDTO,
@@ -12,7 +13,7 @@ class HistoriaSalaService {
   async obterPorId(id: string) {
     const historia = await historiaSalaRepository.obterPorId(id);
     if (!historia) {
-      throw new Error("História não encontrada");
+      throw new AppError("História não encontrada", 404);
     }
     return historia;
   }

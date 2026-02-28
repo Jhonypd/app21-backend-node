@@ -8,6 +8,25 @@ export const asyncHandler =
   (req: Request, res: Response, next: NextFunction) =>
     Promise.resolve(fn(req, res, next)).catch(next);
 
+export class AppError extends Error {
+  public codigoRetorno: number;
+  public detalhe: string | null;
+  public requer_login: boolean;
+
+  constructor(
+    mensagem: string,
+    codigoRetorno = 400,
+    detalhe: string | null = null,
+    requer_login = false,
+  ) {
+    super(mensagem);
+    this.name = "AppError";
+    this.codigoRetorno = codigoRetorno;
+    this.detalhe = detalhe;
+    this.requer_login = requer_login;
+  }
+}
+
 export async function errorHandler(
   err: any,
   req: Request,
@@ -30,6 +49,17 @@ export async function errorHandler(
     logId = captured.id;
   } catch (error) {
     console.error("[ERROR_MONITOR_FAILED]", error);
+  }
+
+  if (err instanceof AppError) {
+    return res.status(err.codigoRetorno).json(
+      respostaErro({
+        mensagem: err.message,
+        detalhe: err.detalhe,
+        codigoRetorno: err.codigoRetorno,
+        requer_login: err.requer_login,
+      }),
+    );
   }
 
   const mapped = mapPrismaRespostaErro(err);

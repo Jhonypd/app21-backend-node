@@ -8,6 +8,7 @@ import { pessoaRepository } from "../../repositories/pessoa.repository";
 import emailService from "../mail/mail.service";
 import { criptografia } from "../../lib/criptografia";
 import { obterVotosVencedoresHistoria } from "../../utils/voto-vencedor-historia";
+import { AppError } from "../../lib/errorHandler";
 
 interface CriarHistoriaDTO {
   titulo: string;
@@ -23,7 +24,7 @@ export const sessaoSalaService = {
   ) {
     // Validar que histórias foram fornecidas
     if (!historias || historias.length === 0) {
-      throw new Error(
+      throw new AppError(
         "É necessário adicionar pelo menos uma história para iniciar a sessão.",
       );
     }
@@ -31,7 +32,7 @@ export const sessaoSalaService = {
     // Verificar se a sala existe
     const sala = await salaRepository.obterPorId(sala_id, false);
     if (!sala) {
-      throw new Error("Sala não encontrada.");
+      throw new AppError("Sala não encontrada.");
     }
 
     // Verificar se o usuário é dono (role 0) ou admin (role 1)
@@ -48,7 +49,7 @@ export const sessaoSalaService = {
     }
 
     if (!isDono && !isAdmin) {
-      throw new Error("Apenas o dono ou administrador podem criar sessão.");
+      throw new AppError("Apenas o dono ou administrador podem criar sessão.");
     }
 
     // 🔴 CRÍTICO: Usar transação Prisma para evitar race condition
@@ -65,7 +66,7 @@ export const sessaoSalaService = {
       });
 
       if (sessaoExistente) {
-        throw new Error("Já existe uma sessão ativa para esta sala.");
+        throw new AppError("Já existe uma sessão ativa para esta sala.");
       }
 
       // 2. Criar nova sessão
@@ -159,7 +160,7 @@ export const sessaoSalaService = {
       await sessaoSalaRepository.obterSessaoAtivaPorSala(sala_id);
 
     if (!sessaoAtiva) {
-      throw new Error("Nenhuma sessão ativa encontrada para esta sala.");
+      throw new AppError("Nenhuma sessão ativa encontrada para esta sala.");
     }
 
     // Verificar se é dono ou admin que INICIOU a sessão
@@ -178,7 +179,7 @@ export const sessaoSalaService = {
 
     // Dono pode encerrar qualquer sessão, Admin só pode encerrar se ele iniciou
     if (!isDono && (!isAdmin || !foiIniciadorDaSessao)) {
-      throw new Error(
+      throw new AppError(
         isDono || isAdmin
           ? "Apenas quem iniciou a sessão pode encerrá-la."
           : "Apenas o dono ou administrador podem encerrar a sessão.",
@@ -205,7 +206,7 @@ export const sessaoSalaService = {
   async obterSessaoPorId(sessao_id: string, pessoa_id: string) {
     const sessao = await sessaoSalaRepository.obterPorId(sessao_id);
     if (!sessao) {
-      throw new Error("Sessão não encontrada.");
+      throw new AppError("Sessão não encontrada.");
     }
 
     // Verificar se o usuário tem acesso à sala
@@ -216,7 +217,7 @@ export const sessaoSalaService = {
     );
 
     if (!sala) {
-      throw new Error("Sem permissão para acessar esta sessão.");
+      throw new AppError("Sem permissão para acessar esta sessão.");
     }
 
     return sessao;
@@ -238,11 +239,11 @@ export const sessaoSalaService = {
     const sessao = await sessaoSalaRepository.obterPorId(sessao_id);
 
     if (!sessao) {
-      throw new Error("Sessão não encontrada.");
+      throw new AppError("Sessão não encontrada.");
     }
 
     if (!sessao.ativa) {
-      throw new Error("Sessão não está ativa.");
+      throw new AppError("Sessão não está ativa.");
     }
 
     // Verificar se a pessoa já é participante
@@ -275,12 +276,12 @@ export const sessaoSalaService = {
   async revelarVotos(sessao_id: string, pessoa_id: string) {
     const sessao = await sessaoSalaRepository.obterPorId(sessao_id);
     if (!sessao) {
-      throw new Error("Sessão não encontrada.");
+      throw new AppError("Sessão não encontrada.");
     }
 
     // Verificar se o usuário é o criador da sala
     if (sessao.sala.criado_por !== pessoa_id) {
-      throw new Error("Apenas o criador da sala pode revelar os votos.");
+      throw new AppError("Apenas o criador da sala pode revelar os votos.");
     }
 
     // Atualizar flag de votos revelados na sala
@@ -293,7 +294,7 @@ export const sessaoSalaService = {
     const sessao = await sessaoSalaRepository.obterPorId(sessao_id);
 
     if (!sessao) {
-      throw new Error("Sessão não encontrada para os votos serem resetados.");
+      throw new AppError("Sessão não encontrada para os votos serem resetados.");
     }
 
     // Verificar se o usuário é o criador da sala OU iniciador da sessão
@@ -301,14 +302,14 @@ export const sessaoSalaService = {
       sessao.sala.criado_por !== pessoa_id &&
       sessao.iniciada_por !== pessoa_id
     ) {
-      throw new Error(
+      throw new AppError(
         "Apenas donos e iniciadores da sessão podem resetar os votos.",
       );
     }
 
     // Validar que existe uma história atual selecionada
     if (!sessao.sala.historia_atual_id) {
-      throw new Error("Nenhuma história atual selecionada para resetar votos.");
+      throw new AppError("Nenhuma história atual selecionada para resetar votos.");
     }
 
     // Buscar a HistoriaSessao correspondente à história atual
@@ -317,7 +318,7 @@ export const sessaoSalaService = {
     );
 
     if (!historiaSessaoAtual) {
-      throw new Error("A história atual não está vinculada a esta sessão.");
+      throw new AppError("A história atual não está vinculada a esta sessão.");
     }
 
     // Deletar apenas os votos da história atual da sessão
@@ -346,7 +347,7 @@ export const sessaoSalaService = {
       solicitante_id,
     );
     if (!sala) {
-      throw new Error("Sala não encontrada.");
+      throw new AppError("Sala não encontrada.");
     }
 
     const isDono = sala.criado_por === solicitante_id;
@@ -358,7 +359,7 @@ export const sessaoSalaService = {
         );
       const isAdmin = participanteSolicitante?.role === 1;
       if (!isAdmin) {
-        throw new Error(
+        throw new AppError(
           "Apenas o dono ou administradores podem adicionar visitantes.",
         );
       }
@@ -368,7 +369,7 @@ export const sessaoSalaService = {
     const sessaoAtiva =
       await sessaoSalaRepository.obterSessaoAtivaPorSala(sala_id);
     if (!sessaoAtiva) {
-      throw new Error("Não há sessão ativa para adicionar visitantes.");
+      throw new AppError("Não há sessão ativa para adicionar visitantes.");
     }
 
     // Buscar participantes permanentes para evitar duplicação
@@ -379,7 +380,7 @@ export const sessaoSalaService = {
     // Buscar dados do anfitrião (solicitante)
     const anfitriao = await pessoaRepository.obterPorId(solicitante_id, false);
     if (!anfitriao) {
-      throw new Error("Anfitrião não encontrado.");
+      throw new AppError("Anfitrião não encontrado.");
     }
 
     const participantesCriados = [];
@@ -447,7 +448,7 @@ export const sessaoSalaService = {
       solicitante_id,
     );
     if (!sala) {
-      throw new Error("Sala não encontrada.");
+      throw new AppError("Sala não encontrada.");
     }
 
     const isDono = sala.criado_por === solicitante_id;
@@ -459,7 +460,7 @@ export const sessaoSalaService = {
         );
       const isAdmin = participanteSolicitante?.role === 1;
       if (!isAdmin) {
-        throw new Error(
+        throw new AppError(
           "Apenas o dono ou administradores podem remover visitantes.",
         );
       }
@@ -469,14 +470,14 @@ export const sessaoSalaService = {
     const sessaoAtiva =
       await sessaoSalaRepository.obterSessaoAtivaPorSala(sala_id);
     if (!sessaoAtiva) {
-      throw new Error("Não há sessão ativa.");
+      throw new AppError("Não há sessão ativa.");
     }
 
     // Verificar se é realmente visitante (não pode remover permanente)
     const participanteSala =
       await participanteSalaRepository.obterPorSalaEPessoa(sala_id, pessoa_id);
     if (participanteSala) {
-      throw new Error(
+      throw new AppError(
         "Não é possível remover participante permanente. Use a rota de remoção de participantes.",
       );
     }
@@ -505,7 +506,7 @@ export const sessaoSalaService = {
   ) {
     // Validar que quem está kickando é dono ou admin
     if (solicitante_role !== 0 && solicitante_role !== 1) {
-      throw new Error(
+      throw new AppError(
         "Apenas dono ou administrador podem kickar participantes.",
       );
     }
@@ -513,23 +514,23 @@ export const sessaoSalaService = {
     // Obter sessão
     const sessao = await sessaoSalaRepository.obterPorId(sessao_id);
     if (!sessao) {
-      throw new Error("Sessão não encontrada.");
+      throw new AppError("Sessão não encontrada.");
     }
 
     // Obter sala
     const sala = await salaRepository.obterPorId(sessao.sala_id, false);
     if (!sala) {
-      throw new Error("Sala não encontrada.");
+      throw new AppError("Sala não encontrada.");
     }
 
     // PROTEÇÃO: Admin não pode kickar dono
     if (solicitante_role === 1 && sala.criado_por === pessoa_id) {
-      throw new Error("Administrador não pode remover o dono da sessão.");
+      throw new AppError("Administrador não pode remover o dono da sessão.");
     }
 
     // PROTEÇÃO: Ninguém pode kickar a si mesmo
     if (pessoa_id === solicitante_id) {
-      throw new Error("Use a rota 'sair da sessão' para sair voluntariamente.");
+      throw new AppError("Use a rota 'sair da sessão' para sair voluntariamente.");
     }
 
     // Verificar se ParticipanteSessao existe
@@ -540,7 +541,7 @@ export const sessaoSalaService = {
       );
 
     if (!participante) {
-      throw new Error("Participante não encontrado nesta sessão.");
+      throw new AppError("Participante não encontrado nesta sessão.");
     }
 
     // UPDATE autorizado = false (kick)
@@ -574,7 +575,7 @@ export const sessaoSalaService = {
       );
 
     if (!participante) {
-      throw new Error("Participante não encontrado nesta sessão.");
+      throw new AppError("Participante não encontrado nesta sessão.");
     }
 
     // Atualizar flag participa_votacao
@@ -593,13 +594,13 @@ export const sessaoSalaService = {
    */
   async listarHistoriasPorSessao(sessao_id: string) {
     if (!sessao_id) {
-      throw new Error("Id da sessão é obrigatório");
+      throw new AppError("Id da sessão é obrigatório");
     }
 
     // Buscar sessão para obter sala_id e historia_atual_id
     const sessao = await sessaoSalaRepository.obterPorId(sessao_id);
     if (!sessao) {
-      throw new Error("Sessão não encontrada");
+      throw new AppError("Sessão não encontrada");
     }
 
     const historiaAtualId = sessao.sala.historia_atual_id;
@@ -642,11 +643,11 @@ export const sessaoSalaService = {
     // Verificar se sala existe e tem sessão ativa
     const sala = await salaRepository.obterPorId(dados.sala_id, false);
     if (!sala) {
-      throw new Error("Sala não encontrada");
+      throw new AppError("Sala não encontrada");
     }
 
     if (sala.sessoes.length === 0) {
-      throw new Error("Sala não possui sessão ativa");
+      throw new AppError("Sala não possui sessão ativa");
     }
 
     // Criar história

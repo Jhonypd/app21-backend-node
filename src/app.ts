@@ -20,6 +20,7 @@ dotenv.config();
 
 const app = express();
 const server = http.createServer(app);
+const isDevelopment = process.env.NODE_ENV !== "production";
 
 // Configurar trust proxy para obter o IP real do cliente através de proxies/load balancers
 app.set("trust proxy", true);
@@ -32,26 +33,27 @@ const allowedOrigins = [
   "http://localhost:3000",
 ].filter(Boolean) as string[];
 
+const validateOrigin = (
+  origin: string | undefined,
+  callback: (error: Error | null, allow?: boolean) => void,
+) => {
+  if (!origin) return callback(null, true);
+
+  if (isDevelopment) {
+    return callback(null, true);
+  }
+
+  if (allowedOrigins.includes(origin)) {
+    return callback(null, true);
+  }
+
+  callback(new Error("Not allowed by CORS"));
+};
+
 // CORS Geral do Express
 app.use(
   cors({
-    origin: (origin, callback) => {
-      // Permitir requisições sem origin (mobile apps, Postman, etc)
-      if (!origin) return callback(null, true);
-
-      // Em desenvolvimento, permitir TODAS as origins
-      if (process.env.NODE_ENV !== "production") {
-        return callback(null, true);
-      }
-
-      // Em produção, verificar lista de origins permitidos
-      if (allowedOrigins.includes(origin)) {
-        return callback(null, true);
-      }
-
-      // Rejeitar
-      callback(new Error("Not allowed by CORS"));
-    },
+    origin: validateOrigin,
     credentials: true,
     methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
     allowedHeaders: [
@@ -64,12 +66,7 @@ app.use(
       "historia_id",
       "pessoa_id",
     ],
-    exposedHeaders: [
-      "set-cookie",
-      "X-New-Access-Token",
-      "X-New-Refresh-Token",
-      "X-CSRF-Token",
-    ],
+    exposedHeaders: ["X-CSRF-Token"],
     preflightContinue: false,
     optionsSuccessStatus: 204,
   }),
@@ -97,27 +94,16 @@ app.use(errorHandler);
 const io = new Server(server, {
   cors: {
     origin: (origin, callback) => {
-      if (!origin) return callback(null, true);
-
-      // Em desenvolvimento, permitir TODAS as origins
-      if (process.env.NODE_ENV !== "production") {
-        return callback(null, true);
-      }
-
-      if (allowedOrigins.includes(origin)) {
-        return callback(null, true);
-      }
-
-      console.warn(`[Socket.IO CORS] Origin bloqueada: ${origin}`);
-      callback(new Error("Not allowed by CORS"));
+      validateOrigin(origin, (error, allow) => {
+        if (error && origin) {
+          console.warn(`[Socket.IO CORS] Origin bloqueada: ${origin}`);
+        }
+        callback(error, allow);
+      });
     },
     credentials: true,
     methods: ["GET", "POST", "PUT", "DELETE"],
-    allowedHeaders: [
-      "Content-Type",
-      "Authorization",
-      "X-CSRF-Token",
-    ],
+    allowedHeaders: ["Content-Type", "Authorization", "X-CSRF-Token"],
   },
   connectionStateRecovery: {
     maxDisconnectionDuration: 2 * 60 * 1000,
@@ -154,7 +140,9 @@ async function inicializarLogs() {
 const DEV_PORT = 5007;
 
 const PORT =
-  process.env.NODE_ENV === "production" ? process.env.PORT || 5006 : DEV_PORT;
+  process.env.NODE_ENV === "production"
+    ? Number(process.env.PORT) || 5006
+    : DEV_PORT;
 
 console.log(
   `Servidor rodando em modo ${process.env.NODE_ENV} na porta ${PORT}`,
@@ -177,7 +165,11 @@ process.on("unhandledRejection", (reason) => {
 });
 
 // Start
-server.listen(PORT, async () => {
-  console.log(`Servidor rodando na porta ${PORT}`);
+server.listen(PORT, "0.0.0.0", async () => {
+  console.log(`Servidor rodando na porta ${PORT} (todas as interfaces)`);
+  console.log(`- Acesso local: http://localhost:${PORT}`);
+  if (process.env.API_URL) {
+    console.log(`- API URL configurada: ${process.env.API_URL}`);
+  }
   await inicializarLogs();
 });

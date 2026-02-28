@@ -9,28 +9,31 @@ import { formatarParaDataLocal } from "../../utils/formatar-data";
 import { addDays, addMinutes } from "date-fns";
 import { refreshTokenService } from "./refresh-token.service";
 import { sessaoUsuarioService } from "./sessao-usuario.service";
+import { AppError } from "../../lib/errorHandler";
 
 export const authService = {
   async login(email: string, senha: string, ip?: string, userAgent?: string) {
     const pessoa = await pessoaService.usuarioExistePorEmailOuId(email, null);
 
-    if (!pessoa) throw new Error("Usuario e/ou senha inválido(s)");
+    if (!pessoa) throw new AppError("Usuario e/ou senha inválido(s)", 401);
 
     if (pessoa.inativo) {
-      throw new Error(
+      throw new AppError(
         "Usuário sem permissão de acesso, entre em contato com o administrador.",
+        403,
       );
     }
 
     if (pessoa.email_confirmado === false) {
-      throw new Error(
+      throw new AppError(
         "E-mail não confirmado. Por favor, confirme seu e-mail para continuar.",
+        401,
       );
     }
 
     const senhaValida = await hash.compare(senha, pessoa.senha as string);
 
-    if (!senhaValida) throw new Error("Usuario e/ou senha inválido(s)");
+    if (!senhaValida) throw new AppError("Usuario e/ou senha inválido(s)", 401);
 
     const tokenPayload = {
       Usuario_Id: pessoa.id,
@@ -192,14 +195,16 @@ export const authService = {
     );
 
     if (!usuarioNovoExistente) {
-      throw new Error(
+      throw new AppError(
         "O link de recuperação de senha é inválido. Por favor, solicite um novo link.",
+        400,
       );
     }
 
     if (usuarioNovoExistente.codigo_expiracao! < new Date()) {
-      throw new Error(
+      throw new AppError(
         "O link de recuperação de senha expirou. Por favor, solicite um novo link.",
+        400,
       );
     }
 
@@ -228,7 +233,10 @@ export const authService = {
     id: string,
   ) {
     if (senha !== confirmacaoSenha) {
-      throw new Error("A confirmação de senha não corresponde à nova senha.");
+      throw new AppError(
+        "A confirmação de senha não corresponde à nova senha.",
+        400,
+      );
     }
 
     const codigoDescriptografado = criptografia.descriptografar(codigo);
@@ -238,14 +246,16 @@ export const authService = {
     );
 
     if (!usuarioExistente) {
-      throw new Error(
+      throw new AppError(
         "O link de recuperação de senha é inválido. Por favor, solicite um novo link.",
+        400,
       );
     }
 
     if (usuarioExistente.codigo_expiracao! < new Date()) {
-      throw new Error(
+      throw new AppError(
         "O link de recuperação de senha expirou. Por favor, solicite um novo link.",
+        400,
       );
     }
 

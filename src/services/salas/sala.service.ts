@@ -14,6 +14,7 @@ import { sessaoSalaRepository } from "../../repositories/sessao-sala.repository"
 import { votosRepository } from "../../repositories/votos.repository";
 import { historiaSalaRepository } from "../../repositories/historia-sala.repository";
 import { historiaSessaoRepository } from "../../repositories/historia-sessao.repository";
+import { AppError } from "../../lib/errorHandler";
 
 interface CriarSalaProps {
   pessoaId: string;
@@ -31,7 +32,7 @@ export interface AlterarSalaProps {
 export const salaService = {
   async geradorCodigoUnico(tamanho: number = 6): Promise<string> {
     if (tamanho < 2) {
-      throw new Error(
+      throw new AppError(
         "O tamanho mínimo deve ser 2 para conter letras e números.",
       );
     }
@@ -71,7 +72,7 @@ export const salaService = {
     const MAX_TENTATIVAS = 3;
 
     if (salaPrivada && !senha) {
-      throw new Error("Senha é obrigatória para salas privadas.");
+      throw new AppError("Senha é obrigatória para salas privadas.");
     }
 
     let hashedSenha: string | null = null;
@@ -130,18 +131,18 @@ export const salaService = {
         throw error;
       }
     }
-    throw new Error("Chave única não pôde ser gerada. Tente novamente.");
+    throw new AppError("Chave única não pôde ser gerada. Tente novamente.");
   },
 
   async alterar(id: string, pessoaId: string, data: AlterarSalaProps) {
     if (!data.senha && !data.titulo) {
-      throw new Error("Dados para alteração não fornecidos.");
+      throw new AppError("Dados para alteração não fornecidos.");
     }
 
     const salaExistente = await salaRepository.obterPorId(id, true, pessoaId);
 
     if (!salaExistente) {
-      throw new Error("Sala não encontrada.");
+      throw new AppError("Sala não encontrada.");
     }
 
     // Validar permissões: apenas dono (criado_por) pode alterar
@@ -153,12 +154,12 @@ export const salaService = {
       );
 
       if (!participante || participante.role !== 1) {
-        throw new Error("Você não tem permissão para alterar esta sala.");
+        throw new AppError("Você não tem permissão para alterar esta sala.");
       }
 
       // Admin só pode alterar título
       if (data.senha) {
-        throw new Error("Apenas o dono pode alterar a senha da sala.");
+        throw new AppError("Apenas o dono pode alterar a senha da sala.");
       }
     }
 
@@ -171,14 +172,14 @@ export const salaService = {
     // Validar senha: se sala tinha senha, nova senha é obrigatória (não pode remover)
     if (data.senha !== undefined) {
       if (salaExistente.senha && !data.senha) {
-        throw new Error(
+        throw new AppError(
           "Não é possível remover a senha de uma sala privada. Defina uma nova senha.",
         );
       }
 
       if (data.senha && data.senha.length > 0) {
         if (data.senha.length < 6) {
-          throw new Error("A senha deve ter no mínimo 6 caracteres.");
+          throw new AppError("A senha deve ter no mínimo 6 caracteres.");
         }
         dadosParaAtualizar.senha = await hash.senha(data.senha);
       }
@@ -200,7 +201,7 @@ export const salaService = {
     valorPesquisa?: string,
   ) {
     if (!pessoaId) {
-      throw new Error("Id da pessoa é obrigatório");
+      throw new AppError("Id da pessoa é obrigatório");
     }
 
     const salas = await salaRepository.listarTodos(
@@ -251,7 +252,7 @@ export const salaService = {
     const sala = await salaRepository.obterPorCodigo(codigo, false, pessoaId);
 
     if (!sala) {
-      throw new Error("Sala não encontrada");
+      throw new AppError("Sala não encontrada");
     }
 
     // Remove senha da resposta
@@ -281,7 +282,7 @@ export const salaService = {
     const sala = await salaRepository.obterPorId(id, true, pessoaId);
 
     if (!sala) {
-      throw new Error("Sala não encontrada");
+      throw new AppError("Sala não encontrada");
     }
 
     // Coletar todos os votos das sessões ativas
@@ -327,14 +328,14 @@ export const salaService = {
     const sala = await salaRepository.obterPorCodigo(codigo, true, undefined);
 
     if (!sala) {
-      throw new Error("Sala não encontrada");
+      throw new AppError("Sala não encontrada");
     }
 
     // Buscar sessão ativa
     const sessaoAtiva = sala.sessoes?.find((s) => s.ativa);
 
     if (!sessaoAtiva) {
-      throw new Error("Nenhuma sessão ativa encontrada para esta sala");
+      throw new AppError("Nenhuma sessão ativa encontrada para esta sala");
     }
 
     // ✅ Calcular resumo de participantes (sem enviar lista completa)
@@ -435,33 +436,33 @@ export const salaService = {
     senha?: string,
   ) {
     // Validações iniciais
-    if (!pessoaId) throw new Error("Id da pessoa não fornecido.");
-    if (!codigo) throw new Error("Código da sala não fornecido.");
+    if (!pessoaId) throw new AppError("Id da pessoa não fornecido.");
+    if (!codigo) throw new AppError("Código da sala não fornecido.");
     if (!sessaoPessoaId)
-      throw new Error("Id da sessão do usuário não fornecido.");
+      throw new AppError("Id da sessão do usuário não fornecido.");
 
     // Buscar sala com sessões ativas (sem filtro de criador para permitir visitantes)
     const sala = await salaRepository.obterPorCodigo(codigo, true, undefined);
 
     if (!sala) {
-      throw new Error("Sala não encontrada.");
+      throw new AppError("Sala não encontrada.");
     }
 
     // Determinar tipo de acesso (0=Dono, 1=Admin, 2=Membro, 3=Visitante, null=Sem acesso)
     const tipoAcesso = await determinarTipoAcesso(sala, pessoaId);
 
     if (tipoAcesso === null) {
-      throw new Error("Você não tem permissão para acessar esta sala.");
+      throw new AppError("Você não tem permissão para acessar esta sala.");
     }
 
     // Validar senha (exceto para dono)
     if (sala.senha && tipoAcesso > 1) {
       if (!senha) {
-        throw new Error("Informe a senha para acessar a sala.");
+        throw new AppError("Informe a senha para acessar a sala.");
       }
       const senhaValida = await hash.compare(senha, sala.senha);
       if (!senhaValida) {
-        throw new Error("Senha informada inválida.");
+        throw new AppError("Senha informada inválida.");
       }
     }
 
@@ -473,7 +474,7 @@ export const salaService = {
       // ✅ Sessão deve ser criada via rota separada (POST /salas/:id/sessoes)
       // Não criamos automaticamente aqui para evitar race conditions
       if (!sessaoAtiva || !sessaoAtiva.ativa) {
-        throw new Error("Não há sessão ativa. Inicie uma sessão primeiro.");
+        throw new AppError("Não há sessão ativa. Inicie uma sessão primeiro.");
       }
 
       // Verificar ParticipanteSessao
@@ -496,7 +497,7 @@ export const salaService = {
       // Apenas verificar se foi kickado/banido (autorizado=false)
       else if (!participanteSessao.autorizado) {
         // Se foi kickado/banido, não pode reentrar sem aprovação
-        throw new Error(
+        throw new AppError(
           "Você foi removido desta sessão. Aguarde aprovação do administrador para reentrar.",
         );
       }
@@ -515,7 +516,7 @@ export const salaService = {
     // TIPO 2 (Membro): Requer sessão ativa
     else if (tipoAcesso === 2) {
       if (!sessaoAtiva || !sessaoAtiva.ativa) {
-        throw new Error(
+        throw new AppError(
           "Não há sessão ativa no momento. Aguarde o dono ou admin iniciar uma sessão.",
         );
       }
@@ -538,7 +539,7 @@ export const salaService = {
       // ✅ NOVA LÓGICA: Se já tem, apenas verifica se foi kickado
       else if (!participanteSessao.autorizado) {
         // Se foi kickado/banido, não pode reentrar sem aprovação
-        throw new Error(
+        throw new AppError(
           "REQUER_APROVACAO:Você foi removido desta sessão. Aguarde aprovação do administrador para reentrar.",
         );
       }
@@ -558,7 +559,7 @@ export const salaService = {
     // TIPO 3 (Visitante): Requer sessão ativa E ParticipanteSessao pré-existente
     else if (tipoAcesso === 3) {
       if (!sessaoAtiva || !sessaoAtiva.ativa) {
-        throw new Error("Não há sessão ativa no momento.");
+        throw new AppError("Não há sessão ativa no momento.");
       }
 
       // Visitante já tem ParticipanteSessao (criado pelo dono/admin)
@@ -568,7 +569,7 @@ export const salaService = {
 
     // Buscar informações da pessoa
     const pessoa = await pessoaRepository.obterPorId(pessoaId, false);
-    if (!pessoa) throw new Error("Pessoa não encontrada.");
+    if (!pessoa) throw new AppError("Pessoa não encontrada.");
 
     // Gerar token
     const dataExpiracao = addHours(new Date(), 6);
@@ -601,7 +602,7 @@ export const salaService = {
       await sessaoSalaService.obterSessaoAtivaPorSala(sala_id);
 
     if (!sessaoAtiva) {
-      throw new Error("Nenhuma sessão ativa encontrada.");
+      throw new AppError("Nenhuma sessão ativa encontrada.");
     }
 
     // Verificar se a pessoa está na sessão
@@ -612,7 +613,7 @@ export const salaService = {
       );
 
     if (!participanteSessao) {
-      throw new Error("Você não está participando desta sessão.");
+      throw new AppError("Você não está participando desta sessão.");
     }
 
     // ✅ NÃO desautorizar! Apenas marcar como offline
@@ -645,7 +646,7 @@ export const salaService = {
     // Verificar se quem está aprovando é Dono ou Admin
     const sala = await salaRepository.obterPorId(sala_id, false);
     if (!sala) {
-      throw new Error("Sala não encontrada.");
+      throw new AppError("Sala não encontrada.");
     }
 
     const isDono = sala.criado_por === pessoa_id_aprovador;
@@ -661,7 +662,7 @@ export const salaService = {
     }
 
     if (!isDono && !isAdmin) {
-      throw new Error(
+      throw new AppError(
         "Apenas o dono ou administrador podem aprovar reentradas.",
       );
     }
@@ -670,7 +671,7 @@ export const salaService = {
     const sessaoAtiva =
       await sessaoSalaService.obterSessaoAtivaPorSala(sala_id);
     if (!sessaoAtiva) {
-      throw new Error("Nenhuma sessão ativa encontrada.");
+      throw new AppError("Nenhuma sessão ativa encontrada.");
     }
 
     // Verificar se a pessoa tem ParticipanteSessao não autorizado
@@ -681,11 +682,11 @@ export const salaService = {
       );
 
     if (!participanteSessao) {
-      throw new Error("Pessoa não está na sessão.");
+      throw new AppError("Pessoa não está na sessão.");
     }
 
     if (participanteSessao.autorizado) {
-      throw new Error("Pessoa já está autorizada na sessão.");
+      throw new AppError("Pessoa já está autorizada na sessão.");
     }
 
     // Autorizar reentrada
@@ -716,7 +717,7 @@ export const salaService = {
       false,
     );
     if (!pessoa) {
-      throw new Error("Pessoa não encontrada.");
+      throw new AppError("Pessoa não encontrada.");
     }
 
     // Gerar novo token
@@ -768,7 +769,7 @@ export const salaService = {
         !participante ||
         (participante.role !== 0 && participante.role !== 1)
       ) {
-        throw new Error("Você não tem permissão para acessar esta sala.");
+        throw new AppError("Você não tem permissão para acessar esta sala.");
       }
 
       // Buscar sala completa com participantes (Admin pode gerenciar participantes)
@@ -778,7 +779,7 @@ export const salaService = {
         undefined,
       );
       if (!salaCompleta) {
-        throw new Error("Sala não encontrada.");
+        throw new AppError("Sala não encontrada.");
       }
 
       // Admin (role=1) tem permissão para gerenciar participantes fixos
@@ -820,17 +821,17 @@ export const salaService = {
     const sala = await salaRepository.obterPorId(sala_id, false, pessoa_id);
 
     if (!sala) {
-      throw new Error("Sala não encontrada ou você não tem permissão.");
+      throw new AppError("Sala não encontrada ou você não tem permissão.");
     }
 
     if (sala.criado_por !== pessoa_id) {
-      throw new Error("Apenas o dono pode excluir a sala.");
+      throw new AppError("Apenas o dono pode excluir a sala.");
     }
 
     // VALIDAÇÃO #1: Verificar se há sessões criadas
     const totalSessoes = await sessaoSalaRepository.contarPorSala(sala_id);
     if (totalSessoes > 0) {
-      throw new Error(
+      throw new AppError(
         "Não é possível excluir sala com sessões criadas. Histórico deve ser preservado.",
       );
     }
@@ -838,7 +839,7 @@ export const salaService = {
     // VALIDAÇÃO #2: Verificar se há votos registrados
     const totalVotos = await votosRepository.contarPorSala(sala_id);
     if (totalVotos > 0) {
-      throw new Error(
+      throw new AppError(
         "Não é possível excluir sala com votos registrados. Histórico deve ser preservado.",
       );
     }
@@ -857,7 +858,7 @@ export const salaService = {
     // Validar sala
     const sala = await salaRepository.obterPorId(sala_id, false);
     if (!sala) {
-      throw new Error("Sala não encontrada");
+      throw new AppError("Sala não encontrada");
     }
 
     // Validar permissão (Dono ou Admin)
@@ -873,7 +874,7 @@ export const salaService = {
     }
 
     if (!isDono && !isAdmin) {
-      throw new Error(
+      throw new AppError(
         "Apenas dono ou administrador podem alterar a história atual",
       );
     }
@@ -881,7 +882,7 @@ export const salaService = {
     // Validar que história pertence à sala
     const historia = await historiaSalaRepository.obterPorId(historia_id);
     if (!historia || historia.sala_id !== sala_id) {
-      throw new Error("História não pertence a esta sala");
+      throw new AppError("História não pertence a esta sala");
     }
 
     // Verificar se está vinculada à sessão ativa
@@ -893,7 +894,7 @@ export const salaService = {
         historia_id,
       );
       if (!vinculada) {
-        throw new Error("História não está vinculada à sessão ativa");
+        throw new AppError("História não está vinculada à sessão ativa");
       }
     }
 

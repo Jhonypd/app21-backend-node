@@ -1,6 +1,7 @@
 import { votosRepository } from "../../repositories/votos.repository";
 import { historiaSessaoRepository } from "../../repositories/historia-sessao.repository";
 import { participanteSessaoRepository } from "../../repositories/participante-sessao.repository";
+import { AppError } from "../../lib/errorHandler";
 
 interface VotoInserirData {
   historia_sessao_id: string;
@@ -14,7 +15,10 @@ export const votosService = {
   async votar(voto: VotoInserirData) {
     // Ajuste conforme as regras do seu Planning Poker
     if (voto.valor < -1 || voto.valor > 89) {
-      throw new Error("Valor do voto inválido. Deve estar entre -1 e 89.");
+      throw new AppError(
+        "Valor do voto inválido. Deve estar entre -1 e 89.",
+        400,
+      );
     }
 
     // Verificar se sessão tem histórias vinculadas
@@ -23,7 +27,7 @@ export const votosService = {
     );
 
     if (!historiaSessao) {
-      throw new Error("História de sessão não encontrada.");
+      throw new AppError("História de sessão não encontrada.", 404);
     }
 
     // Se participa_votacao === false, não salvar voto

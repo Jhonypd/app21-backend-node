@@ -1,11 +1,10 @@
 import { pessoaRepository } from "../../repositories/pessoa.repository";
 import { criptografia } from "../../lib/criptografia";
 import { hash } from "../../lib/hash";
-import { formatarParaDataLocal } from "../../utils/formatar-data";
 import emailService from "../mail/mail.service";
 import { codigos } from "../../lib/codigos-conta";
 import { addMinutes } from "date-fns";
-import { el } from "date-fns/locale";
+import { AppError } from "../../lib/errorHandler";
 
 export interface AlterarPessoaData {
   nome?: string;
@@ -39,7 +38,7 @@ export const pessoaService = {
   async inserir({ email, nome, senha }: InserirPessoaData) {
     const usuarioExistente = await this.usuarioExistePorEmailOuId(email);
 
-    if (usuarioExistente) throw new Error("E-mail já cadastrado");
+    if (usuarioExistente) throw new AppError("E-mail já cadastrado", 409);
 
     const senhaHash = await hash.senha(senha);
 
@@ -56,7 +55,7 @@ export const pessoaService = {
     );
 
     if (!novoUsuario) {
-      throw new Error("Erro ao criar o usuário.");
+      throw new AppError("Erro ao criar o usuário.", 500);
     }
 
     return { usuario: novoUsuario };
@@ -66,7 +65,7 @@ export const pessoaService = {
     const usuarioExistente = await pessoaRepository.obterPorId(id, false);
 
     if (!usuarioExistente) {
-      throw new Error("Usuário não encontrado");
+      throw new AppError("Usuário não encontrado", 404);
     }
 
     const dadosAtualizacao: any = {};
@@ -77,7 +76,7 @@ export const pessoaService = {
       const emailExistente = await pessoaRepository.obterPorEmail(hashEmail);
 
       if (emailExistente && emailExistente.id !== id) {
-        throw new Error("E-mail já cadastrado");
+        throw new AppError("E-mail já cadastrado", 409);
       }
 
       dadosAtualizacao.email = criptografia.criptografar(data.email);
@@ -109,7 +108,7 @@ export const pessoaService = {
 
     // Se não há dados para atualizar, retorna erro
     if (Object.keys(dadosAtualizacao).length === 0) {
-      throw new Error("Nenhum dado válido para atualização");
+      throw new AppError("Nenhum dado válido para atualização", 400);
     }
 
     const usuario = await pessoaRepository.alterar(id, dadosAtualizacao);
@@ -145,7 +144,7 @@ export const pessoaService = {
     const dados = await pessoaRepository.obterPorId(id, false);
 
     if (!dados) {
-      throw new Error("Usuário não encontrado");
+      throw new AppError("Usuário não encontrado", 404);
     }
 
     return {
@@ -160,7 +159,7 @@ export const pessoaService = {
     const usuario = await pessoaRepository.obterPorId(id, false);
 
     if (!usuario) {
-      throw new Error("Usuário não encontrado");
+      throw new AppError("Usuário não encontrado", 404);
     }
 
     // Descriptografa os dados sensíveis para retorno

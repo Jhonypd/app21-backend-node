@@ -30,7 +30,7 @@ export const tokenCookies = {
       httpOnly: false,
       maxAge: 60 * 60 * 1000,
     });
-    
+
     // Também envia o token em um header customizado para o frontend capturar automaticamente
     res.setHeader("X-CSRF-Token", csrfToken);
   },

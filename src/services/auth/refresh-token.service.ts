@@ -11,6 +11,7 @@ import { pessoaService } from "../pessoas/pessoa.service";
 import { sessaoUsuarioService } from "./sessao-usuario.service";
 import { criptografia } from "../../lib/criptografia";
 import { hash } from "../../lib/hash";
+import { AppError } from "../../lib/errorHandler";
 
 export const refreshTokenService = {
   async gerarRefreshToken(userId: string, sessionId: string) {
@@ -48,7 +49,7 @@ export const refreshTokenService = {
 
     if (!buscaRefreshTokenBanco) {
       console.error("Refresh token não encontrado no banco!");
-      throw new Error("Refresh token inválido");
+      throw new AppError("Refresh token inválido", 401);
     }
 
     const validaTokenDoBb = await hash.compare(
@@ -58,16 +59,16 @@ export const refreshTokenService = {
 
     if (!validaTokenDoBb) {
       console.error(" Hash do token não confere!");
-      throw new Error("Refresh token inválido");
+      throw new AppError("Refresh token inválido", 401);
     }
 
     if (buscaRefreshTokenBanco.revogado_em) {
       console.error("Token foi revogado!");
-      throw new Error("Refresh token inválido");
+      throw new AppError("Refresh token inválido", 401);
     }
 
     if (buscaRefreshTokenBanco.expiracao < new Date())
-      throw new Error("Refresh token expirado");
+      throw new AppError("Refresh token expirado", 401);
 
     const dadosUsuarioNovoToken = await pessoaService.usuarioExistePorEmailOuId(
       null,
@@ -75,18 +76,21 @@ export const refreshTokenService = {
     );
 
     if (!dadosUsuarioNovoToken)
-      throw new Error("Usuário não encontrado para renovar token de acesso");
+      throw new AppError(
+        "Usuário não encontrado para renovar token de acesso",
+        404,
+      );
 
     const sessaoAtiva = await sessaoUsuarioService.buscarSessaoAtivaPorId(
       refreshTokenDecoded.Sessao_Usuario_Id,
     );
 
     if (!sessaoAtiva)
-      throw new Error("Sessão inválida para renovar token de acesso");
+      throw new AppError("Sessão inválida para renovar token de acesso", 401);
     if (sessaoAtiva.revogado_em)
-      throw new Error("Sessão revogada para renovar token de acesso");
+      throw new AppError("Sessão revogada para renovar token de acesso", 401);
     if (sessaoAtiva.expiracao < new Date())
-      throw new Error("Sessão expirada para renovar token de acesso");
+      throw new AppError("Sessão expirada para renovar token de acesso", 401);
 
     // Atualiza o último acesso com IP e User-Agent
     await sessaoUsuarioService.atualizarUltimoAcesso(
