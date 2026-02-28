@@ -2,6 +2,8 @@ import fs from "fs/promises";
 import path from "path";
 import crypto from "crypto";
 
+/* ===================== TIPOS ===================== */
+
 export type ErrorContext = {
   layer?:
     | "middleware"
@@ -9,7 +11,8 @@ export type ErrorContext = {
     | "service"
     | "repository"
     | "job"
-    | "socket";
+    | "socket"
+    | "application";
   route?: string;
   method?: string;
   userId?: string;
@@ -35,6 +38,8 @@ type LoggedErrorPayload = {
   };
 };
 
+/* ===================== HELPERS ===================== */
+
 function serializeError(error: unknown) {
   const e: any = error;
   return {
@@ -48,19 +53,38 @@ function serializeError(error: unknown) {
   };
 }
 
+/**
+ * Diretório base de logs
+ */
+export const LOGS_BASE_DIR = path.resolve(process.cwd(), "logs");
+
+/**
+ * Garante que um diretório exista (cria se não existir).
+ * Safe para chamadas concorrentes.
+ */
+export async function verificaOuCriaPastaLog(dir: string = LOGS_BASE_DIR) {
+  try {
+    await fs.mkdir(dir, { recursive: true });
+    // Verifica se o diretório existe e é acessível para escrita
+    await fs.access(dir, fs.constants.W_OK);
+    return true;
+  } catch (error) {
+    console.error(`Erro ao criar/verificar pasta de logs: ${dir}`, error);
+    throw new Error(`Não foi possível criar pasta de logs: ${dir}`);
+  }
+}
+
+/* ===================== LOGGER ===================== */
+
 export class LoggerService {
   private baseDir: string;
 
   constructor() {
-    this.baseDir = path.resolve(process.cwd(), "logs");
+    this.baseDir = LOGS_BASE_DIR;
   }
 
   private getDayStr(date = new Date()) {
-    return date.toISOString().slice(0, 10); // YYYY-MM-DD
-  }
-
-  private async ensureDirExists(dir: string) {
-    await fs.mkdir(dir, { recursive: true });
+    return date.toISOString().slice(0, 10);
   }
 
   async capture(error: unknown, context?: ErrorContext) {
@@ -74,14 +98,15 @@ export class LoggerService {
       error: serializeError(error),
     };
 
-    // pasta por dia + 1 arquivo por dia
+    // pasta por dia
     const day = this.getDayStr();
     const dir = path.join(this.baseDir, day);
-    await this.ensureDirExists(dir);
 
-    const filePath = path.join(dir, `errors_${day}.ndjson`);
+    // garante logs/ e logs/YYYY-MM-DD
+    await verificaOuCriaPastaLog(dir);
 
-    // append de 1 linha JSON (NDJSON)
+    const filePath = path.join(dir, `logs_${day}.ndjson`);
+
     await fs.appendFile(filePath, JSON.stringify(payload) + "\n", "utf8");
 
     return { id, filePath, createdAt };

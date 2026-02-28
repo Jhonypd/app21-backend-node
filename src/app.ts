@@ -14,6 +14,7 @@ import dotenv from "dotenv";
 import { errorHandler } from "./lib/errorHandler";
 import { loggerLimpezaService } from "./services/monitoramento/logger-limpeza.service";
 import { loggerService } from "./services/monitoramento/logger-index.service";
+import { verificaOuCriaPastaLog } from "./services/monitoramento/logger.service";
 
 dotenv.config();
 
@@ -56,7 +57,6 @@ app.use(
     allowedHeaders: [
       "Content-Type",
       "Authorization",
-      "x-token-sala",
       "X-CSRF-Token",
       "Accept",
       "sessao_id",
@@ -116,7 +116,6 @@ const io = new Server(server, {
     allowedHeaders: [
       "Content-Type",
       "Authorization",
-      "x-token-sala",
       "X-CSRF-Token",
     ],
   },
@@ -126,10 +125,32 @@ const io = new Server(server, {
 });
 
 socketEventos(io, process.env.JWT_SECRET!);
-loggerService
-  .capture("Servidor iniciado", { layer: "service", tags: ["App"] })
-  .catch(() => {});
-loggerLimpezaService.start();
+
+// Função de inicialização do sistema de logs
+async function inicializarLogs() {
+  try {
+    // Garante que a pasta de logs existe
+    await verificaOuCriaPastaLog();
+
+    // Inicia serviço de limpeza de logs antigos
+    loggerLimpezaService.start();
+
+    // Registra log de inicialização
+    await loggerService.capture("Servidor iniciado com sucesso", {
+      layer: "application",
+      tags: ["App", "Startup"],
+      extra: {
+        nodeEnv: process.env.NODE_ENV,
+        port: PORT,
+      },
+    });
+
+    console.log("✓ Sistema de logs inicializado com sucesso");
+  } catch (error) {
+    console.error("✗ Erro ao inicializar sistema de logs:", error);
+  }
+}
+
 const DEV_PORT = 5007;
 
 const PORT =
@@ -156,4 +177,7 @@ process.on("unhandledRejection", (reason) => {
 });
 
 // Start
-server.listen(PORT, () => console.log(`Servidor rodando na porta ${PORT}`));
+server.listen(PORT, async () => {
+  console.log(`Servidor rodando na porta ${PORT}`);
+  await inicializarLogs();
+});
