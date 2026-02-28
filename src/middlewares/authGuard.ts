@@ -7,6 +7,7 @@ import { respostaErro } from "../utils/response";
 import { getClientInfo } from "../helpers/client-info.helper";
 import { refreshTokenService } from "../services/auth/refresh-token.service";
 import { tokenCookies } from "../helpers/set-tokens-cookies.helper";
+import { hash } from "../lib/hash";
 
 declare global {
   namespace Express {
@@ -107,7 +108,8 @@ export const authGuard = async (
   res: Response,
   next: NextFunction,
 ) => {
-  const tokenSala = req.headers["x-token-sala"] as string | undefined;
+  // Ler token_sala de cookie em vez de header
+  const tokenSala = req.cookies.token_sala;
 
   // cookie-first, fallback para Authorization header
   let accessToken = req.cookies?.access_token as string | undefined;
@@ -169,6 +171,10 @@ export const authGuard = async (
           ip,
           userAgent,
         );
+
+        // Gera novo CSRF token sincronizado com renovação do access_token
+        const csrfToken = await hash.geradorCsrfToken();
+        tokenCookies.setCsrfCookie(res, csrfToken);
 
         // seta cookies novos (rotação do refresh)
         tokenCookies.setAuthCookies(

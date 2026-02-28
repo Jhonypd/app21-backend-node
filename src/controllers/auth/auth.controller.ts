@@ -6,20 +6,6 @@ import { tokenCookies } from "../../helpers/set-tokens-cookies.helper";
 import { hash } from "../../lib/hash";
 
 export const authController = {
-  async csrf(req: Request, res: Response) {
-    const csrfToken = await hash.geradorCsrfToken();
-
-    // salva em cookie no domínio do back (pra validar depois)
-    tokenCookies.setCsrfCookie(res, csrfToken);
-
-    // retorna pro front guardar em memória
-    return res.status(200).json(
-      respostaSucesso({
-        resultado: { csrfToken },
-      }),
-    );
-  },
-
   async login(req: Request, res: Response, next: NextFunction) {
     try {
       const { email, senha } = req.body;
@@ -38,6 +24,10 @@ export const authController = {
         resultado.refreshToken.token,
         resultado.tokenAcesso.token,
       );
+
+      // Gera novo CSRF token no login (cookie + header)
+      const csrfToken = await hash.geradorCsrfToken();
+      tokenCookies.setCsrfCookie(res, csrfToken);
 
       return res.status(200).json(
         respostaSucesso({

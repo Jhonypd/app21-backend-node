@@ -18,14 +18,6 @@ router.post(
   authController.login,
 );
 
-router.get("/csrf", validateHandler, authGuard, authController.csrf);
-
-router.post(
-  "/refresh",
-  validateHandler,
-  refreshTokenController.renovarAccessToken,
-);
-
 router.post(
   "/refresh/revogar",
   authGuard,
