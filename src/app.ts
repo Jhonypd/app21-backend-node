@@ -1,3 +1,21 @@
+import dotenv from "dotenv";
+
+dotenv.config();
+
+console.log("Variáveis de ambiente:", {
+  DATABASE_URL: !!process.env.DATABASE_URL,
+  DIRECT_URL: !!process.env.DIRECT_URL,
+  FRONTEND_URL: !!process.env.FRONTEND_URL,
+  JWT_SECRET: !!process.env.JWT_SECRET,
+  PORT: !!process.env.PORT,
+  SMTP_PASS: !!process.env.SMTP_PASS,
+  SMTP_USER: !!process.env.SMTP_USER,
+  SMTP_HOST: !!process.env.SMTP_HOST,
+  SMTP_PORT: !!process.env.SMTP_PORT,
+  SMTP_FROM: !!process.env.SMTP_FROM,
+  JWT_REFRESH_SECRET: !!process.env.JWT_REFRESH_SECRET,
+});
+
 import express from "express";
 import http from "http";
 import cors from "cors";
@@ -10,13 +28,11 @@ import pessoas from "./routes/pessoas/pessoa.routes";
 import sessoes from "./routes/sessoes/sessao-sala.routes";
 import votos from "./routes/votos/votos.routes";
 import historias from "./routes/historias/historia-sala.routes";
-import dotenv from "dotenv";
 import { errorHandler } from "./lib/errorHandler";
 import { loggerLimpezaService } from "./services/monitoramento/logger-limpeza.service";
 import { loggerService } from "./services/monitoramento/logger-index.service";
 import { verificaOuCriaPastaLog } from "./services/monitoramento/logger.service";
-
-dotenv.config();
+import { main } from "./utils/seed";
 
 const app = express();
 const server = http.createServer(app);
@@ -115,6 +131,11 @@ socketEventos(io, process.env.JWT_SECRET!);
 // Função de inicialização do sistema de logs
 async function inicializarLogs() {
   try {
+    //  ativar apenas se houver coisas a serem atualizadas
+    // await main().catch((err) => {
+    //   console.error("Erro ao executar seed:", err);
+    // });
+
     // Garante que a pasta de logs existe
     await verificaOuCriaPastaLog();
 
