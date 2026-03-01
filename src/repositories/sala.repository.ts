@@ -178,7 +178,7 @@ export const salaRepository = {
                 participantes: {
                   some: {
                     pessoa_id: pessoaId,
-                    // autorizado: true, // verificar se deve filtrar apenas por autorizado
+                    autorizado: true,
                   },
                 },
               },

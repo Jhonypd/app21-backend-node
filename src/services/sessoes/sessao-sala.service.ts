@@ -52,7 +52,6 @@ export const sessaoSalaService = {
       throw new AppError("Apenas o dono ou administrador podem criar sessão.");
     }
 
-    // 🔴 CRÍTICO: Usar transação Prisma para evitar race condition
     // Se 2 admins tentarem criar sessão simultaneamente, apenas 1 conseguirá
     const { prismaClient } = await import("../../lib/prisma");
 
@@ -122,7 +121,7 @@ export const sessaoSalaService = {
       await participanteSessaoRepository.inserir({
         sessao_id: novaSessao.id,
         pessoa_id: participante.pessoa.id,
-        autorizado: true, // Todos permanentes autorizados automaticamente
+        autorizado: true,
       });
 
       // ✅ Marcar como online APENAS quem iniciou a sessão
@@ -186,13 +185,13 @@ export const sessaoSalaService = {
       );
     }
 
-    // ✅ Desativar sessão e registrar quem encerrou
+    // Desativar sessão e registrar quem encerrou
     await sessaoSalaRepository.desativarSessoesPorSala(sala_id, pessoa_id);
 
-    // ✅ Marcar todos os participantes como offline
+    // Marcar todos os participantes como offline
     await participanteSalaRepository.marcarTodosOfflinePorSala(sala_id);
 
-    // ✅ Desautorizar todos os ParticipanteSessao
+    //  Desautorizar todos os ParticipanteSessao
     await participanteSessaoRepository.desautorizarTodosPorSessao(
       sessaoAtiva.id,
     );
@@ -294,7 +293,9 @@ export const sessaoSalaService = {
     const sessao = await sessaoSalaRepository.obterPorId(sessao_id);
 
     if (!sessao) {
-      throw new AppError("Sessão não encontrada para os votos serem resetados.");
+      throw new AppError(
+        "Sessão não encontrada para os votos serem resetados.",
+      );
     }
 
     // Verificar se o usuário é o criador da sala OU iniciador da sessão
@@ -309,7 +310,9 @@ export const sessaoSalaService = {
 
     // Validar que existe uma história atual selecionada
     if (!sessao.sala.historia_atual_id) {
-      throw new AppError("Nenhuma história atual selecionada para resetar votos.");
+      throw new AppError(
+        "Nenhuma história atual selecionada para resetar votos.",
+      );
     }
 
     // Buscar a HistoriaSessao correspondente à história atual
@@ -530,7 +533,9 @@ export const sessaoSalaService = {
 
     // PROTEÇÃO: Ninguém pode kickar a si mesmo
     if (pessoa_id === solicitante_id) {
-      throw new AppError("Use a rota 'sair da sessão' para sair voluntariamente.");
+      throw new AppError(
+        "Use a rota 'sair da sessão' para sair voluntariamente.",
+      );
     }
 
     // Verificar se ParticipanteSessao existe
