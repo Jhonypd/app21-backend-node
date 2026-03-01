@@ -19,6 +19,8 @@ model Pessoa {
   codigo_confirmacao      String?              @unique
   codigo_expiracao        DateTime?
   codigo_confirmacao_hash String?              @unique
+  email_busca             String               @default("")
+  nome_busca              String               @default("")
   participacoes           ParticipanteSala[]
   participantes_sessao    ParticipanteSessao[]
   salas_criadas           Sala[]               @relation("SalasCriadasPorPessoa")
@@ -28,6 +30,8 @@ model Pessoa {
 
   @@index([email])
   @@index([codigo_expiracao])
+  @@index([nome_busca])
+  @@index([email_busca])
 }
 
 model Sala {
@@ -103,6 +107,7 @@ model ParticipanteSessao {
   pessoa_id         String
   autorizado        Boolean    @default(false)
   participa_votacao Boolean    @default(true)
+  online            Boolean    @default(false)
   pessoa            Pessoa     @relation(fields: [pessoa_id], references: [id])
   sessao            SessaoSala @relation(fields: [sessao_id], references: [id])
 

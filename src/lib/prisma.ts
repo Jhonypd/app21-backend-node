@@ -6,7 +6,10 @@ declare global {
   var cachedPrisma: PrismaClient;
 }
 
-const connectionString = process.env.DATABASE_URL;
+console.info(
+  `Inicializando Prisma Client com conexão direta: ${process.env.DIRECT_URL ? "Sim" : "Não"}`,
+);
+const connectionString = process.env.DIRECT_URL;
 const pool = new pg.Pool({ connectionString });
 const adapter = new PrismaPg(pool);
 
@@ -19,6 +22,7 @@ if (process.env.NODE_ENV === "production") {
       adapter,
       errorFormat: "minimal",
       log: ["info", "warn", "error"],
+      transactionOptions: { timeout: 30 * 1000 },
     });
   }
   prisma = global.cachedPrisma;
