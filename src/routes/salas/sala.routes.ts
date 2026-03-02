@@ -193,26 +193,7 @@ router.get(
   participanteSalaController.listarParticipantes,
 );
 
-// POST /salas/:id/visitantes - Adicionar visitantes à sessão ativa (dono ou admin)
-router.post(
-  "/:id/visitantes",
-  validateHandler,
-  authGuard,
-  salaAuthGuard,
-  csrfGuard,
-  salaPermissaoGuard([0, 1]),
-  sessaoSalaController.adicionarVisitantes,
-);
-
-// DELETE /salas/:id/visitantes/:pessoaId - Remover visitante da sessão ativa (dono ou admin)
-router.delete(
-  "/:id/visitantes/:pessoaId",
-  validateHandler,
-  authGuard,
-  salaAuthGuard,
-  csrfGuard,
-  salaPermissaoGuard([0, 1]),
-  sessaoSalaController.removerVisitante,
-);
+// DEPRECATED: Use POST /salas/:id/participantes with role=3 instead
+// Removed old visitantes routes (consolidated into unified participant endpoint)
 
 export default router;

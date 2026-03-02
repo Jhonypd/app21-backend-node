@@ -31,42 +31,49 @@ export const participanteSalaRepository = {
       },
     }),
 
-  obterTodosParticipantesPorSala: (sala_id: string) =>
+  obterTodosParticipantesPorSala: (
+    sala_id: string,
+    sessao_id?: string | null,
+    apenasOnline: boolean = false,
+  ) =>
     prismaClient.participanteSala.findMany({
-      where: { sala_id },
+      where: {
+        sala_id,
+        // Se apenasOnline=true, filtra apenas quem está online na sessão
+        ...(apenasOnline &&
+          sessao_id && {
+            pessoa: {
+              participantes_sessao: {
+                some: {
+                  sessao_id,
+                  online: true,
+                },
+              },
+            },
+          }),
+      },
       select: {
         role: true,
-        online: true,
         pessoa: {
           select: {
             id: true,
             nome: true,
             inativo: true,
+            ...(apenasOnline &&
+              sessao_id && {
+                participantes_sessao: {
+                  where: { sessao_id, online: true },
+                  select: { online: true },
+                },
+              }),
           },
         },
       },
-    }),
-
-  alterarParticipanteSalaOnline: (
-    sala_id: string,
-    pessoa_id: string,
-    online: boolean,
-  ) =>
-    prismaClient.participanteSala.update({
-      where: { sala_id_pessoa_id: { sala_id, pessoa_id } },
-      data: { online },
     }),
 
   alterarRole: (sala_id: string, pessoa_id: string, role: number) =>
     prismaClient.participanteSala.update({
       where: { sala_id_pessoa_id: { sala_id, pessoa_id } },
       data: { role },
-    }),
-
-  // ✅ Marcar todos os participantes de uma sala como offline
-  marcarTodosOfflinePorSala: (sala_id: string) =>
-    prismaClient.participanteSala.updateMany({
-      where: { sala_id },
-      data: { online: false },
     }),
 };

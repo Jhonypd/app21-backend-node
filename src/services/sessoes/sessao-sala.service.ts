@@ -114,6 +114,7 @@ export const sessaoSalaService = {
     });
 
     // 1. Criar ParticipanteSessao para TODOS os ParticipanteSala (permanentes)
+    // Todos começam com online: false, exceto quem inicia a sessão
     const participantesSala =
       await participanteSalaRepository.obterTodosParticipantesPorSala(sala_id);
 
@@ -122,16 +123,9 @@ export const sessaoSalaService = {
         sessao_id: novaSessao.id,
         pessoa_id: participante.pessoa.id,
         autorizado: true,
+        // ✅ Quem inicia a sessão já entra online
+        online: participante.pessoa.id === pessoa_id,
       });
-
-      // ✅ Marcar como online APENAS quem iniciou a sessão
-      if (participante.pessoa.id === pessoa_id) {
-        await participanteSalaRepository.alterarParticipanteSalaOnline(
-          sala_id,
-          pessoa_id,
-          true,
-        );
-      }
     }
 
     // 2. Criar ParticipanteSessao para visitantes temporários (se fornecidos)
@@ -146,6 +140,7 @@ export const sessaoSalaService = {
             pessoa_id: visitanteId,
             // Visitantes são autorizados por padrão, caso contrario como entrarão na sala?
             autorizado: true,
+            online: false,
           });
         }
       }
@@ -188,8 +183,10 @@ export const sessaoSalaService = {
     // Desativar sessão e registrar quem encerrou
     await sessaoSalaRepository.desativarSessoesPorSala(sala_id, pessoa_id);
 
-    // Marcar todos os participantes como offline
-    await participanteSalaRepository.marcarTodosOfflinePorSala(sala_id);
+    // ✅ Marcar todos os participantes da sessão como offline
+    await participanteSessaoRepository.marcarTodosOfflinePorSessao(
+      sessaoAtiva.id,
+    );
 
     //  Desautorizar todos os ParticipanteSessao
     await participanteSessaoRepository.desautorizarTodosPorSessao(
@@ -405,6 +402,7 @@ export const sessaoSalaService = {
           sessao_id: sessaoAtiva.id,
           pessoa_id: pessoaId,
           autorizado: true, // Visitantes adicionados pelo dono/admin são autorizados
+          online: false, // Visitantes começam offline
         });
         participantesCriados.push(participante);
 
@@ -590,7 +588,7 @@ export const sessaoSalaService = {
       { participa_votacao },
     );
 
-    return participanteAtualizado;
+    return participanteAtualizado.autorizado;
   },
 
   /**

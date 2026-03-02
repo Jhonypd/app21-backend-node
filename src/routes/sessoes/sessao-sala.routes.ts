@@ -5,13 +5,8 @@ import { validateHandler } from "../../middlewares/handleValidate";
 
 const router = Router();
 
-// POST /sessoes/:id/participantes
-router.post(
-  "/:id/participantes",
-  validateHandler,
-  authGuard,
-  sessaoSalaController.adicionarParticipante,
-);
+// DEPRECATED: Use POST /salas/:id/participantes instead (unified endpoint)
+// Old route: POST /sessoes/:id/participantes - Removed (consolidated)
 
 // POST /sessoes/:id/revelar
 router.post(

@@ -1,9 +1,8 @@
 import { hash } from "../../lib/hash";
 import { salaRepository } from "../../repositories/sala.repository";
 import { criptografia } from "../../lib/criptografia";
-import { addHours, format } from "date-fns";
+import { addHours } from "date-fns";
 import { ClaimsAuthSala, geradorTokenSala } from "../../lib/jwt";
-import { ptBR } from "date-fns/locale";
 import { participanteSalaService } from "../participantes/participante-sala.service";
 import { sessaoSalaService } from "../sessoes/sessao-sala.service";
 import { participanteSalaRepository } from "../../repositories/participante-sala.repository";
@@ -265,7 +264,7 @@ export const salaService = {
         nome: criptografia.descriptografar(sala.proprietario.nome),
       },
       participantes: [
-        ...sala.participantes.map((participante) => {
+        ...sala.participantes_sala.map((participante) => {
           return {
             ...participante.pessoa,
             nome: criptografia.descriptografar(participante.pessoa.nome),
@@ -308,7 +307,7 @@ export const salaService = {
         nome: criptografia.descriptografar(sala.proprietario.nome),
       },
       participantes: [
-        ...sala.participantes.map((participante) => ({
+        ...sala.participantes_sala.map((participante) => ({
           ...participante.pessoa,
           nome: criptografia.descriptografar(participante.pessoa.nome),
         })),
@@ -338,43 +337,55 @@ export const salaService = {
       throw new AppError("Nenhuma sessão ativa encontrada para esta sala");
     }
 
-    // ✅ Calcular resumo de participantes (sem enviar lista completa)
-    // Criar mapa de participa_votacao dos ParticipanteSessao
-    const participaVotacaoMap = new Map<string, boolean>();
-    sessaoAtiva.participantes?.forEach((ps) => {
-      participaVotacaoMap.set(ps.pessoa.id, ps.participa_votacao ?? true);
+    // ✅ Calcular resumo de participantes baseado em ParticipanteSessao
+    // Criar mapa de ParticipanteSessao (online e participa_votacao)
+    const participanteSessaoMap = new Map<
+      string,
+      { online: boolean; participa_votacao: boolean }
+    >();
+    sessaoAtiva.participantes_sessao?.forEach((ps) => {
+      participanteSessaoMap.set(ps.pessoa.id, {
+        online: ps.online ?? false,
+        participa_votacao: ps.participa_votacao ?? true,
+      });
     });
 
     // Contar participantes permanentes
-    let totalParticipantes = sala.participantes.length;
-    let totalOnline = sala.participantes.filter((p) => p.online).length;
+    let totalParticipantes = sala.participantes_sala.length;
+    let totalOnline = 0;
     let totalDevemVotar = 0;
 
-    // Participantes permanentes que devem votar
-    sala.participantes.forEach((participante) => {
-      const participaVotacao =
-        participaVotacaoMap.get(participante.pessoa.id) ?? true;
-      // Roles 2 e 3 sempre participam, roles 0 e 1 dependem de participa_votacao
-      if (
-        participante.role === 2 ||
-        participante.role === 3 ||
-        (participante.role <= 1 && participaVotacao !== false)
-      ) {
+    // Participantes permanentes - verificar online e participa_votacao em ParticipanteSessao
+    sala.participantes_sala.forEach((participante) => {
+      const sessaoData = participanteSessaoMap.get(participante.pessoa.id);
+
+      // Contar online apenas se estiver online em ParticipanteSessao
+      if (sessaoData?.online) {
+        totalOnline++;
+      }
+
+      // Contar quem deve votar: participa_votacao=true E online=true
+      if (sessaoData?.online && sessaoData?.participa_votacao) {
         totalDevemVotar++;
       }
     });
 
     // Contar visitantes (ParticipanteSessao que não são permanentes)
     const idsParticipantesPermanentes = new Set(
-      sala.participantes.map((p) => p.pessoa.id),
+      sala.participantes_sala.map((p) => p.pessoa.id),
     );
 
-    sessaoAtiva.participantes?.forEach((participanteSessao) => {
+    sessaoAtiva.participantes_sessao?.forEach((participanteSessao) => {
       if (!idsParticipantesPermanentes.has(participanteSessao.pessoa.id)) {
         totalParticipantes++;
-        totalOnline++; // Visitante sempre online
-        // Visitante participa se participa_votacao !== false
-        if (participanteSessao.participa_votacao !== false) {
+
+        // Contar online
+        if (participanteSessao.online) {
+          totalOnline++;
+        }
+
+        // Contar quem deve votar: participa_votacao=true E online=true
+        if (participanteSessao.online && participanteSessao.participa_votacao) {
           totalDevemVotar++;
         }
       }
@@ -385,14 +396,14 @@ export const salaService = {
     if (sala.criado_por === pessoaId) {
       meuRole = 0; // Dono
     } else {
-      const participantePermanente = sala.participantes.find(
+      const participantePermanente = sala.participantes_sala.find(
         (p) => p.pessoa.id === pessoaId,
       );
       if (participantePermanente) {
         meuRole = participantePermanente.role; // Admin(1) ou Membro(2)
       } else {
         // Verificar se é visitante da sessão
-        const visitanteSessao = sessaoAtiva.participantes?.find(
+        const visitanteSessao = sessaoAtiva.participantes_sessao?.find(
           (ps) => ps.pessoa.id === pessoaId,
         );
         if (visitanteSessao) {
@@ -419,7 +430,6 @@ export const salaService = {
         totalOnline,
         totalDevemVotar,
       },
-      // votos: votosHistoriaAtual, // Apenas votos da história atual
       sessaoAtiva: {
         id: sessaoAtiva.id,
         criada_em: sessaoAtiva.criada_em,
@@ -491,26 +501,18 @@ export const salaService = {
           pessoa_id: pessoaId,
           autorizado: true,
         });
-      }
-      // ✅ NOVA LÓGICA: Ao sair, mantemos autorizado=true
-      // Então dono/admin podem entrar e sair livremente
-      // Apenas verificar se foi kickado/banido (autorizado=false)
-      else if (!participanteSessao.autorizado) {
+      } else if (!participanteSessao.autorizado) {
         // Se foi kickado/banido, não pode reentrar sem aprovação
         throw new AppError(
           "Você foi removido desta sessão. Aguarde aprovação do administrador para reentrar.",
         );
       }
 
-      // ✅ Marca como online em ParticipanteSala
-      const participanteSala =
-        await participanteSalaRepository.obterPorSalaEPessoa(sala.id, pessoaId);
-      if (participanteSala) {
-        await participanteSalaRepository.alterarParticipanteSalaOnline(
-          sala.id,
-          pessoaId,
-          true,
-        );
+      // ✅ Atualizar ParticipanteSessao: online=true (donos/admins mantêm controle de participa_votacao)
+      if (participanteSessao) {
+        await participanteSessaoRepository.atualizar(sessaoAtiva.id, pessoaId, {
+          online: true,
+        });
       }
     }
     // TIPO 2 (Membro): Requer sessão ativa
@@ -528,15 +530,13 @@ export const salaService = {
           pessoaId,
         );
 
-      // Se não tem ParticipanteSessao ainda, cria (primeira entrada na sessão)
       if (!participanteSessao) {
-        await participanteSessaoRepository.inserir({
-          sessao_id: sessaoAtiva.id,
-          pessoa_id: pessoaId,
-          autorizado: true,
-        });
+        throw new AppError(
+          "Você não tem permissão para acessar esta sessão. Aguarde o dono ou admin iniciar uma sessão e adicionar você como participante.",
+        );
       }
-      // ✅ NOVA LÓGICA: Se já tem, apenas verifica se foi kickado
+
+      // Se já tem, apenas verifica se foi kickado
       else if (!participanteSessao.autorizado) {
         // Se foi kickado/banido, não pode reentrar sem aprovação
         throw new AppError(
@@ -545,15 +545,12 @@ export const salaService = {
       }
       // Se já tem e está autorizado, pode entrar (saiu temporariamente)
 
-      // Marca como online em ParticipanteSala
-      const participanteSala =
-        await participanteSalaRepository.obterPorSalaEPessoa(sala.id, pessoaId);
-      if (participanteSala) {
-        await participanteSalaRepository.alterarParticipanteSalaOnline(
-          sala.id,
-          pessoaId,
-          true,
-        );
+      // ✅ Atualizar ParticipanteSessao: online=true, participa_votacao=true (membros votam ao entrar)
+      if (participanteSessao) {
+        await participanteSessaoRepository.atualizar(sessaoAtiva.id, pessoaId, {
+          online: true,
+          participa_votacao: true,
+        });
       }
     }
     // TIPO 3 (Visitante): Requer sessão ativa E ParticipanteSessao pré-existente
@@ -562,9 +559,30 @@ export const salaService = {
         throw new AppError("Não há sessão ativa no momento.");
       }
 
-      // Visitante já tem ParticipanteSessao (criado pelo dono/admin)
-      // Validado em determinarTipoAcesso - se chegou aqui, tem permissão
-      // Não marca online em ParticipanteSala pois visitante não tem
+      // Verificar se visitante tem ParticipanteSessao
+      const participanteSessao =
+        await participanteSessaoRepository.obterPorSessaoEPessoa(
+          sessaoAtiva.id,
+          pessoaId,
+        );
+
+      if (!participanteSessao) {
+        throw new AppError(
+          "Você não foi convidado para esta sessão. Solicite ao anfitrião para adicionar você.",
+        );
+      }
+
+      if (!participanteSessao.autorizado) {
+        throw new AppError(
+          "Você foi removido desta sessão. Aguarde aprovação do administrador para reentrar.",
+        );
+      }
+
+      // ✅ Atualizar ParticipanteSessao: online=true, participa_votacao=true (visitantes votam ao entrar)
+      await participanteSessaoRepository.atualizar(sessaoAtiva.id, pessoaId, {
+        online: true,
+        participa_votacao: true,
+      });
     }
 
     // Buscar informações da pessoa
@@ -616,21 +634,16 @@ export const salaService = {
       throw new AppError("Você não está participando desta sessão.");
     }
 
-    // ✅ NÃO desautorizar! Apenas marcar como offline
+    // ✅ NÃO desautorizar! Apenas marcar como offline e não participando
     // O participante pode entrar e sair livremente
     // Desautorização só acontece em kick/ban (futuro) ou encerrar sessão (todos)
 
-    // Marcar como offline em ParticipanteSala (se for permanente)
-    const participanteSala =
-      await participanteSalaRepository.obterPorSalaEPessoa(sala_id, pessoa_id);
-
-    if (participanteSala) {
-      await participanteSalaRepository.alterarParticipanteSalaOnline(
-        sala_id,
-        pessoa_id,
-        false,
-      );
-    }
+    // ✅ Atualizar ParticipanteSessao: online=false e participa_votacao=false para TODOS
+    // Quando voltar, define novamente se participa ou não
+    await participanteSessaoRepository.atualizar(sessaoAtiva.id, pessoa_id, {
+      online: false,
+      participa_votacao: false,
+    });
 
     return {
       mensagem: "Você saiu da sala com sucesso.",
@@ -696,20 +709,12 @@ export const salaService = {
       true,
     );
 
-    // Marcar como online
-    const participanteSala =
-      await participanteSalaRepository.obterPorSalaEPessoa(
-        sala_id,
-        pessoa_id_reentrada,
-      );
-
-    if (participanteSala) {
-      await participanteSalaRepository.alterarParticipanteSalaOnline(
-        sala_id,
-        pessoa_id_reentrada,
-        true,
-      );
-    }
+    // ✅ Marcar como online em ParticipanteSessao
+    await participanteSessaoRepository.atualizar(
+      sessaoAtiva.id,
+      pessoa_id_reentrada,
+      { online: true },
+    );
 
     // Buscar pessoa para gerar novo token
     const pessoa = await pessoaRepository.obterPorId(
@@ -721,7 +726,6 @@ export const salaService = {
     }
 
     // Gerar novo token
-    const dataExpiracao = addHours(new Date(), 6);
     const nomeDescriptografado = await criptografia.descriptografar(
       pessoa.nome,
     );
@@ -787,7 +791,7 @@ export const salaService = {
         id: salaCompleta.id,
         titulo: salaCompleta.titulo,
         salaPrivada: !!salaCompleta.senha,
-        participantes: salaCompleta.participantes.map((p) => ({
+        participantes: salaCompleta.participantes_sala.map((p) => ({
           id: p.pessoa.id,
           nome: criptografia.descriptografar(p.pessoa.nome),
           inativo: p.pessoa.inativo,
@@ -800,7 +804,7 @@ export const salaService = {
       id: sala.id,
       titulo: sala.titulo,
       salaPrivada: !!sala.senha,
-      participantes: sala.participantes.map((p) => ({
+      participantes: sala.participantes_sala.map((p) => ({
         id: p.pessoa.id,
         nome: criptografia.descriptografar(p.pessoa.nome),
         inativo: p.pessoa.inativo,

@@ -4,6 +4,7 @@ import { participanteSessaoRepository } from "../../repositories/participante-se
 import { pessoaRepository } from "../../repositories/pessoa.repository";
 import { salaRepository } from "../../repositories/sala.repository";
 import { AppError } from "../../lib/errorHandler";
+import { sessaoSalaRepository } from "../../repositories/sessao-sala.repository";
 
 export const participanteSalaService = {
   async adicionarParticipanteASala(
@@ -79,9 +80,17 @@ export const participanteSalaService = {
     return removeParticipante.id;
   },
 
-  async listarParticipantesDaSala(sala_id: string, sessao_id?: string | null) {
+  async listarParticipantesDaSala(
+    sala_id: string,
+    sessao_id?: string | null,
+    apenasOnline: boolean = false,
+  ) {
     const participantesSala =
-      await participanteSalaRepository.obterTodosParticipantesPorSala(sala_id);
+      await participanteSalaRepository.obterTodosParticipantesPorSala(
+        sala_id,
+        sessao_id,
+        apenasOnline,
+      );
 
     // Montar lista de participantes permanentes
     const participantes: Array<{
@@ -95,7 +104,10 @@ export const participanteSalaService = {
       nome: criptografia.descriptografar(p.pessoa.nome),
       inativo: p.pessoa.inativo,
       role: p.role,
-      online: p.online,
+      online:
+        p.pessoa.participantes_sessao.length > 0
+          ? p.pessoa.participantes_sessao[0].online
+          : false,
     }));
 
     // Se sessao_id fornecido, incluir visitantes (ParticipanteSessao que não são permanentes)
@@ -114,44 +126,13 @@ export const participanteSalaService = {
             nome: criptografia.descriptografar(ps.pessoa.nome),
             inativo: ps.pessoa.inativo,
             role: 3, // Visitante sempre role 3
-            online: true, // Visitante sempre online (está na sessão ativa)
+            online: ps.online,
           });
         }
       });
     }
 
     return { participantes };
-  },
-
-  async alterarParticipanteSalaOnline(
-    sala_id: string,
-    pessoa_id: string,
-    online: boolean,
-  ) {
-    const pessoaExiste = await pessoaRepository.obterPorId(pessoa_id, false);
-
-    const salaExiste = await salaRepository.obterPorId(
-      sala_id,
-      false,
-      pessoa_id,
-    );
-
-    if (!salaExiste) {
-      throw new AppError("Sala não encontrada");
-    }
-
-    if (!pessoaExiste) {
-      throw new AppError("Pessoa não encontrada");
-    }
-
-    const participante =
-      await participanteSalaRepository.alterarParticipanteSalaOnline(
-        salaExiste.id,
-        pessoaExiste.id,
-        online,
-      );
-
-    return participante.id;
   },
 
   /**
@@ -208,7 +189,9 @@ export const participanteSalaService = {
         pessoa_id_adicionar,
       );
     if (participanteExistente) {
-      throw new AppError("Esta pessoa já é participante da sala");
+      throw new AppError(
+        `Esta pessoa já é participante da sala ${sala.codigo}`,
+      );
     }
 
     // Adicionar participante permanente à sala
@@ -321,7 +304,9 @@ export const participanteSalaService = {
 
     // Apenas o dono pode alterar roles
     if (sala.criado_por !== pessoa_id_solicitante) {
-      throw new AppError("Apenas o dono pode promover ou rebaixar participantes");
+      throw new AppError(
+        "Apenas o dono pode promover ou rebaixar participantes",
+      );
     }
 
     // Não pode alterar role do próprio dono
@@ -349,5 +334,156 @@ export const participanteSalaService = {
       id: participanteAtualizado.id,
       role: novo_role,
     };
+  },
+
+  /**
+   * Adiciona participante ou visitante de forma unificada
+   * Role 0-1-2: Cria ParticipanteSala (permanente) + ParticipanteSessao (se sessão ativa)
+   * Role 3: Cria apenas ParticipanteSessao (visitante, requer sessão ativa)
+   */
+  async adicionarParticipanteOuVisitante(
+    sala_id: string,
+    pessoa_id_adicionar: string,
+    role: 0 | 1 | 2 | 3,
+    pessoa_id_solicitante: string,
+    sessao_id?: string,
+  ) {
+    // Validar role
+    if (![0, 1, 2, 3].includes(role)) {
+      throw new AppError("Role inválido. Deve ser 0, 1, 2 ou 3");
+    }
+
+    // Buscar sala
+    const sala = await salaRepository.obterPorId(sala_id, false);
+    if (!sala) {
+      throw new AppError("Sala não encontrada");
+    }
+
+    // Verificar permissão do solicitante
+    const isDono = sala.criado_por === pessoa_id_solicitante;
+    const participanteSolicitante =
+      await participanteSalaRepository.obterPorSalaEPessoa(
+        sala_id,
+        pessoa_id_solicitante,
+      );
+    const isAdmin = participanteSolicitante?.role === 1;
+
+    if (!isDono && !isAdmin) {
+      throw new AppError(
+        "Apenas o dono ou administradores podem adicionar participantes",
+      );
+    }
+
+    // Se role 3 (visitante), requer sessão ativa
+    if (role === 3) {
+      if (!sessao_id) {
+        throw new AppError(
+          "Visitantes só podem ser adicionados em uma sessão ativa",
+        );
+      }
+      const sessaoAtiva = await sessaoSalaRepository.obterPorId(sessao_id);
+      if (!sessaoAtiva || !sessaoAtiva.ativa) {
+        throw new AppError("Sessão não encontrada ou não está ativa");
+      }
+    }
+
+    // Admin só pode adicionar membros (role 2) ou visitantes (role 3)
+    if (isAdmin && !isDono && (role === 0 || role === 1)) {
+      throw new AppError(
+        "Apenas o dono pode adicionar donos ou administradores",
+      );
+    }
+
+    // Verificar se pessoa existe
+    const pessoaAdicionar = await pessoaRepository.obterPorId(
+      pessoa_id_adicionar,
+      false,
+    );
+    if (!pessoaAdicionar) {
+      throw new AppError("Pessoa não encontrada");
+    }
+
+    // ============ Role 0-1-2: Criar ParticipanteSala ============
+    if (role !== 3) {
+      // Verificar se já é participante permanente
+      const participanteExistente =
+        await participanteSalaRepository.obterPorSalaEPessoa(
+          sala_id,
+          pessoa_id_adicionar,
+        );
+      if (participanteExistente) {
+        throw new AppError("Esta pessoa já é participante permanente da sala");
+      }
+
+      // Adicionar como ParticipanteSala
+      const participante = await participanteSalaRepository.inserir({
+        sala_id,
+        pessoa_id: pessoa_id_adicionar,
+        tipo: role,
+      });
+
+      // Se sessão ativa fornecida, também adicionar ao ParticipanteSessao
+      if (sessao_id) {
+        const jaExisteNaSessao =
+          await participanteSessaoRepository.obterPorSessaoEPessoa(
+            sessao_id,
+            pessoa_id_adicionar,
+          );
+        if (!jaExisteNaSessao) {
+          await participanteSessaoRepository.inserir({
+            sessao_id,
+            pessoa_id: pessoa_id_adicionar,
+            autorizado: true,
+            online: false,
+          });
+        }
+      }
+
+      return {
+        id: participante.id,
+        pessoa: {
+          id: pessoaAdicionar.id,
+          nome: criptografia.descriptografar(pessoaAdicionar.nome),
+          inativo: pessoaAdicionar.inativo,
+        },
+        role,
+        tipo: "permanente",
+        sessao_id: sessao_id || null,
+      };
+    }
+
+    // ============ Role 3: Criar apenas ParticipanteSessao (Visitante) ============
+    else {
+      // Verificar se já existe como visitante
+      const jaExisteVisitante =
+        await participanteSessaoRepository.obterPorSessaoEPessoa(
+          sessao_id!,
+          pessoa_id_adicionar,
+        );
+      if (jaExisteVisitante) {
+        throw new AppError("Esta pessoa já é visitante/participante da sessão");
+      }
+
+      // Adicionar como ParticipanteSessao (visitante temporário)
+      const visitante = await participanteSessaoRepository.inserir({
+        sessao_id: sessao_id!,
+        pessoa_id: pessoa_id_adicionar,
+        autorizado: true,
+        online: false,
+        participa_votacao: false,
+      });
+
+      return {
+        id: visitante.id,
+        pessoa: {
+          id: pessoaAdicionar.id,
+          nome: criptografia.descriptografar(pessoaAdicionar.nome),
+          inativo: pessoaAdicionar.inativo,
+        },
+        role: 3,
+        tipo: "visitante_temporario",
+        sessao_id,
+      };
+    }
   },
 };

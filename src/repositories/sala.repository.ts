@@ -33,7 +33,7 @@ export const salaRepository = {
       omit: { senha: !comSenha },
       include: {
         proprietario: { select: { id: true, nome: true, inativo: true } },
-        participantes: {
+        participantes_sala: {
           select: {
             role: true,
             pessoa: {
@@ -59,7 +59,7 @@ export const salaRepository = {
           select: {
             id: true,
             criada_em: true,
-            participantes: {
+            participantes_sessao: {
               include: {
                 pessoa: {
                   select: {
@@ -106,10 +106,9 @@ export const salaRepository = {
       omit: { senha: !comSenha },
       include: {
         proprietario: { select: { id: true, nome: true, inativo: true } },
-        participantes: {
+        participantes_sala: {
           select: {
             role: true,
-            online: true,
             pessoa: {
               select: {
                 id: true,
@@ -128,10 +127,11 @@ export const salaRepository = {
             criada_em: true,
             ativa: true,
             iniciada_por: true,
-            participantes: {
+            participantes_sessao: {
               select: {
                 autorizado: true,
                 participa_votacao: true,
+                online: true,
                 pessoa: {
                   select: {
                     id: true,
@@ -169,13 +169,13 @@ export const salaRepository = {
         inativo: false,
         OR: [
           { criado_por: pessoaId },
-          { participantes: { some: { pessoa_id: pessoaId } } },
+          { participantes_sala: { some: { pessoa_id: pessoaId } } },
           { titulo: { contains: valorPesquisa, mode: "insensitive" } },
           { codigo: { contains: valorPesquisa, mode: "insensitive" } },
           {
             sessoes: {
               some: {
-                participantes: {
+                participantes_sessao: {
                   some: {
                     pessoa_id: pessoaId,
                     autorizado: true,
@@ -197,10 +197,10 @@ export const salaRepository = {
         proprietario: { select: { id: true, nome: true, inativo: true } },
         _count: {
           select: {
-            participantes: true,
+            participantes_sala: true,
           },
         },
-        participantes: {
+        participantes_sala: {
           where: {
             pessoa_id: pessoaId,
           },
@@ -221,7 +221,7 @@ export const salaRepository = {
             data_encerramento: true,
             _count: {
               select: {
-                participantes: true,
+                participantes_sessao: true,
               },
             },
           },
@@ -262,7 +262,7 @@ export const salaRepository = {
         id: true,
         titulo: true,
         senha: true,
-        participantes: {
+        participantes_sala: {
           select: {
             role: true,
             pessoa: {

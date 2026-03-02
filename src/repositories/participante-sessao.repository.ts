@@ -5,6 +5,7 @@ interface ParticipanteSessaoInserirData {
   pessoa_id: string;
   autorizado?: boolean;
   participa_votacao?: boolean;
+  online?: boolean;
 }
 
 export const participanteSessaoRepository = {
@@ -15,6 +16,7 @@ export const participanteSessaoRepository = {
         pessoa_id: data.pessoa_id,
         autorizado: data.autorizado ?? false,
         participa_votacao: data.participa_votacao ?? true,
+        online: data.online ?? false,
       },
       include: {
         pessoa: {
@@ -61,6 +63,7 @@ export const participanteSessaoRepository = {
       select: {
         id: true,
         participa_votacao: true,
+        online: true,
         pessoa: {
           select: {
             id: true,
@@ -139,10 +142,17 @@ export const participanteSessaoRepository = {
       },
     }),
 
-  // ✅ Desautorizar todos os participantes de uma sessão (ao encerrar)
+  //  Desautorizar todos os participantes de uma sessão (ao encerrar)
   desautorizarTodosPorSessao: (sessao_id: string) =>
     prismaClient.participanteSessao.updateMany({
       where: { sessao_id },
       data: { autorizado: false },
+    }),
+
+  // Marcar todos os participantes de uma sessão como offline (ao encerrar)
+  marcarTodosOfflinePorSessao: (sessao_id: string) =>
+    prismaClient.participanteSessao.updateMany({
+      where: { sessao_id },
+      data: { online: false },
     }),
 };

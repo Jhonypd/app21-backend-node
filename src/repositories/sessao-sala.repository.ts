@@ -73,7 +73,7 @@ export const sessaoSalaRepository = {
             historia_atual_id: true,
           },
         },
-        participantes: {
+        participantes_sessao: {
           include: {
             pessoa: {
               select: {

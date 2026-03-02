@@ -173,18 +173,15 @@ export const pessoaService = {
   },
 
   async listarPorNomeOuEmail(valorPesquisa: string, salaId?: string) {
-    const valorPesquisaHasheado = await hash.geradorCamposComuns(valorPesquisa);
+    // const valorPesquisaHasheado = await hash.geradorCamposComuns(valorPesquisa);
 
-    const pessoas = await pessoaRepository.obterTodosPorNomeOuEmail(
-      valorPesquisaHasheado,
-      salaId,
-    );
+    const pessoas =
+      await pessoaRepository.obterTodosPorNomeOuEmail(valorPesquisa);
 
     return pessoas.map((pessoa) => ({
       id: pessoa.id,
       nome: criptografia.descriptografar(pessoa.nome),
       email: pessoa.email ? criptografia.descriptografar(pessoa.email) : null,
-      inativo: pessoa.inativo,
     }));
   },
 };

@@ -61,7 +61,7 @@ export const pessoaRepository = {
     senha: string,
     codigo: string,
     codigoHash: string,
-    codigoExp: Date
+    codigoExp: Date,
   ) =>
     prismaClient.pessoa.create({
       data: {
@@ -90,26 +90,18 @@ export const pessoaRepository = {
       },
     }),
 
-  obterTodosPorNomeOuEmail: (valorPesquisa: string, salaId?: string) =>
+  obterTodosPorNomeOuEmail: (valorPesquisa: string) =>
     prismaClient.pessoa.findMany({
       where: {
         inativo: false,
         OR: [
-          { nome: { contains: valorPesquisa, mode: "insensitive" } },
-          { email_hash: { contains: valorPesquisa, mode: "insensitive" } },
-        ],
-        NOT: [
-          {
-            participacoes: {
-              some: { sala_id: salaId },
-            },
-          },
+          { nome_busca: { contains: valorPesquisa, mode: "insensitive" } },
+          { email_busca: { contains: valorPesquisa, mode: "insensitive" } },
         ],
       },
       select: {
         id: true,
         nome: true,
-        inativo: true,
         email: true,
       },
       orderBy: { nome: "asc" },
@@ -119,7 +111,7 @@ export const pessoaRepository = {
     emailHash: string,
     codigo: string,
     codigoHash: string,
-    codigoExp: Date
+    codigoExp: Date,
   ) =>
     prismaClient.pessoa.update({
       where: { email_hash: emailHash },
@@ -139,7 +131,7 @@ export const pessoaRepository = {
       codigo_confirmacao?: string;
       codigo_confirmacao_hash?: string;
       codigo_expiracao?: Date;
-    }
+    },
   ) =>
     prismaClient.pessoa.update({
       where: { id },
