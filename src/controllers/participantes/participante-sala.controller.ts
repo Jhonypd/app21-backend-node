@@ -7,10 +7,12 @@ export const participanteSalaController = {
     try {
       const sala_id = req.params.id;
       const sessao_id = req.headers["sessao_id"] as string | undefined;
+      const apenasOnline = req.query.apenasOnline === "true"; // Query param
 
       const resultado = await participanteSalaService.listarParticipantesDaSala(
         sala_id,
         sessao_id,
+        apenasOnline,
       );
 
       res.json(
