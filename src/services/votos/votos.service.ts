@@ -160,4 +160,21 @@ export const votosService = {
       historia_id,
     );
   },
+
+  async anularVoto(voto_id: string, pessoa_id: string) {
+    // Buscar o voto
+    const voto = await votosRepository.obterPorId(voto_id);
+
+    if (!voto) {
+      throw new AppError("Voto não encontrado.", 404);
+    }
+
+    // Verificar se o voto pertence à pessoa autenticada
+    if (voto.pessoa_id !== pessoa_id) {
+      throw new AppError("Você não pode cancelar o voto de outra pessoa.", 403);
+    }
+
+    // Deletar o voto
+    return await votosRepository.deletarVoto(voto_id);
+  },
 };

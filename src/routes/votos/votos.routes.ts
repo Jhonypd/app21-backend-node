@@ -13,7 +13,10 @@ router.get(
   "/:id/votos",
   validateHandler,
   authGuard,
-  votosController.obterVotos
+  votosController.obterVotos,
 );
+
+// DELETE /votos/:id - Anular voto
+router.delete("/:id", validateHandler, authGuard, votosController.anularVoto);
 
 export default router;

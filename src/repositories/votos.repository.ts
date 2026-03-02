@@ -208,4 +208,14 @@ export const votosRepository = {
         },
       },
     }),
+
+  obterPorId: (voto_id: string) =>
+    prismaClient.voto.findUnique({
+      where: { id: voto_id },
+    }),
+
+  deletarVoto: (voto_id: string) =>
+    prismaClient.voto.delete({
+      where: { id: voto_id },
+    }),
 };

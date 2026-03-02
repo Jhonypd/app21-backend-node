@@ -91,4 +91,22 @@ export const votosController = {
       return next(error);
     }
   },
+
+  async anularVoto(req: Request, res: Response, next: NextFunction) {
+    try {
+      const voto_id = req.params.id;
+      const pessoa_id = req.user?.Usuario_Id as string;
+
+      const voto = await votosService.anularVoto(voto_id, pessoa_id);
+
+      return res.json(
+        respostaSucesso({
+          resultado: { voto_id: voto.id },
+          mensagem: "Voto cancelado com sucesso.",
+        }),
+      );
+    } catch (error: any) {
+      return next(error);
+    }
+  },
 };

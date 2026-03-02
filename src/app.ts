@@ -100,6 +100,7 @@ app.use("/pessoas", pessoas);
 app.use("/salas", salas);
 app.use("/sessoes", sessoes);
 app.use("/sessoes", votos);
+app.use("/votos", votos);
 app.use("/salas", historias);
 app.use("/", historias);
 
