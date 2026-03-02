@@ -214,7 +214,7 @@ export const salaService = {
       const meuRole =
         sala.criado_por === pessoaId
           ? 0 // Dono
-          : (sala.participantes[0]?.role ?? null); // Admin(1), Membro(2) ou null (já filtrado por pessoaId no repository)
+          : (sala.participantes_sala[0]?.role ?? null); // Admin(1), Membro(2) ou null (já filtrado por pessoaId no repository)
 
       // Verificar se tem sessão ativa
       const temSessaoAtiva =
@@ -234,7 +234,7 @@ export const salaService = {
           nome: criptografia.descriptografar(sala.proprietario.nome),
           inativo: sala.proprietario.inativo,
         },
-        membros: sala._count.participantes,
+        membros: sala._count.participantes_sala,
         meuRole,
         temSessaoAtiva,
         status: temSessaoAtiva ? "online" : "offline",
