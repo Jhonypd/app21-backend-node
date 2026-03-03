@@ -275,13 +275,14 @@ export const sessaoSalaController = {
   },
 
   /**
-   * Adicionar história durante sessão ativa
+   * Adicionar história(s) durante sessão ativa
    * POST /sessoes/:sessaoId/historias/durante-sessao
+   * Body: { titulo, descricao } OU { adicionar: [...], remover: [...] }
    */
   async adicionarHistoriaDuranteSessao(req: Request, res: Response, next: NextFunction) {
     try {
       const { sessaoId } = req.params;
-      const { titulo, descricao } = req.body;
+      const { titulo, descricao, adicionar, remover } = req.body;
       const usuarioId = req.user?.Usuario_Id as string;
 
       // Obter sessão para pegar o sala_id
@@ -290,17 +291,31 @@ export const sessaoSalaController = {
         usuarioId,
       );
 
-      const historia = await sessaoSalaService.adicionarHistoriaDuranteSessao({
+      const resultado = await sessaoSalaService.adicionarHistoriaDuranteSessao({
+        sessao_id: sessaoId,
         sala_id: sessao.sala_id,
+        criado_por: usuarioId,
         titulo,
         descricao,
-        criado_por: usuarioId,
+        adicionar,
+        remover,
       });
 
-      res.status(201).json(
+      // Formato legado retorna história única
+      if ("historia" in resultado) {
+        return res.status(201).json(
+          respostaSucesso({
+            resultado: { historia: resultado.historia },
+            mensagem: "História adicionada e vinculada à sessão.",
+          }),
+        );
+      }
+
+      // Formato em lote
+      res.status(200).json(
         respostaSucesso({
-          resultado: { historia },
-          mensagem: "História adicionada e vinculada à sessão.",
+          resultado,
+          mensagem: `${resultado.adicionadas} histórias adicionadas, ${resultado.removidas} removidas.`,
         }),
       );
     } catch (error: any) {

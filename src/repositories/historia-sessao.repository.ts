@@ -141,9 +141,7 @@ export const historiaSessaoRepository = {
         },
       },
       orderBy: {
-        historia: {
-          data_criacao: "asc",
-        },
+        ordem: "asc",
       },
     }),
 
@@ -196,4 +194,13 @@ export const historiaSessaoRepository = {
         sessao_id,
       },
     }),
+
+  obterMaiorOrdem: async (sessao_id: string) => {
+    const resultado = await prismaClient.historiaSessao.findFirst({
+      where: { sessao_id },
+      orderBy: { ordem: "desc" },
+      select: { ordem: true },
+    });
+    return resultado?.ordem;
+  },
 };

@@ -631,38 +631,121 @@ export const sessaoSalaService = {
   },
 
   /**
-   * Adiciona história durante sessão ativa
-   * Cria a história e vincula automaticamente à sessão ativa da sala
+   * Adiciona história(s) durante sessão ativa
+   * Suporta formato legado (uma história) ou em lote (múltiplas adições/remoções)
    */
   async adicionarHistoriaDuranteSessao(dados: {
     sala_id: string;
-    titulo: string;
-    descricao?: string | null;
+    sessao_id: string;
     criado_por: string;
+    // Formato legado
+    titulo?: string;
+    descricao?: string | null;
+    // Formato em lote
+    adicionar?: Array<{ titulo: string; descricao?: string | null }>;
+    remover?: string[];
   }) {
     const { historiaSalaRepository } =
       await import("../../repositories/historia-sala.repository");
+    const { prismaClient } = await import("../../lib/prisma");
 
-    // Verificar se sala existe e tem sessão ativa
+    // Verificar se sala existe
     const sala = await salaRepository.obterPorId(dados.sala_id, false);
     if (!sala) {
       throw new AppError("Sala não encontrada");
     }
 
-    if (sala.sessoes.length === 0) {
-      throw new AppError("Sala não possui sessão ativa");
-    }
-
-    // Criar história
-    const historia = await historiaSalaRepository.criar(dados);
-
-    // Vincular à sessão ativa
-    await historiaSessaoRepository.inserir({
-      sessao_id: sala.sessoes[0].id,
-      historia_id: historia.id,
+    // Verificar se sessão existe e está ativa
+    const sessao = await prismaClient.sessaoSala.findUnique({
+      where: { id: dados.sessao_id },
     });
 
-    return historia;
+    if (!sessao || !sessao.ativa) {
+      throw new AppError("Sessão não encontrada ou inativa");
+    }
+
+    // Formato legado: uma única história
+    if (dados.titulo) {
+      const historia = await historiaSalaRepository.criar({
+        sala_id: dados.sala_id,
+        titulo: dados.titulo,
+        descricao: dados.descricao,
+        criado_por: dados.criado_por,
+      });
+
+      // Obter próxima ordem
+      const maxOrdem = await historiaSessaoRepository.obterMaiorOrdem(
+        dados.sessao_id,
+      );
+      const proximaOrdem = (maxOrdem ?? -1) + 1;
+
+      await prismaClient.historiaSessao.create({
+        data: {
+          sessao_id: dados.sessao_id,
+          historia_id: historia.id,
+          ordem: proximaOrdem,
+        },
+      });
+
+      return { historia };
+    }
+
+    // Formato em lote
+    const resultado = {
+      adicionadas: 0,
+      removidas: 0,
+      historias: [] as any[],
+    };
+
+    await prismaClient.$transaction(async (tx) => {
+      // 1. Remover histórias
+      if (dados.remover && dados.remover.length > 0) {
+        const removidas = await tx.historiaSessao.deleteMany({
+          where: {
+            sessao_id: dados.sessao_id,
+            historia_id: { in: dados.remover },
+          },
+        });
+        resultado.removidas = removidas.count;
+      }
+
+      // 2. Adicionar novas histórias
+      if (dados.adicionar && dados.adicionar.length > 0) {
+        const maxOrdem = await tx.historiaSessao.findFirst({
+          where: { sessao_id: dados.sessao_id },
+          orderBy: { ordem: "desc" },
+          select: { ordem: true },
+        });
+
+        let proximaOrdem = (maxOrdem?.ordem ?? -1) + 1;
+
+        for (const historiaInput of dados.adicionar) {
+          const historia = await tx.historiaSala.create({
+            data: {
+              sala_id: dados.sala_id,
+              titulo: historiaInput.titulo,
+              descricao: historiaInput.descricao ?? null,
+              criado_por: dados.criado_por,
+            },
+          });
+
+          await tx.historiaSessao.create({
+            data: {
+              sessao_id: dados.sessao_id,
+              historia_id: historia.id,
+              ordem: proximaOrdem,
+            },
+          });
+
+          resultado.historias.push(historia);
+          proximaOrdem += 1;
+        }
+
+        resultado.adicionadas = dados.adicionar.length;
+      }
+    });
+
+    return resultado;
   },
 
   /**
