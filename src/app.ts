@@ -44,9 +44,12 @@ app.set("trust proxy", true);
 // Lista real de origins permitidos
 const allowedOrigins = [
   process.env.FRONTEND_URL,
+  process.env.FRONTEND_URL_PROD,
   "http://192.168.2.99:3000",
   "http://192.168.2.53:3000",
   "http://localhost:3000",
+  "http://localhost:3004",
+  "http://192.168.0.102:3004",
 ].filter(Boolean) as string[];
 
 const validateOrigin = (

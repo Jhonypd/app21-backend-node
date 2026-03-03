@@ -17,15 +17,19 @@ class EmailService {
     });
   }
 
+  private readonly urlFrontend =
+    process.env.NODE_ENV === "production"
+      ? process.env.FRONTEND_URL_PROD || "http://localhost:3004"
+      : process.env.FRONTEND_URL || "http://localhost:3000";
   // Renderizar template EJS
   private async renderTemplate(
     templateName: string,
-    data: any
+    data: any,
   ): Promise<string> {
     const templatePath = path.join(
       __dirname,
       "../mail/views",
-      `${templateName}.ejs`
+      `${templateName}.ejs`,
     );
     return new Promise((resolve, reject) => {
       ejs.renderFile(templatePath, data, (err, html) => {
@@ -60,7 +64,7 @@ class EmailService {
       nome: string;
       email: string;
     },
-    linkConfirmacao: string
+    linkConfirmacao: string,
   ) {
     const html = await this.renderTemplate("email-confirmar-conta", {
       nome: user.nome,
@@ -76,7 +80,7 @@ class EmailService {
       nome: string;
       email: string;
     },
-    linkConfirmacao: string
+    linkConfirmacao: string,
   ) {
     const html = await this.renderTemplate("email-confirmar", {
       nome: user.nome,
@@ -88,14 +92,14 @@ class EmailService {
     return this.sendEmail(
       user.email,
       "Confirmação de Alteração de E-mail - App21",
-      html
+      html,
     );
   }
 
   // Email de recuperação de senha
   async sendEmailRecuperacaoSenha(
     user: { nome: string; email: string },
-    linkResetSenha: string
+    linkResetSenha: string,
   ) {
     const html = await this.renderTemplate("email-recuperar-senha", {
       nome: user.nome,
@@ -110,9 +114,10 @@ class EmailService {
   async sendEmailConviteSessao(
     visitante: { nome: string; email: string },
     sala: { titulo: string; codigo: string },
-    anfitriao: { nome: string }
+    anfitriao: { nome: string },
   ) {
-    const linkSala = `${process.env.FRONTEND_URL}/salas/${sala.codigo}`;
+    const url = this.urlFrontend;
+    const linkSala = `${url}/salas/${sala.codigo}`;
 
     const html = await this.renderTemplate("email-convite-sessao", {
       nomeVisitante: visitante.nome,
@@ -126,7 +131,7 @@ class EmailService {
     return this.sendEmail(
       visitante.email,
       `Convite para sessão - ${sala.titulo}`,
-      html
+      html,
     );
   }
 }

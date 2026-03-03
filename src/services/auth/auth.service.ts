@@ -11,6 +11,11 @@ import { refreshTokenService } from "./refresh-token.service";
 import { sessaoUsuarioService } from "./sessao-usuario.service";
 import { AppError } from "../../lib/errorHandler";
 
+const urlFrontend =
+  process.env.NODE_ENV === "production"
+    ? process.env.FRONTEND_URL_PROD || "http://localhost:3004"
+    : process.env.FRONTEND_URL || "http://localhost:3000";
+
 export const authService = {
   async login(email: string, senha: string, ip?: string, userAgent?: string) {
     const pessoa = await pessoaService.usuarioExistePorEmailOuId(email, null);
@@ -83,9 +88,7 @@ export const authService = {
             nome: criptografia.descriptografar(novoUsuario.usuario.nome),
             email: criptografia.descriptografar(novoUsuario.usuario.email),
           },
-          `${
-            process.env.FRONTEND_URL
-          }/confirmacao-email?codigo=${encodeURIComponent(
+          `${urlFrontend}/confirmacao-email?codigo=${encodeURIComponent(
             novoUsuario.usuario.codigo_confirmacao!,
           )}&confirmarConta=true`,
         );
@@ -133,9 +136,7 @@ export const authService = {
           nome: criptografia.descriptografar(usuario.nome),
           email: criptografia.descriptografar(usuario.email),
         },
-        `${
-          process.env.FRONTEND_URL
-        }/confirmacao-email?codigo=${encodeURIComponent(
+        `${urlFrontend}/confirmacao-email?codigo=${encodeURIComponent(
           usuario.codigo_confirmacao!,
         )}&confirmarConta=true`,
       );
@@ -171,9 +172,7 @@ export const authService = {
           nome: criptografia.descriptografar(usuario.nome),
           email: criptografia.descriptografar(usuario.email),
         },
-        `${
-          process.env.FRONTEND_URL
-        }/redefinicaoValidaCodigo?codigo=${encodeURIComponent(
+        `${urlFrontend}/redefinicaoValidaCodigo?codigo=${encodeURIComponent(
           usuario.codigo_confirmacao!,
         )}`,
       );

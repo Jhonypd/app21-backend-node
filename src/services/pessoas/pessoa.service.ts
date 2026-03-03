@@ -21,7 +21,10 @@ export interface InserirPessoaData {
   email: string;
   senha: string;
 }
-
+const urlFrontend =
+  process.env.NODE_ENV === "production"
+    ? process.env.FRONTEND_URL_PROD || "http://localhost:3004"
+    : process.env.FRONTEND_URL || "http://localhost:3000";
 export const pessoaService = {
   async usuarioExistePorEmailOuId(email?: string | null, id?: string | null) {
     if (id) {
@@ -123,9 +126,7 @@ export const pessoaService = {
             nome: criptografia.descriptografar(usuario.nome), // Usa o nome original (não criptografado)
             email: criptografia.descriptografar(usuario.email!), // Usa o email original para envio
           },
-          `${
-            process.env.FRONTEND_URL
-          }/confirmarConta?codigo=${encodeURIComponent(
+          `${urlFrontend}/confirmarConta?codigo=${encodeURIComponent(
             usuario.codigo_confirmacao!,
           )}`,
         );
