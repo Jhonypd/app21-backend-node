@@ -47,6 +47,8 @@ const allowedOrigins = [
   process.env.FRONTEND_URL_PROD,
   "http://192.168.2.99:3000",
   "http://192.168.2.53:3000",
+  "http://192.168.2.53:3004",
+  "http://192.168.2.100:3004",
   "http://localhost:3000",
   "http://localhost:3004",
   "http://192.168.0.102:3004",

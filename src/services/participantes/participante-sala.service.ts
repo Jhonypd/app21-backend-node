@@ -115,6 +115,7 @@ export const participanteSalaService = {
       const participantesSessao =
         await participanteSessaoRepository.obterParticipantesPorSessao(
           sessao_id,
+          apenasOnline,
         );
 
       const idsPermanentes = new Set(participantesSala.map((p) => p.pessoa.id));

@@ -55,10 +55,11 @@ export const participanteSessaoRepository = {
       },
     }),
 
-  obterParticipantesPorSessao: (sessao_id: string) =>
+  obterParticipantesPorSessao: (sessao_id: string, apenasOnline?: boolean) =>
     prismaClient.participanteSessao.findMany({
       where: {
         sessao_id,
+        online: apenasOnline ? true : undefined,
       },
       select: {
         id: true,
