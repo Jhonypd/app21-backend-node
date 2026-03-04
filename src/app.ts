@@ -18,6 +18,7 @@ console.log("Variáveis de ambiente:", {
 
 import express from "express";
 import http from "http";
+import os from "os";
 import cors from "cors";
 import cookieParser from "cookie-parser";
 import { Server } from "socket.io";
@@ -41,6 +42,17 @@ const isDevelopment = process.env.NODE_ENV !== "production";
 // Configurar trust proxy para obter o IP real do cliente através de proxies/load balancers
 app.set("trust proxy", true);
 
+// IPs locais da máquina onde o backend está rodando
+const localIPs = Object.values(os.networkInterfaces())
+  .flat()
+  .filter((iface) => iface && iface.family === "IPv4" && !iface.internal)
+  .map((iface) => iface!.address);
+
+const frontendPorts = [3000, 3004];
+const localOrigins = localIPs.flatMap((ip) =>
+  frontendPorts.map((port) => `http://${ip}:${port}`),
+);
+
 // Lista real de origins permitidos
 const allowedOrigins = [
   process.env.FRONTEND_URL,
@@ -51,7 +63,8 @@ const allowedOrigins = [
   "http://192.168.2.100:3004",
   "http://localhost:3000",
   "http://localhost:3004",
-  "http://192.168.0.102:3004",
+  "http://192.168.0.108:3004",
+  ...localOrigins,
 ].filter(Boolean) as string[];
 
 const validateOrigin = (
@@ -195,6 +208,11 @@ process.on("unhandledRejection", (reason) => {
 server.listen(PORT, "0.0.0.0", async () => {
   console.log(`Servidor rodando na porta ${PORT} (todas as interfaces)`);
   console.log(`- Acesso local: http://localhost:${PORT}`);
+  console.log(
+    localOrigins.length > 0
+      ? `- Acesso pela rede: ${localOrigins.map((ip) => `${ip}`).join(", ")}`
+      : "- Nenhum IP local detectado para acesso pela rede",
+  );
   if (process.env.API_URL) {
     console.log(`- API URL configurada: ${process.env.API_URL}`);
   }
