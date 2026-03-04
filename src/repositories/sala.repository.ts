@@ -56,6 +56,7 @@ export const salaRepository = {
           where: {
             ativa: true,
           },
+          take: 1,
           select: {
             id: true,
             criada_em: true,

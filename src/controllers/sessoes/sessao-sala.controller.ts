@@ -241,7 +241,11 @@ export const sessaoSalaController = {
    * Atualizar flag participa_votacao do participante na sessão
    * Permite Donos/Admin escolherem se vão votar ou não
    */
-  async atualizarParticipaVotacao(req: Request, res: Response, next: NextFunction) {
+  async atualizarParticipaVotacao(
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ) {
     try {
       const sessao_id = req.params.id;
       const pessoa_id = req.user?.Usuario_Id as string;
@@ -279,37 +283,24 @@ export const sessaoSalaController = {
    * POST /sessoes/:sessaoId/historias/durante-sessao
    * Body: { titulo, descricao } OU { adicionar: [...], remover: [...] }
    */
-  async adicionarHistoriaDuranteSessao(req: Request, res: Response, next: NextFunction) {
+  async adicionarHistoriaDuranteSessao(
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ) {
     try {
       const { sessaoId } = req.params;
-      const { titulo, descricao, adicionar, remover } = req.body;
+      const { adicionar, remover } = req.body;
       const usuarioId = req.user?.Usuario_Id as string;
 
       // Obter sessão para pegar o sala_id
-      const sessao = await sessaoSalaService.obterSessaoPorId(
-        sessaoId,
-        usuarioId,
-      );
 
       const resultado = await sessaoSalaService.adicionarHistoriaDuranteSessao({
         sessao_id: sessaoId,
-        sala_id: sessao.sala_id,
-        criado_por: usuarioId,
-        titulo,
-        descricao,
+        pessoa_id: usuarioId,
         adicionar,
         remover,
       });
-
-      // Formato legado retorna história única
-      if ("historia" in resultado) {
-        return res.status(201).json(
-          respostaSucesso({
-            resultado: { historia: resultado.historia },
-            mensagem: "História adicionada e vinculada à sessão.",
-          }),
-        );
-      }
 
       // Formato em lote
       res.status(200).json(
@@ -327,7 +318,11 @@ export const sessaoSalaController = {
    * Listar todas as histórias de uma sessão
    * GET /sessoes/:sessaoId/historias
    */
-  async listarHistoriasPorSessao(req: Request, res: Response, next: NextFunction) {
+  async listarHistoriasPorSessao(
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ) {
     try {
       const sessao_id = req.params.sessaoId;
 

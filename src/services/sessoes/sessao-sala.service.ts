@@ -9,6 +9,8 @@ import emailService from "../mail/mail.service";
 import { criptografia } from "../../lib/criptografia";
 import { obterVotosVencedoresHistoria } from "../../utils/voto-vencedor-historia";
 import { AppError } from "../../lib/errorHandler";
+import { historiaSalaRepository } from "../../repositories/historia-sala.repository";
+import { prismaClient } from "../../lib/prisma";
 
 interface CriarHistoriaDTO {
   titulo: string;
@@ -618,6 +620,7 @@ export const sessaoSalaService = {
       descricao: hs.historia.descricao,
       jaFoiVotada: hs.votos.length > 0,
       historiaAtual: hs.historia.id === historiaAtualId,
+      ordem: hs.ordem,
       voto: obterVotosVencedoresHistoria(
         hs.votos.reduce(
           (acc, voto) => {
@@ -635,66 +638,39 @@ export const sessaoSalaService = {
    * Suporta formato legado (uma história) ou em lote (múltiplas adições/remoções)
    */
   async adicionarHistoriaDuranteSessao(dados: {
-    sala_id: string;
     sessao_id: string;
-    criado_por: string;
-    // Formato legado
-    titulo?: string;
-    descricao?: string | null;
+    pessoa_id: string;
     // Formato em lote
-    adicionar?: Array<{ titulo: string; descricao?: string | null }>;
+    adicionar?: Array<{
+      titulo: string;
+      descricao?: string | null;
+      ordem?: number;
+    }>;
     remover?: string[];
   }) {
-    const { historiaSalaRepository } =
-      await import("../../repositories/historia-sala.repository");
-    const { prismaClient } = await import("../../lib/prisma");
-
     // Verificar se sala existe
-    const sala = await salaRepository.obterPorId(dados.sala_id, false);
-    if (!sala) {
-      throw new AppError("Sala não encontrada");
-    }
+    const sessao = await sessaoSalaService.obterSessaoPorId(
+      dados.sessao_id,
+      dados.pessoa_id,
+    );
 
-    // Verificar se sessão existe e está ativa
-    const sessao = await prismaClient.sessaoSala.findUnique({
-      where: { id: dados.sessao_id },
-    });
+    if (!sessao) {
+      throw new AppError("Sessão não encontrada");
+    }
 
     if (!sessao || !sessao.ativa) {
       throw new AppError("Sessão não encontrada ou inativa");
-    }
-
-    // Formato legado: uma única história
-    if (dados.titulo) {
-      const historia = await historiaSalaRepository.criar({
-        sala_id: dados.sala_id,
-        titulo: dados.titulo,
-        descricao: dados.descricao,
-        criado_por: dados.criado_por,
-      });
-
-      // Obter próxima ordem
-      const maxOrdem = await historiaSessaoRepository.obterMaiorOrdem(
-        dados.sessao_id,
-      );
-      const proximaOrdem = (maxOrdem ?? -1) + 1;
-
-      await prismaClient.historiaSessao.create({
-        data: {
-          sessao_id: dados.sessao_id,
-          historia_id: historia.id,
-          ordem: proximaOrdem,
-        },
-      });
-
-      return { historia };
     }
 
     // Formato em lote
     const resultado = {
       adicionadas: 0,
       removidas: 0,
-      historias: [] as any[],
+      historias: [] as Array<{
+        titulo: string;
+        descricao?: string | null;
+        ordem?: number;
+      }>,
     };
 
     await prismaClient.$transaction(async (tx) => {
@@ -702,36 +678,48 @@ export const sessaoSalaService = {
       if (dados.remover && dados.remover.length > 0) {
         const removidas = await tx.historiaSessao.deleteMany({
           where: {
-            sessao_id: dados.sessao_id,
+            sessao_id: sessao.id,
             historia_id: { in: dados.remover },
           },
         });
+        await tx.historiaSala.deleteMany({
+          where: {
+            id: { in: dados.remover },
+            sala_id: sessao.sala_id,
+          },
+        });
+
         resultado.removidas = removidas.count;
       }
 
       // 2. Adicionar novas histórias
       if (dados.adicionar && dados.adicionar.length > 0) {
-        const maxOrdem = await tx.historiaSessao.findFirst({
-          where: { sessao_id: dados.sessao_id },
-          orderBy: { ordem: "desc" },
-          select: { ordem: true },
-        });
-
-        let proximaOrdem = (maxOrdem?.ordem ?? -1) + 1;
-
+        let maxOrdem;
+        let proximaOrdem = 1;
         for (const historiaInput of dados.adicionar) {
+          if (historiaInput.ordem !== undefined && historiaInput.ordem > 0) {
+            proximaOrdem = historiaInput.ordem;
+          } else {
+            maxOrdem = await tx.historiaSessao.findFirst({
+              where: { sessao_id: sessao.id },
+              orderBy: { ordem: "desc" },
+              select: { ordem: true },
+            });
+            proximaOrdem = (maxOrdem?.ordem ?? 0) + 1;
+          }
+
           const historia = await tx.historiaSala.create({
             data: {
-              sala_id: dados.sala_id,
+              sala_id: sessao.sala_id,
               titulo: historiaInput.titulo,
               descricao: historiaInput.descricao ?? null,
-              criado_por: dados.criado_por,
+              criado_por: dados.pessoa_id,
             },
           });
 
           await tx.historiaSessao.create({
             data: {
-              sessao_id: dados.sessao_id,
+              sessao_id: sessao.id,
               historia_id: historia.id,
               ordem: proximaOrdem,
             },

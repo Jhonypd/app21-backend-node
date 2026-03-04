@@ -2,6 +2,7 @@ import { Router } from "express";
 import { sessaoSalaController } from "../../controllers/sessoes/sessao-sala.controller";
 import { authGuard } from "../../middlewares/authGuard";
 import { validateHandler } from "../../middlewares/handleValidate";
+import { adicionarHistoriaDuranteSessaoValidations } from "../../middlewares/historiaSessaoGuard";
 
 const router = Router();
 
@@ -43,6 +44,7 @@ router.patch(
 // POST /sessoes/:sessaoId/historias/durante-sessao - Adicionar história durante sessão ativa
 router.post(
   "/:sessaoId/historias/durante-sessao",
+  adicionarHistoriaDuranteSessaoValidations(),
   validateHandler,
   authGuard,
   sessaoSalaController.adicionarHistoriaDuranteSessao,
