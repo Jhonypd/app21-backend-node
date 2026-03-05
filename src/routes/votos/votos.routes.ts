@@ -9,7 +9,7 @@ const router = Router();
 
 // POST /votos/votar
 router.post(
-  "/votos/votar",
+  "/votar",
   validateHandler,
   authGuard,
   salaAuthGuard,
@@ -19,7 +19,7 @@ router.post(
 
 /* GET /votos/obterVotosPorHistoriaSessaoSessaoSala */
 router.get(
-  "/votos/obterVotosPorHistoriaSessaoSessaoSala",
+  "/obterVotosPorHistoriaSessaoSessaoSala",
   validateHandler,
   authGuard,
   salaAuthGuard,

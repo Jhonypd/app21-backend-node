@@ -95,7 +95,7 @@ app.use(
       "Authorization",
       "X-CSRF-Token",
       "Accept",
-      "sessao_id",
+      "sessao_sala_id",
       "sala_id",
       "historia_id",
       "pessoa_id",
@@ -117,7 +117,6 @@ app.use("/auth", auth);
 app.use("/pessoas", pessoas);
 app.use("/salas", salas);
 app.use("/sessoes", sessoes);
-app.use("/sessoes", votos);
 app.use("/votos", votos);
 app.use("/salas", historias);
 app.use("/", historias);
@@ -138,7 +137,13 @@ const io = new Server(server, {
     },
     credentials: true,
     methods: ["GET", "POST", "PUT", "DELETE"],
-    allowedHeaders: ["Content-Type", "Authorization", "X-CSRF-Token"],
+    allowedHeaders: [
+      "Content-Type",
+      "Authorization",
+      "X-CSRF-Token",
+      "historia_id",
+      "sessao_sala_id",
+    ],
   },
   connectionStateRecovery: {
     maxDisconnectionDuration: 2 * 60 * 1000,

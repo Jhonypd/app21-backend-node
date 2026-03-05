@@ -6,7 +6,7 @@ import { obterVotosVencedoresHistoria } from "../../utils/voto-vencedor-historia
 import { criptografia } from "../../lib/criptografia";
 
 interface VotoInserirData {
-  historia_sessao_id: string;
+  historia_id: string;
   pessoa_id: string;
   valor: number;
   sessao_id?: string;
@@ -24,9 +24,9 @@ export const votosService = {
   async votar(voto: VotoInserirData) {
     const historiaSessao = await votosService.obterHistoriaSessao(
       voto.sessao_id as string,
-      voto.historia_sessao_id,
+      voto.historia_id,
     );
-
+    // ea49600f-db3b-4cc2-83da-c47c4aaaa071
     if (!historiaSessao) {
       throw new Error(
         "História não encontrada na sessão. As histórias devem ser adicionadas ao criar a sessão.",
@@ -46,7 +46,7 @@ export const votosService = {
       return {
         temporario: true,
         voto: {
-          historia_sessao_id: voto.historia_sessao_id,
+          historia_id: voto.historia_id,
           pessoa_id: voto.pessoa_id,
           valor: voto.valor,
           data_voto: new Date(),
@@ -84,7 +84,7 @@ export const votosService = {
         temporario: true,
         voto: {
           id: crypto.randomUUID(),
-          historia_sessao_id: voto.historia_sessao_id,
+          historia_id: voto.historia_id,
           pessoa_id: voto.pessoa_id,
           valor: voto.valor,
           data_voto: new Date(),
@@ -93,18 +93,20 @@ export const votosService = {
       };
     }
 
+    const historiaSeessaoId = historiaSessao.id;
+
     // ✅ TEM histórias → salva normalmente
     // Verificar se já existe voto para esta história-sessão e pessoa
     const votoExistente =
       await votosRepository.obterVotoPorHistoriaSessaoEPessoa(
-        voto.historia_sessao_id,
+        historiaSeessaoId,
         voto.pessoa_id,
       );
 
     if (votoExistente) {
       // Se já existe, atualiza o voto
       const votoAtualizado = await votosRepository.atualizar(
-        voto.historia_sessao_id,
+        historiaSeessaoId,
         voto.pessoa_id,
         {
           valor: voto.valor,
@@ -117,7 +119,11 @@ export const votosService = {
     }
 
     // Se não existe, cria novo voto
-    const novoVoto = await votosRepository.inserir(voto);
+    const novoVoto = await votosRepository.inserir({
+      historia_sessao_id: historiaSeessaoId,
+      pessoa_id: voto.pessoa_id,
+      valor: voto.valor,
+    });
     return {
       temporario: false,
       voto: novoVoto,

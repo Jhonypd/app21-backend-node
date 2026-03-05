@@ -1,7 +1,6 @@
 import { NextFunction, Request, Response } from "express";
 import { votosService } from "../../services/votos/votos.service";
-import { respostaErro, respostaSucesso } from "../../utils/response";
-import { sessaoSalaService } from "../../services/sessoes/sessao-sala.service";
+import { respostaSucesso } from "../../utils/response";
 
 export const votosController = {
   /**
@@ -21,17 +20,17 @@ export const votosController = {
   async votar(req: Request, res: Response, next: NextFunction) {
     try {
       // const sessao_id = req.params.id;
-      const { historia_sessao_id, valor, participa_votacao } = req.body;
+      const { historia_id, valor, participa_votacao } = req.body;
       const pessoa_id = req.user?.Usuario_Id as string;
       const sessao_id = req.sala?.Sessao_Sala_Id as string;
 
-      if (!historia_sessao_id) {
+      if (!historia_id) {
         throw new Error("Id da história é obrigatório.");
       }
 
       // Registrar o voto
       const voto = await votosService.votar({
-        historia_sessao_id,
+        historia_id,
         pessoa_id,
         valor,
         sessao_id,
@@ -64,8 +63,8 @@ export const votosController = {
     next: NextFunction,
   ) {
     try {
-      const sessao_id = req.params.sessaoId;
-      const historia_id = req.params.historiaId;
+      const sessao_id = req.get("sessao_sala_id") as string;
+      const historia_id = req.get("historia_id") as string;
 
       const votos = await votosService.obterVotosPorHistoriaSessaoSessaoSala(
         sessao_id,

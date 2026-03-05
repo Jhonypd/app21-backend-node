@@ -56,11 +56,11 @@ router.get(
 );
 
 // GET /sessoes/:sessaoId/historias/:historiaId/votos - Obter votos de uma história específica
-router.get(
-  "/:sessaoId/historias/:historiaId/votos",
-  validateHandler,
-  authGuard,
-  sessaoSalaController.obterVotosPorHistoriaSessaoSala,
-);
+// router.get(
+//   "/:sessaoId/historias/:historiaId/votos",
+//   validateHandler,
+//   authGuard,
+//   sessaoSalaController.obterVotosPorHistoriaSessaoSala,
+// );
 
 export default router;
