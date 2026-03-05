@@ -57,11 +57,14 @@ export const pessoaController = {
     try {
       const pessoaId = req.user?.Usuario_Id as string;
 
+      // quando a implementação de multi idiomas esse retorno serve para o frontend já exibir as informações no idioma do usuário e a api devolver as mensagens no idioma correto
+      const idioma = req.user?.Idioma_Padrao as string;
+
       const dados = await pessoaService.obterDadosConta(pessoaId);
 
       return res
         .status(200)
-        .json(respostaSucesso({ resultado: { pessoa: dados } }));
+        .json(respostaSucesso({ resultado: { pessoa: dados, idioma } }));
     } catch (error: any) {
       return next(error);
     }

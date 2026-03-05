@@ -9,9 +9,9 @@ export const pessoaRepository = {
       },
     }),
 
-  obterPorEmail: (emailHash: string) =>
+  obterPorEmail: (email_busca: string) =>
     prismaClient.pessoa.findFirst({
-      where: { email_hash: emailHash, inativo: false },
+      where: { email_busca, inativo: false },
     }),
 
   validaCodigoEmailExiste: (codigo: string) =>

@@ -32,12 +32,12 @@ export const pessoaService = {
     }
 
     if (email) {
-      const emailHash = await hash.geradorCamposComuns(email);
-      return (await pessoaRepository.obterPorEmail(emailHash)) ?? null;
+      return (await pessoaRepository.obterPorEmail(email.trim())) ?? null;
     }
 
     return null;
   },
+
   async inserir({ email, nome, senha }: InserirPessoaData) {
     const usuarioExistente = await this.usuarioExistePorEmailOuId(email);
 
