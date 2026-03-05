@@ -6,6 +6,42 @@ interface HistoriaSessaoInserirData {
   ordem?: number;
 }
 
+type BuscarHistoriaSessaoParams =
+  | { id: string }
+  | { sessao_id: string; historia_id: string };
+
+const historiaSessaoInclude = {
+  sessao: {
+    select: {
+      id: true,
+      sala_id: true,
+      ativa: true,
+    },
+  },
+  historia: {
+    select: {
+      id: true,
+      titulo: true,
+      descricao: true,
+      sala_id: true,
+    },
+  },
+  votos: {
+    include: {
+      pessoa: {
+        select: {
+          id: true,
+          nome: true,
+          inativo: true,
+        },
+      },
+    },
+    orderBy: {
+      data_voto: "asc",
+    },
+  },
+} as const;
+
 export const historiaSessaoRepository = {
   inserir: (data: HistoriaSessaoInserirData) =>
     prismaClient.historiaSessao.create({
@@ -44,82 +80,24 @@ export const historiaSessaoRepository = {
       },
     }),
 
-  obterPorId: (id: string) =>
-    prismaClient.historiaSessao.findUnique({
-      where: { id },
-      include: {
-        sessao: {
-          select: {
-            id: true,
-            sala_id: true,
-            ativa: true,
-          },
-        },
-        historia: {
-          select: {
-            id: true,
-            titulo: true,
-            descricao: true,
-            sala_id: true,
-          },
-        },
-        votos: {
-          include: {
-            pessoa: {
-              select: {
-                id: true,
-                nome: true,
-                inativo: true,
-              },
-            },
-          },
-          orderBy: {
-            data_voto: "asc",
-          },
-        },
-      },
-    }),
+  obter: (params: BuscarHistoriaSessaoParams) => {
+    if ("id" in params) {
+      return prismaClient.historiaSessao.findUnique({
+        where: { id: params.id },
+        include: historiaSessaoInclude,
+      });
+    }
 
-  obterPorSessaoEHistoria: (sessao_id: string, historia_id: string) =>
-    prismaClient.historiaSessao.findUnique({
+    return prismaClient.historiaSessao.findUnique({
       where: {
         sessao_id_historia_id: {
-          sessao_id,
-          historia_id,
+          sessao_id: params.sessao_id,
+          historia_id: params.historia_id,
         },
       },
-      include: {
-        sessao: {
-          select: {
-            id: true,
-            sala_id: true,
-            ativa: true,
-          },
-        },
-        historia: {
-          select: {
-            id: true,
-            titulo: true,
-            descricao: true,
-            sala_id: true,
-          },
-        },
-        votos: {
-          include: {
-            pessoa: {
-              select: {
-                id: true,
-                nome: true,
-                inativo: true,
-              },
-            },
-          },
-          orderBy: {
-            data_voto: "asc",
-          },
-        },
-      },
-    }),
+      include: historiaSessaoInclude,
+    });
+  },
 
   listarPorSessao: (sessao_id: string) =>
     prismaClient.historiaSessao.findMany({

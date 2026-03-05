@@ -113,47 +113,6 @@ export const votosRepository = {
       },
     }),
 
-  obterVotosPorSessao: (sessao_id: string) =>
-    prismaClient.voto.findMany({
-      where: {
-        historiaSessao: {
-          sessao_id,
-        },
-      },
-      include: {
-        pessoa: {
-          select: {
-            id: true,
-            nome: true,
-            inativo: true,
-          },
-        },
-        historiaSessao: {
-          include: {
-            sessao: {
-              select: {
-                id: true,
-                sala_id: true,
-              },
-            },
-            historia: {
-              select: {
-                id: true,
-                titulo: true,
-                descricao: true,
-              },
-            },
-          },
-        },
-      },
-      orderBy: {
-        pessoa: {
-          nome: "asc",
-        },
-        data_voto: "asc",
-      },
-    }),
-
   deletarVotosPorHistoriaSessao: (
     historia_sessao_id: string,
     historia_id: string,
@@ -185,14 +144,14 @@ export const votosRepository = {
       },
     }),
 
-  contarVotosPorSessao: (sessao_id: string) =>
-    prismaClient.voto.count({
-      where: {
-        historiaSessao: {
-          sessao_id,
-        },
-      },
-    }),
+  // contarVotosPorSessao: (sessao_id: string) =>
+  //   prismaClient.voto.count({
+  //     where: {
+  //       historiaSessao: {
+  //         sessao_id,
+  //       },
+  //     },
+  //   }),
 
   /**
    * Conta total de votos em uma sala (para validação de exclusão)

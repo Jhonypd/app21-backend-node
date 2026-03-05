@@ -2,6 +2,8 @@ import { votosRepository } from "../../repositories/votos.repository";
 import { historiaSessaoRepository } from "../../repositories/historia-sessao.repository";
 import { participanteSessaoRepository } from "../../repositories/participante-sessao.repository";
 import { AppError } from "../../lib/errorHandler";
+import { obterVotosVencedoresHistoria } from "../../utils/voto-vencedor-historia";
+import { criptografia } from "../../lib/criptografia";
 
 interface VotoInserirData {
   historia_sessao_id: string;
@@ -12,22 +14,31 @@ interface VotoInserirData {
 }
 
 export const votosService = {
+  /**
+   * Registrar ou atualizar um voto para uma história-sessão
+   * POST /sessoes/:sessaoId/historias/:historiaId/votar
+   * Body: { valor, participa_votacao }
+   * - Se participa_votacao === false, o voto não é salvo (temporário) e o participante não é incluído na votação
+   * - Se participa_votacao === true ou não fornecido, o voto é salvo normalmente e o participante é incluído na votação
+   */
   async votar(voto: VotoInserirData) {
+    const historiaSessao = await votosService.obterHistoriaSessao(
+      voto.sessao_id as string,
+      voto.historia_sessao_id,
+    );
+
+    if (!historiaSessao) {
+      throw new Error(
+        "História não encontrada na sessão. As histórias devem ser adicionadas ao criar a sessão.",
+      );
+    }
+
     // Ajuste conforme as regras do seu Planning Poker
     if (voto.valor < -1 || voto.valor > 89) {
       throw new AppError(
         "Valor do voto inválido. Deve estar entre -1 e 89.",
         400,
       );
-    }
-
-    // Verificar se sessão tem histórias vinculadas
-    const historiaSessao = await historiaSessaoRepository.obterPorId(
-      voto.historia_sessao_id,
-    );
-
-    if (!historiaSessao) {
-      throw new AppError("História de sessão não encontrada.", 404);
     }
 
     // Se participa_votacao === false, não salvar voto
@@ -55,7 +66,10 @@ export const votosService = {
         );
       } catch (error) {
         // Se não conseguir atualizar, continua (participante pode não existir ainda)
-        console.warn("Não foi possível atualizar participa_votacao:", error);
+        console.warn(
+          "Não foi possível incluir o usuário na votação atual:",
+          error,
+        );
       }
     }
 
@@ -75,7 +89,7 @@ export const votosService = {
           valor: voto.valor,
           data_voto: new Date(),
         },
-        mensagem: "Voto registrado (modo prática - não será salvo)",
+        mensagem: "Voto registrado registrado",
       };
     }
 
@@ -110,14 +124,69 @@ export const votosService = {
     };
   },
 
-  async obterVotosPorHistoriaSessao(historia_sessao_id: string) {
-    return await votosRepository.obterVotosPorHistoriaSessao(
-      historia_sessao_id,
-    );
-  },
+  /**
+   * Obter votos de uma história específica em uma sessão
+   *
+   * GET /votos/obterVotosPorHistoriaSessaoSessaoSala
+   *
+   * @param historia_sessao_id ID da história-sessão para obter os votos
+   */
+  async obterVotosPorHistoriaSessaoSessaoSala(
+    sessao_id: string,
+    historia_id: string,
+  ) {
+    // Buscar HistoriaSessao para obter os votos
+    const historiaSessao = await historiaSessaoRepository.obter({
+      sessao_id,
+      historia_id,
+    });
 
-  async obterVotosPorSessao(sessao_id: string) {
-    return await votosRepository.obterVotosPorSessao(sessao_id);
+    if (!historiaSessao) {
+      // Se não existe HistoriaSessao, retornar array vazio (história ainda não tem votos)
+      return { media: 0, voto_vencedor: 0, votos: [] };
+    }
+
+    // Buscar votos da HistoriaSessao
+    const votos = await votosRepository.obterVotosPorHistoriaSessao(
+      historiaSessao.id,
+    );
+
+    const contagemVotos = votos.reduce(
+      (acc, voto) => {
+        acc[voto.valor] = (acc[voto.valor] || 0) + 1;
+        return acc;
+      },
+      {} as Record<number, number>,
+    );
+
+    const calculaVotoVencedorHistoria =
+      obterVotosVencedoresHistoria(contagemVotos);
+
+    const votosValidos = votos
+      .map((v) => Number(v.valor))
+      .filter(Number.isFinite);
+    const media = votosValidos.length
+      ? Number(
+          (
+            votosValidos.reduce((a, b) => a + b, 0) / votosValidos.length
+          ).toFixed(1),
+        )
+      : null;
+
+    // Formatar votos com dados descriptografados
+    return {
+      media: media,
+      voto_vencedor: calculaVotoVencedorHistoria[0],
+      votos: votos.map((voto) => ({
+        id: voto.id,
+        pessoa_id: voto.pessoa_id,
+        valor: voto.valor,
+        pessoa: {
+          nome: criptografia.descriptografar(voto.pessoa.nome),
+          inativo: voto.pessoa.inativo,
+        },
+      })),
+    };
   },
 
   async obterVotoPorHistoriaSessaoEPessoa(
@@ -130,38 +199,38 @@ export const votosService = {
     );
   },
 
-  async resetarVotosPorHistoriaSessao(
-    historia_sessao_id: string,
-    historia_id: string,
-  ) {
-    return await votosRepository.deletarVotosPorHistoriaSessao(
-      historia_sessao_id,
-      historia_id,
-    );
-  },
+  // async resetarVotosPorHistoriaSessao(
+  //   historia_sessao_id: string,
+  //   historia_id: string,
+  // ) {
+  //   return await votosRepository.deletarVotosPorHistoriaSessao(
+  //     historia_sessao_id,
+  //     historia_id,
+  //   );
+  // },
 
-  async resetarVotosPorSessao(sessao_id: string) {
-    return await votosRepository.deletarVotosPorSessao(sessao_id);
-  },
+  // async resetarVotosPorSessao(sessao_id: string) {
+  //   return await votosRepository.deletarVotosPorSessao(sessao_id);
+  // },
 
-  async contarVotosPorHistoriaSessao(historia_sessao_id: string) {
-    return await votosRepository.contarVotosPorHistoriaSessao(
-      historia_sessao_id,
-    );
-  },
+  // async contarVotosPorHistoriaSessao(historia_sessao_id: string) {
+  //   return await votosRepository.contarVotosPorHistoriaSessao(
+  //     historia_sessao_id,
+  //   );
+  // },
 
-  async contarVotosPorSessao(sessao_id: string) {
-    return await votosRepository.contarVotosPorSessao(sessao_id);
-  },
+  // async contarVotosPorSessao(sessao_id: string) {
+  //   return await votosRepository.contarVotosPorSessao(sessao_id);
+  // },
 
   async obterHistoriaSessao(sessao_id: string, historia_id: string) {
-    return await historiaSessaoRepository.obterPorSessaoEHistoria(
+    return await historiaSessaoRepository.obter({
       sessao_id,
       historia_id,
-    );
+    });
   },
 
-  async anularVoto(voto_id: string, pessoa_id: string) {
+  async excluirVoto(voto_id: string, pessoa_id: string) {
     // Buscar o voto
     const voto = await votosRepository.obterPorId(voto_id);
 

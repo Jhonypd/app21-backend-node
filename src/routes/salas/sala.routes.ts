@@ -1,6 +1,6 @@
 import { Router } from "express";
 import { salaController } from "../../controllers/salas/sala.controller";
-import { sessaoSalaController } from "../../controllers/sessoes/sessao-sala.controller";
+import { sessaoSalaController } from "../../controllers/sessao-sala/sessao-sala.controller";
 import { participanteSalaController } from "../../controllers/participantes/participante-sala.controller";
 import { authGuard } from "../../middlewares/authGuard";
 import { salaAuthGuard } from "../../middlewares/salaAuthGuard";
@@ -146,7 +146,7 @@ router.post(
   validateHandler,
   csrfGuard,
   authGuard,
-  sessaoSalaController.criarSessao,
+  sessaoSalaController.criarSessaoSala,
 );
 
 // PUT /salas/:id/historia-atual - Selecionar história atual (dono e admin)
@@ -168,7 +168,7 @@ router.post(
   salaAuthGuard, // Valida token de sala
   csrfGuard,
   salaPermissaoGuard([0, 1]), // Dono e Admin
-  sessaoSalaController.encerrarSessao,
+  sessaoSalaController.encerrarSessaoSalaAtiva,
 );
 
 // PATCH /salas/:id/sessoes/:sessaoId/participantes/:pessoaId/kick - Kickar participante (moderação)
@@ -180,7 +180,7 @@ router.patch(
   salaAuthGuard, // Valida token de sala (necessário para validações)
   csrfGuard,
   salaPermissaoGuard([0, 1]), // Dono e Admin
-  sessaoSalaController.kickarParticipante,
+  sessaoSalaController.kickarParticipanteSessaoSala,
 );
 
 // GET /salas/:id/participantes - Listar participantes permanentes (todos podem ver)
@@ -192,8 +192,5 @@ router.get(
   salaPermissaoGuard([0, 1, 2, 3]), // Todos (incluindo visitantes)
   participanteSalaController.listarParticipantes,
 );
-
-// DEPRECATED: Use POST /salas/:id/participantes with role=3 instead
-// Removed old visitantes routes (consolidated into unified participant endpoint)
 
 export default router;

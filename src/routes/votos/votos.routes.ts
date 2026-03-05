@@ -2,21 +2,39 @@ import { Router } from "express";
 import { votosController } from "../../controllers/votos/votos.controller";
 import { authGuard } from "../../middlewares/authGuard";
 import { validateHandler } from "../../middlewares/handleValidate";
+import { salaAuthGuard } from "../../middlewares/salaAuthGuard";
+import { salaPermissaoGuard } from "../../middlewares/salaPermissaoGuard";
 
 const router = Router();
 
-// POST /sessoes/:id/votos
-router.post("/:id/votos", validateHandler, authGuard, votosController.votar);
-
-// GET /sessoes/:id/votos
-router.get(
-  "/:id/votos",
+// POST /votos/votar
+router.post(
+  "/votos/votar",
   validateHandler,
   authGuard,
-  votosController.obterVotos,
+  salaAuthGuard,
+  salaPermissaoGuard([0, 1, 2, 3]),
+  votosController.votar,
 );
 
-// DELETE /votos/:id - Anular voto
-router.delete("/:id", validateHandler, authGuard, votosController.anularVoto);
+/* GET /votos/obterVotosPorHistoriaSessaoSessaoSala */
+router.get(
+  "/votos/obterVotosPorHistoriaSessaoSessaoSala",
+  validateHandler,
+  authGuard,
+  salaAuthGuard,
+  salaPermissaoGuard([0, 1, 2, 3]),
+  votosController.obterVotosPorHistoriaSessaoSessaoSala,
+);
+
+// DELETE /votos/:id - excluir voto apenas quando o adm/moderador quiser anular o voto
+router.delete(
+  "/:id",
+  validateHandler,
+  authGuard,
+  salaAuthGuard,
+  salaPermissaoGuard([0, 1]),
+  votosController.excluirVoto,
+);
 
 export default router;

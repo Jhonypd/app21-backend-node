@@ -174,8 +174,6 @@ export const pessoaService = {
   },
 
   async listarPorNomeOuEmail(valorPesquisa: string, salaId?: string) {
-    // const valorPesquisaHasheado = await hash.geradorCamposComuns(valorPesquisa);
-
     const pessoas =
       await pessoaRepository.obterTodosPorNomeOuEmail(valorPesquisa);
 

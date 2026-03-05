@@ -9,7 +9,6 @@ import emailService from "../mail/mail.service";
 import { criptografia } from "../../lib/criptografia";
 import { obterVotosVencedoresHistoria } from "../../utils/voto-vencedor-historia";
 import { AppError } from "../../lib/errorHandler";
-import { historiaSalaRepository } from "../../repositories/historia-sala.repository";
 import { prismaClient } from "../../lib/prisma";
 
 interface CriarHistoriaDTO {
@@ -734,64 +733,5 @@ export const sessaoSalaService = {
     });
 
     return resultado;
-  },
-
-  /**
-   * Obter votos de uma história específica dentro de uma sessão
-   */
-  async obterVotosPorHistoriaSessao(sessao_id: string, historia_id: string) {
-    // Buscar HistoriaSessao para obter os votos
-    const historiaSessao =
-      await historiaSessaoRepository.obterPorSessaoEHistoria(
-        sessao_id,
-        historia_id,
-      );
-
-    if (!historiaSessao) {
-      // Se não existe HistoriaSessao, retornar array vazio (história ainda não tem votos)
-      return { media: 0, voto_vencedor: 0, votos: [] };
-    }
-
-    // Buscar votos da HistoriaSessao
-    const votos = await votosRepository.obterVotosPorHistoriaSessao(
-      historiaSessao.id,
-    );
-
-    const contagemVotos = votos.reduce(
-      (acc, voto) => {
-        acc[voto.valor] = (acc[voto.valor] || 0) + 1;
-        return acc;
-      },
-      {} as Record<number, number>,
-    );
-
-    const calculaVotoVencedorHistoria =
-      obterVotosVencedoresHistoria(contagemVotos);
-
-    const votosValidos = votos
-      .map((v) => Number(v.valor))
-      .filter(Number.isFinite);
-    const media = votosValidos.length
-      ? Number(
-          (
-            votosValidos.reduce((a, b) => a + b, 0) / votosValidos.length
-          ).toFixed(1),
-        )
-      : null;
-
-    // Formatar votos com dados descriptografados
-    return {
-      media: media,
-      voto_vencedor: calculaVotoVencedorHistoria[0],
-      votos: votos.map((voto) => ({
-        id: voto.id,
-        pessoa_id: voto.pessoa_id,
-        valor: voto.valor,
-        pessoa: {
-          nome: criptografia.descriptografar(voto.pessoa.nome),
-          inativo: voto.pessoa.inativo,
-        },
-      })),
-    };
   },
 };

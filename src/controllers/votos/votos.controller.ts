@@ -1,33 +1,37 @@
 import { NextFunction, Request, Response } from "express";
 import { votosService } from "../../services/votos/votos.service";
 import { respostaErro, respostaSucesso } from "../../utils/response";
+import { sessaoSalaService } from "../../services/sessoes/sessao-sala.service";
 
 export const votosController = {
+  /**
+   * Registrar um voto para uma história em uma sessão,
+   * ou atualiza o voto com o novo valor se já existir.
+   *
+   * Endpoint:
+   *   POST /votos/votar
+   *
+   * Body:
+   *   {
+   *     historia_sessao_id: string
+   *     valor: number
+   *     participa_votacao: boolean
+   *   }
+   */
   async votar(req: Request, res: Response, next: NextFunction) {
     try {
-      const sessao_id = req.params.id;
+      // const sessao_id = req.params.id;
       const { historia_sessao_id, valor, participa_votacao } = req.body;
       const pessoa_id = req.user?.Usuario_Id as string;
+      const sessao_id = req.sala?.Sessao_Sala_Id as string;
 
       if (!historia_sessao_id) {
-        throw new Error("historia_id é obrigatório.");
-      }
-
-      // Buscar HistoriaSessao (deve existir - criada junto com a sessão)
-      const historiaSessao = await votosService.obterHistoriaSessao(
-        sessao_id,
-        historia_sessao_id,
-      );
-
-      if (!historiaSessao) {
-        throw new Error(
-          "História não encontrada na sessão. As histórias devem ser adicionadas ao criar a sessão.",
-        );
+        throw new Error("Id da história é obrigatório.");
       }
 
       // Registrar o voto
       const voto = await votosService.votar({
-        historia_sessao_id: historiaSessao.id,
+        historia_sessao_id,
         pessoa_id,
         valor,
         sessao_id,
@@ -48,56 +52,51 @@ export const votosController = {
     }
   },
 
-  async obterVotos(req: Request, res: Response, next: NextFunction) {
+  /**
+   * Obter votos de uma história específica em uma sessão
+   *
+   *  Endpoint:
+   * GET /votos/obterVotosPorHistoriaSessaoSessaoSala
+   */
+  async obterVotosPorHistoriaSessaoSessaoSala(
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ) {
     try {
-      const sessao_id = req.params.id;
-      const { historia_id } = req.query;
+      const sessao_id = req.params.sessaoId;
+      const historia_id = req.params.historiaId;
 
-      if (historia_id) {
-        // Buscar votos de uma história específica
-        const historiaSessao = await votosService.obterHistoriaSessao(
-          sessao_id,
-          historia_id as string,
-        );
+      const votos = await votosService.obterVotosPorHistoriaSessaoSessaoSala(
+        sessao_id,
+        historia_id,
+      );
 
-        if (!historiaSessao) {
-          return res.json(
-            respostaSucesso({
-              resultado: { votos: [] },
-            }),
-          );
-        }
-
-        const votos = await votosService.obterVotosPorHistoriaSessao(
-          historiaSessao.id,
-        );
-
-        return res.json(
-          respostaSucesso({
-            resultado: { votos },
-          }),
-        );
-      } else {
-        // Buscar todos os votos da sessão
-        const votos = await votosService.obterVotosPorSessao(sessao_id);
-
-        return res.json(
-          respostaSucesso({
-            resultado: { votos },
-          }),
-        );
-      }
+      res.json(
+        respostaSucesso({
+          resultado: votos,
+        }),
+      );
     } catch (error: any) {
       return next(error);
     }
   },
 
-  async anularVoto(req: Request, res: Response, next: NextFunction) {
+  /**
+   * Excluir um voto (anular voto)
+   * Somente permitido para administradores e moderadores
+   *
+   * Endpoint:
+   *
+   * DELETE /votos/:id
+   *
+   */
+  async excluirVoto(req: Request, res: Response, next: NextFunction) {
     try {
       const voto_id = req.params.id;
       const pessoa_id = req.user?.Usuario_Id as string;
 
-      const voto = await votosService.anularVoto(voto_id, pessoa_id);
+      const voto = await votosService.excluirVoto(voto_id, pessoa_id);
 
       return res.json(
         respostaSucesso({

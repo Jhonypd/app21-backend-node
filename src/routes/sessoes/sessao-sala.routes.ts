@@ -1,20 +1,17 @@
 import { Router } from "express";
-import { sessaoSalaController } from "../../controllers/sessoes/sessao-sala.controller";
+import { sessaoSalaController } from "../../controllers/sessao-sala/sessao-sala.controller";
 import { authGuard } from "../../middlewares/authGuard";
 import { validateHandler } from "../../middlewares/handleValidate";
 import { adicionarHistoriaDuranteSessaoValidations } from "../../middlewares/historiaSessaoGuard";
 
 const router = Router();
 
-// DEPRECATED: Use POST /salas/:id/participantes instead (unified endpoint)
-// Old route: POST /sessoes/:id/participantes - Removed (consolidated)
-
 // POST /sessoes/:id/revelar
 router.post(
   "/:id/revelar",
   validateHandler,
   authGuard,
-  sessaoSalaController.revelarVotos,
+  sessaoSalaController.revelarVotosSessaoSala,
 );
 
 // POST /sessoes/:id/resetar
@@ -22,23 +19,23 @@ router.post(
   "/:id/resetar",
   validateHandler,
   authGuard,
-  sessaoSalaController.resetarVotos,
+  sessaoSalaController.resetarVotosSessaoSala,
 );
 
 // GET /sessoes/:id
-router.get(
-  "/:id",
-  validateHandler,
-  authGuard,
-  sessaoSalaController.obterSessao,
-);
+// router.get(
+//   "/:id",
+//   validateHandler,
+//   authGuard,
+//   sessaoSalaController.obterSessaoSalaAtiva,
+// );
 
 // PATCH /sessoes/:id/participa-votacao
 router.patch(
   "/:id/participa-votacao",
   validateHandler,
   authGuard,
-  sessaoSalaController.atualizarParticipaVotacao,
+  sessaoSalaController.atualizarParticipaVotacaoSessaoSala,
 );
 
 // POST /sessoes/:sessaoId/historias/durante-sessao - Adicionar história durante sessão ativa
@@ -47,7 +44,7 @@ router.post(
   adicionarHistoriaDuranteSessaoValidations(),
   validateHandler,
   authGuard,
-  sessaoSalaController.adicionarHistoriaDuranteSessao,
+  sessaoSalaController.adicionarHistoriaDuranteSessaoSala,
 );
 
 // GET /sessoes/:sessaoId/historias - Listar todas as histórias da sessão
@@ -55,7 +52,7 @@ router.get(
   "/:sessaoId/historias",
   validateHandler,
   authGuard,
-  sessaoSalaController.listarHistoriasPorSessao,
+  sessaoSalaController.listarHistoriasPorSessaoSala,
 );
 
 // GET /sessoes/:sessaoId/historias/:historiaId/votos - Obter votos de uma história específica
@@ -63,7 +60,7 @@ router.get(
   "/:sessaoId/historias/:historiaId/votos",
   validateHandler,
   authGuard,
-  sessaoSalaController.obterVotosPorHistoria,
+  sessaoSalaController.obterVotosPorHistoriaSessaoSala,
 );
 
 export default router;

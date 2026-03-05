@@ -3,7 +3,7 @@ import { sessaoSalaService } from "../../services/sessoes/sessao-sala.service";
 import { respostaErro, respostaSucesso } from "../../utils/response";
 
 export const sessaoSalaController = {
-  async criarSessao(req: Request, res: Response, next: NextFunction) {
+  async criarSessaoSala(req: Request, res: Response, next: NextFunction) {
     try {
       const sala_id = req.params.id;
       const pessoa_id = req.user?.Usuario_Id as string;
@@ -26,7 +26,12 @@ export const sessaoSalaController = {
       return next(error);
     }
   },
-  async encerrarSessao(req: Request, res: Response, next: NextFunction) {
+
+  async encerrarSessaoSalaAtiva(
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ) {
     try {
       const sala_id = req.params.id;
       const pessoa_id = req.user?.Usuario_Id as string;
@@ -67,27 +72,32 @@ export const sessaoSalaController = {
       return next(error);
     }
   },
-  async obterSessao(req: Request, res: Response, next: NextFunction) {
-    try {
-      const sessao_id = req.params.id;
-      const pessoa_id = req.user?.Usuario_Id as string;
 
-      const sessao = await sessaoSalaService.obterSessaoPorId(
-        sessao_id,
-        pessoa_id,
-      );
+  // async obterSessaoSalaAtiva(req: Request, res: Response, next: NextFunction) {
+  //   try {
+  //     const sessao_id = req.params.id;
+  //     const pessoa_id = req.user?.Usuario_Id as string;
 
-      res.json(
-        respostaSucesso({
-          resultado: { sessao },
-        }),
-      );
-    } catch (error: any) {
-      return next(error);
-    }
-  },
+  //     const sessao = await sessaoSalaService.obterSessaoPorId(
+  //       sessao_id,
+  //       pessoa_id,
+  //     );
 
-  async adicionarParticipante(req: Request, res: Response, next: NextFunction) {
+  //     res.json(
+  //       respostaSucesso({
+  //         resultado: { sessao },
+  //       }),
+  //     );
+  //   } catch (error: any) {
+  //     return next(error);
+  //   }
+  // },
+
+  async adicionarParticipanteSessaoSala(
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ) {
     try {
       const sessao_id = req.params.id;
       const { pessoa_id, autorizado } = req.body;
@@ -109,7 +119,11 @@ export const sessaoSalaController = {
     }
   },
 
-  async revelarVotos(req: Request, res: Response, next: NextFunction) {
+  async revelarVotosSessaoSala(
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ) {
     try {
       const sessao_id = req.params.id;
       const pessoa_id = req.user?.Usuario_Id as string;
@@ -127,7 +141,11 @@ export const sessaoSalaController = {
     }
   },
 
-  async resetarVotos(req: Request, res: Response, next: NextFunction) {
+  async resetarVotosSessaoSala(
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ) {
     try {
       const sessao_id = req.params.id;
       const pessoa_id = req.user?.Usuario_Id as string;
@@ -145,7 +163,11 @@ export const sessaoSalaController = {
     }
   },
 
-  async adicionarVisitantes(req: Request, res: Response, next: NextFunction) {
+  async adicionarVisitantesSessaoSala(
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ) {
     try {
       const sala_id = req.params.id;
       const { pessoa_ids, pessoa_id } = req.body; // Array ou ID único
@@ -183,7 +205,11 @@ export const sessaoSalaController = {
     }
   },
 
-  async removerVisitante(req: Request, res: Response, next: NextFunction) {
+  async removerVisitanteSessaoSala(
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ) {
     try {
       const sala_id = req.params.id;
       const pessoa_id = req.params.pessoaId;
@@ -206,7 +232,11 @@ export const sessaoSalaController = {
    * Apenas dono e admin podem kickar
    * Admin não pode kickar dono
    */
-  async kickarParticipante(req: Request, res: Response, next: NextFunction) {
+  async kickarParticipanteSessaoSala(
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ) {
     try {
       const sessaoId = req.params.sessaoId;
       const pessoaId = req.params.pessoaId;
@@ -241,7 +271,7 @@ export const sessaoSalaController = {
    * Atualizar flag participa_votacao do participante na sessão
    * Permite Donos/Admin escolherem se vão votar ou não
    */
-  async atualizarParticipaVotacao(
+  async atualizarParticipaVotacaoSessaoSala(
     req: Request,
     res: Response,
     next: NextFunction,
@@ -283,7 +313,7 @@ export const sessaoSalaController = {
    * POST /sessoes/:sessaoId/historias/durante-sessao
    * Body: { titulo, descricao } OU { adicionar: [...], remover: [...] }
    */
-  async adicionarHistoriaDuranteSessao(
+  async adicionarHistoriaDuranteSessaoSala(
     req: Request,
     res: Response,
     next: NextFunction,
@@ -318,7 +348,7 @@ export const sessaoSalaController = {
    * Listar todas as histórias de uma sessão
    * GET /sessoes/:sessaoId/historias
    */
-  async listarHistoriasPorSessao(
+  async listarHistoriasPorSessaoSala(
     req: Request,
     res: Response,
     next: NextFunction,
@@ -339,27 +369,33 @@ export const sessaoSalaController = {
     }
   },
 
+  // não remover o comentário, mas usar apenas caso quebre a chamada de votos da historia sessão no controller de votos, pois tem a mesma função de obter os votos por história sessão sala
   /**
    * Obter votos de uma história específica dentro de uma sessão
    * GET /sessoes/:sessaoId/historias/:historiaId/votos
    */
-  async obterVotosPorHistoria(req: Request, res: Response, next: NextFunction) {
-    try {
-      const sessao_id = req.params.sessaoId;
-      const historia_id = req.params.historiaId;
+  // async obterVotosPorHistoriaSessaoSala(
+  //   req: Request,
+  //   res: Response,
+  //   next: NextFunction,
+  // ) {
+  //   try {
+  //     const sessao_id = req.params.sessaoId;
+  //     const historia_id = req.params.historiaId;
 
-      const votos = await sessaoSalaService.obterVotosPorHistoriaSessao(
-        sessao_id,
-        historia_id,
-      );
+  //     const votos =
+  //       await sessaoSalaService.obterVotosPorHistoriaSessaoSessaoSala(
+  //         sessao_id,
+  //         historia_id,
+  //       );
 
-      res.json(
-        respostaSucesso({
-          resultado: votos,
-        }),
-      );
-    } catch (error: any) {
-      return next(error);
-    }
-  },
+  //     res.json(
+  //       respostaSucesso({
+  //         resultado: votos,
+  //       }),
+  //     );
+  //   } catch (error: any) {
+  //     return next(error);
+  //   }
+  // },
 };
