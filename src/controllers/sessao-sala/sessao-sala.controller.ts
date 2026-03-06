@@ -102,7 +102,7 @@ export const sessaoSalaController = {
       const sessao_id = req.params.id;
       const { pessoa_id, autorizado } = req.body;
 
-      const participante = await sessaoSalaService.adicionarParticipante(
+      const participante = await sessaoSalaService.adicionarParticipanteSala(
         sessao_id,
         pessoa_id,
         autorizado ?? false,
@@ -307,95 +307,4 @@ export const sessaoSalaController = {
       return next(error);
     }
   },
-
-  /**
-   * Adicionar história(s) durante sessão ativa
-   * POST /sessoes/:sessaoId/historias/durante-sessao
-   * Body: { titulo, descricao } OU { adicionar: [...], remover: [...] }
-   */
-  async adicionarHistoriaDuranteSessaoSala(
-    req: Request,
-    res: Response,
-    next: NextFunction,
-  ) {
-    try {
-      const { sessaoId } = req.params;
-      const { adicionar, remover } = req.body;
-      const usuarioId = req.user?.Usuario_Id as string;
-
-      // Obter sessão para pegar o sala_id
-
-      const resultado = await sessaoSalaService.adicionarHistoriaDuranteSessao({
-        sessao_id: sessaoId,
-        pessoa_id: usuarioId,
-        adicionar,
-        remover,
-      });
-
-      // Formato em lote
-      res.status(200).json(
-        respostaSucesso({
-          resultado,
-          mensagem: `${resultado.adicionadas} histórias adicionadas, ${resultado.removidas} removidas.`,
-        }),
-      );
-    } catch (error: any) {
-      return next(error);
-    }
-  },
-
-  /**
-   * Listar todas as histórias de uma sessão
-   * GET /sessoes/:sessaoId/historias
-   */
-  async listarHistoriasPorSessaoSala(
-    req: Request,
-    res: Response,
-    next: NextFunction,
-  ) {
-    try {
-      const sessao_id = req.params.sessaoId;
-
-      const historias =
-        await sessaoSalaService.listarHistoriasPorSessao(sessao_id);
-
-      res.json(
-        respostaSucesso({
-          resultado: { historias },
-        }),
-      );
-    } catch (error: any) {
-      return next(error);
-    }
-  },
-
-  // não remover o comentário, mas usar apenas caso quebre a chamada de votos da historia sessão no controller de votos, pois tem a mesma função de obter os votos por história sessão sala
-  /**
-   * Obter votos de uma história específica dentro de uma sessão
-   * GET /sessoes/:sessaoId/historias/:historiaId/votos
-   */
-  // async obterVotosPorHistoriaSessaoSala(
-  //   req: Request,
-  //   res: Response,
-  //   next: NextFunction,
-  // ) {
-  //   try {
-  //     const sessao_id = req.params.sessaoId;
-  //     const historia_id = req.params.historiaId;
-
-  //     const votos =
-  //       await sessaoSalaService.obterVotosPorHistoriaSessaoSessaoSala(
-  //         sessao_id,
-  //         historia_id,
-  //       );
-
-  //     res.json(
-  //       respostaSucesso({
-  //         resultado: votos,
-  //       }),
-  //     );
-  //   } catch (error: any) {
-  //     return next(error);
-  //   }
-  // },
 };

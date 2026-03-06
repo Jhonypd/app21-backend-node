@@ -227,7 +227,7 @@ export const sessaoSalaService = {
     return sessao;
   },
 
-  async adicionarParticipante(
+  async adicionarParticipanteSala(
     sessao_id: string,
     pessoa_id: string,
     autorizado: boolean = false,
@@ -596,142 +596,142 @@ export const sessaoSalaService = {
    * Lista todas as histórias vinculadas a uma sessão
    * Retorna formatado com jaFoiVotada, historiaAtual e voto (vencedores)
    */
-  async listarHistoriasPorSessao(sessao_id: string) {
-    if (!sessao_id) {
-      throw new AppError("Id da sessão é obrigatório");
-    }
+  // async listarHistoriasPorSessao(sessao_id: string) {
+  //   if (!sessao_id) {
+  //     throw new AppError("Id da sessão é obrigatório");
+  //   }
 
-    // Buscar sessão para obter sala_id e historia_atual_id
-    const sessao = await sessaoSalaRepository.obterPorId(sessao_id);
-    if (!sessao) {
-      throw new AppError("Sessão não encontrada");
-    }
+  //   // Buscar sessão para obter sala_id e historia_atual_id
+  //   const sessao = await sessaoSalaRepository.obterPorId(sessao_id);
+  //   if (!sessao) {
+  //     throw new AppError("Sessão não encontrada");
+  //   }
 
-    const historiaAtualId = sessao.sala.historia_atual_id;
+  //   const historiaAtualId = sessao.sala.historia_atual_id;
 
-    // Buscar histórias da sessão com votos
-    const historiasSessao =
-      await historiaSessaoRepository.listarPorSessao(sessao_id);
+  //   // Buscar histórias da sessão com votos
+  //   const historiasSessao =
+  //     await historiaSessaoRepository.listarPorSessao(sessao_id);
 
-    return historiasSessao.map((hs) => ({
-      id: hs.historia.id,
-      titulo: hs.historia.titulo,
-      descricao: hs.historia.descricao,
-      jaFoiVotada: hs.votos.length > 0,
-      historiaAtual: hs.historia.id === historiaAtualId,
-      ordem: hs.ordem,
-      voto: obterVotosVencedoresHistoria(
-        hs.votos.reduce(
-          (acc, voto) => {
-            acc[voto.valor] = (acc[voto.valor] || 0) + 1;
-            return acc;
-          },
-          {} as Record<number, number>,
-        ),
-      ),
-    }));
-  },
+  //   return historiasSessao.map((hs) => ({
+  //     id: hs.historia.id,
+  //     titulo: hs.historia.titulo,
+  //     descricao: hs.historia.descricao,
+  //     jaFoiVotada: hs.votos.length > 0,
+  //     historiaAtual: hs.historia.id === historiaAtualId,
+  //     ordem: hs.ordem,
+  //     voto: obterVotosVencedoresHistoria(
+  //       hs.votos.reduce(
+  //         (acc, voto) => {
+  //           acc[voto.valor] = (acc[voto.valor] || 0) + 1;
+  //           return acc;
+  //         },
+  //         {} as Record<number, number>,
+  //       ),
+  //     ),
+  //   }));
+  // },
 
   /**
    * Adiciona história(s) durante sessão ativa
    * Suporta formato legado (uma história) ou em lote (múltiplas adições/remoções)
    */
-  async adicionarHistoriaDuranteSessao(dados: {
-    sessao_id: string;
-    pessoa_id: string;
-    // Formato em lote
-    adicionar?: Array<{
-      titulo: string;
-      descricao?: string | null;
-      ordem?: number;
-    }>;
-    remover?: string[];
-  }) {
-    // Verificar se sala existe
-    const sessao = await sessaoSalaService.obterSessaoPorId(
-      dados.sessao_id,
-      dados.pessoa_id,
-    );
+  // async adicionarHistoriaDuranteSessao(dados: {
+  //   sessao_id: string;
+  //   pessoa_id: string;
+  //   // Formato em lote
+  //   adicionar?: Array<{
+  //     titulo: string;
+  //     descricao?: string | null;
+  //     ordem?: number;
+  //   }>;
+  //   remover?: string[];
+  // }) {
+  //   // Verificar se sala existe
+  //   const sessao = await sessaoSalaService.obterSessaoPorId(
+  //     dados.sessao_id,
+  //     dados.pessoa_id,
+  //   );
 
-    if (!sessao) {
-      throw new AppError("Sessão não encontrada");
-    }
+  //   if (!sessao) {
+  //     throw new AppError("Sessão não encontrada");
+  //   }
 
-    if (!sessao || !sessao.ativa) {
-      throw new AppError("Sessão não encontrada ou inativa");
-    }
+  //   if (!sessao || !sessao.ativa) {
+  //     throw new AppError("Sessão não encontrada ou inativa");
+  //   }
 
-    // Formato em lote
-    const resultado = {
-      adicionadas: 0,
-      removidas: 0,
-      historias: [] as Array<{
-        titulo: string;
-        descricao?: string | null;
-        ordem?: number;
-      }>,
-    };
+  //   // Formato em lote
+  //   const resultado = {
+  //     adicionadas: 0,
+  //     removidas: 0,
+  //     historias: [] as Array<{
+  //       titulo: string;
+  //       descricao?: string | null;
+  //       ordem?: number;
+  //     }>,
+  //   };
 
-    await prismaClient.$transaction(async (tx) => {
-      // 1. Remover histórias
-      if (dados.remover && dados.remover.length > 0) {
-        const removidas = await tx.historiaSessao.deleteMany({
-          where: {
-            sessao_id: sessao.id,
-            historia_id: { in: dados.remover },
-          },
-        });
-        await tx.historiaSala.deleteMany({
-          where: {
-            id: { in: dados.remover },
-            sala_id: sessao.sala_id,
-          },
-        });
+  //   await prismaClient.$transaction(async (tx) => {
+  //     // 1. Remover histórias
+  //     if (dados.remover && dados.remover.length > 0) {
+  //       const removidas = await tx.historiaSessao.deleteMany({
+  //         where: {
+  //           sessao_id: sessao.id,
+  //           historia_id: { in: dados.remover },
+  //         },
+  //       });
+  //       await tx.historiaSala.deleteMany({
+  //         where: {
+  //           id: { in: dados.remover },
+  //           sala_id: sessao.sala_id,
+  //         },
+  //       });
 
-        resultado.removidas = removidas.count;
-      }
+  //       resultado.removidas = removidas.count;
+  //     }
 
-      // 2. Adicionar novas histórias
-      if (dados.adicionar && dados.adicionar.length > 0) {
-        let maxOrdem;
-        let proximaOrdem = 1;
-        for (const historiaInput of dados.adicionar) {
-          if (historiaInput.ordem !== undefined && historiaInput.ordem > 0) {
-            proximaOrdem = historiaInput.ordem;
-          } else {
-            maxOrdem = await tx.historiaSessao.findFirst({
-              where: { sessao_id: sessao.id },
-              orderBy: { ordem: "desc" },
-              select: { ordem: true },
-            });
-            proximaOrdem = (maxOrdem?.ordem ?? 0) + 1;
-          }
+  //     // 2. Adicionar novas histórias
+  //     if (dados.adicionar && dados.adicionar.length > 0) {
+  //       let maxOrdem;
+  //       let proximaOrdem = 1;
+  //       for (const historiaInput of dados.adicionar) {
+  //         if (historiaInput.ordem !== undefined && historiaInput.ordem > 0) {
+  //           proximaOrdem = historiaInput.ordem;
+  //         } else {
+  //           maxOrdem = await tx.historiaSessao.findFirst({
+  //             where: { sessao_id: sessao.id },
+  //             orderBy: { ordem: "desc" },
+  //             select: { ordem: true },
+  //           });
+  //           proximaOrdem = (maxOrdem?.ordem ?? 0) + 1;
+  //         }
 
-          const historia = await tx.historiaSala.create({
-            data: {
-              sala_id: sessao.sala_id,
-              titulo: historiaInput.titulo,
-              descricao: historiaInput.descricao ?? null,
-              criado_por: dados.pessoa_id,
-            },
-          });
+  //         const historia = await tx.historiaSala.create({
+  //           data: {
+  //             sala_id: sessao.sala_id,
+  //             titulo: historiaInput.titulo,
+  //             descricao: historiaInput.descricao ?? null,
+  //             criado_por: dados.pessoa_id,
+  //           },
+  //         });
 
-          await tx.historiaSessao.create({
-            data: {
-              sessao_id: sessao.id,
-              historia_id: historia.id,
-              ordem: proximaOrdem,
-            },
-          });
+  //         await tx.historiaSessao.create({
+  //           data: {
+  //             sessao_id: sessao.id,
+  //             historia_id: historia.id,
+  //             ordem: proximaOrdem,
+  //           },
+  //         });
 
-          resultado.historias.push(historia);
-          proximaOrdem += 1;
-        }
+  //         resultado.historias.push(historia);
+  //         proximaOrdem += 1;
+  //       }
 
-        resultado.adicionadas = dados.adicionar.length;
-      }
-    });
+  //       resultado.adicionadas = dados.adicionar.length;
+  //     }
+  //   });
 
-    return resultado;
-  },
+  //   return resultado;
+  // },
 };

@@ -1,7 +1,7 @@
 import { body, param } from "express-validator";
 
 /**
- * Validações para POST /sessoes/:sessaoId/historias/durante-sessao
+ * Validações para POST /historias/adicionarOuRemoverHistoriaSessaoSala
  *
  * Contrato esperado:
  * {
@@ -18,11 +18,6 @@ import { body, param } from "express-validator";
  */
 const adicionarHistoriaDuranteSessaoValidations = () => {
   return [
-    // Param
-    param("sessaoId")
-      .isUUID()
-      .withMessage("O parâmetro sessaoId deve ser um UUID válido"),
-
     // Pelo menos um dos campos deve estar presente
     body().custom((_, { req }) => {
       const { adicionar, remover } = req.body as {
