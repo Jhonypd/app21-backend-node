@@ -99,6 +99,7 @@ app.use(
       "sala_id",
       "historia_id",
       "pessoa_id",
+      "sessao_id ",
     ],
     exposedHeaders: ["X-CSRF-Token"],
     preflightContinue: false,

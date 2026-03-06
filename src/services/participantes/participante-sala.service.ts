@@ -105,8 +105,8 @@ export const participanteSalaService = {
       inativo: p.pessoa.inativo,
       role: p.role,
       online:
-        p.pessoa.participantes_sessao.length > 0
-          ? p.pessoa.participantes_sessao[0].online
+        (p.pessoa.participantes_sessao?.length ?? 0) > 0
+          ? p.pessoa.participantes_sessao![0].online
           : false,
     }));
 

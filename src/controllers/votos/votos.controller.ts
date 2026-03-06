@@ -17,7 +17,7 @@ export const votosController = {
    *     participa_votacao: boolean
    *   }
    */
-  async votar(req: Request, res: Response, next: NextFunction) {
+  async votarOuAtualizar(req: Request, res: Response, next: NextFunction) {
     try {
       // const sessao_id = req.params.id;
       const { historia_id, valor, participa_votacao } = req.body;
@@ -29,7 +29,7 @@ export const votosController = {
       }
 
       // Registrar o voto
-      const voto = await votosService.votar({
+      const voto = await votosService.votarOuAtualizar({
         historia_id,
         pessoa_id,
         valor,
@@ -82,6 +82,40 @@ export const votosController = {
   },
 
   /**
+   * Resetar votos de uma história-sessão (ex: para reiniciar votação de uma história)
+   *
+   * Endpoint:
+   *
+   */
+  async resetarVotosPorHistoriaSessao(
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ) {
+    try {
+      const sessao_sala_id = req.sala?.Sessao_Sala_Id as string;
+      const sala_id = req.sala?.Sala_Id as string;
+      const pessoa_id = req.user?.Usuario_Id as string;
+      const historia_id = req.get("historia_id") as string;
+
+      const votosResetados = await votosService.resetarVotosPorHistoriaSessao(
+        sessao_sala_id,
+        historia_id,
+        pessoa_id,
+        sala_id,
+      );
+
+      res.json(
+        respostaSucesso({
+          mensagem: "Votos resetados com sucesso.",
+        }),
+      );
+    } catch (error: any) {
+      return next(error);
+    }
+  },
+
+  /**
    * Excluir um voto (anular voto)
    * Somente permitido para administradores e moderadores
    *
@@ -90,12 +124,21 @@ export const votosController = {
    * DELETE /votos/:id
    *
    */
-  async excluirVoto(req: Request, res: Response, next: NextFunction) {
+  async deletarVotoPessoa(req: Request, res: Response, next: NextFunction) {
     try {
       const voto_id = req.params.id;
-      const pessoa_id = req.user?.Usuario_Id as string;
+      const pessoa_id = req.get("pessoa_id") as string;
+      const sala_id = req.sala?.Sala_Id as string;
+      const id_admin_sala = req.user?.Usuario_Id as string;
+      const sessao_sala_id = req.sala?.Sessao_Sala_Id as string;
 
-      const voto = await votosService.excluirVoto(voto_id, pessoa_id);
+      const voto = await votosService.deletarVotoPessoa(
+        voto_id,
+        pessoa_id,
+        id_admin_sala,
+        sala_id,
+        sessao_sala_id,
+      );
 
       return res.json(
         respostaSucesso({

@@ -59,13 +59,12 @@ export const participanteSalaRepository = {
             id: true,
             nome: true,
             inativo: true,
-            ...(apenasOnline &&
-              sessao_id && {
-                participantes_sessao: {
-                  where: { sessao_id, online: true },
-                  select: { online: true },
-                },
-              }),
+            ...(sessao_id && {
+              participantes_sessao: {
+                where: { sessao_id, ...(apenasOnline && { online: true }) },
+                select: { online: true },
+              },
+            }),
           },
         },
       },

@@ -202,7 +202,7 @@ export const sessaoSalaRepository = {
   /**
    * Conta total de sessões criadas em uma sala (para validação de exclusão)
    */
-  contarPorSala: (sala_id: string) =>
+  contarSessaoSala: (sala_id: string) =>
     prismaClient.sessaoSala.count({
       where: { sala_id },
     }),

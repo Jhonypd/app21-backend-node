@@ -833,7 +833,7 @@ export const salaService = {
     }
 
     // VALIDAÇÃO #1: Verificar se há sessões criadas
-    const totalSessoes = await sessaoSalaRepository.contarPorSala(sala_id);
+    const totalSessoes = await sessaoSalaRepository.contarSessaoSala(sala_id);
     if (totalSessoes > 0) {
       throw new AppError(
         "Não é possível excluir sala com sessões criadas. Histórico deve ser preservado.",
@@ -841,7 +841,7 @@ export const salaService = {
     }
 
     // VALIDAÇÃO #2: Verificar se há votos registrados
-    const totalVotos = await votosRepository.contarPorSala(sala_id);
+    const totalVotos = await votosRepository.contarVotosHistoriaSessao(sala_id);
     if (totalVotos > 0) {
       throw new AppError(
         "Não é possível excluir sala com votos registrados. Histórico deve ser preservado.",
@@ -893,10 +893,11 @@ export const salaService = {
     const sessaoAtiva =
       sala.sessoes && sala.sessoes.length > 0 ? sala.sessoes[0] : null;
     if (sessaoAtiva) {
-      const vinculada = await historiaSessaoRepository.obterPorSessaoEHistoria(
-        sessaoAtiva.id,
-        historia_id,
-      );
+      const vinculada =
+        await historiaSessaoRepository.obterPorIdOuSessaoEHistoria({
+          sessao_id: sessaoAtiva.id,
+          historia_id,
+        });
       if (!vinculada) {
         throw new AppError("História não está vinculada à sessão ativa");
       }

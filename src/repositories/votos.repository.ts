@@ -11,7 +11,7 @@ interface VotoAtualizarData {
 }
 
 export const votosRepository = {
-  inserir: (voto: VotoInserirData) =>
+  inserirVoto: (voto: VotoInserirData) =>
     prismaClient.voto.create({
       data: {
         historia_sessao_id: voto.historia_sessao_id,
@@ -20,7 +20,7 @@ export const votosRepository = {
       },
     }),
 
-  atualizar: (
+  atualizarVoto: (
     historia_sessao_id: string,
     pessoa_id: string,
     data: VotoAtualizarData,
@@ -37,6 +37,35 @@ export const votosRepository = {
         data_voto: new Date(),
       },
     }),
+
+  obterVotoCompletoPorHistoriaSessaoEPessoa: (
+    historia_sessao_id: string,
+    pessoa_id: string,
+  ) => {
+    return prismaClient.voto.findUnique({
+      where: {
+        historia_sessao_id_pessoa_id: {
+          historia_sessao_id,
+          pessoa_id,
+        },
+      },
+      include: {
+        pessoa: {
+          omit: { senha: true, email_hash: true, email: true, nome: true },
+        },
+        historiaSessao: {
+          include: {
+            sessao: {
+              select: {
+                id: true,
+                sala_id: true,
+              },
+            },
+          },
+        },
+      },
+    });
+  },
 
   obterVotoPorHistoriaSessaoEPessoa: (
     historia_sessao_id: string,
@@ -128,36 +157,11 @@ export const votosRepository = {
       },
     }),
 
-  deletarVotosPorSessao: (sessao_id: string) =>
-    prismaClient.voto.deleteMany({
-      where: {
-        historiaSessao: {
-          sessao_id,
-        },
-      },
-    }),
-
-  contarVotosPorHistoriaSessao: (historia_sessao_id: string) =>
-    prismaClient.voto.count({
-      where: {
-        historia_sessao_id,
-      },
-    }),
-
-  // contarVotosPorSessao: (sessao_id: string) =>
-  //   prismaClient.voto.count({
-  //     where: {
-  //       historiaSessao: {
-  //         sessao_id,
-  //       },
-  //     },
-  //   }),
-
   /**
    * Conta total de votos em uma sala (para validação de exclusão)
    * Conta votos através de HistoriaSessao → SessaoSala → Sala
    */
-  contarPorSala: (sala_id: string) =>
+  contarVotosHistoriaSessao: (sala_id: string) =>
     prismaClient.voto.count({
       where: {
         historiaSessao: {
@@ -168,12 +172,12 @@ export const votosRepository = {
       },
     }),
 
-  obterPorId: (voto_id: string) =>
+  obterVotoPorId: (voto_id: string) =>
     prismaClient.voto.findUnique({
       where: { id: voto_id },
     }),
 
-  deletarVoto: (voto_id: string) =>
+  deletarVotoIndividual: (voto_id: string) =>
     prismaClient.voto.delete({
       where: { id: voto_id },
     }),

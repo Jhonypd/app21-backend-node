@@ -14,7 +14,7 @@ router.post(
   authGuard,
   salaAuthGuard,
   salaPermissaoGuard([0, 1, 2, 3]),
-  votosController.votar,
+  votosController.votarOuAtualizar,
 );
 
 /* GET /votos/obterVotosPorHistoriaSessaoSessaoSala */
@@ -27,14 +27,24 @@ router.get(
   votosController.obterVotosPorHistoriaSessaoSessaoSala,
 );
 
-// DELETE /votos/:id - excluir voto apenas quando o adm/moderador quiser anular o voto
+// DELETE /votos/:id - excluir voto apenas quando o adm/moderador quiser anular o voto de um participante (ex: voto indevido)
 router.delete(
   "/:id",
   validateHandler,
   authGuard,
   salaAuthGuard,
   salaPermissaoGuard([0, 1]),
-  votosController.excluirVoto,
+  votosController.deletarVotoPessoa,
+);
+
+// DELETE /votos/resetarVotosPorHistoriaSessao - endpoint para resetar votos de uma história-sessão (ex: para reiniciar votação de uma história)
+router.delete(
+  "/resetarVotosPorHistoriaSessao",
+  validateHandler,
+  authGuard,
+  salaAuthGuard,
+  salaPermissaoGuard([0, 1]),
+  votosController.resetarVotosPorHistoriaSessao,
 );
 
 export default router;

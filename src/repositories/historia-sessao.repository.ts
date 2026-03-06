@@ -80,7 +80,7 @@ export const historiaSessaoRepository = {
       },
     }),
 
-  obter: (params: BuscarHistoriaSessaoParams) => {
+  obterPorIdOuSessaoEHistoria: (params: BuscarHistoriaSessaoParams) => {
     if ("id" in params) {
       return prismaClient.historiaSessao.findUnique({
         where: { id: params.id },

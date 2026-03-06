@@ -183,14 +183,14 @@ router.patch(
   sessaoSalaController.kickarParticipanteSessaoSala,
 );
 
-// GET /salas/:id/participantes - Listar participantes permanentes (todos podem ver)
+// GET /salas/ListarParticipantesSala - Listar participantes permanentes (todos podem ver)
 router.get(
-  "/:id/ListarParticipantesSala",
+  "/ListarParticipantesSala",
   validateHandler,
   authGuard,
   salaAuthGuard, // Valida token de sala
-  salaPermissaoGuard([0, 1, 2, 3]), // Todos (incluindo visitantes)
-  participanteSalaController.listarParticipantes,
+  salaPermissaoGuard([0, 1, 2, 3]),
+  participanteSalaController.ListarParticipantesSala,
 );
 
 export default router;
