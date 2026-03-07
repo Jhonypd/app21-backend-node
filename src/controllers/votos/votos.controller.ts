@@ -24,10 +24,6 @@ export const votosController = {
       const pessoa_id = req.user?.Usuario_Id as string;
       const sessao_id = req.sala?.Sessao_Sala_Id as string;
 
-      if (!historia_id) {
-        throw new Error("Id da história é obrigatório.");
-      }
-
       // Registrar o voto
       const voto = await votosService.votarOuAtualizar({
         historia_id,

@@ -66,6 +66,7 @@ router.post(
 );
 
 // Aprovar reentrada de participante que saiu ou foi kickado
+// precisa revisar
 router.post(
   "/:id/aprovar-reentrada/:pessoaId",
   validateHandler,
@@ -98,18 +99,19 @@ router.get(
   salaController.obterDadosSessaoAtiva,
 );
 
-router.get(
-  "/obterPorId/:id",
-  validateHandler,
-  authGuard,
-  salaController.obterPorId,
-);
+// router.get(
+//   "/obterPorId/:id",
+//   validateHandler,
+//   authGuard,
+//   salaController.obterPorId,
+// );
 
+// GET /salas/obterDadosFormAlterar?id=00000000-0000-0000-0000-000000000000
 router.get(
-  "/:id/editar",
+  "/obterDadosFormAlterar",
   validateHandler,
   authGuard,
-  salaController.obterParaEdicao,
+  salaController.obterDadosFormAlterar,
 );
 
 // Rotas de gerenciamento de participantes (sem token de sala - para uso na edição)
@@ -183,12 +185,12 @@ router.patch(
   sessaoSalaController.kickarParticipanteSessaoSala,
 );
 
-// GET /salas/ListarParticipantesSala - Listar participantes permanentes (todos podem ver)
+// GET /salas/ListarParticipantesSala - Listar participantes permanentes onlines ou não (todos podem ver)
 router.get(
-  "/ListarParticipantesSala",
+  "/ListarParticipantesSala", // já está correta dentro do novo padrão de rotas
   validateHandler,
   authGuard,
-  salaAuthGuard, // Valida token de sala
+  salaAuthGuard,
   salaPermissaoGuard([0, 1, 2, 3]),
   participanteSalaController.ListarParticipantesSala,
 );

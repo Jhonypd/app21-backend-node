@@ -68,6 +68,11 @@ export const participanteSalaRepository = {
           },
         },
       },
+      orderBy: {
+        pessoa: {
+          nome: "asc",
+        },
+      },
     }),
 
   alterarRole: (sala_id: string, pessoa_id: string, role: number) =>

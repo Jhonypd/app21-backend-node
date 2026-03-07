@@ -759,7 +759,7 @@ export const salaService = {
    * NUNCA retorna a senha (segurança)
    * Permissões: Dono (0) pode acessar tudo, Admin (1) pode ver para alterar título
    */
-  async obterParaEdicao(sala_id: string, pessoa_id: string) {
+  async obterDadosFormAlterar(sala_id: string, pessoa_id: string) {
     const sala = await salaRepository.obterParaEdicao(sala_id, pessoa_id);
 
     if (!sala) {

@@ -108,11 +108,11 @@ export const salaController = {
     }
   },
 
-  async obterParaEdicao(req: Request, res: Response, next: NextFunction) {
+  async obterDadosFormAlterar(req: Request, res: Response, next: NextFunction) {
     try {
-      const id = req.params.id;
+      const id = req.query.id as string;
       const pessoaId = req.user?.Usuario_Id as string;
-      const sala = await salaService.obterParaEdicao(id, pessoaId);
+      const sala = await salaService.obterDadosFormAlterar(id, pessoaId);
       res.json(respostaSucesso({ resultado: { sala: sala } }));
     } catch (error: any) {
       return next(error);
@@ -189,10 +189,10 @@ export const salaController = {
       // Setar token_sala via cookie (httpOnly) se houver tokenSala na resposta
       if (resultado.tokenSala) {
         tokenCookies.setSalaCookie(res, resultado.tokenSala);
-        
+
         // Remover tokenSala do resultado para não enviar no corpo JSON
         const { tokenSala, ...resultadoSemToken } = resultado;
-        
+
         res.json(
           respostaSucesso({
             resultado: resultadoSemToken,
@@ -309,7 +309,11 @@ export const salaController = {
    * Altera o role de um participante (promover ou rebaixar)
    * Permissões: Apenas o dono pode alterar roles
    */
-  async alterarRoleParticipante(req: Request, res: Response, next: NextFunction) {
+  async alterarRoleParticipante(
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ) {
     try {
       const sala_id = req.params.id;
       const pessoa_id_alterar = req.params.pessoaId;
@@ -342,7 +346,11 @@ export const salaController = {
     }
   },
 
-  async selecionarHistoriaAtual(req: Request, res: Response, next: NextFunction) {
+  async selecionarHistoriaAtual(
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ) {
     try {
       const sala_id = req.params.id;
       const pessoa_id = req.user?.Usuario_Id as string;
