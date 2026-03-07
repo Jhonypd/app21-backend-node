@@ -43,7 +43,6 @@ export const salaController = {
       res.json(
         respostaSucesso({
           resultado: { id: salaAtualizada.id },
-          mensagem: "Sala atualizada com sucesso.",
         }),
       );
     } catch (error: any) {
@@ -150,7 +149,7 @@ export const salaController = {
 
   async sairDaSala(req: Request, res: Response, next: NextFunction) {
     try {
-      const sala_id = req.params.id;
+      const sala_id = req.query.id as string;
       const pessoa_id = req.user?.Usuario_Id as string;
 
       const resultado = await salaService.sairDaSala(sala_id, pessoa_id);
@@ -169,44 +168,6 @@ export const salaController = {
           mensagem: resultado.mensagem,
         }),
       );
-    } catch (error: any) {
-      return next(error);
-    }
-  },
-
-  async aprovarReentrada(req: Request, res: Response, next: NextFunction) {
-    try {
-      const sala_id = req.params.id;
-      const pessoa_id_reentrada = req.params.pessoaId;
-      const pessoa_id_aprovador = req.user?.Usuario_Id as string;
-
-      const resultado = await salaService.aprovarReentrada(
-        sala_id,
-        pessoa_id_aprovador,
-        pessoa_id_reentrada,
-      );
-
-      // Setar token_sala via cookie (httpOnly) se houver tokenSala na resposta
-      if (resultado.tokenSala) {
-        tokenCookies.setSalaCookie(res, resultado.tokenSala);
-
-        // Remover tokenSala do resultado para não enviar no corpo JSON
-        const { tokenSala, ...resultadoSemToken } = resultado;
-
-        res.json(
-          respostaSucesso({
-            resultado: resultadoSemToken,
-            mensagem: resultado.mensagem,
-          }),
-        );
-      } else {
-        res.json(
-          respostaSucesso({
-            resultado,
-            mensagem: resultado.mensagem,
-          }),
-        );
-      }
     } catch (error: any) {
       return next(error);
     }

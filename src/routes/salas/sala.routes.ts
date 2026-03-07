@@ -26,16 +26,6 @@ router.post(
   salaController.criarSalas,
 );
 
-// PUT /salas/alterar/:id - Alterar dados da sala
-router.put(
-  "/alterar/:id",
-  salaAlterarValidations(),
-  validateHandler,
-  authGuard,
-  csrfGuard,
-  salaController.alterarSala,
-);
-
 // DELETE /salas/:id - Excluir sala (soft delete - apenas dono)
 // Validações: não pode ter sessões criadas, não pode ter votos
 router.delete(
@@ -44,27 +34,6 @@ router.delete(
   authGuard,
   csrfGuard,
   salaController.excluirSala,
-);
-
-// Sair da sala (não encerra sessão, apenas marca como offline e não autorizado)
-router.post(
-  "/:id/sair",
-  validateHandler,
-  authGuard,
-  salaAuthGuard,
-  csrfGuard,
-  salaController.sairDaSala,
-);
-
-// Aprovar reentrada de participante que saiu ou foi kickado
-// precisa revisar
-router.post(
-  "/:id/aprovar-reentrada/:pessoaId",
-  validateHandler,
-  authGuard,
-  salaAuthGuard,
-  csrfGuard,
-  salaController.aprovarReentrada,
 );
 
 router.get(
@@ -142,6 +111,26 @@ router.patch(
 );
 
 // Lista de rotas que já estão no novo padrão de rotas
+
+// Sair da sala (não encerra sessão, apenas marca como offline e não autorizado)
+router.post(
+  "/sairDaSala",
+  validateHandler,
+  authGuard,
+  salaAuthGuard,
+  csrfGuard,
+  salaController.sairDaSala,
+);
+
+// PUT /salas/alterar/:id - Alterar dados da sala
+router.put(
+  "/alterar/:id",
+  salaAlterarValidations(),
+  validateHandler,
+  authGuard,
+  csrfGuard,
+  salaController.alterarSala,
+);
 
 // PUT /salas/selecionarHistoriaAtual?id=00000000-0000-0000-0000-000000000000 - Selecionar história atual (dono e admin)
 router.put(

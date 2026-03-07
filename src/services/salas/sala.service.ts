@@ -651,107 +651,107 @@ export const salaService = {
     };
   },
 
-  async aprovarReentrada(
-    sala_id: string,
-    pessoa_id_aprovador: string,
-    pessoa_id_reentrada: string,
-  ) {
-    // Verificar se quem está aprovando é Dono ou Admin
-    const sala = await salaRepository.obterPorId(sala_id, false);
-    if (!sala) {
-      throw new AppError("Sala não encontrada.");
-    }
+  // async aprovarReentrada(
+  //   sala_id: string,
+  //   pessoa_id_aprovador: string,
+  //   pessoa_id_reentrada: string,
+  // ) {
+  //   // Verificar se quem está aprovando é Dono ou Admin
+  //   const sala = await salaRepository.obterPorId(sala_id, false);
+  //   if (!sala) {
+  //     throw new AppError("Sala não encontrada.");
+  //   }
 
-    const isDono = sala.criado_por === pessoa_id_aprovador;
-    let isAdmin = false;
+  //   const isDono = sala.criado_por === pessoa_id_aprovador;
+  //   let isAdmin = false;
 
-    if (!isDono) {
-      const participanteSala =
-        await participanteSalaRepository.obterPorSalaEPessoa(
-          sala_id,
-          pessoa_id_aprovador,
-        );
-      isAdmin = participanteSala?.role === 1;
-    }
+  //   if (!isDono) {
+  //     const participanteSala =
+  //       await participanteSalaRepository.obterPorSalaEPessoa(
+  //         sala_id,
+  //         pessoa_id_aprovador,
+  //       );
+  //     isAdmin = participanteSala?.role === 1;
+  //   }
 
-    if (!isDono && !isAdmin) {
-      throw new AppError(
-        "Apenas o dono ou administrador podem aprovar reentradas.",
-      );
-    }
+  //   if (!isDono && !isAdmin) {
+  //     throw new AppError(
+  //       "Apenas o dono ou administrador podem aprovar reentradas.",
+  //     );
+  //   }
 
-    // Verificar sessão ativa
-    const sessaoAtiva =
-      await sessaoSalaService.obterSessaoAtivaPorSala(sala_id);
-    if (!sessaoAtiva) {
-      throw new AppError("Nenhuma sessão ativa encontrada.");
-    }
+  //   // Verificar sessão ativa
+  //   const sessaoAtiva =
+  //     await sessaoSalaService.obterSessaoAtivaPorSala(sala_id);
+  //   if (!sessaoAtiva) {
+  //     throw new AppError("Nenhuma sessão ativa encontrada.");
+  //   }
 
-    // Verificar se a pessoa tem ParticipanteSessao não autorizado
-    const participanteSessao =
-      await participanteSessaoRepository.obterPorSessaoEPessoa(
-        sessaoAtiva.id,
-        pessoa_id_reentrada,
-      );
+  //   // Verificar se a pessoa tem ParticipanteSessao não autorizado
+  //   const participanteSessao =
+  //     await participanteSessaoRepository.obterPorSessaoEPessoa(
+  //       sessaoAtiva.id,
+  //       pessoa_id_reentrada,
+  //     );
 
-    if (!participanteSessao) {
-      throw new AppError("Pessoa não está na sessão.");
-    }
+  //   if (!participanteSessao) {
+  //     throw new AppError("Pessoa não está na sessão.");
+  //   }
 
-    if (participanteSessao.autorizado) {
-      throw new AppError("Pessoa já está autorizada na sessão.");
-    }
+  //   if (participanteSessao.autorizado) {
+  //     throw new AppError("Pessoa já está autorizada na sessão.");
+  //   }
 
-    // Autorizar reentrada
-    await participanteSessaoRepository.atualizarAutorizacao(
-      sessaoAtiva.id,
-      pessoa_id_reentrada,
-      true,
-    );
+  //   // Autorizar reentrada
+  //   await participanteSessaoRepository.atualizarAutorizacao(
+  //     sessaoAtiva.id,
+  //     pessoa_id_reentrada,
+  //     true,
+  //   );
 
-    // ✅ Marcar como online em ParticipanteSessao
-    await participanteSessaoRepository.atualizar(
-      sessaoAtiva.id,
-      pessoa_id_reentrada,
-      { online: true },
-    );
+  //   // ✅ Marcar como online em ParticipanteSessao
+  //   await participanteSessaoRepository.atualizar(
+  //     sessaoAtiva.id,
+  //     pessoa_id_reentrada,
+  //     { online: true },
+  //   );
 
-    // Buscar pessoa para gerar novo token
-    const pessoa = await pessoaRepository.obterPorId(
-      pessoa_id_reentrada,
-      false,
-    );
-    if (!pessoa) {
-      throw new AppError("Pessoa não encontrada.");
-    }
+  //   // Buscar pessoa para gerar novo token
+  //   const pessoa = await pessoaRepository.obterPorId(
+  //     pessoa_id_reentrada,
+  //     false,
+  //   );
+  //   if (!pessoa) {
+  //     throw new AppError("Pessoa não encontrada.");
+  //   }
 
-    // Gerar novo token
-    const nomeDescriptografado = await criptografia.descriptografar(
-      pessoa.nome,
-    );
+  //   // Gerar novo token
+  //   const nomeDescriptografado = await criptografia.descriptografar(
+  //     pessoa.nome,
+  //   );
 
-    const tipoAcesso = await determinarTipoAcesso(sala, pessoa_id_reentrada);
+  //   const tipoAcesso = await determinarTipoAcesso(sala, pessoa_id_reentrada);
 
-    const tokenPayload: ClaimsAuthSala = {
-      Role: tipoAcesso as 0 | 1 | 2 | 3,
-      Usuario_Id: pessoa_id_reentrada,
-      Nome: nomeDescriptografado,
-      Sala_Id: sala.id,
-      Sala_Codigo: sala.codigo,
-      Sala_Titulo: sala.titulo,
-      // Dt_Ex: format(dataExpiracao, "yyyy-MM-dd' 'HH:mm:ss", { locale: ptBR }),
-      Sessao_Sala_Id: sessaoAtiva.id,
-    };
+  //   const tokenPayload: ClaimsAuthSala = {
+  //     Role: tipoAcesso as 0 | 1 | 2 | 3,
+  //     Usuario_Id: pessoa_id_reentrada,
+  //     Nome: nomeDescriptografado,
+  //     Sala_Id: sala.id,
+  //     Sala_Codigo: sala.codigo,
+  //     Sala_Titulo: sala.titulo,
+  //     // Dt_Ex: format(dataExpiracao, "yyyy-MM-dd' 'HH:mm:ss", { locale: ptBR }),
+  //     Sessao_Sala_Id: sessaoAtiva.id,
+  //   };
 
-    const tokenSala = geradorTokenSala(tokenPayload);
+  //   const tokenSala = geradorTokenSala(tokenPayload);
 
-    return {
-      mensagem: "Reentrada aprovada com sucesso.",
-      tokenSala,
-      dataExpiracao: tokenPayload.Dt_Ex,
-      pessoa_id: pessoa_id_reentrada,
-    };
-  },
+  //   return {
+  //     mensagem: "Reentrada aprovada com sucesso.",
+  //     tokenSala,
+  //     dataExpiracao: tokenPayload.Dt_Ex,
+  //     pessoa_id: pessoa_id_reentrada,
+  //   };
+  // },
 
   /**
    * Busca dados da sala para edição
