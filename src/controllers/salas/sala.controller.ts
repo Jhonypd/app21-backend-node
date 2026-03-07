@@ -85,7 +85,7 @@ export const salaController = {
 
   async obterDadosSessaoAtiva(req: Request, res: Response, next: NextFunction) {
     try {
-      const codigo = req.params.codigo;
+      const codigo = req.query.codigo as string;
       const pessoaId = req.user?.Usuario_Id as string;
       const dadosSala = await salaService.obterDadosSessaoAtiva(
         codigo,
@@ -352,14 +352,14 @@ export const salaController = {
     next: NextFunction,
   ) {
     try {
-      const sala_id = req.params.id;
+      const sala_id = req.sala?.Sala_Id as string;
       const pessoa_id = req.user?.Usuario_Id as string;
-      const { historia_id } = req.body;
+      const historia_id = req.query.id as string;
 
       if (!historia_id) {
         return res
           .status(400)
-          .json(respostaErro({ mensagem: "historia_id é obrigatório" }));
+          .json(respostaErro({ mensagem: "Id da história é obrigatório" }));
       }
 
       await salaService.selecionarHistoriaAtual(

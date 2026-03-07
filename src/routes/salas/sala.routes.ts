@@ -46,15 +46,6 @@ router.delete(
   salaController.excluirSala,
 );
 
-router.post(
-  "/entrar",
-  salaLoginValidations(),
-  validateHandler,
-  authGuard,
-  csrfGuard,
-  salaController.entrarSala,
-);
-
 // Sair da sala (não encerra sessão, apenas marca como offline e não autorizado)
 router.post(
   "/:id/sair",
@@ -77,26 +68,10 @@ router.post(
 );
 
 router.get(
-  "/listarSalas",
-  validateHandler,
-  authGuard,
-  salaController.listarSalas,
-);
-
-router.get(
   "/obterPorCodigo/:codigo",
   validateHandler,
   authGuard,
   salaController.obterPorCodigo,
-);
-
-// Obter dados completos da sessão ativa (com historias, votos filtrados)
-// ✅ Não usa salaAuthGuard - permite visualizar sem estar "dentro" da sala
-router.get(
-  "/codigo/:codigo/sessao-ativa",
-  validateHandler,
-  authGuard,
-  salaController.obterDadosSessaoAtiva,
 );
 
 // router.get(
@@ -105,14 +80,6 @@ router.get(
 //   authGuard,
 //   salaController.obterPorId,
 // );
-
-// GET /salas/obterDadosFormAlterar?id=00000000-0000-0000-0000-000000000000
-router.get(
-  "/obterDadosFormAlterar",
-  validateHandler,
-  authGuard,
-  salaController.obterDadosFormAlterar,
-);
 
 // Rotas de gerenciamento de participantes (sem token de sala - para uso na edição)
 // POST /salas/:id/participantes/adicionar - Adicionar participante (dono ou admin)
@@ -151,17 +118,6 @@ router.post(
   sessaoSalaController.criarSessaoSala,
 );
 
-// PUT /salas/:id/historia-atual - Selecionar história atual (dono e admin)
-router.put(
-  "/:id/historia-atual",
-  validateHandler,
-  authGuard,
-  salaAuthGuard, // Valida token de sala
-  csrfGuard,
-  salaPermissaoGuard([0, 1]), // Apenas Dono e Admin
-  salaController.selecionarHistoriaAtual,
-);
-
 // POST /salas/:id/sessoes/encerrar - Encerrar sessão (dono e admin)
 router.post(
   "/:id/sessoes/encerrar",
@@ -183,6 +139,53 @@ router.patch(
   csrfGuard,
   salaPermissaoGuard([0, 1]), // Dono e Admin
   sessaoSalaController.kickarParticipanteSessaoSala,
+);
+
+// Lista de rotas que já estão no novo padrão de rotas
+
+// PUT /salas/selecionarHistoriaAtual?id=00000000-0000-0000-0000-000000000000 - Selecionar história atual (dono e admin)
+router.put(
+  "/selecionarHistoriaAtual",
+  validateHandler,
+  authGuard,
+  salaAuthGuard,
+  csrfGuard,
+  salaPermissaoGuard([0, 1]),
+  salaController.selecionarHistoriaAtual,
+);
+
+// GET /salas/Entrar - Listar salas do usuário (todas as que participa, incluindo inativas)
+router.post(
+  "/entrarSala",
+  salaLoginValidations(),
+  validateHandler,
+  authGuard,
+  csrfGuard,
+  salaController.entrarSala,
+);
+
+// GET /salas/obterDadosSessaoAtiva?codigo=XXXXXX - Obter dados da sessão ativa
+router.get(
+  "/obterDadosSessaoAtiva",
+  validateHandler,
+  authGuard,
+  salaController.obterDadosSessaoAtiva,
+);
+
+// GET /salas/listarSalas - Listar salas do usuário (todas as que participa, incluindo inativas)
+router.get(
+  "/listarSalas", // mudar para GET /salas/ListarSalas
+  validateHandler,
+  authGuard,
+  salaController.listarSalas,
+);
+
+// GET /salas/obterDadosFormAlterar?id=00000000-0000-0000-0000-000000000000
+router.get(
+  "/obterDadosFormAlterar", // mudar para GET /salas/ObterDadosFormAlterar?id=00000000-0000-0000-0000-000000000000
+  validateHandler,
+  authGuard,
+  salaController.obterDadosFormAlterar,
 );
 
 // GET /salas/ListarParticipantesSala - Listar participantes permanentes onlines ou não (todos podem ver)
