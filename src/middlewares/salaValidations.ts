@@ -21,7 +21,7 @@ const salaInserirValidations = () => {
 
 const salaAlterarValidations = () => {
   return [
-    param("id").isUUID().withMessage("O parâmetro id deve ser um id válido"),
+    body("id").isUUID().withMessage("O id deve ser um id válido"),
     body("titulo")
       .isString()
       .withMessage("O campo titulo deve ser um valor válido")

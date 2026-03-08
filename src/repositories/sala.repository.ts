@@ -8,6 +8,8 @@ interface SalaInserirData {
 }
 
 interface SalaAlterarData {
+  id: string;
+  criado_por: string;
   titulo?: string;
   senha?: string | null;
 }
@@ -18,9 +20,9 @@ export const salaRepository = {
       data: data,
     }),
 
-  alterar: (id: string, criadoPor: string, data: SalaAlterarData) =>
+  alterar: (data: SalaAlterarData) =>
     prismaClient.sala.update({
-      where: { id, criado_por: criadoPor },
+      where: { id: data.id, criado_por: data.criado_por },
       data: data,
     }),
 

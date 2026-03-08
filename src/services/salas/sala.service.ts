@@ -24,6 +24,8 @@ interface CriarSalaProps {
 }
 
 export interface AlterarSalaProps {
+  id: string;
+  pessoaId: string;
   titulo?: string;
   senha?: string | null;
 }
@@ -133,23 +135,27 @@ export const salaService = {
     throw new AppError("Chave única não pôde ser gerada. Tente novamente.");
   },
 
-  async alterar(id: string, pessoaId: string, data: AlterarSalaProps) {
+  async alterarSala(data: AlterarSalaProps) {
     if (!data.senha && !data.titulo) {
       throw new AppError("Dados para alteração não fornecidos.");
     }
 
-    const salaExistente = await salaRepository.obterPorId(id, true, pessoaId);
+    const salaExistente = await salaRepository.obterPorId(
+      data.id,
+      true,
+      data.pessoaId,
+    );
 
     if (!salaExistente) {
       throw new AppError("Sala não encontrada.");
     }
 
     // Validar permissões: apenas dono (criado_por) pode alterar
-    if (salaExistente.criado_por !== pessoaId) {
+    if (salaExistente.criado_por !== data.pessoaId) {
       // Verificar se é Admin (role=1) - pode alterar apenas título
       const participante = await participanteSalaRepository.obterPorSalaEPessoa(
-        id,
-        pessoaId,
+        data.id,
+        data.pessoaId,
       );
 
       if (!participante || participante.role !== 1) {
@@ -162,7 +168,10 @@ export const salaService = {
       }
     }
 
-    const dadosParaAtualizar: AlterarSalaProps = {};
+    const dadosParaAtualizar: AlterarSalaProps = {
+      id: data.id,
+      pessoaId: data.pessoaId,
+    };
 
     if (data.titulo) {
       dadosParaAtualizar.titulo = data.titulo;
@@ -184,11 +193,12 @@ export const salaService = {
       }
     }
 
-    const salaAtualizada = await salaRepository.alterar(
-      id,
-      pessoaId,
-      dadosParaAtualizar,
-    );
+    const salaAtualizada = await salaRepository.alterar({
+      id: data.id,
+      criado_por: data.pessoaId,
+      titulo: dadosParaAtualizar.titulo,
+      senha: dadosParaAtualizar.senha,
+    });
 
     return salaAtualizada;
   },

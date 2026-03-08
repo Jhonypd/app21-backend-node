@@ -39,7 +39,7 @@ class HistoriaSalaController {
 
   /**
    * Listar todas as histórias de uma sessão
-   * GET /historias/listarHistoriasPorSessaoSala/:sessaoId
+   * GET /historias/listarHistoriasPorSessaoSala?sessaoId=00000000-0000-0000-0000-000000000000
    * Retorna as histórias formatadas com jaFoiVotada, historiaAtual e voto (vencedores)
    */
   async listarHistoriasPorSessaoSala(
@@ -48,7 +48,7 @@ class HistoriaSalaController {
     next: NextFunction,
   ) {
     try {
-      const sessao_id = req.params.sessaoId;
+      const sessao_id = req.query.sessaoId as string;
 
       const historias =
         await historiaSalaService.listarHistoriasPorSessaoSala(sessao_id);

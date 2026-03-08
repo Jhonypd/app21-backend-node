@@ -3,6 +3,7 @@ import { salaService } from "../../services/salas/sala.service";
 import { participanteSalaService } from "../../services/participantes/participante-sala.service";
 import { respostaErro, respostaSucesso } from "../../utils/response";
 import { tokenCookies } from "../../helpers/set-tokens-cookies.helper";
+import { historiaSalaService } from "../../services/historias/historia-sala.service";
 
 export const salaController = {
   async criarSalas(req: Request, res: Response, next: NextFunction) {
@@ -31,11 +32,13 @@ export const salaController = {
 
   async alterarSala(req: Request, res: Response, next: NextFunction) {
     try {
-      const id = req.params.id;
-      const { titulo, senha } = req.body;
+      // const id = req.params.id;
+      const { id, titulo, senha } = req.body;
       const pessoaId = req.user?.Usuario_Id as string;
 
-      const salaAtualizada = await salaService.alterar(id, pessoaId, {
+      const salaAtualizada = await salaService.alterarSala({
+        id,
+        pessoaId,
         titulo,
         senha,
       });
@@ -202,9 +205,8 @@ export const salaController = {
    */
   async adicionarParticipante(req: Request, res: Response, next: NextFunction) {
     try {
-      const sala_id = req.params.id;
       const pessoaIdSolicitante = req.user?.Usuario_Id as string;
-      const { pessoa_id, role, sessao_id } = req.body;
+      const { pessoa_id, role, sessao_id, sala_id } = req.body;
 
       if (!pessoa_id) {
         return res
@@ -332,6 +334,32 @@ export const salaController = {
       res.status(200).json(
         respostaSucesso({
           mensagem: "História atual atualizada com sucesso",
+        }),
+      );
+    } catch (error: any) {
+      return next(error);
+    }
+  },
+
+  /**
+   * Listar todas as histórias de uma sessão
+   * GET /historias/listarHistoriasPorSessaoSala
+   * Retorna as histórias formatadas com jaFoiVotada, historiaAtual e voto (vencedores)
+   */
+  async listarHistoriasPorSessaoSala(
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ) {
+    try {
+      const sessao_id = req.sala?.Sessao_Sala_Id as string;
+
+      const historias =
+        await historiaSalaService.listarHistoriasPorSessaoSala(sessao_id);
+
+      res.json(
+        respostaSucesso({
+          resultado: { historias },
         }),
       );
     } catch (error: any) {

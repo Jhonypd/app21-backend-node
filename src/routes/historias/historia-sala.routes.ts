@@ -19,14 +19,4 @@ router.post(
   historiaSalaController.adicionarOuRemoverHistoriaSessaoSala,
 );
 
-// GET /historias/listarHistoriasPorSessaoSala/:sessaoId
-router.get(
-  "/historias/listarHistoriasPorSessaoSala/:sessaoId",
-  validateHandler,
-  authGuard,
-  salaAuthGuard,
-  salaPermissaoGuard([0, 1, 2, 3]),
-  historiaSalaController.listarHistoriasPorSessaoSala,
-);
-
 export default router;

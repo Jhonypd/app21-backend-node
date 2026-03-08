@@ -36,39 +36,6 @@ router.delete(
   salaController.excluirSala,
 );
 
-router.get(
-  "/obterPorCodigo/:codigo",
-  validateHandler,
-  authGuard,
-  salaController.obterPorCodigo,
-);
-
-// router.get(
-//   "/obterPorId/:id",
-//   validateHandler,
-//   authGuard,
-//   salaController.obterPorId,
-// );
-
-// Rotas de gerenciamento de participantes (sem token de sala - para uso na edição)
-// POST /salas/:id/participantes/adicionar - Adicionar participante (dono ou admin)
-router.post(
-  "/:id/participantes/adicionar",
-  validateHandler,
-  authGuard,
-  csrfGuard,
-  salaController.adicionarParticipante,
-);
-
-// DELETE /salas/:id/participantes/:pessoaId/remover - Remover participante (dono ou admin)
-router.delete(
-  "/:id/participantes/:pessoaId/remover",
-  validateHandler,
-  authGuard,
-  csrfGuard,
-  salaController.removerParticipante,
-);
-
 // PATCH /salas/:id/participantes/:pessoaId/role - Alterar role (apenas dono)
 router.patch(
   "/:id/participantes/:pessoaId/role",
@@ -112,6 +79,14 @@ router.patch(
 
 // Lista de rotas que já estão no novo padrão de rotas
 
+// GET /salas/obterPorCodigo/:codigo - Obter dados da sala por código (para entrar na sala)
+router.get(
+  "/obterPorCodigo/:codigo",
+  validateHandler,
+  authGuard,
+  salaController.obterPorCodigo,
+);
+
 // Sair da sala (não encerra sessão, apenas marca como offline e não autorizado)
 router.post(
   "/sairDaSala",
@@ -119,12 +94,13 @@ router.post(
   authGuard,
   salaAuthGuard,
   csrfGuard,
+  salaPermissaoGuard([0, 1, 2, 3]),
   salaController.sairDaSala,
 );
 
-// PUT /salas/alterar/:id - Alterar dados da sala
+// PUT /salas/alterarSala - Alterar dados da sala
 router.put(
-  "/alterar/:id",
+  "/alterarSala",
   salaAlterarValidations(),
   validateHandler,
   authGuard,
@@ -141,6 +117,16 @@ router.put(
   csrfGuard,
   salaPermissaoGuard([0, 1]),
   salaController.selecionarHistoriaAtual,
+);
+
+// GET /historias/listarHistoriasPorSessaoSala - Listar histórias da sessão ativa da sala (todos os participantes)
+router.get(
+  "/listarHistoriasPorSessaoSala",
+  validateHandler,
+  authGuard,
+  salaAuthGuard,
+  salaPermissaoGuard([0, 1]),
+  salaController.listarHistoriasPorSessaoSala,
 );
 
 // GET /salas/Entrar - Listar salas do usuário (todas as que participa, incluindo inativas)
@@ -185,6 +171,25 @@ router.get(
   salaAuthGuard,
   salaPermissaoGuard([0, 1, 2, 3]),
   participanteSalaController.ListarParticipantesSala,
+);
+
+// Rotas de gerenciamento de participantes (sem token de sala - para uso na edição)
+// POST /salas/:id/participantes/adicionar - Adicionar participante (dono ou admin)
+router.post(
+  "/adicionarParticipante",
+  validateHandler,
+  authGuard,
+  csrfGuard,
+  salaController.adicionarParticipante,
+);
+
+// DELETE /salas/:id/participantes/:pessoaId/remover - Remover participante (dono ou admin)
+router.delete(
+  "/removerParticipante",
+  validateHandler,
+  authGuard,
+  csrfGuard,
+  salaController.removerParticipante,
 );
 
 export default router;
