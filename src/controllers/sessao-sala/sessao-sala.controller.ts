@@ -33,24 +33,23 @@ export const sessaoSalaController = {
     next: NextFunction,
   ) {
     try {
-      const sala_id = req.params.id;
+      const sala_id = req.query.id as string;
       const pessoa_id = req.user?.Usuario_Id as string;
 
       // Buscar sessão ativa da sala
-      const sessaoAtiva =
-        await sessaoSalaService.obterSessaoAtivaPorSala(sala_id);
+      // const sessaoAtiva =
+      //   await sessaoSalaService.obterSessaoAtivaPorSala(sala_id);
 
-      if (!sessaoAtiva) {
-        return res
-          .status(400)
-          .json(
-            respostaErro({ mensagem: "Nenhuma sessão ativa para encerrar." }),
-          );
-      }
+      // if (!sessaoAtiva) {
+      //   return res
+      //     .status(400)
+      //     .json(
+      //       respostaErro({ mensagem: "Nenhuma sessão ativa para encerrar." }),
+      //     );
+      // }
 
-      const sessaoEncerradaId = await sessaoSalaService.encerrarSessao(
+      const sessaoEncerrada = await sessaoSalaService.encerrarSessao(
         sala_id,
-        sessaoAtiva.id,
         pessoa_id,
       );
 
@@ -64,7 +63,7 @@ export const sessaoSalaController = {
 
       res.json(
         respostaSucesso({
-          resultado: { sessaoEncerradaId },
+          resultado: { sessaoEncerrada },
           mensagem: "Sessão encerrada com sucesso.",
         }),
       );
@@ -72,26 +71,6 @@ export const sessaoSalaController = {
       return next(error);
     }
   },
-
-  // async obterSessaoSalaAtiva(req: Request, res: Response, next: NextFunction) {
-  //   try {
-  //     const sessao_id = req.params.id;
-  //     const pessoa_id = req.user?.Usuario_Id as string;
-
-  //     const sessao = await sessaoSalaService.obterSessaoPorId(
-  //       sessao_id,
-  //       pessoa_id,
-  //     );
-
-  //     res.json(
-  //       respostaSucesso({
-  //         resultado: { sessao },
-  //       }),
-  //     );
-  //   } catch (error: any) {
-  //     return next(error);
-  //   }
-  // },
 
   async adicionarParticipanteSessaoSala(
     req: Request,

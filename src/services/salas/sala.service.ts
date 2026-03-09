@@ -28,6 +28,8 @@ export interface AlterarSalaProps {
   pessoaId: string;
   titulo?: string;
   senha?: string | null;
+  participantesAdicionarIds: string[];
+  participantesRemoverIds: string[];
 }
 
 export const salaService = {
@@ -63,7 +65,7 @@ export const salaService = {
 
     return resultado.join("");
   },
-  async inserir({
+  async criarSala({
     titulo,
     senha,
     salaPrivada,
@@ -136,7 +138,14 @@ export const salaService = {
   },
 
   async alterarSala(data: AlterarSalaProps) {
-    if (!data.senha && !data.titulo) {
+    if (
+      !data.senha &&
+      !data.titulo &&
+      (!data.participantesAdicionarIds ||
+        data.participantesAdicionarIds.length === 0) &&
+      (!data.participantesRemoverIds ||
+        data.participantesRemoverIds.length === 0)
+    ) {
       throw new AppError("Dados para alteração não fornecidos.");
     }
 
@@ -171,6 +180,8 @@ export const salaService = {
     const dadosParaAtualizar: AlterarSalaProps = {
       id: data.id,
       pessoaId: data.pessoaId,
+      participantesAdicionarIds: data.participantesAdicionarIds,
+      participantesRemoverIds: data.participantesRemoverIds,
     };
 
     if (data.titulo) {
@@ -199,6 +210,32 @@ export const salaService = {
       titulo: dadosParaAtualizar.titulo,
       senha: dadosParaAtualizar.senha,
     });
+
+    if (
+      salaAtualizada &&
+      dadosParaAtualizar.participantesAdicionarIds.length > 0
+    ) {
+      for (const participanteId of dadosParaAtualizar.participantesAdicionarIds) {
+        await participanteSalaService.adicionarParticipanteASala(
+          salaAtualizada.id,
+          participanteId,
+          2, // role 2 = Membro
+        );
+      }
+    }
+
+    if (
+      salaAtualizada &&
+      dadosParaAtualizar.participantesRemoverIds.length > 0
+    ) {
+      for (const participanteId of dadosParaAtualizar.participantesRemoverIds) {
+        await participanteSalaService.removerParticipante(
+          salaAtualizada.id,
+          data.pessoaId,
+          participanteId,
+        );
+      }
+    }
 
     return salaAtualizada;
   },

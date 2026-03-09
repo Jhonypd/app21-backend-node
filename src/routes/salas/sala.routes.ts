@@ -16,16 +16,6 @@ import { csrfGuard } from "../../middlewares/csrfGuard";
 
 const router = Router();
 
-// POST /salas/inserir - Criar nova sala
-router.post(
-  "/inserir",
-  salaInserirValidations(),
-  validateHandler,
-  authGuard,
-  csrfGuard,
-  salaController.criarSalas,
-);
-
 // DELETE /salas/:id - Excluir sala (soft delete - apenas dono)
 // Validações: não pode ter sessões criadas, não pode ter votos
 router.delete(
@@ -54,17 +44,6 @@ router.post(
   sessaoSalaController.criarSessaoSala,
 );
 
-// POST /salas/:id/sessoes/encerrar - Encerrar sessão (dono e admin)
-router.post(
-  "/:id/sessoes/encerrar",
-  validateHandler,
-  authGuard,
-  salaAuthGuard, // Valida token de sala
-  csrfGuard,
-  salaPermissaoGuard([0, 1]), // Dono e Admin
-  sessaoSalaController.encerrarSessaoSalaAtiva,
-);
-
 // PATCH /salas/:id/sessoes/:sessaoId/participantes/:pessoaId/kick - Kickar participante (moderação)
 // Admin não pode kickar dono
 router.patch(
@@ -79,7 +58,18 @@ router.patch(
 
 // Lista de rotas que já estão no novo padrão de rotas
 
-// GET /salas/obterPorCodigo/:codigo - Obter dados da sala por código (para entrar na sala)
+// POST /salas/criarSala - Criar nova sala
+router.post(
+  "/criarSala",
+  salaInserirValidations(),
+  validateHandler,
+  authGuard,
+  csrfGuard,
+  salaController.criarSala,
+);
+
+// GET /salas/obterPorCodigo/:codigo - Obter dados da sala por código
+// vou validar o uso dessa rota
 router.get(
   "/obterPorCodigo/:codigo",
   validateHandler,
@@ -139,7 +129,18 @@ router.post(
   salaController.entrarSala,
 );
 
-// GET /salas/obterDadosSessaoAtiva?codigo=XXXXXX - Obter dados da sessão ativa
+// POST /salas/encerrarSessaoSalaAtiva?id={salaId} - Encerrar sessão (dono e admin)
+router.post(
+  "/encerrarSessaoSalaAtiva",
+  validateHandler,
+  authGuard,
+  salaAuthGuard, // Valida token de sala
+  csrfGuard,
+  salaPermissaoGuard([0, 1]), // Dono e Admin
+  sessaoSalaController.encerrarSessaoSalaAtiva,
+);
+
+// GET /salas/obterDadosSessaoAtiva?codigo={codigo} - Obter dados da sessão ativa
 router.get(
   "/obterDadosSessaoAtiva",
   validateHandler,
@@ -155,9 +156,9 @@ router.get(
   salaController.listarSalas,
 );
 
-// GET /salas/obterDadosFormAlterar?id=00000000-0000-0000-0000-000000000000
+// GET /salas/obterDadosFormAlterar?id={id}
 router.get(
-  "/obterDadosFormAlterar", // mudar para GET /salas/ObterDadosFormAlterar?id=00000000-0000-0000-0000-000000000000
+  "/obterDadosFormAlterar",
   validateHandler,
   authGuard,
   salaController.obterDadosFormAlterar,
@@ -165,31 +166,12 @@ router.get(
 
 // GET /salas/ListarParticipantesSala - Listar participantes permanentes onlines ou não (todos podem ver)
 router.get(
-  "/ListarParticipantesSala", // já está correta dentro do novo padrão de rotas
+  "/ListarParticipantesSala",
   validateHandler,
   authGuard,
   salaAuthGuard,
   salaPermissaoGuard([0, 1, 2, 3]),
   participanteSalaController.ListarParticipantesSala,
-);
-
-// Rotas de gerenciamento de participantes (sem token de sala - para uso na edição)
-// POST /salas/:id/participantes/adicionar - Adicionar participante (dono ou admin)
-router.post(
-  "/adicionarParticipante",
-  validateHandler,
-  authGuard,
-  csrfGuard,
-  salaController.adicionarParticipante,
-);
-
-// DELETE /salas/:id/participantes/:pessoaId/remover - Remover participante (dono ou admin)
-router.delete(
-  "/removerParticipante",
-  validateHandler,
-  authGuard,
-  csrfGuard,
-  salaController.removerParticipante,
 );
 
 export default router;

@@ -150,7 +150,7 @@ export const sessaoSalaService = {
     return novaSessao;
   },
 
-  async encerrarSessao(sala_id: string, sessao_id: string, pessoa_id: string) {
+  async encerrarSessao(sala_id: string, pessoa_id: string) {
     const sessaoAtiva =
       await sessaoSalaRepository.obterSessaoAtivaPorSala(sala_id);
 
@@ -197,7 +197,7 @@ export const sessaoSalaService = {
     // TODO: Quando implementar Socket.IO, emitir evento:
     // socketService.emitToRoom(sessao_id, 'sessao_encerrada', { encerrado_por: pessoa_id })
 
-    return sessao_id;
+    return sala_id;
   },
 
   async obterSessaoPorId(sessao_id: string, pessoa_id: string) {

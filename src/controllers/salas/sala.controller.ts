@@ -6,12 +6,12 @@ import { tokenCookies } from "../../helpers/set-tokens-cookies.helper";
 import { historiaSalaService } from "../../services/historias/historia-sala.service";
 
 export const salaController = {
-  async criarSalas(req: Request, res: Response, next: NextFunction) {
+  async criarSala(req: Request, res: Response, next: NextFunction) {
     try {
       const { titulo, senha, salaPrivada, participantesIds } = req.body;
       const pessoaId = req.user?.Usuario_Id as string;
 
-      const sala = await salaService.inserir({
+      const sala = await salaService.criarSala({
         titulo,
         senha,
         salaPrivada,
@@ -33,7 +33,13 @@ export const salaController = {
   async alterarSala(req: Request, res: Response, next: NextFunction) {
     try {
       // const id = req.params.id;
-      const { id, titulo, senha } = req.body;
+      const {
+        id,
+        titulo,
+        senha,
+        participantesAdicionarIds,
+        participantesRemoverIds,
+      } = req.body;
       const pessoaId = req.user?.Usuario_Id as string;
 
       const salaAtualizada = await salaService.alterarSala({
@@ -41,6 +47,8 @@ export const salaController = {
         pessoaId,
         titulo,
         senha,
+        participantesAdicionarIds,
+        participantesRemoverIds,
       });
 
       res.json(
@@ -192,75 +200,6 @@ export const salaController = {
         respostaSucesso({
           resultado: resultado,
           mensagem: resultado.mensagem,
-        }),
-      );
-    } catch (error: any) {
-      return next(error);
-    }
-  },
-
-  /**
-   * Adiciona um participante permanente à sala
-   * Permissões: Dono pode adicionar admin (1) ou membro (2), Admin pode adicionar apenas membro (2)
-   */
-  async adicionarParticipante(req: Request, res: Response, next: NextFunction) {
-    try {
-      const pessoaIdSolicitante = req.user?.Usuario_Id as string;
-      const { pessoa_id, role, sessao_id, sala_id } = req.body;
-
-      if (!pessoa_id) {
-        return res
-          .status(400)
-          .json(respostaErro({ mensagem: "Id da pessoa é obrigatório" }));
-      }
-
-      if (role !== 1 && role !== 2) {
-        return res
-          .status(400)
-          .json(
-            respostaErro({ mensagem: "Role deve ser 1 (Admin) ou 2 (Membro)" }),
-          );
-      }
-
-      const participante = await participanteSalaService.adicionarParticipante(
-        sala_id,
-        pessoaIdSolicitante,
-        pessoa_id,
-        role,
-        sessao_id,
-      );
-
-      res.status(201).json(
-        respostaSucesso({
-          resultado: participante,
-          mensagem: "Participante adicionado com sucesso",
-        }),
-      );
-    } catch (error: any) {
-      return next(error);
-    }
-  },
-
-  /**
-   * Remove um participante permanente da sala
-   * Permissões: Dono e Admin podem remover membros, mas não podem remover dono ou outros admins
-   */
-  async removerParticipante(req: Request, res: Response, next: NextFunction) {
-    try {
-      const sala_id = req.params.id;
-      const pessoa_id_remover = req.params.pessoaId;
-      const pessoaIdSolicitante = req.user?.Usuario_Id as string;
-
-      await participanteSalaService.removerParticipante(
-        sala_id,
-        pessoaIdSolicitante,
-        pessoa_id_remover,
-      );
-
-      res.json(
-        respostaSucesso({
-          resultado: {},
-          mensagem: "Participante removido com sucesso",
         }),
       );
     } catch (error: any) {
