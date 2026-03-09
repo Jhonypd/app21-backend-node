@@ -36,18 +36,6 @@ export const sessaoSalaController = {
       const sala_id = req.query.id as string;
       const pessoa_id = req.user?.Usuario_Id as string;
 
-      // Buscar sessão ativa da sala
-      // const sessaoAtiva =
-      //   await sessaoSalaService.obterSessaoAtivaPorSala(sala_id);
-
-      // if (!sessaoAtiva) {
-      //   return res
-      //     .status(400)
-      //     .json(
-      //       respostaErro({ mensagem: "Nenhuma sessão ativa para encerrar." }),
-      //     );
-      // }
-
       const sessaoEncerrada = await sessaoSalaService.encerrarSessao(
         sala_id,
         pessoa_id,

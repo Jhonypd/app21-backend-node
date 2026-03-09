@@ -867,38 +867,40 @@ export const salaService = {
    * - Não pode ter sessões criadas
    * - Não pode ter votos registrados
    */
-  async excluirSala(sala_id: string, pessoa_id: string) {
-    // Verificar se é o dono
-    const sala = await salaRepository.obterPorId(sala_id, false, pessoa_id);
+  async excluirSala(sala_id: string[], pessoa_id: string) {
+    for (const id of sala_id) {
+      // Verificar se é o dono
+      const sala = await salaRepository.obterPorId(id, false, pessoa_id);
 
-    if (!sala) {
-      throw new AppError("Sala não encontrada ou você não tem permissão.");
+      if (!sala) {
+        throw new AppError("Sala não encontrada ou você não tem permissão.");
+      }
+
+      if (sala.criado_por !== pessoa_id) {
+        throw new AppError("Apenas o dono pode excluir a sala.");
+      }
+
+      // VALIDAÇÃO #1: Verificar se há sessões criadas
+      const totalSessoes = await sessaoSalaRepository.contarSessaoSala(id);
+      if (totalSessoes > 0) {
+        throw new AppError(
+          "Não é possível excluir sala com sessões criadas. Histórico deve ser preservado.",
+        );
+      }
+
+      // VALIDAÇÃO #2: Verificar se há votos registrados
+      const totalVotos = await votosRepository.contarVotosHistoriaSessao(id);
+      if (totalVotos > 0) {
+        throw new AppError(
+          "Não é possível excluir sala com votos registrados. Histórico deve ser preservado.",
+        );
+      }
+
+      // Exclusão LÓGICA (soft delete)
+      await salaRepository.atualizarStatus(id, true); // inativo = true
+
+      return { sucesso: true, mensagem: "Sala excluída com sucesso." };
     }
-
-    if (sala.criado_por !== pessoa_id) {
-      throw new AppError("Apenas o dono pode excluir a sala.");
-    }
-
-    // VALIDAÇÃO #1: Verificar se há sessões criadas
-    const totalSessoes = await sessaoSalaRepository.contarSessaoSala(sala_id);
-    if (totalSessoes > 0) {
-      throw new AppError(
-        "Não é possível excluir sala com sessões criadas. Histórico deve ser preservado.",
-      );
-    }
-
-    // VALIDAÇÃO #2: Verificar se há votos registrados
-    const totalVotos = await votosRepository.contarVotosHistoriaSessao(sala_id);
-    if (totalVotos > 0) {
-      throw new AppError(
-        "Não é possível excluir sala com votos registrados. Histórico deve ser preservado.",
-      );
-    }
-
-    // Exclusão LÓGICA (soft delete)
-    await salaRepository.atualizarStatus(sala_id, true); // inativo = true
-
-    return { sucesso: true, mensagem: "Sala excluída com sucesso." };
   },
 
   async selecionarHistoriaAtual(

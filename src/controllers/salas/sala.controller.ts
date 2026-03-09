@@ -191,15 +191,15 @@ export const salaController = {
    */
   async excluirSala(req: Request, res: Response, next: NextFunction) {
     try {
-      const id = req.params.id;
+      const id = req.get("id") as string;
       const pessoaId = req.user?.Usuario_Id as string;
 
-      const resultado = await salaService.excluirSala(id, pessoaId);
+      const resultado = await salaService.excluirSala([id], pessoaId);
 
       res.json(
         respostaSucesso({
           resultado: resultado,
-          mensagem: resultado.mensagem,
+          mensagem: resultado?.mensagem,
         }),
       );
     } catch (error: any) {

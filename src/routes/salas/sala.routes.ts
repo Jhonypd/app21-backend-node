@@ -16,16 +16,6 @@ import { csrfGuard } from "../../middlewares/csrfGuard";
 
 const router = Router();
 
-// DELETE /salas/:id - Excluir sala (soft delete - apenas dono)
-// Validações: não pode ter sessões criadas, não pode ter votos
-router.delete(
-  "/:id",
-  validateHandler,
-  authGuard,
-  csrfGuard,
-  salaController.excluirSala,
-);
-
 // PATCH /salas/:id/participantes/:pessoaId/role - Alterar role (apenas dono)
 router.patch(
   "/:id/participantes/:pessoaId/role",
@@ -66,6 +56,16 @@ router.post(
   authGuard,
   csrfGuard,
   salaController.criarSala,
+);
+
+// DELETE /salas/excluirSala - Excluir sala (soft delete - apenas dono)
+// Validações: não pode ter sessões criadas, não pode ter votos
+router.delete(
+  "/excluirSala",
+  validateHandler,
+  authGuard,
+  csrfGuard,
+  salaController.excluirSala,
 );
 
 // GET /salas/obterPorCodigo/:codigo - Obter dados da sala por código
