@@ -256,7 +256,7 @@ export const salaService = {
       itensPagina,
       valorPesquisa,
     );
-    const salaFormatada = salas.map((sala: any) => {
+    const salaFormatada = salas.map((sala) => {
       // Determinar o role do usuário atual na sala
       const meuRole =
         sala.criado_por === pessoaId
@@ -286,8 +286,8 @@ export const salaService = {
         temSessaoAtiva,
         status: temSessaoAtiva ? "online" : "offline",
         data_ultima_sessao: temSessaoAtiva
-          ? ultimaSessaoAtiva.criada_em
-          : ultimaSessaoAtiva.data_encerramento,
+          ? ultimaSessaoAtiva?.criada_em
+          : ultimaSessaoAtiva?.data_encerramento,
       };
     });
     return salaFormatada;
