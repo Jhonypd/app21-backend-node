@@ -100,6 +100,7 @@ app.use(
       "historia_id",
       "pessoa_id",
       "sessao_id ",
+      "ids",
     ],
     exposedHeaders: ["X-CSRF-Token"],
     preflightContinue: false,

@@ -191,7 +191,7 @@ export const salaController = {
    */
   async excluirSala(req: Request, res: Response, next: NextFunction) {
     try {
-      const id = req.get("id") as string;
+      const id = req.get("ids") as string;
       const pessoaId = req.user?.Usuario_Id as string;
 
       const resultado = await salaService.excluirSala([id], pessoaId);
