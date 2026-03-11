@@ -380,4 +380,60 @@ export const salaController = {
       return next(error);
     }
   },
+
+  async ListarParticipantesSala(
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ) {
+    try {
+      const sala_id = req.sala?.Sala_Id as string;
+      const sessao_id = req.sala?.Sessao_Sala_Id as string | undefined;
+      const apenasOnline = req.query.apenasOnline === "true";
+
+      const resultado = await participanteSalaService.listarParticipantesDaSala(
+        sala_id,
+        sessao_id,
+        apenasOnline,
+      );
+
+      res.json(
+        respostaSucesso({
+          resultado,
+        }),
+      );
+    } catch (error) {
+      return next(error);
+    }
+  },
+
+  async adicionarParticipanteOuVisitanteSala(
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ) {
+    try {
+      const sala_id = req.sala?.Sala_Id as string;
+      const sessao_sala_id = req.sala?.Sessao_Sala_Id as string;
+      const pessoa_id = req.user?.Usuario_Id as string;
+      const { role, pessoaId } = req.body;
+
+      const participante =
+        await participanteSalaService.adicionarParticipanteOuVisitante(
+          sala_id,
+          pessoaId,
+          role,
+          pessoa_id,
+          sessao_sala_id,
+        );
+      res.json(
+        respostaSucesso({
+          resultado: { participante },
+          mensagem: "Participante adicionado com sucesso.",
+        }),
+      );
+    } catch (error) {
+      return next(error);
+    }
+  },
 };

@@ -356,6 +356,7 @@ export const participanteSalaService = {
 
     // Buscar sala
     const sala = await salaRepository.obterPorId(sala_id, false);
+
     if (!sala) {
       throw new AppError("Sala não encontrada");
     }
@@ -367,6 +368,7 @@ export const participanteSalaService = {
         sala_id,
         pessoa_id_solicitante,
       );
+
     const isAdmin = participanteSolicitante?.role === 1;
 
     if (!isDono && !isAdmin) {
@@ -400,6 +402,7 @@ export const participanteSalaService = {
       pessoa_id_adicionar,
       false,
     );
+
     if (!pessoaAdicionar) {
       throw new AppError("Pessoa não encontrada");
     }

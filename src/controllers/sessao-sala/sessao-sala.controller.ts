@@ -200,45 +200,4 @@ export const sessaoSalaController = {
       return next(error);
     }
   },
-
-  /**
-   * Atualizar flag participa_votacao do participante na sessão
-   * Permite Donos/Admin escolherem se vão votar ou não
-   */
-  async atualizarParticipaVotacaoSessaoSala(
-    req: Request,
-    res: Response,
-    next: NextFunction,
-  ) {
-    try {
-      const sessao_id = req.query.id as string;
-      const pessoa_id = req.user?.Usuario_Id as string;
-      const { participa_votacao } = req.body;
-
-      if (typeof participa_votacao !== "boolean") {
-        return res
-          .status(400)
-          .json(
-            respostaErro({ mensagem: "participa_votacao deve ser um boolean" }),
-          );
-      }
-
-      const participante = await sessaoSalaService.atualizarParticipaVotacao(
-        sessao_id,
-        pessoa_id,
-        participa_votacao,
-      );
-
-      res.json(
-        respostaSucesso({
-          resultado: { participante },
-          mensagem: `Participação ${
-            participa_votacao ? "ativada" : "desativada"
-          } com sucesso.`,
-        }),
-      );
-    } catch (error: any) {
-      return next(error);
-    }
-  },
 };

@@ -76,6 +76,7 @@ router.get(
   validateHandler,
   authGuard,
   salaAuthGuard,
+  csrfGuard,
   salaPermissaoGuard([0, 1]),
   salaController.listarHistoriasPorSessaoSala,
 );
@@ -97,6 +98,7 @@ router.get(
   validateHandler,
   authGuard,
   salaAuthGuard,
+  csrfGuard,
   salaPermissaoGuard([0, 1, 2, 3]),
   salaController.obterDadosSessaoAtiva,
 );
@@ -107,8 +109,9 @@ router.get(
   validateHandler,
   authGuard,
   salaAuthGuard,
+  csrfGuard,
   salaPermissaoGuard([0, 1, 2, 3]),
-  participanteSalaController.ListarParticipantesSala,
+  salaController.ListarParticipantesSala,
 );
 
 // PATCH /salas/atualizarParticipaVotacaoSessaoSala?id={id} - Atualizar flag participa_votacao do participante na sessão (moderação - dono e admin)
@@ -116,7 +119,20 @@ router.patch(
   "/atualizarParticipaVotacaoSessaoSala",
   validateHandler,
   authGuard,
-  sessaoSalaController.atualizarParticipaVotacaoSessaoSala,
+  salaAuthGuard,
+  csrfGuard,
+  salaPermissaoGuard([0, 1]), // Dono e Admin
+  salaController.atualizarParticipaVotacaoSessaoSala,
+);
+
+router.post(
+  "/adicionarParticipanteOuVisitanteSala",
+  validateHandler,
+  authGuard,
+  salaAuthGuard,
+  csrfGuard,
+  salaPermissaoGuard([0, 1]), // Dono e Admin
+  salaController.adicionarParticipanteOuVisitanteSala,
 );
 
 // Sem sessão ativa
@@ -166,6 +182,7 @@ router.get(
   "/listarSalas", // mudar para GET /salas/ListarSalas
   validateHandler,
   authGuard,
+  csrfGuard,
   salaController.listarSalas,
 );
 
@@ -174,6 +191,7 @@ router.get(
   "/obterDadosFormAlterar",
   validateHandler,
   authGuard,
+  csrfGuard,
   salaController.obterDadosFormAlterar,
 );
 
@@ -183,6 +201,7 @@ router.get(
   "/obterPorCodigo/:codigo",
   validateHandler,
   authGuard,
+  csrfGuard,
   salaController.obterPorCodigo,
 );
 
