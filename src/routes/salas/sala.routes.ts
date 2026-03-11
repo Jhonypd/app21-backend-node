@@ -135,6 +135,13 @@ router.post(
   salaController.adicionarParticipanteOuVisitanteSala,
 );
 
+router.post(
+  "/revelarVotosSessaoSala",
+  validateHandler,
+  authGuard,
+  sessaoSalaController.revelarVotosSessaoSala,
+);
+
 // Sem sessão ativa
 
 // POST /salas/criarSala - Criar nova sala

@@ -42,7 +42,7 @@ export const votosController = {
           mensagem: "Voto registrado com sucesso.",
         }),
       );
-    } catch (error: any) {
+    } catch (error) {
       return next(error);
     }
   },

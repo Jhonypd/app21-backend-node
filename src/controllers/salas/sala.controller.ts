@@ -436,4 +436,26 @@ export const salaController = {
       return next(error);
     }
   },
+
+  async revelarVotosSessaoSala(
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ) {
+    try {
+      const sessao_id = req.sala?.Sessao_Sala_Id as string;
+      const pessoa_id = req.user?.Usuario_Id as string;
+
+      const sessao = await sessaoSalaService.revelarVotos(sessao_id, pessoa_id);
+
+      res.json(
+        respostaSucesso({
+          resultado: { sessao },
+          mensagem: "Votos revelados com sucesso.",
+        }),
+      );
+    } catch (error: any) {
+      return next(error);
+    }
+  },
 };

@@ -30,8 +30,9 @@ export const votosService = {
       });
 
     if (!historiaSessao) {
-      throw new Error(
+      throw new AppError(
         "História não encontrada na sessão. As histórias devem ser adicionadas ao criar a sessão.",
+        404,
       );
     }
 
