@@ -27,39 +27,6 @@ export const sessaoSalaController = {
     }
   },
 
-  async encerrarSessaoSalaAtiva(
-    req: Request,
-    res: Response,
-    next: NextFunction,
-  ) {
-    try {
-      const sala_id = req.query.id as string;
-      const pessoa_id = req.user?.Usuario_Id as string;
-
-      const sessaoEncerrada = await sessaoSalaService.encerrarSessao(
-        sala_id,
-        pessoa_id,
-      );
-
-      // Limpar cookie token_sala ao encerrar sessão
-      res.clearCookie("token_sala", {
-        path: "/",
-        secure: process.env.NODE_ENV === "production",
-        sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
-        httpOnly: true,
-      });
-
-      res.json(
-        respostaSucesso({
-          resultado: { sessaoEncerrada },
-          mensagem: "Sessão encerrada com sucesso.",
-        }),
-      );
-    } catch (error: any) {
-      return next(error);
-    }
-  },
-
   async adicionarParticipanteSessaoSala(
     req: Request,
     res: Response,
@@ -244,7 +211,7 @@ export const sessaoSalaController = {
     next: NextFunction,
   ) {
     try {
-      const sessao_id = req.params.id;
+      const sessao_id = req.query.id as string;
       const pessoa_id = req.user?.Usuario_Id as string;
       const { participa_votacao } = req.body;
 

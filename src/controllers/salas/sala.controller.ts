@@ -4,6 +4,7 @@ import { participanteSalaService } from "../../services/participantes/participan
 import { respostaErro, respostaSucesso } from "../../utils/response";
 import { tokenCookies } from "../../helpers/set-tokens-cookies.helper";
 import { historiaSalaService } from "../../services/historias/historia-sala.service";
+import { sessaoSalaService } from "../../services/sessoes/sessao-sala.service";
 
 export const salaController = {
   async criarSala(req: Request, res: Response, next: NextFunction) {
@@ -299,6 +300,80 @@ export const salaController = {
       res.json(
         respostaSucesso({
           resultado: { historias },
+        }),
+      );
+    } catch (error: any) {
+      return next(error);
+    }
+  },
+
+  async encerrarSessaoSalaAtiva(
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ) {
+    try {
+      const sala_id = req.query.id as string;
+      const pessoa_id = req.user?.Usuario_Id as string;
+
+      const sessaoEncerrada = await sessaoSalaService.encerrarSessao(
+        sala_id,
+        pessoa_id,
+      );
+
+      // Limpar cookie token_sala ao encerrar sessão
+      res.clearCookie("token_sala", {
+        path: "/",
+        secure: process.env.NODE_ENV === "production",
+        sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
+        httpOnly: true,
+      });
+
+      res.json(
+        respostaSucesso({
+          resultado: { sessaoEncerrada },
+          mensagem: "Sessão encerrada com sucesso.",
+        }),
+      );
+    } catch (error: any) {
+      return next(error);
+    }
+  },
+
+  /**
+   * Atualizar flag participa_votacao do participante na sessão
+   * Permite Donos/Admin escolherem se vão votar ou não
+   */
+  async atualizarParticipaVotacaoSessaoSala(
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ) {
+    try {
+      const sessao_id = req.query.id as string;
+      const pessoa_id = req.user?.Usuario_Id as string;
+      const { participa_votacao } = req.body;
+
+      if (typeof participa_votacao !== "boolean") {
+        return res
+          .status(400)
+          .json(
+            respostaErro({ mensagem: "participa_votacao deve ser um boolean" }),
+          );
+      }
+
+      const participante = await sessaoSalaService.atualizarParticipaVotacao(
+        sessao_id,
+        pessoa_id,
+        participa_votacao,
+      );
+
+      res.json(
+        respostaSucesso({
+          resultado: { participante },
+          mensagem: `Participação ${
+            participa_votacao ? "ativada" : "desativada"
+          } com sucesso.`,
         }),
       );
     } catch (error: any) {
