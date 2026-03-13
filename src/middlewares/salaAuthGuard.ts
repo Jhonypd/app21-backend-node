@@ -30,6 +30,7 @@ export const salaAuthGuard = async (
       respostaErro({
         mensagem: "Token da sala não informado.",
         codigoRetorno: 401,
+        requer_login_sala: true, // Indica que é necessário login na sala
       }),
     );
   }
@@ -49,6 +50,7 @@ export const salaAuthGuard = async (
         Mensagem: "Token não é válido para esta sala.",
         CodigoRetorno: 403,
         Resultado: { limpar_token: true },
+        requer_login_sala: true,
       });
     }
 
@@ -63,6 +65,7 @@ export const salaAuthGuard = async (
         Mensagem: "Sessão encerrada ou inválida.",
         CodigoRetorno: 403,
         Resultado: { limpar_token: true },
+        requer_login_sala: true,
       });
     }
 
@@ -79,6 +82,7 @@ export const salaAuthGuard = async (
         Mensagem: "Você não está mais nesta sessão.",
         CodigoRetorno: 403,
         Resultado: { limpar_token: true },
+        requer_login_sala: true,
       });
     }
 

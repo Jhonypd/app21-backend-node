@@ -5,6 +5,7 @@ export interface ResponsePadrao {
   CodigoRetorno: number;
   TipoRetorno: number;
   Resultado: any;
+  requer_login_sala?: boolean; // Flag para indicar que usuário precisa fazer login na sala
   requer_login?: boolean; // Flag para indicar que usuário precisa fazer login
 }
 
@@ -14,6 +15,7 @@ interface ErroParams {
   codigoRetorno?: number;
   tipoRetorno?: number;
   requer_login?: boolean;
+  requer_login_sala?: boolean;
 }
 
 interface SucessoParams {
@@ -57,6 +59,7 @@ export const respostaErro = ({
   codigoRetorno = 400,
   tipoRetorno = 0,
   requer_login = false,
+  requer_login_sala = false,
 }: ErroParams): ResponsePadrao => ({
   Sucesso: false,
   Mensagem: mensagem,
@@ -65,4 +68,5 @@ export const respostaErro = ({
   TipoRetorno: tipoRetorno,
   Resultado: null,
   ...(requer_login && { requer_login }), // Só inclui se for true
+  ...(requer_login_sala && { requer_login_sala }), // Só inclui se for true
 });
