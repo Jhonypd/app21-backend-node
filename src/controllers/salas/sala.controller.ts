@@ -5,6 +5,7 @@ import { respostaErro, respostaSucesso } from "../../utils/response";
 import { tokenCookies } from "../../helpers/set-tokens-cookies.helper";
 import { historiaSalaService } from "../../services/historias/historia-sala.service";
 import { sessaoSalaService } from "../../services/sessoes/sessao-sala.service";
+import { role } from "../../lib/jwt";
 
 export const salaController = {
   async criarSala(req: Request, res: Response, next: NextFunction) {
@@ -293,9 +294,12 @@ export const salaController = {
   ) {
     try {
       const sessao_id = req.sala?.Sessao_Sala_Id as string;
+      const role = req.sala?.Role as role;
 
-      const historias =
-        await historiaSalaService.listarHistoriasPorSessaoSala(sessao_id);
+      const historias = await historiaSalaService.listarHistoriasPorSessaoSala(
+        sessao_id,
+        role,
+      );
 
       res.json(
         respostaSucesso({

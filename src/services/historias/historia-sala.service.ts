@@ -11,28 +11,13 @@ import { historiaSessaoRepository } from "../../repositories/historia-sessao.rep
 import { obterVotosVencedoresHistoria } from "../../utils/voto-vencedor-historia";
 
 class HistoriaSalaService {
-  /**
-   * Lista todas as histórias vinculadas a uma sessão
-   * Retorna formatado com jaFoiVotada, historiaAtual e voto (vencedores)
-   */
-  async listarHistoriasPorSessaoSala(sessao_id: string) {
-    if (!sessao_id) {
-      throw new AppError("Id da sessão é obrigatório");
-    }
-
-    // Buscar sessão para obter sala_id e historia_atual_id
-    const sessao = await sessaoSalaRepository.obterPorId(sessao_id);
-    if (!sessao) {
-      throw new AppError("Sessão não encontrada");
-    }
-
-    const historiaAtualId = sessao.sala.historia_atual_id;
-
-    // Buscar histórias da sessão com votos
-    const historiasSessao =
-      await historiaSessaoRepository.listarPorSessao(sessao_id);
-
-    return historiasSessao.map((hs) => ({
+  private formatarHistoriaSessao(
+    hs: Awaited<
+      ReturnType<typeof historiaSessaoRepository.listarPorSessao>
+    >[number],
+    historiaAtualId: string | null,
+  ) {
+    return {
       id: hs.historia.id,
       titulo: hs.historia.titulo,
       descricao: hs.historia.descricao,
@@ -48,7 +33,43 @@ class HistoriaSalaService {
           {} as Record<number, number>,
         ),
       ),
-    }));
+    };
+  }
+
+  /**
+   * Lista todas as histórias vinculadas a uma sessão
+   * Retorna formatado com jaFoiVotada, historiaAtual e voto (vencedores)
+   */
+  async listarHistoriasPorSessaoSala(
+    sessao_id: string,
+    role?: 0 | 1 | 2 | 3,
+  ) {
+    if (!sessao_id) {
+      throw new AppError("Id da sessão é obrigatório");
+    }
+
+    // Buscar sessão para obter sala_id e historia_atual_id
+    const sessao = await sessaoSalaRepository.obterPorId(sessao_id);
+
+    if (!sessao) {
+      throw new AppError("Sessão não encontrada");
+    }
+
+    const historiaAtualId = sessao.sala.historia_atual_id;
+
+    // Buscar histórias da sessão com votos
+    const historiasSessao =
+      await historiaSessaoRepository.listarPorSessao(sessao_id);
+
+    const historiasFormatadas = historiasSessao.map((hs) =>
+      this.formatarHistoriaSessao(hs, historiaAtualId),
+    );
+
+    if (role !== undefined && role !== 0 && role !== 1) {
+      return historiasFormatadas.filter((historia) => historia.historiaAtual);
+    }
+
+    return historiasFormatadas;
   }
 
   /**

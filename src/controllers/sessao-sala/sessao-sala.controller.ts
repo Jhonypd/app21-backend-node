@@ -1,6 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 import { sessaoSalaService } from "../../services/sessoes/sessao-sala.service";
 import { respostaErro, respostaSucesso } from "../../utils/response";
+import { role } from "../../lib/jwt";
 
 export const sessaoSalaController = {
   async criarSessaoSala(req: Request, res: Response, next: NextFunction) {
@@ -172,22 +173,16 @@ export const sessaoSalaController = {
     next: NextFunction,
   ) {
     try {
-      const sessaoId = req.params.sessaoId;
-      const pessoaId = req.params.pessoaId;
-      const usuarioLogado = req.user;
-      const sala = req.sala; // Vem do salaAuthGuard
-
-      if (!sala) {
-        return res
-          .status(401)
-          .json(respostaErro({ mensagem: "Token da sala não encontrado" }));
-      }
+      const sessaoId = req.get("sessao_id") as string;
+      const pessoaId = req.get("pessoa_id") as string;
+      const usuarioLogado = req.user?.Usuario_Id as string;
+      const role = req.sala?.Role as role;
 
       const resultado = await sessaoSalaService.kickarParticipante(
         sessaoId,
         pessoaId,
-        usuarioLogado?.Usuario_Id as string,
-        sala.Role as 0 | 1 | 2 | 3,
+        usuarioLogado,
+        role,
       );
 
       res.json(

@@ -310,10 +310,10 @@ export const votosService = {
       throw new AppError("Voto não encontrado.", 404);
     }
 
-    // Verificar se o voto pertence à pessoa autenticada
-    if (voto.pessoa_id !== pessoa_id) {
-      throw new AppError("Você não pode cancelar o voto de outra pessoa.", 403);
-    }
+    // // Verificar se o voto pertence à pessoa autenticada
+    // if (voto.pessoa_id !== pessoa_id) {
+    //   throw new AppError("Você não pode cancelar o voto de outra pessoa.", 403);
+    // }
 
     // Deletar o voto
     return await votosRepository.deletarVotoIndividual(voto_id);

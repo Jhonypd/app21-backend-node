@@ -3,6 +3,8 @@ import jwt from "jsonwebtoken";
 
 const jwtSecret = process.env.JWT_SECRET as string;
 
+export type role = 0 | 1 | 2 | 3; // 0 = Dono (Owner), 1 = Admin, 2 = Membro (Member), 3 = Visitante (Guest)
+
 export interface Claims extends jwt.JwtPayload {
   Usuario_Id: string;
   Nome: string;
@@ -14,7 +16,7 @@ export interface Claims extends jwt.JwtPayload {
 }
 
 export interface ClaimsAuthSala extends jwt.JwtPayload {
-  Role: 0 | 1 | 2 | 3; // 0 = Dono (Owner), 1 = Admin, 2 = Membro (Member), 3 = Visitante (Guest)
+  Role: role; // 0 = Dono (Owner), 1 = Admin, 2 = Membro (Member), 3 = Visitante (Guest)
   Usuario_Id: string;
   Nome: string;
   Sala_Id: string;

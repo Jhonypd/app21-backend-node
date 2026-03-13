@@ -116,13 +116,12 @@ export const votosController = {
    * Somente permitido para administradores e moderadores
    *
    * Endpoint:
-   *
-   * DELETE /votos/:id
+   * DELETE /votos/deletarVotoPessoa?id={id}
    *
    */
   async deletarVotoPessoa(req: Request, res: Response, next: NextFunction) {
     try {
-      const voto_id = req.params.id;
+      const voto_id = req.query.id as string;
       const pessoa_id = req.get("pessoa_id") as string;
       const sala_id = req.sala?.Sala_Id as string;
       const id_admin_sala = req.user?.Usuario_Id as string;
@@ -138,7 +137,7 @@ export const votosController = {
 
       return res.json(
         respostaSucesso({
-          resultado: { voto_id: voto.id },
+          resultado: { id: voto.id },
           mensagem: "Voto cancelado com sucesso.",
         }),
       );

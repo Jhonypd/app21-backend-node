@@ -10,6 +10,7 @@ import { criptografia } from "../../lib/criptografia";
 import { obterVotosVencedoresHistoria } from "../../utils/voto-vencedor-historia";
 import { AppError } from "../../lib/errorHandler";
 import { prismaClient } from "../../lib/prisma";
+import { role } from "../../lib/jwt";
 
 interface CriarHistoriaDTO {
   titulo: string;
@@ -504,9 +505,9 @@ export const sessaoSalaService = {
     sessao_id: string,
     pessoa_id: string,
     solicitante_id: string,
-    solicitante_role: 0 | 1 | 2 | 3,
+    solicitante_role: role,
   ) {
-    // Validar que quem está kickando é dono ou admin
+    // Validar que quem está removendo é dono ou admin
     if (solicitante_role !== 0 && solicitante_role !== 1) {
       throw new AppError(
         "Apenas dono ou administrador podem kickar participantes.",

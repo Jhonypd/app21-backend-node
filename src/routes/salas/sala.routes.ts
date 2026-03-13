@@ -77,7 +77,7 @@ router.get(
   authGuard,
   salaAuthGuard,
   csrfGuard,
-  salaPermissaoGuard([0, 1]),
+  salaPermissaoGuard([0, 1, 2, 3]),
   salaController.listarHistoriasPorSessaoSala,
 );
 

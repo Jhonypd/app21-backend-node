@@ -27,9 +27,9 @@ router.get(
   votosController.obterVotosPorHistoriaSessaoSessaoSala,
 );
 
-// DELETE /votos/:id - excluir voto apenas quando o adm/moderador quiser anular o voto de um participante (ex: voto indevido)
+// DELETE /votos/deletarVotoPessoa?id={id} - excluir voto apenas quando o adm/moderador quiser anular o voto de um participante (ex: voto indevido)
 router.delete(
-  "/:id",
+  "/deletarVotoPessoa",
   validateHandler,
   authGuard,
   salaAuthGuard,
