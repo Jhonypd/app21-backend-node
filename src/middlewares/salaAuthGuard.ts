@@ -16,7 +16,6 @@ const jwtSecret = process.env.JWT_SECRET as string;
  * 3. ParticipanteSessao.autorizado === true? (não foi kickado)
  *
  * Se qualquer validação falhar, retorna 403 com limpar_token: true
- * Frontend DEVE limpar o tokenSala do Redux ao receber limpar_token
  */
 export const salaAuthGuard = async (
   req: Request,
