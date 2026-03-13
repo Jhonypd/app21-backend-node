@@ -872,7 +872,7 @@ export const salaService = {
       // Verificar se é o dono
       const sala = await salaRepository.obterPorId(id, false, pessoa_id);
 
-      if (!sala) {
+      if (!sala || sala.inativo) {
         throw new AppError("Sala não encontrada ou você não tem permissão.");
       }
 
@@ -884,7 +884,7 @@ export const salaService = {
       const totalSessoes = await sessaoSalaRepository.contarSessaoSala(id);
       if (totalSessoes > 0) {
         throw new AppError(
-          "Não é possível excluir sala com sessões criadas. Histórico deve ser preservado.",
+          "Não é possível excluir sala pois há vínculos com outras funcionalidades do sistema.",
         );
       }
 
@@ -892,14 +892,14 @@ export const salaService = {
       const totalVotos = await votosRepository.contarVotosHistoriaSessao(id);
       if (totalVotos > 0) {
         throw new AppError(
-          "Não é possível excluir sala com votos registrados. Histórico deve ser preservado.",
+          "Não é possível excluir sala pois há vínculos com outras funcionalidades do sistema.",
         );
       }
 
       // Exclusão LÓGICA (soft delete)
       await salaRepository.atualizarStatus(id, true); // inativo = true
 
-      return { sucesso: true, mensagem: "Sala excluída com sucesso." };
+      return { id };
     }
   },
 

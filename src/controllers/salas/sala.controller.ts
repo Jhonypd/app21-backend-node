@@ -200,7 +200,7 @@ export const salaController = {
       res.json(
         respostaSucesso({
           resultado: resultado,
-          mensagem: resultado?.mensagem,
+          mensagem: "Sala excluída com sucesso.",
         }),
       );
     } catch (error: any) {
